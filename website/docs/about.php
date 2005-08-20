@@ -21,6 +21,6 @@
 	<TD><A name="contact"></A><B>Contact</B></TD>
 </TR>
 <TR>
-	<TD>contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact contact </TD>
+	<TD><a href="mailto:ultimo@quakeworld.us>ult</a></TD>
 </TR>
 </TABLE>
