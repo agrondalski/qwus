@@ -19,12 +19,13 @@ if ($displayLogin)
             <TD>Password: <INPUT TYPE="password" name="password"></TD>
             <TD><INPUT TYPE="submit" value="teamLogin"></TD>
 		</FORM>
+            ';
 		<BR><BR>
-            <FORM METHOD="POST" ACTION="login.php">
+            <!--<FORM METHOD="POST" ACTION="login.php">
             <TD>Admin: <INPUT TYPE="text" name="name"></TD>
             <TD>Password: <INPUT TYPE="password" name="password"></TD>
             <TD><INPUT TYPE="submit" value="adminLogin"></TD>
 		</FORM>
-    		';
+    		';!-->
 	}
 }
