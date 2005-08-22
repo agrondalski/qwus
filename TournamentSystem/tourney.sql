@@ -18,6 +18,7 @@ drop table player ;
 drop table country ;
 drop table maps ;
 drop table game_type ;
+drop table news ;
 
 
 create table game_type(
