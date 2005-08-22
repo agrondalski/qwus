@@ -1,0 +1,31 @@
+<style type="text/css">
+<!--
+input.button {	font-weight: bold;	
+			font-size: 9px;	
+			font-family: Verdana, Arial, Helvetica, sans-serif;	
+			padding: 4px 8px;	
+			border-top: 1px solid white;	
+			border-right: 1px solid black;	
+			border-bottom: 1px solid black;	
+			border-left: 1px solid white;	
+			text-align: center;	
+			min-width: 50px;}
+			
+input.button:link { 	background-color: #ccc; 	
+                    color: #369;	
+                    text-decoration: none;	}
+                    
+input.button:visited {	background-color: #ccc; 	
+                    color: #369;	
+                    text-decoration: none;	}
+                    
+input.button:hover { 	background-color: #ccc; 	
+                    color: red;	
+                    border-color: black white white black;	
+                    text-decoration: none;	}
+                    
+input.button:active { 	background-color: #ccc; 	
+					color: #369; 	
+					text-decoration: none;	}
+-->
+</style>
