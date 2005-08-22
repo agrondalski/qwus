@@ -28,4 +28,10 @@ echo "<input type='hidden' name='tourney_id' value='$tid'>";
 <input type="reset" value="Reset" name="B2" class='button'>
 </p></font>
 </form>
+
+<?php
+include 'listDivisions.php';
+?>
+
+
 </html>

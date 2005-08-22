@@ -18,3 +18,21 @@ Team Standings
 Team Page (Shows Players & Stats)
 Player List
 Player Page (Shows Games & Stats)
+
+
+drop table stats ;
+drop table comments ;
+drop table game ;
+drop table match_table ;
+drop table player_info ;
+drop table tourney_maps ;
+drop table tourney_info ;
+drop table division ;
+drop table tourney_admins ;
+drop table tourney_schedule ;
+drop table tourney ;
+drop table team ;
+drop table player ;
+drop table country ;
+drop table maps ;
+drop table game_type ;

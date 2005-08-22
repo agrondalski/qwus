@@ -16,11 +16,12 @@ a:hover {text-decoration: underline; color: #ff0000}-->
 $tid = $_REQUEST['tourney_id'];
 
 echo "<body bgcolor='#000000' text='#CCFFFF' link='#66FF99' vlink='#66FF99' alink='#00FF00'>";
-echo "<p>&nbsp;</p>";
-echo "<p><font size='2'><a href='addDivision.php?tourney_id=$tid'>Create a division</a><a href='addTeam.php?tourney_id=$tid'><br>";
-echo "Add a team</a><a href='addPlayer.php?tourney_id=$tid'><br>";
-echo "Add a player</a><a href='tourneyAdmins.php?tourney_id=$tid'><br>";
-echo "Assign admin privelages</a><a href='addMap.php?tourney_id=$tid'><br>";
-echo "Add a map</a></font></p>";
-echo "</html>";
+echo "<h2>Tourney Home</h2>";
+echo "<p><font size='2'><a href='addDivision.php?tourney_id=$tid'>Create a division</a><br>";
+echo "<a href='addTeam.php?tourney_id=$tid'>Add a team</a><br>";
+echo "<a href='addPlayer.php?tourney_id=$tid'>Add a player</a><br>";
+echo "<a href='addMap.php?tourney_id=$tid'>Add a map</a><br>";
+echo "-----<br>";
+echo "<a href='tourneyAdmins.php?tourney_id=$tid'>Assign admin privelages</a><br>";
+echo "</font></html>";
 ?>
