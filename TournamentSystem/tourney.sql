@@ -164,6 +164,17 @@ create table comments(
   constraint comments_pk primary key(comments_id))
 ENGINE=INNODB ;
 
+-- Copying this table from qwus_news, we might change both since 
+-- some crazy things like date=text??
+create table news(
+  id            bigint(20), 
+  subject       text,
+  date          text,
+  text          text,
+  writer        text,
+  contraint news_pk primary key(id))
+ENGINE=INNODB ;
+
 alter table tourney add constraint tourney_fk1 foreign key(game_type_id) references game_type(game_type_id) ;
 
 alter table tourney_admins add constraint tourney_admins_fk1 foreign key(tourney_id) references tourney(tourney_id) ;
