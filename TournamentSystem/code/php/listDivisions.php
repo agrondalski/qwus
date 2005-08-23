@@ -8,13 +8,15 @@ $dbusername='skel';
 $dbuserpass='Fr3nzY!';
 $dbname='dew';
 
+$tid = $_REQUEST['tourney_id'];
+
 // Connecting, selecting database
 $link = mysql_connect($dbhost, $dbusername, $dbuserpass)
    or die('Could not connect: ' . mysql_error());
 mysql_select_db($dbname) or die('Could not select database');
 
 // Performing SQL query
-$query = 'SELECT d.name as dname, t.name as tname FROM division d, tourney t WHERE d.tourney_id=t.tourney_id';
+$query = 'SELECT d.name as dname, t.name as tname FROM division d, tourney t WHERE d.tourney_id=t.tourney_id AND t.tourney_id=\''.$tid.'\'';
 $result = mysql_query($query) or die('Query failed: ' . mysql_error());
 
 // Printing results in HTML
