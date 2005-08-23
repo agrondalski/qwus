@@ -1,9 +1,10 @@
 <?php
 session_start();
+include("dbConnect.php");
 
 if (!isset($_SESSION["loggedIn"]))
 {
-	$_SESSION["loggedIn"] = "no";
+      $_SESSION["loggedIn"] = "no";
       $displayLogin == true;
 }
 
@@ -13,19 +14,24 @@ if ($displayLogin)
 {
 	if (!$_POST)
 	{
- 		echo '
+ 	    echo '
             <FORM METHOD="POST" ACTION="login.php">
-            <TD>Team: INSERT COOL DROPDOWN HERE</TD>
-            <TD>Password: <INPUT TYPE="password" name="password"></TD>
-            <TD><INPUT TYPE="submit" value="teamLogin"></TD>
-		</FORM>
+            <B>Team</B>: DROPDOWN HERE
+            <BR>
+            <B>Password</B>: <INPUT TYPE="password" name="password">
+            <BR>
+            <INPUT TYPE="submit" value="Team Login">
+	    </FORM>
+	    
+            <BR><BR>
+            
+            <FORM METHOD="POST" ACTION="login.php">
+            <B>Admin</B>: <INPUT TYPE="text" name="admin">
+            <BR>
+            <B>Password</B>: <INPUT TYPE="password" name="password">
+            <BR>
+            <INPUT TYPE="submit" value="Admin Login">
+            </FORM>
             ';
-		<BR><BR>
-            <!--<FORM METHOD="POST" ACTION="login.php">
-            <TD>Admin: <INPUT TYPE="text" name="name"></TD>
-            <TD>Password: <INPUT TYPE="password" name="password"></TD>
-            <TD><INPUT TYPE="submit" value="adminLogin"></TD>
-		</FORM>
-    		';!-->
 	}
 }
