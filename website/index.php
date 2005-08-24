@@ -6,7 +6,7 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 <HTML>
 <HEAD>
 <META http-equiv="Content-Type" content="text/html">
-<META name="DESCRIPTION" content="American QuakeWorld resource website">
+<META name="DESCRIPTION" content="North American QuakeWorld resource website">
 <META name="KEYWORDS" content="QuakeWorld"> 
 <META name="AUTHOR" content="Viktor Persson"> 
 <LINK REL="stylesheet" HREF="css/default.css" TYPE="text/css">
