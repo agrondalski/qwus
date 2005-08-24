@@ -1,14 +1,5 @@
 -- TODO
--- 1. unique player names ?
-
--- DONE
--- 1. not null constraints
--- 2. unique constraints
--- 3. removed phpbb dependence
--- 4. added tourney_playoffs
--- 5. added canPostNews to tourney_admins
--- 6. added SuperAdmin to player
--- 7. various additional columns
+--
 
 drop database if exists dew_test  ;
 create database if not exists dew_test ;
@@ -38,10 +29,10 @@ ENGINE=INNODB ;
 
 create table tourney_admins(
   tourney_id   integer  NOT NULL,
-  admin_id     integer  NOT NULL,
+  player_id    integer  NOT NULL,
   canPostNews  boolean  NOT NULL default false,
 --
-  constraint tourney_admins_fk primary key(tourney_id, admin_id))
+  constraint tourney_admins_fk primary key(tourney_id, player_id))
 ENGINE=INNODB ;
 
 create table tourney_maps(
@@ -97,6 +88,7 @@ create table tourney_info(
   tourney_id   integer NOT NULL,
   team_id      integer NOT NULL,
   division_id  integer NOT NULL,
+  approved     boolean NOT NULL default FALSE,
   wins         integer NOT NULL default 0,
   losses       integer NOT NULL default 0,
   points       integer NOT NULL default 0,
@@ -128,10 +120,10 @@ create table location(
 ENGINE=INNODB ;
 
 create table player_info(
-  tourney_id  integer NOT NULL,
-  team_id     integer NOT NULL,
-  player_id   integer NOT NULL,
-  isAdmin     boolean NOT NULL default FALSE,
+  tourney_id    integer NOT NULL,
+  team_id       integer NOT NULL,
+  player_id     integer NOT NULL,
+  isTeamLeader  boolean NOT NULL default FALSE,
 --
   constraint player_lookup_pk primary key(tourney_id, team_id, player_id))
 ENGINE=INNODB ;
@@ -208,7 +200,7 @@ ENGINE=INNODB ;
 alter table tourney add constraint tourney_fk1 foreign key(game_type_id) references game_type(game_type_id) ;
 
 alter table tourney_admins add constraint tourney_admins_fk1 foreign key(tourney_id) references tourney(tourney_id) ;
-alter table tourney_admins add constraint tourney_admins_fk2 foreign key(admin_id) references player(player_id) ;
+alter table tourney_admins add constraint tourney_admins_fk2 foreign key(player_id) references player(player_id) ;
 
 alter table tourney_maps add constraint tourney_maps_fk1 foreign key(tourney_id) references tourney(tourney_id) ;
 alter table tourney_maps add constraint tourney_maps_fk2 foreign key(map_id) references maps(map_id) ;
