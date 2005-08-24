@@ -73,14 +73,6 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 			<TR>
 				<TD><A href="?a=links">Links</A></TD>
 			</TR>
-<!--
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-			<TR>
-				<TD><A href="?a=about">About</A></TD>
-			</TR>
-!-->
 			</TABLE>
 			</TD>
 		</TR>
