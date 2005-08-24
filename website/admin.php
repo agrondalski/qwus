@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["inloggad"]))
+if (!isset($_SESSION["loggedin"]))
 {
-	$_SESSION["inloggad"] = "nej";
+	$_SESSION["loggedin"] = "no";
 	$a == false;
 }
 
-$a = ($_SESSION["inloggad"]=="ja") ? true:false;
+$a = ($_SESSION["loggedin"]=="yes") ? true:false;
 
 if (!$a)
 {
@@ -15,47 +15,60 @@ if (!$a)
 	{
 		echo '
 		<FORM METHOD="POST" ACTION="admin.php">
-		<INPUT TYPE="password" name="password"><INPUT TYPE="submit" value="login">
+		Name <INPUT TYPE="test" name="username">
+                Password <INPUT TYPE="password" name="password"><INPUT TYPE="submit" value="login">
 		</FORM>
 		';
 	}
 	else
 	{
-		if ($_POST["password"] == "qwus")
+                require("db.php") ;
+		$sql_text = sprintf("select count(*) from player where name='%s' and superAdmin=true and password=md5('%s')",
+                                      mysql_real_escape_string($_POST["username"]),  mysql_real_escape_string($_POST["password"])) ;
+
+	  	$found_pw = mysql_fetch_row(mysql_query($sql_text)) ;
+
+		if ($found_pw[0]>0)
 		{
-			$_SESSION["inloggad"] = "ja";
+			$_SESSION["loggedin"] = "yes";
+                        $_SESSION["username"] = $_POST["username"] ;
 		}
 		header("location: admin.php");
 	}
 }
+
 else
 {
-	$do = "";
-	include("db.php");
-	if (!empty($_GET["a"]))
+  $do = "" ;
+  require("db.php") ;
+  if (!empty($_GET["a"]))
 	{
 		$do = $_GET["a"];
 
 		if ($do == "logout")
 		{
-			$_SESSION["inloggad"]="nej";
+			$_SESSION["loggedin"]="no";
 			header("location: .");
 		}
 		else if ($do == "delnews")
 		{
 			$id = $_GET["id"];
-			mysql_query("DELETE FROM qwus_news WHERE id='$id'");
+			mysql_query("delete from news where news_id=$id");
 		}
 	}
 	if ($_POST)
 	{
 		$sub = $_POST["subject"];
-		$wtr = $_POST["writer"];
+		$wtr = $_SESSION["username"];
 		$txt = $_POST["txt"];
 		$dte = date("Y-m-d");
-		$nid = mysql_fetch_row(mysql_query("SELECT MAX(id) FROM qwus_news"));
-		$nid = $nid[0]+1;
-		mysql_query("INSERT INTO qwus_news VALUES('$nid','$sub','$dte','$txt','$wtr')");
+
+                $sql_text = sprintf("select player_id from player where name='%s'", mysql_real_escape_string($wtr)) ;
+                $pid = mysql_fetch_row(mysql_query($sql_text)) ;
+
+                $sql_text = sprintf("insert into news(writer_id, subject, news_date, text) values($pid[0], '%s', '$dte', '%s')",
+                                    mysql_real_escape_string($sub), mysql_real_escape_string($txt)) ;
+                mysql_query($sql_text);
 	}
 	echo '
 		<LINK REL="stylesheet" HREF="css/default.css" TYPE="text/css">
@@ -64,13 +77,13 @@ else
 		<B>Add news</B><BR>
 		<FORM METHOD=POST ACTION="admin.php">
 		subject: <INPUT TYPE="text" NAME="subject"><BR>
-		writer:&nbsp; <INPUT TYPE="text" NAME="writer"><BR>
 		<TEXTAREA NAME="txt" ROWS="8" COLS="35"></TEXTAREA><BR>
 		<INPUT TYPE="submit" value="Add news">
 		</FORM>
 		<BR>
 		<B>Delete news</B>&nbsp;&nbsp;&nbsp;<A href="admin.php">simple</A>&nbsp;|&nbsp;<A href="?a=detailed">detailed</A><BR><BR><TABLE cellspacing="0" cellpadding="3" width="480"><TR><TD><B>ID</B></TD><TD><B>SUBJECT</B></TD><TD><B>Date</B></TD><TD colspan="2"><B>Writer</B></TD></TR>';
-		$news = mysql_query("SELECT * FROM qwus_news ORDER BY ID DESC");
+
+		$news = mysql_query("select n.news_id, n.subject, n.news_date, n.text, p.name from news n, player p where n.writer_id=p.player_id order by news_id desc");
 		$color = Array("F0F0F0","F8F8F8");
 		$i=0;
 		while ($print = mysql_fetch_row($news))

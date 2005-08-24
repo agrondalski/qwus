@@ -4,7 +4,7 @@ $months = Array('','January','February','March','April','May','June','July','Aug
 
 	$currentYear = "";
 	$currentMonth = "";
-	$news = mysql_query("select * from qwus_news order by id desc");
+	$news = mysql_query("select n.news_id, n.subject, n.news_date, n.text, p.name from news n, player p where n.writer_id=p.player_id order by news_id");
 	echo '<TR><TD><TABLE cellspacing="0" cellpadding="0">';
 			
 	while($out = mysql_fetch_row($news))

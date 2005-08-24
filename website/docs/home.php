@@ -5,13 +5,13 @@ $printed = 0;
 
 if ($morenews)
 {
-	$news = mysql_query("SELECT * FROM qwus_news ORDER BY id DESC LIMIT 0,5");
-	$count = mysql_fetch_row(mysql_query("SELECT COUNT(id) FROM qwus_news"));
+	$news = mysql_query("select n.news_id, n.subject, n.news_date, n.text, p.name, l.logo_url FROM news n, player p, location l where n.writer_id=p.player_id and p.location_id=l.location_id order by news_id desc limit 0,5");
+	$count = mysql_fetch_row(mysql_query("select count(news_id) from news"));
 }
 else
 {
 	$id = $_GET["id"];
-	$news = mysql_query("SELECT * FROM qwus_news where id='$id'");
+	$news = mysql_query("select n.news_id, n.subject, n.news_date, n.text, p.name, l.logo_url from news n, player p, location l where n.writer_id=p.player_id and p.location_id=l.location_id and n.news_id=$id");
 }
 
 while ($print = mysql_fetch_row($news))
@@ -29,7 +29,7 @@ while ($print = mysql_fetch_row($news))
 		</TD>
 	</TR>
 	<TR>
-		<TD>' . $print[3] . '<P>Written by:&nbsp;' . $print[4] . '</P></TD>
+                <TD>' . $print[3] . '<P>Written by:&nbsp;' . $print[4] . '</P></TD>
 	</TR>
 	</TABLE>';
 	$printed++;

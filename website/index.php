@@ -1,5 +1,5 @@
 <?php
-include("db.php");
+require("db.php");
 $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
