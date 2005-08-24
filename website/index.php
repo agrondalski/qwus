@@ -11,7 +11,7 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 <META name="AUTHOR" content="Viktor Persson"> 
 <LINK REL="stylesheet" HREF="css/default.css" TYPE="text/css">
 <link rel="Shortcut Icon" type="image/ico" href="favicon.ico">
-<TITLE>QuakeWorld.US: Fred Edition</TITLE>
+<TITLE>QuakeWorld.US</TITLE>
 </HEAD>
 <BODY>
 <A name="top"></A>
