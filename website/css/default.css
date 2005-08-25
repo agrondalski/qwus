@@ -18,7 +18,7 @@ img {border: none;}
 .menu a {width: 90px; /*Internet Explorer hack*/ w\idth: 95px; \widht: 95px; font-size: 14px; text-decoration: none; display: block; padding: 2px 5px 2px 0px; color: #222;}
 .menu a:HOVER {background: #0055BB; color: #FFF;}
 .menu table, .bottom table, .news table, .news, .newsarchive, .newsarchive table, .servers {width: 100%;}
-.menu td {text-align: right;}
+.menu td {text-align: left;}
 .menuBreak {height: 1px; background: #EEE; width: 100px;}
 
 .q {height: 290px; width: 180px; background: url(../img/q.jpg) #EEE;}

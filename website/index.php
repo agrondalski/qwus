@@ -69,7 +69,12 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 			<TR>
 				<TD class="menuBreak"></TD>
 			</TR>
-
+                  <TR>
+                        <TD><A href="?a=tourneyHome&tourney_id=2">NA NQR 2</A></TD>
+                  </TR>
+                  <TR>
+                        <TD class="menuBreak"></TD>
+                  </TR>
 			<TR>
 				<TD><A href="?a=links">Links</A></TD>
 			</TR>
