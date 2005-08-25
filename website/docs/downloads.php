@@ -29,12 +29,17 @@ function getFiles($ext)
 
 	for ($i=0;$i<count($path_parts)-1;$i++)
 	{
-		$pathlink .= '<A href="?a=downloads&amp;d=';
-		for ($j=0;$j<$i+1;$j++)
-		{
-			$pathlink .= $path_parts[$j] . '/';
-		}
-		$pathlink .= '">' . ucfirst(strtolower($path_parts[$i])) . '</A>&nbsp;/&nbsp;';
+          if ($path_parts[$i]=="..")
+            {
+              return ;
+            }
+
+	  $pathlink .= '<A href="?a=downloads&amp;d=';
+	  for ($j=0;$j<$i+1;$j++)
+	    {
+	      $pathlink .= $path_parts[$j] . '/';
+	    }
+	  $pathlink .= '">' . ucfirst(strtolower($path_parts[$i])) . '</A>&nbsp;/&nbsp;';
 	}
 
 	$dir_handle = opendir($path) or die("Unable to open $path");
