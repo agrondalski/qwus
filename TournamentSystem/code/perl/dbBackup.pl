@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 
 # todo:
-# fix password support
 # automated offsite transfer
 
 @databases = ("dew", "qwus", "phpbb");
-$user = "root";
-$pw = "fred";
+$user = "export_user";
+$pw = "export";
 
 $date = `date +%F`;
 chomp($date);
@@ -14,8 +13,7 @@ chomp($date);
 foreach $database (@databases)
 {
   $filename = $database . "-" . $date . ".sql";
-  $shellOut = 
-    `mysqldump $database -u $user -p --single_transaction --force > $filename`;
+  $shellOut = `mysqldump $database --user=$user --password=$pw --single_transaction --force > $filename`;
 }
 
 $filename = "backup-" . $date . ".tar";
