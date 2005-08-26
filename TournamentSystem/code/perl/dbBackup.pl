@@ -1,8 +1,5 @@
 #!/usr/bin/perl
 
-# todo:
-# automated offsite transfer
-
 @databases = ("dew", "qwus", "phpbb");
 $user = "export_user";
 $pw = "export";
@@ -19,5 +16,7 @@ foreach $database (@databases)
 $filename = "backup-" . $date . ".tar";
 $shellOut = `tar -cf $filename  *.sql`;
 $shellOut = `gzip -9 $filename`;
-
+$filename = $filename . ".gz";
 $shellOut = `rm -f *.sql`;
+$shellOut = `mutt -s "QuakeWorld.US Database Backup" -a $filename ult1m0\@yahoo.com < /dev/null`;
+$shellOut = `mutt -s "QuakeWorld.US Database Backup" -a $filename skelman\@skelman.com < /dev/null`;
