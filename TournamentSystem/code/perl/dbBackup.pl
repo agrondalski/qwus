@@ -13,7 +13,7 @@ foreach $database (@databases)
   $shellOut = `mysqldump $database --user=$user --password=$pw --single_transaction --force > $filename`;
 }
 
-$filename = "backup-" . $date . ".tar";
+$filename = "dbBackup-" . $date . ".tar";
 $shellOut = `tar -cf $filename  *.sql`;
 $shellOut = `gzip -9 $filename`;
 $filename = $filename . ".gz";
