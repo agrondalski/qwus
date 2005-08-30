@@ -14,7 +14,7 @@ There is 1 class for each of the tables that represent an object(tourney, player
 
 7.  When returning info about a parent row, the class itself is returned(ie, not as part of an array).  So getDivision() will directly return 1 division object.
 
-8.  Each class has a delete, and update function.  Delete requires no parameters, update takes an array using the same format as the constructor.  So, $play1->update('password'=>'bobs_new_pw').  This currently only works 1 at a time.  If needed I could extend this for updates on multiple columns.  Let me know if this is needed.
+8.  Each class has a delete, and update function.  Delete requires no parameters, update takes 2 parameters.  The first being the column name, amd the second being the value.  If needed I could extend this for updates on multiple columns.  Let me know if this is needed.
 
 9.  I am currently using a mixture of throwing exceptions and calling die() directly which helped in debug.  Eventually, everything will be an exception, so feel free to catch them as needed.
 
