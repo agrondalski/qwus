@@ -1,0 +1,23 @@
+There is 1 class for each of the tables that represent an object(tourney, player, team, etc).  No classes for tables that map between tables(tourney_admins, player_info, etc.)
+
+1.  All input to the classes should be as is.  In other words, do not run mysql_real_escape_string on any value, or md5 on passwords.  This will be handled by the class.
+
+2.  Each value stored in the classes is currently defined to be private.  You need to use x->getValue('column'), to access the data.
+
+3.  Anytime you want to create a new object, the constructor will take an associate array as input.  So, when creating a new player, the following could be used:  $x = new player(array('name'=>'bob', 'superadmin'=>true, 'location_id'=>7, 'password'=>'bobs_pw').  You do not have to pass in a value for each column, but I still need to add default values inside the classes for when you dont.  However, it currently requires at least 2 values, to differentiate between #4 (let me know if this becomes an issue and I will fix).
+
+4.  Anytime you want to create an object of an existing object, pass an array using the id of the record.  So for example, $x = new team(array('team_id'=>7).  When doing this, only pass in 1 element.  The one exception to this is the player class, which can also be defined by passing in a single 'name' value.  Every other class should be able to be created with its id.  Let me know if this is not the case.
+
+5.  Each class has functions to return information about its parent and child objects.  So for example, the match class has the functions getComments(), getGames(), getDivision(), etc.  When returning all of the child rows that point to the object, an array will be returned with types of the class.  So getComments() will return an array of comment objects.    
+
+6.  I already have functions for each of the links between classes that I felt was relevent.  If one is missing that you need, let me know as I am sure I have missed a few.
+
+7.  When returning info about a parent row, the class itself is returned(ie, not as part of an array).  So getDivision() will directly return 1 division object.
+
+8.  Each class has a delete, and update function.  Delete requires no parameters, update takes an array using the same format as the constructor.  So, $play1->update('password'=>'bobs_new_pw').  This currently only works 1 at a time.  If needed I could extend this for updates on multiple columns.  Let me know if this is needed.
+
+9.  I am currently using a mixture of throwing exceptions and calling die() directly which helped in debug.  Eventually, everything will be an exception, so feel free to catch them as needed.
+
+10.  These classes are still a work in progress, so if something is missing let me know and I will add it.  Pretty much all of the SQL should be able to be handled in these classes.  I am currently deciding on how to best handle data that needs to be sorted in a certain way without having to create a separate procedure for each.  Maybe something like passing in an array with 'order_by'=>'column_name', 'desc'=>false may suffice, but I am still thinking about it.
+
+11.  See home.php, admin.php, auto_populate.php for basic examples of some of the above.
