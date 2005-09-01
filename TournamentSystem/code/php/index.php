@@ -1,6 +1,6 @@
 
 <?php
 
-echo "<a href='listTourneys.php'>Select a tourney:</a>";
+echo "<a href='a?=listTourneys.php'>Select a tourney:</a>";
 
 ?>

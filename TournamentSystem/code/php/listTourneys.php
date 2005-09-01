@@ -25,7 +25,7 @@ echo "<th>tourney_id</th><th>Tourney Name</th>";
 while ($line = mysql_fetch_array($result)) {
    echo "\t<tr>\n";
    echo "\t<td>",$line['tourney_id'],"</td>\n";
-   echo "\t<td><a href='tourneyHome.php?tourney_id=",$line['tourney_id'],"'>",$line['name'],"</a></td>\n";
+   echo "\t<td><a href='?a=tourneyHome&tourney_id=",$line['tourney_id'],"'>",$line['name'],"</a></td>\n";
    echo "\t</tr>\n";
 }
 echo "</table>\n";
