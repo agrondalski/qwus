@@ -7,7 +7,7 @@ $months = Array('','January','February','March','April','May','June','July','Aug
 $currentYear = "";
 $currentMonth = "";
 
-$news = news::getAllNews(array('order'=>'news_id')) ;
+$news = news::getAllNews(array('order'=>'news_date', 'desc'=>'yes')) ;
 
 echo '<TR><TD><TABLE cellspacing="0" cellpadding="0">';
 

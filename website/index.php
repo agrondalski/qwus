@@ -34,7 +34,16 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 		</TR>
 		<TR>
 			<TD class="content">
-			<?php include("docs/$page.php");?>
+<?php
+if (file_exists("docs/$page.php"))
+{
+  include "docs/$page.php" ;
+}
+elseif (file_exists("php/$page.php"))
+{
+  include "php/$page.php" ;
+}
+?>
 			</TD>
 			<TD class="menu">
 			<TABLE cellspacing="0" cellpadding="0">
