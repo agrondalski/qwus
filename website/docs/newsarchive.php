@@ -7,7 +7,7 @@ $months = Array('','January','February','March','April','May','June','July','Aug
 $currentYear = "";
 $currentMonth = "";
 
-$news = news::getAllNews('order by news_id') ;
+$news = news::getAllNews(array('order'=>'news_id')) ;
 
 echo '<TR><TD><TABLE cellspacing="0" cellpadding="0">';
 
@@ -40,6 +40,7 @@ for ($i=0; $i<count($news); $i++)
       $currentMonth = $month;
       echo '<TR><TD><B>' . $month . '</B></TD></TR>';
     }
+
   echo '<TR><TD><TABLE cellspacing="0" cellpadding="1"><TR><TD class="file_txt"></TD><TD><A href="?a=home&amp;id=' . $news[$i]->getValue("news_id") . '">' . $news[$i]->getValue("subject") . '</A><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD></TR></TABLE></TD></TR>';
 }
 

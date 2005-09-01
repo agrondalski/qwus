@@ -14,6 +14,8 @@ class match
   private $winning_team_id ;
   private $approved ;
   private $match_date ;
+  private $deadline ;
+  private $week_name ;
 
   function __construct($a)
     {
@@ -33,26 +35,28 @@ class match
 	    }
 	}
 
-      $this->division_id      = mysql_real_escape_string($a['division_id']) ;
-      $this->team1_id         = mysql_real_escape_string($a['team1_id']) ;
-      $this->team2_id         = mysql_real_escape_string($a['team2_id']) ;
-      $this->winning_team_id  = mysql_real_escape_string($a['winning_team_id']) ;
-      $this->approved         = mysql_real_escape_string($a['approved']) ;
-      $this->match_date       = mysql_real_escape_string($a['approved']) ;
-      $this->match_date       = mysql_real_escape_string($a['match_date']) ;
+      $this->division_id      = util::mysql_real_escape_string($a['division_id']) ;
+      $this->team1_id         = util::mysql_real_escape_string($a['team1_id']) ;
+      $this->team2_id         = util::mysql_real_escape_string($a['team2_id']) ;
+      $this->winning_team_id  = util::mysql_real_escape_string($a['winning_team_id']) ;
+      $this->approved         = util::mysql_real_escape_string($a['approved']) ;
+      $this->match_date       = util::mysql_real_escape_string($a['match_date']) ;
+      $this->deadline         = util::mysql_real_escape_string($a['deadline']) ;
+      $this->week_name        = util::mysql_real_escape_string($a['week_name']) ;
 
-      $sql_str = sprintf("insert into match_table(division_id, team1_id, team2_id, winning_team_id, approved, match_date)" .
-                         "values(%d, %d, %d, %d, %d, '%s')",
-			 $this->division_id, $this->team1_id, $this->team2_id, $this->winning_team_id, $this->approved, $this->match_date) ;
+      $sql_str = sprintf("insert into match_table(division_id, team1_id, team2_id, winning_team_id, approved, match_date, deadline, week_name)" .
+                         "values(%d, %d, %d, %s, %d, '%s', '%s', '%s')",
+			 $this->division_id, $this->team1_id, $this->team2_id, util::nvl($this->winning_team_id), $this->approved, $this->match_date,
+			 $this->deadline, $this->week_name) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->match_id = mysql_insert_id() ;
     }
 
   private function getMatchInfo()
     {
-      $sql_str = sprintf("select division_id, team1_id, team2_id, winning_team_id, approved, match_date from match_table where match_id=%d", $this->match_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $sql_str = sprintf("select division_id, team1_id, team2_id, winning_team_id, approved, match_date, deadline, week_name from match_table where match_id=%d", $this->match_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -65,8 +69,10 @@ class match
       $this->team1_id         = $row[1] ;
       $this->team2_id         = $row[2] ;
       $this->winning_team_id  = $row[3] ; 
-      $this->approved         = $row[3] ; 
-      $this->match_date       = $row[4] ;
+      $this->approved         = $row[4] ; 
+      $this->match_date       = $row[5] ;
+      $this->deadline         = $row[6] ;
+      $this->week_name        = $row[7] ;
 
       mysql_free_result($row) ;
 
@@ -76,7 +82,7 @@ class match
   public function getComments()
     {
       $sql_str = sprintf("select c.comment_id from comments c where c.match_id=%d order by comment_date, comment_time", $this->match_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -90,7 +96,7 @@ class match
   public function getGames()
     {
       $sql_str = sprintf("select g.game_id from game g where g.match_id=%d", $this->match_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -116,7 +122,7 @@ class match
       return new division(array('division_id'=>$this->division_id)) ;
     }
 
-  function getValue($col)
+  public function getValue($col)
     {
       if (! isset($col) || !isset($this->$col))
 	{
@@ -126,14 +132,14 @@ class match
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
 	  return ;
 	}
 
-      $this->$col = mysql_real_escape_string($val) ;
+      $this->$col = util::mysql_real_escape_string($val) ;
 
       if (is_numeric($val))
 	{
@@ -144,13 +150,13 @@ class match
 	  $sql_str = sprintf("update match_table set %s='%s' where match_id=%d", $col, $this->$col, $this->match_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  function delete()
+  public function delete()
     {
       $sql_str = sprintf("delete from match_table where match_id=%d", $this->match_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

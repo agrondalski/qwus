@@ -31,22 +31,22 @@ class map
 	    }
 	}
 
-      $this->map_name      = mysql_real_escape_string($a['map_name']) ;
-      $this->map_abbr      = mysql_real_escape_string($a['map_abbr']) ;
-      $this->game_type_id  = mysql_real_escape_string($a['game_type_id']) ;
+      $this->map_name      = util::mysql_real_escape_string($a['map_name']) ;
+      $this->map_abbr      = util::mysql_real_escape_string($a['map_abbr']) ;
+      $this->game_type_id  = util::mysql_real_escape_string($a['game_type_id']) ;
 
       $sql_str = sprintf("insert into maps(map_name, map_abbr, game_type_id)" .
                          "values('%s', '%s', '%s')",
 			 $this->map_name, $this->map_abbr, $this->game_type_id) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->map_id = mysql_insert_id() ;
     }
 
   private function getMapsInfo()
     {
       $sql_str = sprintf("select map_name, map_abbr, game_type_id from maps where map_id=%d", $this->map_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -57,7 +57,7 @@ class map
 
       $this->map_name      = $row[0] ;
       $this->map_abbr      = $row[1] ;
-      $this->game_type_id  = $row[3] ; 
+      $this->game_type_id  = $row[2] ; 
 
       mysql_free_result($row) ;
 
@@ -67,7 +67,7 @@ class map
   public function getGames()
     {
       $sql_str = sprintf("select g.game_id from game g where g.map_id=%d", $this->map_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -78,7 +78,7 @@ class map
       return $arr ;
     }
 
-  function getValue($col)
+  public function getValue($col)
     {
       if (! isset($col) || !isset($this->$col))
 	{
@@ -88,14 +88,14 @@ class map
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
 	  return ;
 	}
 
-      $this->$col = mysql_real_escape_string($val) ;
+      $this->$col = util::mysql_real_escape_string($val) ;
 
       if (is_numeric($val))
 	{
@@ -106,13 +106,13 @@ class map
 	  $sql_str = sprintf("update map set %s='%s' where map_id=%d", $col, $this->$col, $this->map_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  function delete()
+  public function delete()
     {
       $sql_str = sprintf("delete from maps where map_id=%d", $this->map_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

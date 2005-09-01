@@ -7,7 +7,7 @@ $printed = 0;
 
 if ($morenews)
 {
-  $news  = news::getNews(5) ;
+  $news  = news::getNews(array('limit'=>'0,5')) ;
   $count = news::getNewsCount() ;
 }
 else

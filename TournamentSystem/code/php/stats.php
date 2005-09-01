@@ -33,22 +33,22 @@ class stats
 	    }
 	}
 
-      $this->player_id  = mysql_real_escape_string($a['player_id']) ;
-      $this->game_id    = mysql_real_escape_string($a['game_id']) ;
-      $this->score      = mysql_real_escape_string($a['score']) ;
-      $this->time       = mysql_real_escape_string($a['time']) ;
+      $this->player_id  = util::mysql_real_escape_string($a['player_id']) ;
+      $this->game_id    = util::mysql_real_escape_string($a['game_id']) ;
+      $this->score      = util::mysql_real_escape_string($a['score']) ;
+      $this->time       = util::mysql_real_escape_string($a['time']) ;
 
       $sql_str = sprintf("insert into stats(player_id, game_id, score, time)" .
                          "values(%d, %d, %d, %d)",
 			 $this->player_id, $this->game_id, $this->score, $this->time) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
     }
 
   private function getStatsInfo()
     {
       $sql_str = sprintf("select score, time from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -68,7 +68,7 @@ class stats
   public static function hasStatsEntry($pid, $gid)
     {
       $sql_str = sprintf("select 1 from stats where player_id=%d and game_id=%d", $pid, $gid) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -89,14 +89,14 @@ class stats
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
 	  return ;
 	}
 
-      $this->$col = mysql_real_escape_string($val) ;
+      $this->$col = util::mysql_real_escape_string($val) ;
 
       if (is_numeric($val))
 	{
@@ -107,13 +107,13 @@ class stats
 	  $sql_str = sprintf("update stats set %s='%s' where player_id=%d and game_id=%d", $col, $this->$col, $this->player_id, $this->game_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  function delete()
+  public function delete()
     {
       $sql_str = sprintf("delete from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

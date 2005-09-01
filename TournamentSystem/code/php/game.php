@@ -34,25 +34,25 @@ class game
 	    }
 	}
 
-      $this->match_id        = mysql_real_escape_string($a['match_id']) ;
-      $this->map_id          = mysql_real_escape_string($a['map_id']) ;
-      $this->team1_score     = mysql_real_escape_string($a['team1_score']) ;
-      $this->team2_score     = mysql_real_escape_string($a['team1_score']) ;
-      $this->screenshot_url  = mysql_real_escape_string($a['screenshot_url']) ;
-      $this->demo_url        = mysql_real_escape_string($a['screenshot_url']) ;
+      $this->match_id        = util::mysql_real_escape_string($a['match_id']) ;
+      $this->map_id          = util::mysql_real_escape_string($a['map_id']) ;
+      $this->team1_score     = util::mysql_real_escape_string($a['team1_score']) ;
+      $this->team2_score     = util::mysql_real_escape_string($a['team1_score']) ;
+      $this->screenshot_url  = util::mysql_real_escape_string($a['screenshot_url']) ;
+      $this->demo_url        = util::mysql_real_escape_string($a['screenshot_url']) ;
 
       $sql_str = sprintf("insert into game(match_id, map_id, team1_score, team2_score, screenshot_url, demo_url)" .
                          "values(%d, %d, %d, %d, '%s', '%s')",
 			 $this->match_id, $this->map_id, $this->team1_score, $this->team2_score, $this->screenshot_url, $this->demo_url) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->game_id = mysql_insert_id() ;
     }
 
   private function getGameInfo()
     {
       $sql_str = sprintf("select match_id, map_id, team1_score, team2_score, screenshot_url, demo_url from game where game_id=%d", $this->game_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -65,8 +65,8 @@ class game
       $this->map_id          = $row[1] ;
       $this->team1_score     = $row[2] ;
       $this->team2_score     = $row[3] ; 
-      $this->screenshot_url  = $row[3] ; 
-      $this->demo_url        = $row[4] ;
+      $this->screenshot_url  = $row[4] ; 
+      $this->demo_url        = $row[5] ;
 
       mysql_free_result($row) ;
 
@@ -76,7 +76,7 @@ class game
   public function getStats()
     {
       $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d", $this->game_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -97,7 +97,7 @@ class game
       return new map(array('map_id'=>$this->map_id)) ;
     }
 
-  function getValue($col)
+  public function getValue($col)
     {
       if (! isset($col) || !isset($this->$col))
 	{
@@ -107,14 +107,14 @@ class game
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
 	  return ;
 	}
 
-      $this->$col = mysql_real_escape_string($val) ;
+      $this->$col = util::mysql_real_escape_string($val) ;
 
       if (is_numeric($val))
 	{
@@ -125,13 +125,13 @@ class game
 	  $sql_str = sprintf("update game set %s='%s' where game_id=%d", $col, $this->$col, $this->game_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  function delete()
+  public function delete()
     {
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

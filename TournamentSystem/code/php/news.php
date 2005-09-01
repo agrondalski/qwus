@@ -33,34 +33,24 @@ class news
 	    }
 	}
 
-      $this->writer_id   = mysql_real_escape_string($a['writer_id']) ;
-
-      if (isset($a['tourney_id']))
-	{
-	  $this->tourney_id  = mysql_real_escape_string($a['tourney_id']) ;
-	}
-      else
-	{
-	  $this->tourney_id = 'null' ;
-	}
-
-      $this->subject     = mysql_real_escape_string($a['subject']) ;
-      $this->news_date   = mysql_real_escape_string($a['news_date']) ;
-      $this->text        = mysql_real_escape_string($a['text']) ;
+      $this->writer_id   = util::mysql_real_escape_string($a['writer_id']) ;
+      $this->tourney_id  = util::mysql_real_escape_string($a['tourney_id']) ;
+      $this->subject     = util::mysql_real_escape_string($a['subject']) ;
+      $this->news_date   = util::mysql_real_escape_string($a['news_date']) ;
+      $this->text        = util::mysql_real_escape_string($a['text']) ;
 
       $sql_str = sprintf("insert into news(writer_id, tourney_id, subject, news_date, text)" .
                          "values(%d, %s, '%s', '%s', '%s')",
-			 $this->writer_id, $this->tourney_id, $this->subject, $this->news_date, $this->text) ;
+			 $this->writer_id, util::nvl($this->tourney_id, 'null'), $this->subject, $this->news_date, $this->text) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->news_id = mysql_insert_id() ;
-      $this->tourney_id  = mysql_real_escape_string($a['tourney_id']) ;
     }
 
   private function getNewsInfo()
     {
       $sql_str = sprintf("select writer_id, tourney_id, subject, news_date, text from news where news_id=%d", $this->news_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -98,10 +88,10 @@ class news
 	}
     }
 
-  public function getNews($c)
+  public function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where tourney_id is null limit 0, %d", mysql_real_escape_string($c)) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $sql_str = sprintf("select n.news_id from news n where tourney_id is null %s", util::getLimit($a)) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -114,15 +104,8 @@ class news
 
   public function getAllNews($a)
     {
-      if (isset($a))
-	{
-	  $sql_str = sprintf("select n.news_id from news n where tourney_id is null %s", $a) ;
-	}
-      else
-	{
-	  $sql_str = sprintf("select n.news_id from news n where tourney_id is null") ;
-	}
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $sql_str = sprintf("select n.news_id from news n where tourney_id is null %s", util::getOrderBy($a)) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -136,7 +119,7 @@ class news
   public function getNewsCount()
     {
       $sql_str = sprintf("select count(*) from news n where tourney_id is null") ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       $row = mysql_fetch_row($result) ;
       $val = $row[0] ;
@@ -145,7 +128,7 @@ class news
       return $val ;
     }
 
-  function getValue($col)
+  public function getValue($col)
     {
       if (! isset($col) || !isset($this->$col))
 	{
@@ -155,14 +138,14 @@ class news
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
 	  return ;
 	}
 
-      $this->$col = mysql_real_escape_string($val) ;
+      $this->$col = util::mysql_real_escape_string($val) ;
 
       if (is_numeric($val))
 	{
@@ -173,13 +156,13 @@ class news
 	  $sql_str = sprintf("update news set %s='%s' where news_id=%d", $col, $this->$col, $this->news_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  function delete()
+  public function delete()
     {
       $sql_str = sprintf("delete from news where news_id=%d", $this->news_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

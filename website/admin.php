@@ -81,7 +81,7 @@ else
 		<BR>
 		<B>Delete news</B>&nbsp;&nbsp;&nbsp;<A href="admin.php">simple</A>&nbsp;|&nbsp;<A href="?a=detailed">detailed</A><BR><BR><TABLE cellspacing="0" cellpadding="3" width="480"><TR><TD><B>ID</B></TD><TD><B>SUBJECT</B></TD><TD><B>Date</B></TD><TD colspan="2"><B>Writer</B></TD></TR>';
   
-  $news = news::getAllNews('order by news_id desc') ;
+  $news = news::getAllNews(array('order'=>'news_id', 'desc'=>'yes')) ;
   $color = Array("F0F0F0","F8F8F8");
 
   for ($i=0; $i<count($news); $i++)

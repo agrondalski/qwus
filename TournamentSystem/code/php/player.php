@@ -33,28 +33,28 @@ class player
 		}
 	    }
 
-	  $this->name = mysql_real_escape_string($a['name']) ;
+	  $this->name = util::mysql_real_escape_string($a['name']) ;
 	      
 	  if ($this->getPlayerInfoByName()==self::NOTFOUND)
 	    {
 	      throw new Exception("No player exists with specified name");
 	    }
-	      else
-		{
-		  return ;
-		}
+	  else
+	    {
+	      return ;
+	    }
 	}
 
-      $this->name         = mysql_real_escape_string($a['name']) ;
-      $this->superAdmin   = mysql_real_escape_string($a['superAdmin']) ;
-      $this->location_id  = mysql_real_escape_string($a['location_id']) ;
+      $this->name         = util::mysql_real_escape_string($a['name']) ;
+      $this->superAdmin   = util::mysql_real_escape_string($a['superAdmin']) ;
+      $this->location_id  = util::mysql_real_escape_string($a['location_id']) ;
       $this->password     = md5($a['password']) ;
 
       $sql_str = sprintf("insert into player(name, superAdmin, location_id, password)" .
                          "values('%s', %d, %d, '%s')",
 			 $this->name, $this->superAdmin, $this->location_id, $this->password) ;
 
-      $result = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->player_id = mysql_insert_id() ;
     }
 
@@ -73,7 +73,7 @@ class player
   private function getPlayerInfo()
     {
       $sql_str = sprintf("select name, superAdmin, location_id, password from player where player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -95,7 +95,7 @@ class player
   private function getPlayerInfoByName()
     {
       $sql_str = sprintf("select player_id, superAdmin, location_id, password from player where name='%s'", $this->name) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -117,7 +117,7 @@ class player
   public function getStats()
     {
       $sql_str = sprintf("select s.game_id from stats s where s.player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -133,7 +133,7 @@ class player
       return new location(array('location_id'=>$this->location_id)) ;
     }
 
-  function getValue($col)
+  public function getValue($col)
     {
       if (! isset($col) || !isset($this->$col))
 	{
@@ -143,7 +143,7 @@ class player
       return $this->$col ;
     }
 
-  function update($col, $val)
+  public function update($col, $val)
     {
       if (! isset($col) || !isset($val) || !isset($this->$col))
 	{
@@ -156,7 +156,7 @@ class player
 	}
       else
 	{
-	  $this->$col = mysql_real_escape_string($val) ;
+	  $this->$col = util::mysql_real_escape_string($val) ;
 	}
 
       if (is_numeric($val))
@@ -168,13 +168,13 @@ class player
 	  $sql_str = sprintf("update player set %s='%s' where player_id=%d", $col, $this->$col, $this->player_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from player where player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or die ("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>
