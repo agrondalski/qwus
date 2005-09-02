@@ -23,8 +23,13 @@ elseif ($mode=="delete") {
 
   $did = $_REQUEST['did'];
   $div = new division(array('division_id'=>$did));
-  $div->delete();
-  $msg = "<br>Division deleted!<br>";
+  try {
+    $div->delete();
+    $msg = "<br>Division deleted!<br>";
+  }
+  catch (Exception $e) {
+    $msg = "<br>Error deleting!<br>";
+  }
 }
 else {
   $div = new division(array('tourney_id'=>$tid,
