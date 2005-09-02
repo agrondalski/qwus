@@ -43,6 +43,22 @@ class map
       $this->map_id = mysql_insert_id() ;
     }
 
+  public static function getAllMaps()
+    {
+      $sql_str = sprintf('select m.map_id from maps m') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new map(array('map_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+
+
   private function getMapsInfo()
     {
       $sql_str = sprintf("select map_name, map_abbr, game_type_id from maps where map_id=%d", $this->map_id) ;

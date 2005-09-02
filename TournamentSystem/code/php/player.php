@@ -58,6 +58,22 @@ class player
       $this->player_id = mysql_insert_id() ;
     }
 
+
+  public static function getAllPlayers()
+    {
+      $sql_str = sprintf('select p.player_id from player p') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new player(array('player_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+
   public function passwordMatches($pass)
     {
       if (md5($pass)==$this->password)

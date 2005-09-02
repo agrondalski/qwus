@@ -49,6 +49,20 @@ class team
       $this->team_id = mysql_insert_id() ;
     }
 
+  public static function getAllTeams()
+    {
+      $sql_str = sprintf('select t.team_id from team t') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   private function getTeamInfo()
     {
       $sql_str = sprintf("select name, email, irc_channel, location_id, password, approved from team where team_id=%d", $this->team_id) ;
