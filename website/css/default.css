@@ -47,3 +47,5 @@ img {border: none;}
 .submenu a:HOVER {background: #0055BB; color: #FFF;}
 .submenu table, .bottom table, .news table, .news, .newsarchive, .newsarchive table, .servers {width: 100%;}
 .submenu td {text-align: left;}
+
+.admintbl th {fond-size: 14px;}
