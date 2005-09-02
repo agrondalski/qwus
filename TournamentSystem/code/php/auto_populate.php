@@ -4,6 +4,8 @@ require 'includes.php' ;
 
 <?php
 
+// Run populateLocations.sql and populateGameTypes.sql first
+
 define("PREFIX", "AUTO-") ;
 
 function make_seed()
@@ -56,12 +58,13 @@ function auto_populate($a)
   $c_stats  = $a['stats'] ;
   $c_news   = $a['news'] ;
 
+  /*
   for ($i=0; $i<$c_gt; $i++)
     {
       $v1 = PREFIX . generate_string(10) ;
       $n = new game_type(array('name'=> $v1)) ;
 
-      $gs[] = $n->getValue("game_type_id") ;
+      $gt[] = $n->getValue("game_type_id") ;
     }
 
   for ($i=0; $i<$c_loc; $i++)
@@ -78,15 +81,34 @@ function auto_populate($a)
     {
       $v1 = PREFIX . generate_string(10) ;
       $v2 = PREFIX . generate_string(3) ;
-      $v3 = $gs[generate_integer(count($gs))] ;
+      $v3 = $gt[generate_integer(count($gt))] ;
       $n = new map(array('map_name'=> $v1, 'map_abbr'=>$v2, 'game_type_id'=>$v3)) ;
 
       $maps[] = $n->getValue("map_id") ;
     }
+  */
+
+  $gta = game_type::getAllGameTypes() ;
+  foreach ($gta as $g)
+    {
+      $gt[] = $g->getValue("game_type_id") ;
+    }
+
+  $loca = location::getAllLocations() ;
+  foreach ($loca as $l)
+    {
+      $loc[] = $l->getValue("location_id") ;
+    }
+
+  $mapsa = map::getAllMaps() ;
+  foreach ($mapsa as $m)
+    {
+      $maps[] = $m->getValue("map_id") ;
+    }
 
   for ($i=0; $i<$c_tour; $i++)
     {
-      $v1 = $gs[generate_integer(count($gs))] ;
+      $v1 = $gt[generate_integer(count($gt))] ;
       $v2 = PREFIX . generate_string(10) ;
       $v3 = 'TOURNAMENT' ;
 
@@ -309,6 +331,15 @@ $a = array('game_type'=>1,
 	   'news'=>25) ;
 
 auto_populate($a) ;
+
+try
+{
+  $p = new player(array('name'=>'x')) ;
+}
+catch (Exception $e)
+{
+  $np = new player(array('name'=>'x', 'superAdmin'=>true, 'location_id'=>1, 'password'=>'x')) ;
+}
 
 print "DONE";
 ?>
