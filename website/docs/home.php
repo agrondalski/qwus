@@ -22,6 +22,11 @@ if ($morenews)
 else
 {
   $news = array(new news(array('news_id'=>$_GET["id"]))) ;
+
+  if (isset($_GET["tourney_id"]))
+    {  
+      $tid  = '&amp;tourney_id=' . $_GET['tourney_id'] ;
+    }
 }
 
 for ($i=0; $i<count($news); $i++)
@@ -52,6 +57,6 @@ for ($i=0; $i<count($news); $i++)
 }
 
 $c = ($count==0) ? 0 : 1 ;
-$bottom = ($morenews) ? '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .'</P>' : '<P><A href="?a=newsarchive">back to news archive</A></P>';
+$bottom = ($morenews) ? '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .'</P>' : '<P><A href="?a=newsarchive' . $tid . '">back to news archive</A></P>';
 echo $bottom;
 ?>
