@@ -21,7 +21,7 @@ foreach ($t->getDivisions() as $div) {
    echo "\t<td>",$div->getValue('elim_losses'),"</td>\n";
    echo "<td><a href='?a=manageDivision&amp;tourney_id=$tid&mode=edit&did=",$div->getValue('division_id'),"'>
 Edit</a></td>";
-   echo "<td><a href='?a=saveDivision&amp;tourney_id=$tid&mode=delete&did=",$div->getValue('division_id'),"'>
+   echo "<td><a href='?a=manageDivision&amp;tourney_id=$tid&mode=delete&did=",$div->getValue('division_id'),"'>
 Delete</a></td>";
 
    echo "\t</tr>\n";
