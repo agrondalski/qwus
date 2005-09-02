@@ -9,12 +9,15 @@ include 'tourneyLinks.php';
 
 // Printing results in HTML
 echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-echo "<th>Div Name</th><th>Max Teams</th><th># of Games</th>";
+echo "<th>Div Name</th><th>Max Teams</th><th># of Games</th><th>Playoff Spots</th>";
+echo "<th>Elim Losses</th>";
 foreach ($t->getDivisions() as $div) {
    echo "\t<tr>\n";
    echo "\t<td>",$div->getValue('name'),"</td>\n";
    echo "\t<td>",$div->getValue('max_teams'),"</td>\n";
    echo "\t<td>",$div->getValue('num_games'),"</td>\n";
+   echo "\t<td>",$div->getValue('playoff_spots'),"</td>\n";
+   echo "\t<td>",$div->getValue('elim_losses'),"</td>\n";
    echo "\t</tr>\n";
 }
 echo "</table>\n";

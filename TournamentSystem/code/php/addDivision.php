@@ -1,19 +1,6 @@
-<html>
-<head>
-<script language="JavaScript">
-</script>
-<title>NAQL</title>
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<style type="text/css">
-<!--
-a:link { text-decoration: none }
-a:active { text-decoration: none }
-a:visited { text-decoration: none }
-a:hover {text-decoration: underline; color: #ff0000}-->
-</style>
-<base target="_self">
-</head>
 <?php
+require 'includes.php';
+
 $tid = $_REQUEST['tourney_id'];
 include 'tourneyLinks.php';
 ?>
@@ -24,10 +11,24 @@ include 'tourneyLinks.php';
 echo "<form action='?a=saveDivision' method=post>";
 echo "<input type='hidden' name='tourney_id' value='$tid'>";
 ?>
-  <p>division name: <input type="text" name="division" size="20"></p>
-  <p>
-<input type="submit" value="Submit" name="B1" class='button'>
-<input type="reset" value="Reset" name="B2" class='button'>
+<table border=1 cellpadding=2 cellspacing=0>
+<tr>
+<td>division name:</td><td><input type="text" name="name" maxlength="50" size="20"></td>
+</tr>
+<tr>
+<td>Max Teams:</td><td><input type="text" name="max_teams" size="4"></td>
+</tr>
+<tr>
+<td># of Games:</td><td><input type="text" name="num_games" size="4"></td>
+</tr>
+<tr>
+<td>Playoff Spots:</td><td><input type="text" name="playoff_spots" size="4"></td>
+</tr>
+<tr>
+<td>Elim Losses:</td><td><input type="text" name="elim_losses" size="4"></td>
+</tr>
+<tr><td><input type="submit" value="Submit" name="B1" class='button'></td><td>
+<input type="reset" value="Reset" name="B2" class='button'></td></tr></table>
 </p></font>
 </form>
 
@@ -35,5 +36,3 @@ echo "<input type='hidden' name='tourney_id' value='$tid'>";
 include 'listDivisions.php';
 ?>
 
-
-</html>
