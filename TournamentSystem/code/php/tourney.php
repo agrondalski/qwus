@@ -27,7 +27,7 @@ class tourney
 
 	  if ($this->getTourneyInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No tourney exists with specified id");
+	      util::throwException("No tourney exists with specified id");
 	    }
 	  else
 	    {
@@ -78,7 +78,7 @@ class tourney
       return self::FOUND ;
     }
 
-  public function getAllTourneys()
+  public static function getAllTourneys()
     {
       $sql_str = sprintf('select t.tourney_id from tourney t') ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
@@ -162,9 +162,9 @@ class tourney
       return $arr ;
     }
 
-  public function getNews()
+  public function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where n.tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select n.news_id from news n where n.tourney_id=%d %s", $this->tourney_id, util::getOrderBy($a)) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -174,6 +174,18 @@ class tourney
 
       mysql_free_result($result) ;
       return $arr ;
+    }
+
+  public function getNewsCount()
+    {
+      $sql_str = sprintf("select count(*) from news n where tourney_id=%d", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
+
+      mysql_free_result($result) ;
+      return $val ;
     }
 
   public function getGameType()
