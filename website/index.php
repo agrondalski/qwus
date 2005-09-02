@@ -14,34 +14,34 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 <link rel="Shortcut Icon" type="image/ico" href="favicon.ico">
 <TITLE>QuakeWorld.US</TITLE>
 
-<script language="JavaScript">
+<script language="JavaScript" type="text/javascript">
 function hideShow(which)
 {
-  if (!document.getElementById|document.all)
+  if (!document.getElementById || document.all)
   {
-    return
+    return ;
   }
   else
   {
     if (document.getElementById)
     {
-      oWhich = eval ("document.getElementById('" + which + "')")
+      oWhich = eval ("document.getElementById('" + which + "')") ;
     }
     else
     {
-      oWhich = eval ("document.all." + which)
+      oWhich = eval ("document.all." + which) ;
     }
   }
   
-  window.focus()
+  window.focus() ;
   
   if (oWhich.style.display=="none")
   {
-    oWhich.style.display=""
+    oWhich.style.display="" ;
   }
   else
   {
-    oWhich.style.display="none"
+    oWhich.style.display="none" ;
   }
 }
 
@@ -69,6 +69,7 @@ function initSubMenus(which)
 <?php
 print '<BODY onLoad="initSubMenus(' . $_GET['tourney_id'] . ')">'; ;
 ?>
+
 <A name="top"></A>
 <TABLE cellspacing="0" cellpadding="0" class="tbl_h100">
 <TR>
@@ -136,19 +137,19 @@ elseif (file_exists("php/$page.php"))
 			</TR>
 
                         <TR>
-			        <TD><div id="solmenuParentmenu1" onClick="javascript:hideShowAll('tourney2')"><a>NA NQR 2</a></div></TD>
+			        <TD><a href="?a=home&amp;tourney_id=2">NA NQR 2</a></TD>
 			</TR>
 
 			<TR id="tourney2_1" class=submenu>
-			        <TD><a href="?a=home&tourney_id=2"><img src="img/red.gif">Home</a></TD>
+			        <TD><a href="?a=home&amp;tourney_id=2"><img src="img/red.gif" alt="">Home</a></TD>
 			</TR>
 
 			<TR id="tourney2_2" class=submenu>
-			        <TD><a href="?a=tourneyHome&tourney_id=2"><img src="img/red.gif">Admin</a></TD>
+			        <TD><a href="?a=tourneyHome&amp;tourney_id=2"><img src="img/red.gif" alt="">Admin</a></TD>
 			</TR>
 
 			<TR id="tourney2_3" class=submenu>
-			        <TD><a href="?a=newsarchive&tourney_id=2"><img src="img/red.gif">Archive</a></TD>
+			        <TD><a href="?a=newsarchive&amp;tourney_id=2"><img src="img/red.gif" alt="">Archive</a></TD>
 			</TR>
 
 			<TR>
@@ -156,23 +157,25 @@ elseif (file_exists("php/$page.php"))
 			</TR>
 
                         <TR>
-			        <TD><div id="solmenuParentmenu1" onClick="javascript:hideShowAll('tourney3')"><a>NA NQR 3</a></div></TD>
+			        <TD><a href="?a=home&amp;tourney_id=3">NA NQR 3</a></TD>
 			</TR>
 
 			<TR id="tourney3_1" class=submenu>
-			        <TD><a href="?a=home&tourney_id=3"><img src="img/red.gif">Home</a></TD>
+			        <TD><a href="?a=home&amp;tourney_id=3"><img src="img/red.gif" alt="">Home</a></TD>
 			</TR>
 
 			<TR id="tourney3_2" class=submenu>
-			        <TD><a href="?a=tourneyHome&tourney_id=3"><img src="img/red.gif">Admin</a></TD>
+			        <TD><a href="?a=tourneyHome&amp;tourney_id=3"><img src="img/red.gif" alt="">Admin</a></TD>
 			</TR>
 
 			<TR id="tourney3_3" class=submenu>
-			        <TD><a href="?a=newsarchive&tourney_id=3"><img src="img/red.gif">Archive</a></TD>
+			        <TD><a href="?a=newsarchive&amp;tourney_id=3"><img src="img/red.gif" alt="">Archive</a></TD>
 			</TR>
-                  <TR>
-                        <TD class="menuBreak"></TD>
-                  </TR>
+
+                        <TR>
+                                <TD class="menuBreak"></TD>
+                        </TR>
+
 			<TR>
 				<TD><A href="?a=links">Links</A></TD>
 			</TR>
@@ -195,7 +198,6 @@ elseif (file_exists("php/$page.php"))
 <TR>
 	<TD></TD>
 	<TD class="madeby">website by <A href="http://www.arcsin.se/">Arcsin Webdesign</A></TD>
-</TD>
 </TABLE>
 </BODY>
 </HTML>
