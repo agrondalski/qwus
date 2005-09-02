@@ -21,7 +21,7 @@ include 'tourneyLinks.php';
 <font size='2'>
 <p>Create a division for tourney :</p>
 <?php
-echo "<form action='a?=saveDivision' method=post>";
+echo "<form action='?a=saveDivision' method=post>";
 echo "<input type='hidden' name='tourney_id' value='$tid'>";
 ?>
   <p>division name: <input type="text" name="division" size="20"></p>
