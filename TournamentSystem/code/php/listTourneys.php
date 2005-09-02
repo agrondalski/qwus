@@ -1,6 +1,7 @@
 <?php
 require 'includes.php' ;
 
+$tid = $_REQUEST['tourney_id'];
 $tourneys = tourney::getAllTourneys();
 
 include 'tourneyLinks.php';
