@@ -7,7 +7,15 @@ $months = Array('','January','February','March','April','May','June','July','Aug
 $currentYear = "";
 $currentMonth = "";
 
-$news = news::getAllNews(array('order'=>'news_date', 'desc'=>'yes')) ;
+if (isset($_GET['tourney_id']))
+{
+  $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
+  $news = $t->getNews(array('order'=>'news_date', 'desc'=>'yes')) ;
+}
+else
+{
+  $news = news::getAllNews(array('order'=>'news_date', 'desc'=>'yes')) ;
+}
 
 echo '<TR><TD><TABLE cellspacing="0" cellpadding="0">';
 

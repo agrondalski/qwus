@@ -23,7 +23,7 @@ class map
 
 	  if ($this->getMapsInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No maps exist with specified id");
+	      util::throwException("No maps exist with specified id");
 	    }
 	  else
 	    {

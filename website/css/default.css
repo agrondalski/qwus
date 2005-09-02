@@ -41,3 +41,9 @@ img {border: none;}
 
 .madeby {text-align: right; color:#999; font-size: 10px; padding:3px 0px 0px 0px;}
 .madeby a {font-family: Verdana,serif; color:#666; font-size: 10px; text-decoration: none; letter-spacing: -1px;}
+
+.submenu {width: 95px;}
+.submenu a {width: 90px; /*Internet Explorer hack*/ w\idth: 95px; \widht: 95px; font-size: 14px; text-decoration: none; display: block; padding: 2px 5px 2px 0px; color: #222;}
+.submenu a:HOVER {background: #0055BB; color: #FFF;}
+.submenu table, .bottom table, .news table, .news, .newsarchive, .newsarchive table, .servers {width: 100%;}
+.submenu td {text-align: left;}

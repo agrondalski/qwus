@@ -26,7 +26,7 @@ class comment
 
 	  if ($this->getCommentInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No comment exists with specified id");
+	      util::throwException("No comment exists with specified id");
 	    }
 	  else
 	    {

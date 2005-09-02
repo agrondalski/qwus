@@ -26,7 +26,7 @@ class team
 
 	  if ($this->getTeamInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No team exists with specified id");
+	      util::throwException("No team exists with specified id");
 	    }
 	  else
 	    {

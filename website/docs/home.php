@@ -7,8 +7,17 @@ $printed = 0;
 
 if ($morenews)
 {
-  $news  = news::getNews(array('limit'=>'0,5')) ;
-  $count = news::getNewsCount() ;
+  if (isset($_GET["tourney_id"]))
+    {
+      $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
+      $news = $t->getNews() ;
+      $count = $t->getNewsCount() ;
+    }
+  else
+    {
+      $news  = news::getNews(array('limit'=>'0,5')) ;
+      $count = news::getNewsCount() ;
+    }
 }
 else
 {

@@ -1,7 +1,8 @@
 <?php
-require("php/dbConnect.php");
+require("php/includes.php");
 $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 ?>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
@@ -12,8 +13,62 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 <LINK REL="stylesheet" HREF="css/default.css" TYPE="text/css">
 <link rel="Shortcut Icon" type="image/ico" href="favicon.ico">
 <TITLE>QuakeWorld.US</TITLE>
+
+<script language="JavaScript">
+function hideShow(which)
+{
+  if (!document.getElementById|document.all)
+  {
+    return
+  }
+  else
+  {
+    if (document.getElementById)
+    {
+      oWhich = eval ("document.getElementById('" + which + "')")
+    }
+    else
+    {
+      oWhich = eval ("document.all." + which)
+    }
+  }
+  
+  window.focus()
+  
+  if (oWhich.style.display=="none")
+  {
+    oWhich.style.display=""
+  }
+  else
+  {
+    oWhich.style.display="none"
+  }
+}
+
+function hideShowAll(which)
+{
+  hideShow(which + '_1') ;
+  hideShow(which + '_2') ;
+  hideShow(which + '_3') ;
+}
+
+function initSubMenus(which)
+{
+  if  (which!=2) 
+    {
+      hideShowAll('tourney2') ;
+    }
+  if  (which!=3) 
+    {
+      hideShowAll('tourney3') ;
+    }
+} 
+</script>
 </HEAD>
-<BODY>
+
+<?php
+print '<BODY onLoad="initSubMenus(' . $_GET['tourney_id'] . ')">'; ;
+?>
 <A name="top"></A>
 <TABLE cellspacing="0" cellpadding="0" class="tbl_h100">
 <TR>
@@ -34,7 +89,7 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 		</TR>
 		<TR>
 			<TD class="content">
-<?php
+                        <?php
 if (file_exists("docs/$page.php"))
 {
   include "docs/$page.php" ;
@@ -75,12 +130,46 @@ elseif (file_exists("php/$page.php"))
 			<TR>
 				<TD><A href="?a=downloads">Downloads</A></TD>
 			</TR>
+
 			<TR>
 				<TD class="menuBreak"></TD>
 			</TR>
-                  <TR>
-                        <TD><A href="?a=tourneyHome&tourney_id=2">NA NQR 2</A></TD>
-                  </TR>
+
+                        <TR>
+			        <TD><div id="solmenuParentmenu1" onClick="javascript:hideShowAll('tourney2')"><a>NA NQR 2</a></div></TD>
+			</TR>
+
+			<TR id="tourney2_1" class=submenu>
+			        <TD><a href="?a=home&tourney_id=2"><img src="img/red.gif">Home</a></TD>
+			</TR>
+
+			<TR id="tourney2_2" class=submenu>
+			        <TD><a href="?a=tourneyHome&tourney_id=2"><img src="img/red.gif">Admin</a></TD>
+			</TR>
+
+			<TR id="tourney2_3" class=submenu>
+			        <TD><a href="?a=newsarchive&tourney_id=2"><img src="img/red.gif">Archive</a></TD>
+			</TR>
+
+			<TR>
+				<TD class="menuBreak"></TD>
+			</TR>
+
+                        <TR>
+			        <TD><div id="solmenuParentmenu1" onClick="javascript:hideShowAll('tourney3')"><a>NA NQR 3</a></div></TD>
+			</TR>
+
+			<TR id="tourney3_1" class=submenu>
+			        <TD><a href="?a=home&tourney_id=3"><img src="img/red.gif">Home</a></TD>
+			</TR>
+
+			<TR id="tourney3_2" class=submenu>
+			        <TD><a href="?a=tourneyHome&tourney_id=3"><img src="img/red.gif">Admin</a></TD>
+			</TR>
+
+			<TR id="tourney3_3" class=submenu>
+			        <TD><a href="?a=newsarchive&tourney_id=3"><img src="img/red.gif">Archive</a></TD>
+			</TR>
                   <TR>
                         <TD class="menuBreak"></TD>
                   </TR>

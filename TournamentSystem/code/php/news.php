@@ -25,7 +25,7 @@ class news
 
 	  if ($this->getNewsInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No news exists with specified id");
+	      util::throwException("No news exists with specified id");
 	    }
 	  else
 	    {

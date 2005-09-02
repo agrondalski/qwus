@@ -25,7 +25,7 @@ class stats
 
 	  if ($this->getStatsInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No stats exists with specified id");
+	      util::throwException("No stats exists with specified id");
 	    }
 	  else
 	    {

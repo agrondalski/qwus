@@ -27,7 +27,7 @@ class match
 
 	  if ($this->getMatchInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No match exists with specified id");
+	      util::throwException("No match exists with specified id");
 	    }
 	  else
 	    {

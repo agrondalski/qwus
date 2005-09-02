@@ -21,7 +21,7 @@ class game_type
 
 	  if ($this->getGameTypeInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No game_type exists with specified id");
+	      util::throwException("No game_type exists with specified id");
 	    }
 	  else
 	    {

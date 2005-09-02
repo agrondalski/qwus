@@ -26,7 +26,7 @@ class division
 
 	  if ($this->getDivisionInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No division exists with specified id");
+	      util::throwException("No division exists with specified id");
 	    }
 	  else
 	    {

@@ -25,7 +25,7 @@ class player
 	      
 	      if ($this->getPlayerInfo()==self::NOTFOUND)
 		{
-		  throw new Exception("No player exists with specified id");
+		  util::throwException("No player exists with specified id");
 		}
 	      else
 		{
@@ -37,7 +37,7 @@ class player
 	      
 	  if ($this->getPlayerInfoByName()==self::NOTFOUND)
 	    {
-	      throw new Exception("No player exists with specified name");
+	      util::throwException("No player exists with specified name");
 	    }
 	  else
 	    {

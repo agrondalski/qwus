@@ -23,7 +23,7 @@ class location
 
 	  if ($this->getLocationInfo()==self::NOTFOUND)
 	    {
-	      throw new Exception("No location exists with specified id");
+	      util::throwException("No location exists with specified id");
 	    }
 	  else
 	    {
