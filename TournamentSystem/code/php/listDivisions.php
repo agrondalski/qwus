@@ -19,7 +19,7 @@ foreach ($t->getDivisions() as $div) {
    echo "\t<td>",$div->getValue('num_games'),"</td>\n";
    echo "\t<td>",$div->getValue('playoff_spots'),"</td>\n";
    echo "\t<td>",$div->getValue('elim_losses'),"</td>\n";
-   echo "<td><a href='?a=addDivision&amp;tourney_id=$tid&mode=edit&did=",$div->getValue('division_id'),"'>
+   echo "<td><a href='?a=manageDivision&amp;tourney_id=$tid&mode=edit&did=",$div->getValue('division_id'),"'>
 Edit</a></td>";
    echo "<td><a href='?a=saveDivision&amp;tourney_id=$tid&mode=delete&did=",$div->getValue('division_id'),"'>
 Delete</a></td>";
