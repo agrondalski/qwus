@@ -17,7 +17,7 @@ $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 <script language="JavaScript" type="text/javascript">
 function hideShow(which)
 {
-  if (!document.getElementById || document.all)
+  if (!document.getElementById | document.all)
   {
     return ;
   }
@@ -90,6 +90,7 @@ print '<BODY onLoad="initSubMenus(' . $_GET['tourney_id'] . ')">'; ;
 		</TR>
 		<TR>
 			<TD class="content">
+
                         <?php
 if (file_exists("docs/$page.php"))
 {
@@ -98,6 +99,10 @@ if (file_exists("docs/$page.php"))
 elseif (file_exists("php/$page.php"))
 {
   include "php/$page.php" ;
+}
+elseif (file_exists("$page.php"))
+{
+  include "$page.php" ;
 }
 ?>
 			</TD>
@@ -130,6 +135,14 @@ elseif (file_exists("php/$page.php"))
 			</TR>
 			<TR>
 				<TD><A href="?a=downloads">Downloads</A></TD>
+			</TR>
+
+			<TR>
+				<TD class="menuBreak"></TD>
+			</TR>
+
+                        <TR>
+			        <TD><a href="?a=admin">Admin</a></TD>
 			</TR>
 
 			<TR>
