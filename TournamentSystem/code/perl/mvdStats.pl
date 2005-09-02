@@ -4,9 +4,9 @@
 # handle fun names (could be fairly tricky in some cases)
 # nice output for easy database entry
 # attempt to read and/or calculate final score
-# ax, telefrags, slime, lava, drown
 # attempt to create 2 teams and place players in them
 # misc bs
+# mvds with parentheses in name currently dont work
 
 package Player;
 sub new
@@ -349,17 +349,39 @@ outputPlayerList();
 
 sub outputPlayerList
 {
+  print "<HTML><BODY><TABLE>\n";
+  print "\t<TR>\n" .
+        "\t\t<TD>Name</TD>\n" .
+        "\t\t<TD>Frags</TD>\n" . 
+        "\t\t<TD>Deaths</TD\n" .
+        "\t\t<TD>SG</TD>\n" .
+        "\t\t<TD>SSG</TD>\n" .
+        "\t\t<TD>NG</TD>\n" .
+        "\t\t<TD>SNG</TD>\n" .
+        "\t\t<TD>GL</TD>\n" .
+        "\t\t<TD>RL</TD>\n" .
+        "\t\t<TD>LG</TD>\n" .
+        "\t\t<TD>TK</TD>\n" .  
+        "\t\t<TD>eff</TD>\n" .
+        "</TR>\n";
   foreach $player (@players)
   {
-     print 
-      $player->name() . ":\t" .
-      $player->frags() . "\t" . 
-      $player->rocketFrags() . "\t" .
-      $player->rocketDeaths() . "\t" .
-      $player->teamKills() . "\t" .
-      $player->eff() .
-      "\n";
+     print "\t<TR>\n" . 
+      "\t\t<TD>" . $player->name . "</TD>\n" .
+      "\t\t<TD>" . $player->frags . "</TD>\n" . 
+      "\t\t<TD>" . $player->deaths . "</TD>\n" .
+      "\t\t<TD>" . $player->shotgunFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->ssgFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->nailgunFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->sngFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->grenadeFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->rocketFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->lightningFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->teamKills . "</TD>\n" .
+      "\t\t<TD>" . $player->eff . "</TD>\n" .
+      "\t</TR>\n";
   }
+  print "</TABLE></BODY></HTML>";
 }
 
 
