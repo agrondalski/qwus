@@ -11,8 +11,12 @@ echo "<td><font size='2'><a href='?a=listTourneys&tourney_id=$tid'>Select a Tour
 echo "<td><font color=red>",$t->getValue('name'),"</font></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><font size='2'><a href='?a=manageDivision&tourney_id=$tid'>Create a division</a><br></td>";
-echo "<td><font size='2'><a href='?a=listDivisions&tourney_id=$tid'>List divisions</a><br></td>";
+echo "<td><font size='2'><a href='?a=manageDivision&tourney_id=$tid'>Create new division</a><br></td>";
+echo "<td><font size='2'><a href='?a=listDivisions&tourney_id=$tid'>Manage divisions</a><br></td>";
+echo "</tr>";
+echo "<tr>";
+echo "<td><font size='2'><a href='?a=manageNews&tourney_id=$tid'>Create news</a><br></td>";
+echo "<td><font size='2'><a href='?a=listNews&tourney_id=$tid'>Manage news</a><br></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><font size='2'><a href='?a=assignTeamsToDivs&tourney_id=$tid'>Assign Teams to Divs</a><br>";
