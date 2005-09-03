@@ -33,6 +33,11 @@ class stats
 	    }
 	}
 
+      util::canNotBeNull($a, 'player_id') ;
+      util::canNotBeNull($a, 'game_id') ;
+      util::canNotBeNull($a, 'score') ;
+      //      util::canNotBeNull($a, 'time') ;
+
       $this->player_id  = util::mysql_real_escape_string($a['player_id']) ;
       $this->game_id    = util::mysql_real_escape_string($a['game_id']) ;
       $this->score      = util::mysql_real_escape_string($a['score']) ;
@@ -81,9 +86,9 @@ class stats
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -91,9 +96,9 @@ class stats
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

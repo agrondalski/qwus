@@ -35,12 +35,18 @@ class match
 	    }
 	}
 
+      util::canNotBeNull($a, 'division_id') ;
+      util::canNotBeNull($a, 'team1_id') ;
+      util::canNotBeNull($a, 'team2_id') ;
+      util::canNotBeNull($a, 'deadline') ;
+      util::canNotBeNull($a, 'week_name') ;
+
       $this->division_id      = util::mysql_real_escape_string($a['division_id']) ;
       $this->team1_id         = util::mysql_real_escape_string($a['team1_id']) ;
       $this->team2_id         = util::mysql_real_escape_string($a['team2_id']) ;
       $this->winning_team_id  = util::mysql_real_escape_string($a['winning_team_id']) ;
-      $this->approved         = util::mysql_real_escape_string($a['approved']) ;
-      $this->match_date       = util::mysql_real_escape_string($a['match_date']) ;
+      $this->approved         = util::nvl(util::mysql_real_escape_string($a['approved']), false) ;
+      $this->match_date       = util::nvl(util::mysql_real_escape_string($a['match_date']), util::DEFAULT_DATE) ;
       $this->deadline         = util::mysql_real_escape_string($a['deadline']) ;
       $this->week_name        = util::mysql_real_escape_string($a['week_name']) ;
 
@@ -124,9 +130,9 @@ class match
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -134,9 +140,9 @@ class match
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

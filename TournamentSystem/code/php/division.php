@@ -34,12 +34,16 @@ class division
 	    }
 	}
 
+      util::canNotBeNull($a, 'tourney_id') ;
+      util::canNotBeNull($a, 'name') ;
+
       $this->tourney_id     = util::mysql_real_escape_string($a['tourney_id']) ;
       $this->name           = util::mysql_real_escape_string($a['name']) ;
-      $this->max_teams      = util::mysql_real_escape_string($a['max_teams']) ;
-      $this->num_games      = util::mysql_real_escape_string($a['num_games']) ;
-      $this->playoff_spots  = util::mysql_real_escape_string($a['playoff_spots']) ;
-      $this->elim_losses    = util::mysql_real_escape_string($a['elim_losses']) ;
+
+      $this->max_teams      = util::nvl(util::mysql_real_escape_string($a['max_teams']), 0) ;
+      $this->num_games      = util::nvl(util::mysql_real_escape_string($a['num_games']), 0) ;
+      $this->playoff_spots  = util::nvl(util::mysql_real_escape_string($a['playoff_spots']), 0) ;
+      $this->elim_losses    = util::nvl(util::mysql_real_escape_string($a['elim_losses']), 0) ;
 
       $sql_str = sprintf("insert into division(tourney_id, name, max_teams, num_games, playoff_spots, elim_losses)" .
                          "values(%d, '%s', %d, %d, %d, %d)",
@@ -150,7 +154,7 @@ class division
     {
       if (! isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -158,9 +162,9 @@ class division
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

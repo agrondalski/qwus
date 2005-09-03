@@ -34,6 +34,10 @@ class team
 	    }
 	}
 
+      util::canNotBeNull($a, 'name') ;
+      util::canNotBeNull($a, 'location_id') ;
+      util::canNotBeNull($a, 'password') ;
+
       $this->name         = util::mysql_real_escape_string($a['name']) ;
       $this->email        = util::mysql_real_escape_string($a['email']) ;
       $this->irc_channel  = util::mysql_real_escape_string($a['irc_channel']) ;
@@ -47,20 +51,6 @@ class team
 
       $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . $mysql_error) ;
       $this->team_id = mysql_insert_id() ;
-    }
-
-  public static function getAllTeams()
-    {
-      $sql_str = sprintf('select t.team_id from team t') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new team(array('team_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
     }
 
   private function getTeamInfo()
@@ -85,6 +75,20 @@ class team
       mysql_free_result($row) ;
 
       return self::FOUND ;
+    }
+
+  public static function getAllTeams()
+    {
+      $sql_str = sprintf('select t.team_id from team t') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function passwordMatches($pass)
@@ -131,19 +135,19 @@ class team
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
-      return $this->$col ;
+      return htmlentities($this->$col) ;
     }
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       if ($col=="password")

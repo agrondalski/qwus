@@ -35,15 +35,19 @@ class tourney
 	    }
 	}
 
+      util::canNotBeNull($a, 'game_type_id') ;
+      util::canNotBeNull($a, 'name') ;
+      util::canNotBeNull($a, 'tourney_type') ;
+
       $this->game_type_id  = util::mysql_real_escape_string($a['game_type_id']) ;
       $this->name          = util::mysql_real_escape_string($a['name']) ;
       $this->tourney_type  = util::mysql_real_escape_string($a['tourney_type']) ;
-      $this->signup_start  = util::mysql_real_escape_string($a['signup_start']) ;
-      $this->signup_end    = util::mysql_real_escape_string($a['signup_end']) ;
-      $this->team_size     = util::mysql_real_escape_string($a['team_size']) ;
-      $this->timelimit     = util::mysql_real_escape_string($a['timelimit']) ;
+      $this->signup_start  = util::nvl(util::mysql_real_escape_string($a['signup_start']), util::DEFAULT_DATE) ;
+      $this->signup_end    = util::nvl(util::mysql_real_escape_string($a['signup_end']), util::DEFAULT_DATE) ;
+      $this->team_size     = util::nvl(util::mysql_real_escape_string($a['team_size']), 0) ;
+      $this->timelimit     = util::nvl(util::mysql_real_escape_string($a['timelimit']), 0) ;
 
-      $sql_str = sprintf("inser  t into tourney(game_type_id, name, tourney_type, signup_start, signup_end, team_size, timelimit)" .
+      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, signup_start, signup_end, team_size, timelimit)" .
                          "values(%d, '%s', '%s', '%s', '%s', %d, %d)",
 			 $this->game_type_id, $this->name, $this->tourney_type, $this->signup_start, $this->signup_end, $this->team_size, $this->timelimit) ;
 
@@ -245,17 +249,17 @@ class tourney
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
-      return $this->$col ;
+      return htmlentities($this->$col) ;
     }
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (! isset($col) || !isset($val))
 	{
 	  return ;
 	}

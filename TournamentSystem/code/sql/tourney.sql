@@ -192,6 +192,7 @@ create table news(
   news_id       bigint      NOT NULL auto_increment, 
   writer_id     integer     NOT NULL,
   tourney_id    integer,
+  isColumn      boolean     NOT NULL default FALSE,
   subject       text        NOT NULL,
   news_date     date        NOT NULL,
   text          MEDIUMTEXT  NOT NULL,

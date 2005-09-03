@@ -11,6 +11,7 @@ class news
   private $news_id ;
   private $writer_id ;
   private $tourney_id ;
+  private $isColumn ;
   private $subject ;
   private $news_date ;
   private $text ;
@@ -33,15 +34,21 @@ class news
 	    }
 	}
 
+      util::canNotBeNull($a, 'writer_id') ;
+      util::canNotBeNull($a, 'subject') ;
+      util::canNotBeNull($a, 'news_date') ;
+      util::canNotBeNull($a, 'text') ;
+
       $this->writer_id   = util::mysql_real_escape_string($a['writer_id']) ;
       $this->tourney_id  = util::mysql_real_escape_string($a['tourney_id']) ;
+      $this->isColumn    = util::nvl(util::mysql_real_escape_string($a['isColumn']), false) ;
       $this->subject     = util::mysql_real_escape_string($a['subject']) ;
       $this->news_date   = util::mysql_real_escape_string($a['news_date']) ;
       $this->text        = util::mysql_real_escape_string($a['text']) ;
 
-      $sql_str = sprintf("insert into news(writer_id, tourney_id, subject, news_date, text)" .
-                         "values(%d, %s, '%s', '%s', '%s')",
-			 $this->writer_id, util::nvl($this->tourney_id, 'null'), $this->subject, $this->news_date, $this->text) ;
+      $sql_str = sprintf("insert into news(writer_id, tourney_id, isColumn, subject, news_date, text)" .
+                         "values(%d, %s, %d, '%s', '%s', '%s')",
+			 $this->writer_id, util::nvl($this->tourney_id, 'null'), $this->isColumn, $this->subject, $this->news_date, $this->text) ;
 
       $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->news_id = mysql_insert_id() ;
@@ -88,9 +95,9 @@ class news
 	}
     }
 
-  public function getNews($a)
+  public static function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where tourney_id is null %s", util::getLimit($a)) ;
+      $sql_str = sprintf("select n.news_id from news n where tourney_id is null and isColumn=false %s", util::getLimit($a)) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -102,23 +109,9 @@ class news
       return $arr ;
     }
 
-  public function getAllNews($a)
+  public static function getNewsCount()
     {
-      $sql_str = sprintf("select n.news_id from news n where tourney_id is null %s", util::getOrderBy($a)) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new news(array('news_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
-  public function getNewsCount()
-    {
-      $sql_str = sprintf("select count(*) from news n where tourney_id is null") ;
+      $sql_str = sprintf("select count(*) from news n where tourney_id is null and isColumn=false") ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       $row = mysql_fetch_row($result) ;
@@ -130,19 +123,19 @@ class news
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
-      return $this->$col ;
+      return util::htmlstring($this->$col) ;
     }
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

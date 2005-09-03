@@ -31,6 +31,10 @@ class map
 	    }
 	}
 
+      util::canNotBeNull($a, 'map_name') ;
+      util::canNotBeNull($a, 'map_abbr') ;
+      util::canNotBeNull($a, 'game_type_id') ;
+
       $this->map_name      = util::mysql_real_escape_string($a['map_name']) ;
       $this->map_abbr      = util::mysql_real_escape_string($a['map_abbr']) ;
       $this->game_type_id  = util::mysql_real_escape_string($a['game_type_id']) ;
@@ -42,22 +46,6 @@ class map
       $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->map_id = mysql_insert_id() ;
     }
-
-  public static function getAllMaps()
-    {
-      $sql_str = sprintf('select m.map_id from maps m') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new map(array('map_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
-
 
   private function getMapsInfo()
     {
@@ -80,6 +68,20 @@ class map
       return self::FOUND ;
     }
 
+  public static function getAllMaps()
+    {
+      $sql_str = sprintf('select m.map_id from maps m') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new map(array('map_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getGames()
     {
       $sql_str = sprintf("select g.game_id from game g where g.map_id=%d", $this->map_id) ;
@@ -96,9 +98,9 @@ class map
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -106,9 +108,9 @@ class map
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

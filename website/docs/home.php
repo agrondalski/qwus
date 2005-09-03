@@ -105,7 +105,7 @@ else
   // Column
   if ($printed>0)
     {
-      $bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">back to column archive</A></P>' ;
+      $bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
     }
   else
     {

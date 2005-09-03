@@ -34,6 +34,11 @@ class game
 	    }
 	}
 
+      util::canNotBeNull($a, 'match_id') ;
+      util::canNotBeNull($a, 'map_id') ;
+      util::canNotBeNull($a, 'team1_score') ;
+      util::canNotBeNull($a, 'team2_score') ;
+
       $this->match_id        = util::mysql_real_escape_string($a['match_id']) ;
       $this->map_id          = util::mysql_real_escape_string($a['map_id']) ;
       $this->team1_score     = util::mysql_real_escape_string($a['team1_score']) ;
@@ -99,9 +104,9 @@ class game
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -109,9 +114,9 @@ class game
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;

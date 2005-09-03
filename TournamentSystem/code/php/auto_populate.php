@@ -155,7 +155,7 @@ function auto_populate($a)
       $v2 = PREFIX . generate_string(10) ; 
       $v3 = PREFIX . generate_string(10) ; 
       $v4 = $loc[generate_integer(count($loc))] ;
-      $v5 = generate_integer(10) ;
+      $v5 = generate_string(10) ;
       $v6 = generate_boolean() ;
       $n = new team(array('name'=>$v1, 'email'=>$v2, 'irc_channel'=>$v3, 'location_id'=>$v4, 'password'=>$v5, 'approved'=>$v6)) ;
 
@@ -227,7 +227,7 @@ function auto_populate($a)
 
       if (! stats::hasStatsEntry($v1, $v2))
 	{
-	  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4, 'elim_losses'=>$v5)) ;
+	  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4)) ;
 	}
 
       //$stats[] = $n->getValue("stat_id") ;
@@ -246,13 +246,23 @@ function auto_populate($a)
 	  $v2 = null ;
 	}
 
-      $v3 = PREFIX . generate_string(25) ;
+
+      if (generate_integer(100)<75)
+	{
+	  $v3 = false ;
+	}
+      else
+	{
+	  $v3 = true ;
+	}
+
+      $v4 = PREFIX . generate_string(25) ;
 
       $c = $c + generate_integer(25) ;
-      $v4 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
+      $v5 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
 
-      $v5 = PREFIX . generate_string(25) ;
-      $n = new news(array('writer_id'=>$v1, 'tourney_id'=>$v2, 'subject'=>$v3, 'news_date'=>$v4, 'text'=>$v5)) ;
+      $v6 = PREFIX . generate_string(25) ;
+      $n = new news(array('writer_id'=>$v1, 'tourney_id'=>$v2, 'isColumn'=>$v3, 'subject'=>$v4, 'news_date'=>$v5, 'text'=>$v6)) ;
 
       //$news[] = $n->getValue("news_id") ;
     }
@@ -330,16 +340,39 @@ $a = array('game_type'=>1,
 	   'stats'=>50,
 	   'news'=>25) ;
 
-auto_populate($a) ;
+$ts = microtime(true) ;
+try
+{
+  auto_populate($a) ;
+}
+catch(Exception $e)
+{
+  print $e;
+}
+$te = microtime(true) ;
 
 try
 {
   $p = new player(array('name'=>'x')) ;
+  $v1 = $p->getValue("player_id") ;
+
+  for ($i=0; $i<5; $i++)
+    {
+
+      $v2 = PREFIX . generate_string(25) ;
+
+      $c = $c + generate_integer(25) ;
+      $v3 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
+
+      $v4 = PREFIX . generate_string(25) ;
+
+      $n1 = new news(array('writer_id'=>$v1, 'tourney_id'=>null, 'isColumn'=>true, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
+    }
 }
 catch (Exception $e)
 {
   $np = new player(array('name'=>'x', 'superAdmin'=>true, 'location_id'=>1, 'password'=>'x')) ;
 }
 
-print "DONE";
+print "DONE in " . ($te-$ts) . " seconds" ;
 ?>

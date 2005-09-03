@@ -4,11 +4,15 @@ class util
 {
   const _DEBUG = 0 ;
 
+  const DEFAULT_DATE = '0000-00-00' ;
+  const DEFAULT_INT  = -1 ;
+  const DEFAULT_STR  = null ;
+
   public static function getLimit($a)
     {
       $l = ltrim(rtrim($a['limit'])) ;
 
-      if (isset($l))
+      if (isset($l) && !empty($l))
 	{
 	  if(!preg_match('/^([0-9]+[ ]*,){1}[ ]*[0-9]*$/', $l) && !preg_match('/^[0-9]+[ ]+OFFSET[ ]+[0-9]+$/', $l))
 	    {
@@ -53,6 +57,24 @@ class util
       return $v1 ;
     }
 
+  public static function isNull($v)
+    {
+      if (!isset($v) || $v==="")
+	{
+	  return true ;
+	}
+
+      return false ;
+    }
+
+  public static function canNotBeNull($a, $c)
+    {
+      if (util::isNull($a[$c]))
+	{
+	  throw new Exception($c . ' cannot be null') ;
+	}
+    }
+
   public static function throwException($m)
     {
       if (! self::_DEBUG)
@@ -61,6 +83,11 @@ class util
 	}
 
       die($m) ;
+    }
+
+  public static function htmlstring($s)
+    {
+      return htmlentities($s) ;
     }
 }
 

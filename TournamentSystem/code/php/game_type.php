@@ -29,6 +29,8 @@ class game_type
 	    }
 	}
 
+      util::canNotBeNull($a, 'name') ;
+
       $this->name  = util::mysql_real_escape_string($a['name']) ;
 
       $sql_str = sprintf("insert into game_type(name)" .
@@ -56,6 +58,20 @@ class game_type
       mysql_free_result($row) ;
 
       return self::FOUND ;
+    }
+
+  public static function getAllGameTypes()
+    {
+      $sql_str = sprintf('select gt.game_type_id from game_type gt') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new game_type(array('game_type_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getTournys()
@@ -88,9 +104,9 @@ class game_type
 
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -98,9 +114,9 @@ class game_type
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;
@@ -111,7 +127,7 @@ class game_type
 	}
       else
 	{
-	  $sql_str = sprintf("update game_type_table set %s='%s' where game_type_id=%d", $col, $this->$col, $this->game_type_id) ;
+	  $sql_str = sprintf("update game_type set %s='%s' where game_type_id=%d", $col, $this->$col, $this->game_type_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());

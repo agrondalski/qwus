@@ -45,8 +45,12 @@ class player
 	    }
 	}
 
+      util::canNotBeNull($a, 'name') ;
+      util::canNotBeNull($a, 'location_id') ;
+      util::canNotBeNull($a, 'password') ;
+
       $this->name         = util::mysql_real_escape_string($a['name']) ;
-      $this->superAdmin   = util::mysql_real_escape_string($a['superAdmin']) ;
+      $this->superAdmin   = util::nvl(util::mysql_real_escape_string($a['superAdmin']), false) ;
       $this->location_id  = util::mysql_real_escape_string($a['location_id']) ;
       $this->password     = md5($a['password']) ;
 
@@ -149,21 +153,65 @@ class player
       return new location(array('location_id'=>$this->location_id)) ;
     }
 
+  public function getNewsColumns($a)
+    {
+      $sql_str = sprintf("select n.news_id from news n where n.writer_id=%d and isColumn=true %s %s", $this->player_id, util::getOrderBy($a), util::getLimit($a)) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new news(array('news_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function canPostNews($tid)
+    {
+      if (!isset($tid))
+	{
+	  if ($this->superAdmin)
+	    {
+	      return true ;
+	    }
+	  else
+	    {
+	      return false ;
+	  }
+	}
+
+      $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
+
+      if ($val>0)
+	{
+	  return true ;
+	}
+      else
+	{
+	  return false ;
+	}
+    }
+
   public function getValue($col)
     {
-      if (! isset($col) || !isset($this->$col))
+      if (!isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
-      return $this->$col ;
+      return util::htmlstring($this->$col) ;
     }
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       if ($col=="password")

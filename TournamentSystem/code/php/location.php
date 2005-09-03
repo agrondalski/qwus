@@ -31,6 +31,8 @@ class location
 	    }
 	}
 
+      util::canNotBeNull($a, 'country_name') ;
+
       $this->country_name  = util::mysql_real_escape_string($a['country_name']) ;
       $this->state_name    = util::mysql_real_escape_string($a['state_name']) ;
       $this->logo_url      = util::mysql_real_escape_string($a['logo_url']) ;
@@ -62,6 +64,20 @@ class location
       mysql_free_result($row) ;
 
       return self::FOUND ;
+    }
+
+  public static function getAllLocations()
+    {
+      $sql_str = sprintf('select l.location_id from location l') ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new location(array('location_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getTeams()
@@ -96,7 +112,7 @@ class location
     {
       if (! isset($col) || !isset($this->$col))
 	{
-	  return ;
+	  return null ;
 	}      
 
       return $this->$col ;
@@ -104,9 +120,9 @@ class location
 
   public function update($col, $val)
     {
-      if (! isset($col) || !isset($val) || !isset($this->$col))
+      if (!isset($col) || !isset($val))
 	{
-	  return ;
+	  return null ;
 	}
 
       $this->$col = util::mysql_real_escape_string($val) ;
