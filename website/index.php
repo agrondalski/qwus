@@ -52,7 +52,13 @@ function hideShowAll(which)
   hideShow(which + '_3') ;
 }
 
-function initSubMenus(which)
+function hideShowColumnMenu(which)
+{
+  hideShow('column1') ;
+  hideShow('column2') ;
+}
+
+function initTourneyMenus(which)
 {
   if  (which!=2) 
     {
@@ -67,7 +73,15 @@ function initSubMenus(which)
 </HEAD>
 
 <?php
-print '<BODY onLoad="initSubMenus(' . $_GET['tourney_id'] . ')">'; ;
+
+$s1 = 'initTourneyMenus(' . $_GET['tourney_id'] . ');' ;
+
+if (!isset($_GET['column']))
+{
+  $s2 = 'hideShowColumnMenu();' ;
+}
+
+print '<BODY onLoad="' . $s1 . $s2 . '">' ;
 ?>
 
 <A name="top"></A>
@@ -183,6 +197,22 @@ elseif (file_exists("$page.php"))
 
 			<TR id="tourney3_3" class=submenu>
 			        <TD><a href="?a=newsarchive&amp;tourney_id=3"><img src="img/red.gif" alt="">Archive</a></TD>
+			</TR>
+
+                        <TR>
+                                <TD class="menuBreak"></TD>
+                        </TR>
+
+                        <TR>
+			        <TD><a href="#" onclick="hideShowColumnMenu(); return false;">Columns</a></TD>
+			</TR>
+
+			<TR id="column1" class=submenu>
+			        <TD><a href="?a=home&amp;column=pg"><img src="img/red.gif" alt="">pg</a></TD>
+			</TR>
+
+			<TR id="column2" class=submenu>
+			        <TD><a href="?a=home&amp;column=x"><img src="img/red.gif" alt="">x</a></TD>
 			</TR>
 
                         <TR>

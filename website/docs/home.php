@@ -3,30 +3,52 @@
 require 'php/includes.php' ;
 
 $morenews = (empty($_GET["id"])) ? true : false;
+$column = false ;
 $printed = 0;
 
-if ($morenews)
+try
 {
-  if (isset($_GET["tourney_id"]))
+  if ($morenews)
     {
-      $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-      $news = $t->getNews() ;
-      $count = $t->getNewsCount() ;
+      // Tourney news
+      if (isset($_GET["tourney_id"]))
+	{
+	  $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
+	  $news = $t->getNews() ;
+	  $count = $t->getNewsCount() ;
+	}
+
+      // Column
+      elseif(isset($_GET["column"]))
+	{
+	  $column = true ;
+	  $p = new player(array('name'=>$_GET['column'])) ;
+	  $news = $p-> getNewsColumns(array('limit'=>'1,1')) ;
+	}
+
+      // General news
+      else
+	{
+	  $news  = news::getNews(array('limit'=>'0,5')) ;
+	  $count = news::getNewsCount() ;
+	}
     }
+
+  // Archive item
   else
     {
-      $news  = news::getNews(array('limit'=>'0,5')) ;
-      $count = news::getNewsCount() ;
+      $news = array(new news(array('news_id'=>$_GET["id"]))) ;
+      
+      if (isset($_GET["tourney_id"]))
+	{  
+	  $tid  = '&amp;tourney_id=' . $_GET['tourney_id'] ;
+	}
     }
 }
-else
+catch(Exception $e)
 {
-  $news = array(new news(array('news_id'=>$_GET["id"]))) ;
-
-  if (isset($_GET["tourney_id"]))
-    {  
-      $tid  = '&amp;tourney_id=' . $_GET['tourney_id'] ;
-    }
+  $news = null ;
+  $count = 0 ;
 }
 
 for ($i=0; $i<count($news); $i++)
@@ -50,13 +72,41 @@ for ($i=0; $i<count($news); $i++)
 	</TR>
 	</TABLE>';
 	$printed++;
-	if ($morenews && $printed != $count)
+
+	if ($morenews && !$column && $printed != $count)
 	{
 		echo '<IMG src="img/hr.gif" alt="" width="370" height="22">';
 	}	
 }
 
 $c = ($count==0) ? 0 : 1 ;
-$bottom = ($morenews) ? '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .'</P>' : '<P><A href="?a=newsarchive' . $tid . '">back to news archive</A></P>';
+
+if (!$column)
+{
+  // General News
+  if ($morenews)
+    {
+      $bottom = '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .'</P>' ;
+    }
+
+  // Archive News
+  else
+    {
+      $bottom = '<P><A href="?a=newsarchive' . $tid . '">back to news archive</A></P>' ;
+    }
+}
+else 
+{
+  // Column
+  if ($printed>0)
+    {
+      $bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
+    }
+  else
+    {
+      $bottom = 'No columns yet.' ;
+    }
+}
+
 echo $bottom;
 ?>
