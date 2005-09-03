@@ -7,6 +7,11 @@
 # attempt to create 2 teams and place players in them
 # misc bs
 # mvds with parentheses in name currently dont work
+# divide by zero check
+# optimize
+
+use utf8;
+use Benchmark;
 
 package Player;
 sub new
@@ -259,15 +264,21 @@ sub eff
     return ($self->frags /  ($self->deaths + $self->frags)) * 100;
 }
 
-
+$start = new Benchmark;
 
 foreach $mvd (@ARGV)
 {
-  @strings = `strings $mvd`;
+  $tempMvd = $mvd . ".tmp";
+  $shell = `sed -f convertAscii.sed $mvd > $tempMvd`;
+  @strings = `strings -2 $tempMvd`;
 
   foreach $string (@strings)
   {
-    if ($string =~ /(.*) rides (.*)'s rocket/)
+    if (length($string) < 8)
+    { 
+     1;
+    }
+    elsif ($string =~ /(.*) rides (.*)'s rocket/)
     {
       $fraggee = findPlayer($1);
       $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
@@ -316,6 +327,13 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($2);
       $fragger->rocketFrags($fragger->rocketFrags() + 1);
     }
+    elsif ($string =~ /(.*) eats (.*)'s pineapple/)
+    {
+	$fraggee = findPlayer($1);
+	$fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+	$fragger = findPlayer($2);
+	$fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+    }
     elsif ($string =~ /(.*) was gibbed by (.*)'s grenade/) 
     {
       $fraggee = findPlayer($1);
@@ -332,22 +350,33 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
-    elsif ($string =~ /(.*) mows down a teammate/) 
+    elsif ($string =~ /(.*) loses another friend/) 
     {
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
+    elsif ($string =~ /(.*) mows down a teammate/)
+    {
+	$fragger = findPlayer($1);
+	$fragger->teamKills($fragger->teamKills() + 1);
+    }
+
     elsif ($string =~ /(.*) checks his glasses/) 
     {
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
   }
+  $shell = `rm $tempMvd`;
 }
 
-outputPlayerList();
+outputHTML();
 
-sub outputPlayerList
+$end = new Benchmark;
+$diff = Benchmark::timediff($end, $start);
+print "\n\nBenchmark: " . Benchmark::timestr($diff, 'all') . "\n"; 
+
+sub outputHTML
 {
   print "<HTML><BODY><TABLE>\n";
   print "\t<TR>\n" .
