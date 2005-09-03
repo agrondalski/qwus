@@ -1,14 +1,14 @@
 #!/usr/bin/perl
 
 # todo:
-# handle fun names (could be fairly tricky in some cases)
+# fix remaining fun names errors
 # nice output for easy database entry
 # attempt to read and/or calculate final score
 # attempt to create 2 teams and place players in them
 # misc bs
 # mvds with parentheses in name currently dont work
-# divide by zero check
 # optimize
+# fix package lameness
 
 use utf8;
 use Benchmark;
@@ -19,6 +19,7 @@ sub new
     my $class = shift;
     my $self = {};
     $self->{NAME} = undef;
+    $self->{TEAM} = undef;
     $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
     $self->{SHOTGUN_FRAGS} = 0;   $self->{SHOTGUN_DEATHS} = 0;
     $self->{SSG_FRAGS} = 0;       $self->{SSG_DEATHS} = 0;
@@ -51,6 +52,13 @@ sub name
     my $self = shift;
     if (@_) { $self->{NAME} = shift }
     return $self->{NAME};
+}
+
+sub team
+{
+    my $self = shift;
+    if (@_) {$self->{TEAM} = shift }
+    return $self->{TEAM};
 }
 
 sub rocketDeaths
@@ -261,7 +269,8 @@ sub rank
 sub eff
 {
     my $self = shift;
-    return ($self->frags /  ($self->deaths + $self->frags)) * 100;
+    if ($self->deaths + $self->frags < 1) { return 0; }
+    return ($self->frags / ($self->deaths + $self->frags)) * 100;
 }
 
 $start = new Benchmark;
@@ -270,7 +279,7 @@ foreach $mvd (@ARGV)
 {
   $tempMvd = $mvd . ".tmp";
   $shell = `sed -f convertAscii.sed $mvd > $tempMvd`;
-  @strings = `strings -2 $tempMvd`;
+  @strings = `strings -3 $tempMvd`;
 
   foreach $string (@strings)
   {
@@ -366,6 +375,11 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
+    elsif ($string =~ /\\name\\(.*)\\(.*)\\team\\(.*)\\/)
+    {
+#	$player = findPlayer($1);
+#       $player->team($3);
+    }
   }
   $shell = `rm $tempMvd`;
 }
@@ -381,6 +395,7 @@ sub outputHTML
   print "<HTML><BODY><TABLE>\n";
   print "\t<TR>\n" .
         "\t\t<TD>Name</TD>\n" .
+        "\t\t<TD>Team</TD>\n" .
         "\t\t<TD>Frags</TD>\n" . 
         "\t\t<TD>Deaths</TD\n" .
         "\t\t<TD>SG</TD>\n" .
@@ -397,6 +412,7 @@ sub outputHTML
   {
      print "\t<TR>\n" . 
       "\t\t<TD>" . $player->name . "</TD>\n" .
+      "\t\t<TD>" . $player->team . "</TD>\n" .
       "\t\t<TD>" . $player->frags . "</TD>\n" . 
       "\t\t<TD>" . $player->deaths . "</TD>\n" .
       "\t\t<TD>" . $player->shotgunFrags . "</TD>\n" .
