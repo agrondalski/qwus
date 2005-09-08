@@ -45,3 +45,19 @@ if ($displayLogin)
       header("location: ?" . $_SERVER['QUERY_STRING']);
     }
 }
+else
+{
+  print 'Welcome, ' . $_SESSION['username'] ;
+  print '&nbsp;&nbsp;<a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a>' ;
+
+  $do = $_GET['action'] ;
+
+  if ($do=="logout")
+    {
+      $_SESSION["loggedIn"]="no";
+      $_SESSION["username"]="";
+
+      header("location: ?" . str_replace('&action=logout', '', $_SERVER['QUERY_STRING'])) ;
+    }
+}
+?>
