@@ -105,20 +105,26 @@ print '<BODY onLoad="' . $s1 . $s2 . '">' ;
 		<TR>
 			<TD class="content">
 
-                        <?php
-if (file_exists("docs/$page.php"))
-{
-  include "docs/$page.php" ;
-}
-elseif (file_exists("php/$page.php"))
-{
-  include "php/$page.php" ;
-}
-elseif (file_exists("$page.php"))
-{
-  include "$page.php" ;
-}
+<?php
+try
+  {
+    if (file_exists("docs/$page.php"))
+    {
+      include "docs/$page.php" ;
+    }
+    elseif (file_exists("php/$page.php"))
+    {
+      include "php/$page.php" ;
+    }
+    elseif (file_exists("$page.php"))
+    {
+      include "$page.php" ;
+    }
+  }
+catch(Exception $e) {}
 ?>
+
+
 			</TD>
 			<TD class="menu">
 			<TABLE cellspacing="0" cellpadding="0">
