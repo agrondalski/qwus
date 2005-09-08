@@ -4,11 +4,11 @@
 # fix remaining fun names errors
 # nice output for easy database entry
 # attempt to read and/or calculate final score
-# attempt to create 2 teams and place players in them
 # misc bs
 # mvds with parentheses in name currently dont work
 # optimize
 # fix package lameness
+# finish team support
 
 use utf8;
 use Benchmark;
@@ -375,10 +375,21 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
-    elsif ($string =~ /\\name\\(.*)\\(.*)\\team\\(.*)\\/)
+    elsif ($string =~ m/\\name\\/)
     {
-#	$player = findPlayer($1);
-#       $player->team($3);
+        $name = $';
+        if ($string =~ m/\\team\\/)
+        {
+# todo: skip if spectator > 0
+# todo: disconnected players in ktpro get added twice
+	    $team = $';
+            while ($team =~ /(.*)\\/) { $team = $1; }
+            while ($name =~ /(.*)\\/) { $name = $1; }
+            $name =~ s/\s+$//;
+            $team =~ s/\s+$//;
+            $player = findPlayer($name);
+            $player->team($team);
+        }    
     }
   }
   $shell = `rm $tempMvd`;
@@ -389,6 +400,12 @@ outputHTML();
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
 print "\n\nBenchmark: " . Benchmark::timestr($diff, 'all') . "\n"; 
+
+sub removeTrailingWhiteSpace
+{
+  $string = shift;
+  $string =~ s/\s+$//;
+}
 
 sub outputHTML
 {
