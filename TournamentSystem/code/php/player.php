@@ -185,7 +185,7 @@ class player
 	}
       elseif (!isset($tid))
 	{
-	  return $this->isSuperAdmin() ;
+	  return $isa ;
 	}
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;

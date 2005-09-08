@@ -2,7 +2,7 @@
 
 class util
 {
-  const _DEBUG = 1 ;
+  const _DEBUG = 0 ;
 
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_INT  = -1 ;
@@ -16,7 +16,7 @@ class util
 	{
 	  if(!preg_match('/^([0-9]+[ ]*,){1}[ ]*[0-9]*$/', $l) && !preg_match('/^[0-9]+[ ]+OFFSET[ ]+[0-9]+$/', $l))
 	    {
-	      throw new Exception("Invalid limit clause") ;
+	      self::throwException("Invalid limit clause") ;
 	    }
 	  return ' limit ' . $l ;
 	}
@@ -71,7 +71,7 @@ class util
     {
       if (util::isNull($a[$c]))
 	{
-	  throw new Exception($c . ' cannot be null') ;
+	  self::throwException($c . ' cannot be null') ;
 	}
     }
 

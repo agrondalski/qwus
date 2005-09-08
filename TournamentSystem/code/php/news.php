@@ -128,7 +128,14 @@ class news
 	  return null ;
 	}      
 
-      return util::htmlstring($this->$col) ;
+      if ($col!="text")
+	{
+	  return util::htmlstring($this->$col) ;
+	}
+      else
+	{
+	  return $this->$col ;
+	}
     }
 
   public function update($col, $val)

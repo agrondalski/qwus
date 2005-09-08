@@ -14,6 +14,29 @@ if ($displayLogin)
 {
   if (!$_POST)
     {
+      /*
+      $tourney_id = $_GET["tourney_id"];
+      $q = mysql_query("SELECT team_id from tourney_info where tourney_id = $tourney_id");
+      echo mysql_result($q,0,"team_id");
+      echo '
+            <FORM METHOD="POST" ACTION="login.php">
+            <table cellspacing="2" cellpadding="2">
+            <TR>
+               <TD><B>Team</B>:</TD>
+               <TD>DROPDOWN HERE</TD>
+            </TR>
+            <TR></TR>
+            <TR>
+               <TD><B>Password</B>:</TD>
+               <TD><INPUT TYPE="password" name="password"></TD>
+               <TD><INPUT TYPE="submit" value="Team Login"></TD>
+            </TR>
+            </TABLE>
+            </FORM>
+    
+            <BR><BR>' ;
+      */
+
       echo '
             <FORM METHOD="POST" ACTION="?' . $_SERVER['QUERY_STRING'] . '">
             <table cellspacing="2" cellpadding="2">
@@ -29,6 +52,8 @@ if ($displayLogin)
             </TABLE>
             </FORM>
             ';
+
+      util::throwException("Login Screen") ;
     }
   else
     {
