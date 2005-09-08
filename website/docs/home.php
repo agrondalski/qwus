@@ -67,7 +67,7 @@ for ($i=0; $i<count($news); $i++)
 		<TABLE cellspacing="0" cellpadding="0">
 		<TR>
 			<TD><B>' . $news[$i]->getValue("subject") . '</B></TD>
-			<TD align="right"><SMALL>' . $news[$i]->getValue("date") . '</SMALL></TD>
+			<TD align="right"><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD>
 		</TR>
 		</TABLE>
 		</TD>
