@@ -381,7 +381,6 @@ foreach $mvd (@ARGV)
         if ($string =~ m/\\team\\/)
         {
 # todo: skip if spectator > 0
-# todo: disconnected players in ktpro get added twice
 	    $team = $';
             while ($team =~ /(.*)\\/) { $team = $1; }
             while ($name =~ /(.*)\\/) { $name = $1; }
@@ -391,6 +390,10 @@ foreach $mvd (@ARGV)
             $player->team($team);
         }    
     }
+# once we reach this point the match is over and no good data remains
+# breaking out of the loop not only provides a speed boost, but
+# eliminates the disconnected player list from being added again
+    elsif ($string =~ /. - disconnected players/) { last; }
   }
   $shell = `rm $tempMvd`;
 }
@@ -424,7 +427,7 @@ sub outputHTML
         "\t\t<TD>LG</TD>\n" .
         "\t\t<TD>TK</TD>\n" .  
         "\t\t<TD>eff</TD>\n" .
-        "</TR>\n";
+        "\t</TR>\n";
   foreach $player (@players)
   {
      print "\t<TR>\n" . 
