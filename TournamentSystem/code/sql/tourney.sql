@@ -103,7 +103,8 @@ create table player(
   name         varchar(250)  NOT NULL,
   superAdmin   boolean       NOT NULL default false,
   location_id  integer       NOT NULL,
-  password     varchar(250), -- not null for admins
+  password     varchar(250),
+  hasColumn    boolean       NOT NULL default false,
 --
   constraint player_pk   primary key(player_id),
   constraint player_unq1 unique(name))

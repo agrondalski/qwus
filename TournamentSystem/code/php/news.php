@@ -97,7 +97,7 @@ class news
 
   public static function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where tourney_id is null and isColumn=false %s", util::getLimit($a)) ;
+      $sql_str = sprintf("select n.news_id from news n where tourney_id is null and isColumn=false %s %s", util::getOrderBy($a), util::getLimit($a)) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))

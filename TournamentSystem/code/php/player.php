@@ -13,6 +13,7 @@ class player
   private $superAdmin ;
   private $location_id ;
   private $password ;
+  private $hasColumn ;
 
   function __construct($a)
     {
@@ -53,15 +54,62 @@ class player
       $this->superAdmin   = util::nvl(util::mysql_real_escape_string($a['superAdmin']), false) ;
       $this->location_id  = util::mysql_real_escape_string($a['location_id']) ;
       $this->password     = md5($a['password']) ;
+      $this->hasColumn    = util::nvl(util::mysql_real_escape_string($a['hasColumn']), false) ;
 
-      $sql_str = sprintf("insert into player(name, superAdmin, location_id, password)" .
+      $sql_str = sprintf("insert into player(name, superAdmin, location_id, password, hasColumn)" .
                          "values('%s', %d, %d, '%s')",
-			 $this->name, $this->superAdmin, $this->location_id, $this->password) ;
+			 $this->name, $this->superAdmin, $this->location_id, $this->password, $this->hasColumn) ;
 
       $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->player_id = mysql_insert_id() ;
     }
 
+
+  private function getPlayerInfo()
+    {
+      $sql_str = sprintf("select name, superAdmin, location_id, password, hasColumn from player where player_id=%d", $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+
+      if (mysql_num_rows($result)!=1)
+	{
+	  mysql_free_result($result) ;
+	  return self::NOTFOUND ;
+	}
+      $row = mysql_fetch_row($result) ;
+
+      $this->name         = $row[0] ;
+      $this->superAdmin   = $row[1] ;
+      $this->location_id  = $row[2] ;
+      $this->password     = $row[3] ; 
+      $this->hasColumn    = $row[4] ; 
+
+      mysql_free_result($row) ;
+
+      return self::FOUND ;
+    }
+
+  private function getPlayerInfoByName()
+    {
+      $sql_str = sprintf("select player_id, superAdmin, location_id, password, hasColumn from player where name='%s'", $this->name) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+
+      if (mysql_num_rows($result)!=1)
+	{
+	  mysql_free_result($result) ;
+	  return self::NOTFOUND ;
+	}
+      $row = mysql_fetch_row($result) ;
+
+      $this->player_id    = $row[0] ;
+      $this->superAdmin   = $row[1] ;
+      $this->location_id  = $row[2] ;
+      $this->password     = $row[3] ; 
+      $this->hasColumn    = $row[4] ; 
+
+      mysql_free_result($row) ;
+
+      return self::FOUND ;
+    }
 
   public static function getAllPlayers()
     {
@@ -90,48 +138,82 @@ class player
 	}
     }
 
-  private function getPlayerInfo()
+  public function isSuperAdmin()
     {
-      $sql_str = sprintf("select name, superAdmin, location_id, password from player where player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
-
-      if (mysql_num_rows($result)!=1)
+      if ($this->superAdmin)
 	{
-	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return true ;
 	}
-      $row = mysql_fetch_row($result) ;
-
-      $this->name         = $row[0] ;
-      $this->superAdmin   = $row[1] ;
-      $this->location_id  = $row[2] ;
-      $this->password     = $row[3] ; 
-
-      mysql_free_result($row) ;
-
-      return self::FOUND ;
+      else
+	{
+	  return false ;
+	}
     }
 
-  private function getPlayerInfoByName()
+  public function isTourneyAdmin($tid)
     {
-      $sql_str = sprintf("select player_id, superAdmin, location_id, password from player where name='%s'", $this->name) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
-
-      if (mysql_num_rows($result)!=1)
+      if (!isset($tid))
 	{
-	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return false ;
 	}
+
+
+      $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      
       $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
 
-      $this->player_id    = $row[0] ;
-      $this->superAdmin   = $row[1] ;
-      $this->location_id  = $row[2] ;
-      $this->password     = $row[3] ; 
+      if ($val>0)
+	{
+	  return true ;
+	}
+      else
+	{
+	  return false ;
+	}
 
-      mysql_free_result($row) ;
+    }
 
-      return self::FOUND ;
+  public function canPostNews($tid)
+    {
+      $isa = $this->isSuperAdmin() ;
+
+      if ($isa)
+	{
+	  return true;
+	}
+      elseif (!isset($tid))
+	{
+	  return $this->isSuperAdmin() ;
+	}
+
+      $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
+
+      if ($val>0)
+	{
+	  return true ;
+	}
+      else
+	{
+	  return false ;
+	}
+    }
+
+  public function hasColumn()
+    {
+      if ($this->hasColumn)
+	{
+	  return true ;
+	}
+      else
+	{
+	  return false ;
+	}
     }
 
   public function getStats()
@@ -165,36 +247,6 @@ class player
 
       mysql_free_result($result) ;
       return $arr ;
-    }
-
-  public function canPostNews($tid)
-    {
-      if (!isset($tid))
-	{
-	  if ($this->superAdmin)
-	    {
-	      return true ;
-	    }
-	  else
-	    {
-	      return false ;
-	  }
-	}
-
-      $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
-
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      if ($val>0)
-	{
-	  return true ;
-	}
-      else
-	{
-	  return false ;
-	}
     }
 
   public function getValue($col)
