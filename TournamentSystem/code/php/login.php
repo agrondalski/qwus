@@ -48,7 +48,7 @@ if ($displayLogin)
 else
 {
   print 'Welcome, ' . $_SESSION['username'] ;
-  print '&nbsp;&nbsp;<a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a>' ;
+  print '&nbsp;&nbsp;<a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a><br>' ;
 
   $do = $_GET['action'] ;
 
