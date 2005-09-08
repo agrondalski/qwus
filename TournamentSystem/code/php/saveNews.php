@@ -18,10 +18,10 @@ if ($mode=="edit") {
 }
 elseif ($mode=="delete") {
 
-  $nid = $_REQUEST['did'];
+  $nid = $_REQUEST['nid'];
   $news = new news(array('news_id'=>$nid));
   try {
-    $div->delete();
+    $news->delete();
     $msg = "<br>News item deleted!<br>";
   }
   catch (Exception $e) {
@@ -33,7 +33,7 @@ else {
                          'writer_id'=>$_POST['writer_id'],
                          'tourney_id'=>$_POST['tourney_id'],
                          'subject'=>$_POST['subject'],
-                         'news_date'=>date("Y-m-d g:ia"),
+                         'news_date'=>date("Y-m-d"),
                  	  	 'text'=>$_POST['text']));
 
 $msg = "<br>New News Item created!<br>";

@@ -11,9 +11,10 @@ echo "<br>";
 echo "<table border=1 cellpadding=2 cellspacing=0>\n";
 echo "<th>id</th><th>Author</th><th>Subject</th><th>Date</th><th>Text</th><th colspan=2>Actions</th>";
 foreach ($t->getNews() as $news) {
+   $p = new player(array('player_id'=>$news->getValue('writer_id')));
    echo "\t<tr>\n";
    echo "\t<td>",$news->getValue('news_id'),"</td>\n";
-   echo "\t<td>",$news->getValue('writer_id'),"</td>\n";
+   echo "\t<td>",$p->getValue('name'),"</td>\n";
    echo "\t<td>",$news->getValue('subject'),"</td>\n";
    echo "\t<td>",$news->getValue('news_date'),"</td>\n";
    echo "\t<td>",$news->getValue('text'),"</td>\n";

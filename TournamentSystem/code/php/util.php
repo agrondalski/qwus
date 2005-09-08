@@ -2,7 +2,7 @@
 
 class util
 {
-  const _DEBUG = 0 ;
+  const _DEBUG = 1 ;
 
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_INT  = -1 ;
