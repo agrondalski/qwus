@@ -162,14 +162,6 @@ catch(Exception $e) {}
 			</TR>
 
                         <TR>
-			        <TD><a href="?a=admin">Admin</a></TD>
-			</TR>
-
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-
-                        <TR>
 			        <TD><a href="?a=home&amp;tourney_id=2">NA NQR 2</a></TD>
 			</TR>
 
