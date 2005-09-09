@@ -133,7 +133,7 @@ class division
       mysql_free_result($row) ;
     }
 
-  public function removeTeam($id, $app)
+  public function removeTeam($id)
     {
       $sql_str = sprintf("delete from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());

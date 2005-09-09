@@ -111,9 +111,9 @@ class team
       mysql_free_result($row) ;
     }
 
-  public function removePlayer($tid, $pid, $itl)
+  public function removePlayer($tid, $pid)
     {
-      $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d", $tid, $this->team_id) ;
+      $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d and player_id=%d", $tid, $this->team_id, $pid) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
