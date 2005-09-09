@@ -212,7 +212,7 @@ class tourney
 	  return ;
 	}
 
-      $sql_str = sprintf("delete from tourney_maps where tourney_id=%d and map_id=%d)", $this->tourney_id, $id) ;
+      $sql_str = sprintf("delete from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
