@@ -34,18 +34,19 @@ sub new
   $self->{WATER_DEATHS} = 0;
   $self->{FALL_DEATHS} = 0;
   $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
-#  $self->{SATAN_FRAGS} = 0;
-  $self->{BORES} = 0;
-#  $self->{SELF_GRENADE_DEATHS} = 0;
+ #  $self->{SATAN_FRAGS} = 0;
+   $self->{BORES} = 0;
+ #  $self->{SELF_GRENADE_DEATHS} = 0;
   $self->{DISCHARGES} = 0;
   $self->{DISCHARGE_DEATHS} = 0;
   $self->{TEAMKILLS} = 0;
-#  $self->{CTF_CAPTURES} = 0;
-#  $self->{CTF_FLAG_DEFENDS} = 0;
-#  $self->{CTF_CARRIER_DEFENDS} = 0;
+ #  $self->{CTF_CAPTURES} = 0;
+ #  $self->{CTF_FLAG_DEFENDS} = 0;
+ #  $self->{CTF_CARRIER_DEFENDS} = 0;
   bless ($self, $class);
   return $self;
 }
+
 sub name
 {
   my $self = shift;
@@ -263,7 +264,7 @@ sub deaths
     $self->ssgDeaths() + $self->nailgunDeaths() +
     $self->sngDeaths() + $self->grenadeFrags() +
     $self->rocketDeaths() + $self->lightningDeaths()
-  );
+   );
 }
 
 sub rank
@@ -365,7 +366,7 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) becomes bored with life/)
     {
-#      print "$1 bored\n";
+#	print "$1 bored\n";
     }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
@@ -376,8 +377,8 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) mows down a teammate/)
     {
-	$fragger = findPlayer($1);
-	$fragger->teamKills($fragger->teamKills() + 1);
+      $fragger = findPlayer($1);
+      $fragger->teamKills($fragger->teamKills() + 1);
     }
 
     elsif ($string =~ /(.*) checks his glasses/) 
@@ -391,7 +392,6 @@ foreach $mvd (@ARGV)
       if ($string =~ m/\\team\\/)
       {
         $team = $';
-        # don't bother with team if they are a spectator
         if ($string =~ m/\\*spectator\\/i)
         {
           $spec = $';
