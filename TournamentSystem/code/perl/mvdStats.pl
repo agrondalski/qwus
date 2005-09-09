@@ -35,7 +35,7 @@ sub new
     $self->{FALL_DEATHS} = 0;
     $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
   #  $self->{SATAN_FRAGS} = 0;
-  #  $self->{BORES} = 0;
+    $self->{BORES} = 0;
   #  $self->{SELF_GRENADE_DEATHS} = 0;
     $self->{DISCHARGES} = 0;
     $self->{DISCHARGE_DEATHS} = 0;
@@ -229,6 +229,13 @@ sub squishFrags
     return $self->{SQUISH_FRAGS};
 }
 
+sub bores
+{
+    my $self = shift;
+    if (@_) { $self->{BORES} = shift }
+    return $self->{BORES};
+}
+
 sub teamKills
 {
     my $self = shift;
@@ -357,6 +364,10 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($2);
       $fragger->rocketFrags($fragger->rocketFrags() + 1);
     }
+    elsif ($string =~ /(.*) becomes bored with life/)
+    {
+#	print "$1 bored\n";
+    }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
     elsif ($string =~ /(.*) loses another friend/) 
@@ -380,9 +391,15 @@ foreach $mvd (@ARGV)
         $name = $';
         if ($string =~ m/\\team\\/)
         {
-# todo: skip if spectator > 0
-	    $team = $';
-            while ($team =~ /(.*)\\/) { $team = $1; }
+            $team = $';
+            if ($string =~ m/\\*spectator\\/i)
+            {
+                $spec = $';
+                while ($spec =~ /(.*)\\/) { $spec = $1; }
+                $spec =~ s/\s+$//;
+                if ($spec > 0) { next; }      
+            }
+	    while ($team =~ /(.*)\\/) { $team = $1; }
             while ($name =~ /(.*)\\/) { $name = $1; }
             $name =~ s/\s+$//;
             $team =~ s/\s+$//;
