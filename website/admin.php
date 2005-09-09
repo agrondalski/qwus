@@ -1,4 +1,3 @@
-fred was here
 <?php
 session_start();
 
