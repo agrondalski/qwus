@@ -1,3 +1,4 @@
+hello my name is fred
 <?php
 require("php/includes.php");
 $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
