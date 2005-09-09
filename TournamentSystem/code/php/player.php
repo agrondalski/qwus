@@ -48,7 +48,7 @@ class player
 
       util::canNotBeNull($a, 'name') ;
       util::canNotBeNull($a, 'location_id') ;
-      util::canNotBeNull($a, 'password') ;
+      //util::canNotBeNull($a, 'password') ;
 
       $this->name         = util::mysql_real_escape_string($a['name']) ;
       $this->superAdmin   = util::nvl(util::mysql_real_escape_string($a['superAdmin']), false) ;
@@ -57,7 +57,7 @@ class player
       $this->hasColumn    = util::nvl(util::mysql_real_escape_string($a['hasColumn']), false) ;
 
       $sql_str = sprintf("insert into player(name, superAdmin, location_id, password, hasColumn)" .
-                         "values('%s', %d, %d, '%s')",
+                         "values('%s', %d, %d, '%s', %d)",
 			 $this->name, $this->superAdmin, $this->location_id, $this->password, $this->hasColumn) ;
 
       $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;

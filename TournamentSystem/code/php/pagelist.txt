@@ -1,38 +1,40 @@
+TO DO LIST:   
+------------------------------------------------
 
-Admin Pages CREATE  MODIFY  DELETE (which phase)
-------------------------------------
-tournament    1       2
-division      1               2
-team          1       2       2
-player        1       2       2
-match         2       3       
-game          2
-maps          1
-comments      3
-stats         2
-
-
-Result Pages
-------------
-Team Standings
-Team Page (Shows Players & Stats)
-Player List
-Player Page (Shows Games & Stats)
+General to do/bugs/fixes
+------------------------------------------------
+column option on news page
+security
+role check for each page
+cleanup login/logout for all pages
+are spaces okay for player names?
+login allowed for player with no password (bad)
+logout link isnt centered when page is stretched
+logout errors when not on tourneyHome page
+non_sa cant add players with sa or update sa flag
 
 
-drop table stats ;
-drop table comments ;
-drop table game ;
-drop table match_table ;
-drop table player_info ;
-drop table tourney_maps ;
-drop table tourney_info ;
-drop table division ;
-drop table tourney_admins ;
-drop table tourney_schedule ;
-drop table tourney ;
-drop table team ;
-drop table player ;
-drop table country ;
-drop table maps ;
-drop table game_type ;
+Pages (% done) (page title) (what to do)
+------------------------------------------------
+
+(Tourney Specific)
+------------------------------------------------
+80% Select a Tourney           give more tourney details
+90% Create new division
+90% Manage divisions 
+80% Create news                column check & option, check roles
+90% Manage news               
+00% do:Assign Teams to Divs 
+00% do:Standings 
+00% do:Assign Players to Teams 
+00% do:Schedule 
+90% Assign Maps to Tourney     cleanup required
+00% do:Report Match 
+
+(Global Actions)
+------------------------------------------------
+90% Create a team 
+90% Manage teams 
+90% Create a player 
+90% Manage players 
+90% List maps 

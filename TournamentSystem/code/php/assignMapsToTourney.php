@@ -15,7 +15,7 @@ foreach ($t->getMaps() as $map) {
 	echo "\t<tr>\n";
 	echo "\t<td>",$map->getValue('map_abbr'),"</td>\n";
 	echo "\t<td>",$map->getValue('map_name'),"</td>\n";
-	echo "<td><a href='?a=saveTourneyMap&amp;tourney_id=$tid&amp;mode=delete&amp;mid=",$map->getValue('map_id'),"'>
+	echo "<td><a href='?a=saveTourneyMap&amp;tourney_id=$tid&amp;mode=delete&amp;map_id=",$map->getValue('map_id'),"'>
 Delete</a></td>";
 	echo "\t</tr>\n";
 }

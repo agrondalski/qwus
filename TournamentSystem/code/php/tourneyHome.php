@@ -1,8 +1,10 @@
 <?php
+
+require_once 'login.php'; 
+
 $tid = $_REQUEST['tourney_id'];
 $t = new tourney(array('tourney_id'=>$tid));
 
-echo "<body bgcolor='#000000' text='#CCFFFF' link='#66FF99' vlink='#66FF99' alink='#00FF00'>";
 echo "<h2>Admin Home</h2>";
 echo "<b>Tourney specific Actions</b><br>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
@@ -19,16 +21,16 @@ echo "<td><font size='2'><a href='?a=manageNews&tourney_id=$tid'>Create news</a>
 echo "<td><font size='2'><a href='?a=listNews&tourney_id=$tid'>Manage news</a></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><font size='2'><a href='?a=assignTeamsToDivs&tourney_id=$tid'>Assign Teams to Divs</a></td>";
-echo "<td><font size='2'><a href='?a=standings&tourney_id=$tid'>Standings</a></td>";
+echo "<td><font size='2'><a href='?a=assignTeamsToDivs&tourney_id=$tid'>do:Assign Teams to Divs</a></td>";
+echo "<td><font size='2'><a href='?a=standings&tourney_id=$tid'>do:Standings</a></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><font size='2'><a href='?a=assignPlayersToTeams&tourney_id=$tid'>Assign Players to Teams</a></td>";
-echo "<td><font size='2'><a href='?a=schedule&tourney_id=$tid'>Schedule</a></td>";
+echo "<td><font size='2'><a href='?a=assignPlayersToTeams&tourney_id=$tid'>do:Assign Players to Teams</a></td>";
+echo "<td><font size='2'><a href='?a=schedule&tourney_id=$tid'>do:Schedule</a></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><font size='2'><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";
-echo "<td><font size='2'><a href='?a=reportMatch&tourney_id=$tid'>Report Match</a></td>";
+echo "<td><font size='2'><a href='?a=reportMatch&tourney_id=$tid'>do:Report Match</a></td>";
 echo "</tr>";
 echo "</table><br>";
 echo "<br>";

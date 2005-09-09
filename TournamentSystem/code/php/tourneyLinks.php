@@ -1,9 +1,6 @@
 <?php
-include 'login.php' ;                                                                                                                                                                                  
-if ($displayLogin)                                                                                                                                                                                     
-{                                                                                                                                                                                                      
-  return ;                                                                                                                                                                                             
-} 
+require_once 'login.php'; 
+
 echo "<a href='?a=tourneyHome&amp;tourney_id=$tid'>Admin Home</a><br>";
-echo "Logged in as: ",$_SESSION["username"];
+//echo "<span align=right>Logged in as: ",$_SESSION["username"],"</span>;
 ?>
