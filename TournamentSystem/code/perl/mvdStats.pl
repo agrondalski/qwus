@@ -16,268 +16,267 @@ use Benchmark;
 package Player;
 sub new
 {
-    my $class = shift;
-    my $self = {};
-    $self->{NAME} = undef;
-    $self->{TEAM} = undef;
-    $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
-    $self->{SHOTGUN_FRAGS} = 0;   $self->{SHOTGUN_DEATHS} = 0;
-    $self->{SSG_FRAGS} = 0;       $self->{SSG_DEATHS} = 0;
-    $self->{NAILGUN_FRAGS} = 0;   $self->{NAILGUN_DEATHS} = 0;
-    $self->{SNG_FRAGS} = 0;       $self->{SNG_DEATHS} = 0;
-    $self->{GRENADE_FRAGS} = 0;   $self->{GRENADE_DEATHS} = 0;
-    $self->{LIGHTNING_FRAGS} = 0; $self->{LIGHTNING_DEATHS} = 0;
-    $self->{AX_FRAGS} = 0;        $self->{AX_DEATHS} = 0;
-    $self->{TELEFRAGS} = 0;       $self->{TELEDEATHS} = 0;
-    $self->{LAVA_DEATHS} = 0;
-    $self->{SLIME_DEATHS} = 0;
-    $self->{WATER_DEATHS} = 0;
-    $self->{FALL_DEATHS} = 0;
-    $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
-  #  $self->{SATAN_FRAGS} = 0;
-    $self->{BORES} = 0;
-  #  $self->{SELF_GRENADE_DEATHS} = 0;
-    $self->{DISCHARGES} = 0;
-    $self->{DISCHARGE_DEATHS} = 0;
-    $self->{TEAMKILLS} = 0;
-  #  $self->{CTF_CAPTURES} = 0;
-  #  $self->{CTF_FLAG_DEFENDS} = 0;
-  #  $self->{CTF_CARRIER_DEFENDS} = 0;
-    bless ($self, $class);
-    return $self;
+  my $class = shift;
+  my $self = {};
+  $self->{NAME} = undef;
+  $self->{TEAM} = undef;
+  $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
+  $self->{SHOTGUN_FRAGS} = 0;   $self->{SHOTGUN_DEATHS} = 0;
+  $self->{SSG_FRAGS} = 0;       $self->{SSG_DEATHS} = 0;
+  $self->{NAILGUN_FRAGS} = 0;   $self->{NAILGUN_DEATHS} = 0;
+  $self->{SNG_FRAGS} = 0;       $self->{SNG_DEATHS} = 0;
+  $self->{GRENADE_FRAGS} = 0;   $self->{GRENADE_DEATHS} = 0;
+  $self->{LIGHTNING_FRAGS} = 0; $self->{LIGHTNING_DEATHS} = 0;
+  $self->{AX_FRAGS} = 0;        $self->{AX_DEATHS} = 0;
+  $self->{TELEFRAGS} = 0;       $self->{TELEDEATHS} = 0;
+  $self->{LAVA_DEATHS} = 0;
+  $self->{SLIME_DEATHS} = 0;
+  $self->{WATER_DEATHS} = 0;
+  $self->{FALL_DEATHS} = 0;
+  $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
+#  $self->{SATAN_FRAGS} = 0;
+  $self->{BORES} = 0;
+#  $self->{SELF_GRENADE_DEATHS} = 0;
+  $self->{DISCHARGES} = 0;
+  $self->{DISCHARGE_DEATHS} = 0;
+  $self->{TEAMKILLS} = 0;
+#  $self->{CTF_CAPTURES} = 0;
+#  $self->{CTF_FLAG_DEFENDS} = 0;
+#  $self->{CTF_CARRIER_DEFENDS} = 0;
+  bless ($self, $class);
+  return $self;
 }
-
 sub name
 {
-    my $self = shift;
-    if (@_) { $self->{NAME} = shift }
-    return $self->{NAME};
+  my $self = shift;
+  if (@_) { $self->{NAME} = shift }
+  return $self->{NAME};
 }
 
 sub team
 {
-    my $self = shift;
-    if (@_) {$self->{TEAM} = shift }
-    return $self->{TEAM};
+  my $self = shift;
+  if (@_) {$self->{TEAM} = shift }
+  return $self->{TEAM};
 }
 
 sub rocketDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{ROCKET_DEATHS} = shift }
-    return $self->{ROCKET_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{ROCKET_DEATHS} = shift }
+  return $self->{ROCKET_DEATHS};
 }
 
 sub rocketFrags
 {
-    my $self = shift;
-    if (@_) { $self->{ROCKET_FRAGS} = shift }
-    return $self->{ROCKET_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{ROCKET_FRAGS} = shift }
+  return $self->{ROCKET_FRAGS};
 }
 
 sub shotgunDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{SHOTGUN_DEATHS} = shift }
-    return $self->{SHOTGUN_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{SHOTGUN_DEATHS} = shift }
+  return $self->{SHOTGUN_DEATHS};
 }
 
 sub shotgunFrags
 {
-    my $self = shift;
-    if (@_) { $self->{SHOTGUN_FRAGS} = shift }
-    return $self->{SHOTGUN_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{SHOTGUN_FRAGS} = shift }
+  return $self->{SHOTGUN_FRAGS};
 }
 
 sub ssgDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{SSG_DEATHS} = shift }
-    return $self->{SSG_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{SSG_DEATHS} = shift }
+  return $self->{SSG_DEATHS};
 }
 
 sub ssgFrags
 {
-    my $self = shift;
-    if (@_) { $self->{SSG_FRAGS} = shift }
-    return $self->{SSG_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{SSG_FRAGS} = shift }
+  return $self->{SSG_FRAGS};
 }
 
 sub nailgunDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{NAILGUN_DEATHS} = shift }
-    return $self->{NAILGUN_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{NAILGUN_DEATHS} = shift }
+  return $self->{NAILGUN_DEATHS};
 }
 
 sub nailgunFrags
 {
-    my $self = shift;
-    if (@_) { $self->{NAILGUN_FRAGS} = shift }
-    return $self->{NAILGUN_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{NAILGUN_FRAGS} = shift }
+  return $self->{NAILGUN_FRAGS};
 }
 
 sub sngDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{SNG_DEATHS} = shift }
-    return $self->{SNG_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{SNG_DEATHS} = shift }
+  return $self->{SNG_DEATHS};
 }
 
 sub sngFrags
 {
-    my $self = shift;
-    if (@_) { $self->{SNG_FRAGS} = shift }
-    return $self->{SNG_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{SNG_FRAGS} = shift }
+  return $self->{SNG_FRAGS};
 }
 
 sub grenadeDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{GRENADE_DEATHS} = shift }
-    return $self->{GRENADE_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{GRENADE_DEATHS} = shift }
+  return $self->{GRENADE_DEATHS};
 }
 
 sub grenadeFrags
 {
-    my $self = shift;
-    if (@_) { $self->{GRENADE_FRAGS} = shift }
-    return $self->{GRENADE_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{GRENADE_FRAGS} = shift }
+  return $self->{GRENADE_FRAGS};
 }
 
 sub lightningDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{LIGHTNING_DEATHS} = shift }
-    return $self->{LIGHTNING_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{LIGHTNING_DEATHS} = shift }
+  return $self->{LIGHTNING_DEATHS};
 }
 
 sub lightningFrags
 {
-    my $self = shift;
-    if (@_) { $self->{LIGHTNING_FRAGS} = shift }
-    return $self->{LIGHTNING_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{LIGHTNING_FRAGS} = shift }
+  return $self->{LIGHTNING_FRAGS};
 }
 
 sub axDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{AX_DEATHS} = shift }
-    return $self->{AX_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{AX_DEATHS} = shift }
+  return $self->{AX_DEATHS};
 }
 
 sub axFrags
 {
-    my $self = shift;
-    if (@_) { $self->{AX_FRAGS} = shift }
-    return $self->{AX_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{AX_FRAGS} = shift }
+  return $self->{AX_FRAGS};
 }
 
 sub teleDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{TELEDEATHS} = shift }
-    return $self->{TELEDEATHS};
+  my $self = shift;
+  if (@_) { $self->{TELEDEATHS} = shift }
+  return $self->{TELEDEATHS};
 }
 
 sub teleFrags
 {
-    my $self = shift;
-    if (@_) { $self->{TELEFRAGS} = shift }
-    return $self->{TELEFRAGS};
+  my $self = shift;
+  if (@_) { $self->{TELEFRAGS} = shift }
+  return $self->{TELEFRAGS};
 }
 
 sub lavaDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{LAVA_DEATHS} = shift }
-    return $self->{LAVA_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{LAVA_DEATHS} = shift }
+  return $self->{LAVA_DEATHS};
 }
 
 sub slimeDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{SLIME_DEATHS} = shift }
-    return $self->{SLIME_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{SLIME_DEATHS} = shift }
+  return $self->{SLIME_DEATHS};
 }
 
 sub waterDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{WATER_DEATHS} = shift }
-    return $self->{WATER_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{WATER_DEATHS} = shift }
+  return $self->{WATER_DEATHS};
 }
 
 sub fallDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{FALL_DEATHS} = shift }
-    return $self->{FALL_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{FALL_DEATHS} = shift }
+  return $self->{FALL_DEATHS};
 }
 
 sub squishDeaths
 {
-    my $self = shift;
-    if (@_) { $self->{SQUISH_DEATHS} = shift }
-    return $self->{SQUISH_DEATHS};
+  my $self = shift;
+  if (@_) { $self->{SQUISH_DEATHS} = shift }
+  return $self->{SQUISH_DEATHS};
 }
 
 sub squishFrags
 {
-    my $self = shift;
-    if (@_) { $self->{SQUISH_FRAGS} = shift }
-    return $self->{SQUISH_FRAGS};
+  my $self = shift;
+  if (@_) { $self->{SQUISH_FRAGS} = shift }
+  return $self->{SQUISH_FRAGS};
 }
 
 sub bores
 {
-    my $self = shift;
-    if (@_) { $self->{BORES} = shift }
-    return $self->{BORES};
+  my $self = shift;
+  if (@_) { $self->{BORES} = shift }
+  return $self->{BORES};
 }
 
 sub teamKills
 {
-    my $self = shift;
-    if (@_) { $self->{TEAMKILLS} = shift }
-    return $self->{TEAMKILLS};
+  my $self = shift;
+  if (@_) { $self->{TEAMKILLS} = shift }
+  return $self->{TEAMKILLS};
 }
 
 sub frags
 {
-    my $self = shift;
-    return 
-    (
-      $self->axFrags() + $self->shotgunFrags() +
-      $self->ssgFrags() + $self->nailgunFrags() +
-      $self->sngFrags() + $self->grenadeFrags() +
-      $self->rocketFrags() + $self->lightningFrags()
-    );
+  my $self = shift;
+  return 
+  (
+    $self->axFrags() + $self->shotgunFrags() +
+    $self->ssgFrags() + $self->nailgunFrags() +
+    $self->sngFrags() + $self->grenadeFrags() +
+    $self->rocketFrags() + $self->lightningFrags()
+  );
 }
  
 sub deaths
 {
-    my $self = shift;
-    return
-    (
-      $self->axDeaths() + $self->shotgunDeaths() +
-      $self->ssgDeaths() + $self->nailgunDeaths() +
-      $self->sngDeaths() + $self->grenadeFrags() +
-      $self->rocketDeaths() + $self->lightningDeaths()
-     );
+  my $self = shift;
+  return
+  (
+    $self->axDeaths() + $self->shotgunDeaths() +
+    $self->ssgDeaths() + $self->nailgunDeaths() +
+    $self->sngDeaths() + $self->grenadeFrags() +
+    $self->rocketDeaths() + $self->lightningDeaths()
+  );
 }
 
 sub rank
 {
-    my $self = shift;
-    return $self->frags - $self->deaths;
+  my $self = shift;
+  return $self->frags - $self->deaths;
 }
 
 sub eff
 {
-    my $self = shift;
-    if ($self->deaths + $self->frags < 1) { return 0; }
-    return ($self->frags / ($self->deaths + $self->frags)) * 100;
+  my $self = shift;
+  if ($self->deaths + $self->frags < 1) { return 0; }
+  return ($self->frags / ($self->deaths + $self->frags)) * 100;
 }
 
 $start = new Benchmark;
@@ -292,7 +291,7 @@ foreach $mvd (@ARGV)
   {
     if (length($string) < 8)
     { 
-     1;
+      1;
     }
     elsif ($string =~ /(.*) rides (.*)'s rocket/)
     {
@@ -366,7 +365,7 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) becomes bored with life/)
     {
-#	print "$1 bored\n";
+#      print "$1 bored\n";
     }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
@@ -388,24 +387,25 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ m/\\name\\/)
     {
-        $name = $';
-        if ($string =~ m/\\team\\/)
+      $name = $';
+      if ($string =~ m/\\team\\/)
+      {
+        $team = $';
+        # don't bother with team if they are a spectator
+        if ($string =~ m/\\*spectator\\/i)
         {
-            $team = $';
-            if ($string =~ m/\\*spectator\\/i)
-            {
-                $spec = $';
-                while ($spec =~ /(.*)\\/) { $spec = $1; }
-                $spec =~ s/\s+$//;
-                if ($spec > 0) { next; }      
-            }
-	    while ($team =~ /(.*)\\/) { $team = $1; }
-            while ($name =~ /(.*)\\/) { $name = $1; }
-            $name =~ s/\s+$//;
-            $team =~ s/\s+$//;
-            $player = findPlayer($name);
-            $player->team($team);
-        }    
+          $spec = $';
+          while ($spec =~ /(.*)\\/) { $spec = $1; }
+          $spec =~ s/\s+$//;
+          if ($spec > 0) { next; }      
+        }
+        while ($team =~ /(.*)\\/) { $team = $1; }
+        while ($name =~ /(.*)\\/) { $name = $1; }
+        $name =~ s/\s+$//;
+        $team =~ s/\s+$//;
+        $player = findPlayer($name);
+        $player->team($team);
+      }    
     }
 # once we reach this point the match is over and no good data remains
 # breaking out of the loop not only provides a speed boost, but
