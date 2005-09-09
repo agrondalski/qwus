@@ -5,10 +5,10 @@
 # nice output for easy database entry
 # attempt to read and/or calculate final score
 # misc bs
-# mvds with parentheses in name currently dont work
 # optimize
 # fix package lameness
 # finish team support
+# either ctf is messed up or blood and forrests names are lame
 
 use utf8;
 use Benchmark;
@@ -278,8 +278,8 @@ $start = new Benchmark;
 foreach $mvd (@ARGV)
 {
   $tempMvd = $mvd . ".tmp";
-  $shell = `sed -f convertAscii.sed $mvd > $tempMvd`;
-  @strings = `strings -3 $tempMvd`;
+  $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
+  @strings = `strings -3 "$tempMvd"`;
 
   foreach $string (@strings)
   {
@@ -395,7 +395,7 @@ foreach $mvd (@ARGV)
 # eliminates the disconnected player list from being added again
     elsif ($string =~ /. - disconnected players/) { last; }
   }
-  $shell = `rm $tempMvd`;
+  $shell = `rm "$tempMvd"`;
 }
 
 outputHTML();
