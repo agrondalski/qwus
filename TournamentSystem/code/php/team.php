@@ -103,9 +103,17 @@ class team
 	}
     }
 
-  public function addplayer($tid, $pid, $itl)
+  public function addPlayer($tid, $pid, $itl)
     {
       $sql_str = sprintf("insert into player_info(tourney_id, team_id, player_id, isTeamLeader) values(%d, %d, %d, %d)", $tid, $this->team_id, $pid, $itl) ;
+      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+
+      mysql_free_result($row) ;
+    }
+
+  public function removePlayer($tid, $pid, $itl)
+    {
+      $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d", $tid, $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
