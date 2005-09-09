@@ -21,11 +21,11 @@ echo "<td><font size='2'><a href='?a=manageNews&tourney_id=$tid'>Create news</a>
 echo "<td><font size='2'><a href='?a=listNews&tourney_id=$tid'>Manage news</a></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><font size='2'><a href='?a=assignTeamsToDivs&tourney_id=$tid'>do:Assign Teams to Divs</a></td>";
+echo "<td><font size='2'><a href='?a=assignTeamsToDiv&tourney_id=$tid'>do:Assign Teams to a Div</a></td>";
 echo "<td><font size='2'><a href='?a=standings&tourney_id=$tid'>do:Standings</a></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><font size='2'><a href='?a=assignPlayersToTeams&tourney_id=$tid'>do:Assign Players to Teams</a></td>";
+echo "<td><font size='2'><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
 echo "<td><font size='2'><a href='?a=schedule&tourney_id=$tid'>do:Schedule</a></td>";
 echo "</tr>";
 echo "<tr>";

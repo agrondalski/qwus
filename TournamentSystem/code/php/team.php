@@ -102,6 +102,20 @@ class team
 	  return false ;
 	}
     }
+    
+  public function getPlayers($tid)
+      {
+        $sql_str = sprintf("select pi.player_id from player_info pi where pi.tourney_id=%d and pi.team_id=%d", $tid, $this->team_id) ;
+        $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+  
+        while ($row=mysql_fetch_row($result))
+  	{
+  	  $arr[] = new player(array('player_id'=>$row[0])) ;
+  	}
+  
+        mysql_free_result($result) ;
+        return $arr ;
+    }
 
   public function addPlayer($tid, $pid, $itl)
     {
