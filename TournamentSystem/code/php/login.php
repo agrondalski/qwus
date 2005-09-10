@@ -67,7 +67,7 @@ if ($displayLogin)
 	    }
 	  else
 	    {
-	      util::throwException('invalid username') ;
+	      util::throwException('invalid password') ;
 	    }
 	}
       catch(Exception $e)

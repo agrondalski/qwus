@@ -74,11 +74,11 @@ class util
       self::throwException($m, 'SQL') ;
     }
 
-  public static function throwException($m, $log)
+  public static function throwException($m, $exc_type)
     {
-      if (!self::isNull($log))
+      if (!self::isNull($exc_type))
 	{
-	  $l = new log_entry(array('type'=>'Exception', 'str'=>$m, 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>self::curdate(), 'log_time'=>self::curtime()));
+	  $l = new log_entry(array('type'=>$exc_type, 'str'=>$m, 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>self::curdate(), 'log_time'=>self::curtime()));
 	}
 
       if (! self::_DEBUG)
