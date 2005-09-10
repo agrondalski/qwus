@@ -177,6 +177,7 @@ class team
   	  $arr[] = new player(array('player_id'=>$row[0])) ;
   	}
   
+	print $tid . ":" . $this->team_id;
         mysql_free_result($result) ;
         return $arr ;
     }

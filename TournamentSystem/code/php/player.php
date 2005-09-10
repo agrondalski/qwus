@@ -224,7 +224,7 @@ class player
 	  return false ;
 	}
 
-      $tid = validateColumn($tid, 'tourney_id') ;
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
@@ -256,7 +256,7 @@ class player
 	  return $isa ;
 	}
 
-      $tid = validateColumn($tid, 'tourney_id') ;
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
