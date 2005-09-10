@@ -16,14 +16,14 @@ try
 	  if (isset($_GET["tourney_id"]))
 	    {
 	      $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-	      $news = $t->getNews() ;
+	      $news = $t->getNews(array('order'=>'news_id', 'desc'=>'yes')) ;
 	      $count = $t->getNewsCount() ;
 	    }
 
 	  // General news
 	  else
 	    {
-	      $news  = news::getNews(array('limit'=>'0,5')) ;
+	      $news  = news::getNews(array('order'=>'news_id', 'desc'=>'yes', 'limit'=>'0,5')) ;
 	      $count = news::getNewsCount() ;
 	    }
 	}
@@ -47,7 +47,7 @@ try
   else
     {
       $p = new player(array('name'=>$_GET['column'])) ;
-      $news = $p-> getNewsColumns(array('limit'=>'1,1')) ;
+      $news = $p->getNewsColumns(array('order'=>'news_id', 'desc'=>'yes', 'limit'=>'0,1')) ;
     }
 }
 catch(Exception $e)
