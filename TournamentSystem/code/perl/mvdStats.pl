@@ -3,11 +3,8 @@
 # todo:
 # fix remaining fun names errors
 # nice output for easy database entry
-# attempt to read and/or calculate final score
 # misc bs
 # optimize
-# fix package lameness
-# finish team support
 # either ctf is messed up or blood and forrests names are lame
 
 use utf8;
@@ -280,6 +277,65 @@ sub eff
   return ($self->frags / ($self->deaths + $self->frags)) * 100;
 }
 
+sub points
+{
+  my $self = shift;
+  return ($self->frags - $self->teamKills);
+}
+
+package Team;
+sub new
+{
+  my $class = shift;
+  my $self = {};
+  $self->{NAME} = undef;
+  $self->{PLAYERS} = [];
+  bless ($self, $class);
+  return $self;
+}
+
+sub name
+{
+  my $self = shift;
+  if (@_) { $self->{NAME} = shift }
+  return $self->{NAME};
+}
+
+sub players
+{
+  my $self = shift;
+  if (@_) { @{ $self->{PLAYERS} } = @_ }
+  return @{ $self->{PLAYERS} };
+}
+
+sub addPlayer
+{
+  my $self = shift;
+  if (@_) 
+  {
+    $playerToAdd = shift; 
+    foreach $player ($self->players)
+    {
+      if ($playerToAdd eq $player) { return; }
+    }
+    push(@{ $self->{PLAYERS} }, $playerToAdd); 
+  }
+}
+
+sub points
+{
+  my $self = shift;
+  $points = 0;
+  foreach $player ($self->players)
+  {
+    $player = main::findPlayer($player);
+    $points += $player->points;
+  }
+  return $points;
+}
+
+package main;
+
 $start = new Benchmark;
 
 foreach $mvd (@ARGV)
@@ -405,6 +461,8 @@ foreach $mvd (@ARGV)
         $team =~ s/\s+$//;
         $player = findPlayer($name);
         $player->team($team);
+        $team = findTeam($team);
+        $team->addPlayer($name);
       }    
     }
 # once we reach this point the match is over and no good data remains
@@ -415,16 +473,25 @@ foreach $mvd (@ARGV)
   $shell = `rm "$tempMvd"`;
 }
 
-outputHTML();
+#outputHTML();
+outputTeamHTML();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
 print "\n\nBenchmark: " . Benchmark::timestr($diff, 'all') . "\n"; 
 
-sub removeTrailingWhiteSpace
+sub outputTeamHTML
 {
-  $string = shift;
-  $string =~ s/\s+$//;
+  foreach $team (@teams)
+  {
+    my @teamPlayers = $team->players;
+    print $team->name . ":\t" . $team->points . "\n";
+    foreach $player (@teamPlayers)
+    {
+      $player = findPlayer($player);
+      print "\t\t" . $player->name . "\t" . $player->points . "\n";
+    }  
+  }
 }
 
 sub outputHTML
@@ -481,3 +548,19 @@ sub findPlayer
   push(@players, $newPlayer);
   return $newPlayer;
 }
+
+
+sub findTeam
+{
+  $teamName = shift;
+  foreach $team (@teams)
+  {
+    if ($team->name eq $teamName) { return $team }
+  }
+  $newTeam = Team->new();
+  $newTeam->name($teamName);
+  push(@teams, $newTeam);
+  return $newTeam;
+}
+
+
