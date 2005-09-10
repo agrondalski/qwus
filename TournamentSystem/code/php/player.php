@@ -79,6 +79,20 @@ class player
       return util::FOUND ;
     }
 
+  public function validateColumnName($col)
+    {
+      $found ;
+      foreach($this as $key => $value)
+	{
+	  if ($col === $key)
+	    {
+	      return ;
+	    }
+	}
+
+      util::throwException('invalid column name specified') ;
+    }
+
   public static function validateColumn($val, $col, $cons=false)
     {
       if ($col == 'player_id')
@@ -251,9 +265,9 @@ class player
 	{
 	  return true;
 	}
-      elseif (!isset($tid))
+      elseif (util::isNull($tid))
 	{
-	  return $isa ;
+	  return false ;
 	}
 
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
@@ -273,6 +287,16 @@ class player
 	  return false ;
 	}
     }
+
+  public function updateCanPostNews($tid, $pn)
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+      $pn = player::validateColumn($pn, 'canPostNews') ;
+
+      $sql_str = sprintf("update tourney_admins ta set ta.canPostNews=%d where ta.tourney_id=%d and ta.player_id=%d", $pn, $tid, $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+    }
+
 
   public function hasColumn()
     {
@@ -333,11 +357,7 @@ class player
 
   public function getValue($col)
     {
-      if (!isset($col) || !isset($this->$col))
-	{
-	  return null ;
-	}      
-
+      $this->validateColumnName($col) ;
       return util::htmlstring($this->$col) ;
     }
 

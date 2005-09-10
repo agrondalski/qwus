@@ -33,14 +33,10 @@ class util
       if (isset($a['order']))
 	{
 	  $o = ' order by ' . $a['order'] ;
-
-	  if (isset($a['desc']) && strtoupper($a['desc'])=='YES')
-	    {
-	      $o .= ' desc' ;
-	    }
-
 	  return self::mysql_real_escape_string($o) ;
 	}
+
+      return null ;
     }
 
   public static function mysql_real_escape_string($s)

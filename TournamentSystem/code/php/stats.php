@@ -62,6 +62,20 @@ class stats
       return util::FOUND ;
     }
 
+  public function validateColumnName($col)
+    {
+      $found ;
+      foreach($this as $key => $value)
+	{
+	  if ($col === $key)
+	    {
+	      return ;
+	    }
+	}
+
+      util::throwException('invalid column name specified') ;
+    }
+
   public static function validateColumn($val, $col, $cons=false)
     {
       if ($col == 'player_id')
@@ -124,12 +138,8 @@ class stats
 
   public function getValue($col)
     {
-      if (!isset($col) || !isset($this->$col))
-	{
-	  return null ;
-	}      
-
-      return $this->$col ;
+      $this->validateColumnName($col) ;
+      return htmlentities($this->$col) ;
     }
 
   public function update($col, $val)
