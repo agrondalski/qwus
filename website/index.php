@@ -54,8 +54,10 @@ function hideShowAll(which)
 
 function hideShowColumnMenu(which)
 {
-  hideShow('column1') ;
-  hideShow('column2') ;
+  for (i=0; i<<?php print count(player::getPlayersWithColumns()); ?>; i++)
+    {
+      hideShow('column' + i) ;
+    }
 }
 
 function initTourneyMenus(which)
@@ -205,13 +207,17 @@ catch(Exception $e) {}
 			        <TD><a href="#" onclick="hideShowColumnMenu(); return false;">Columns</a></TD>
 			</TR>
 
-			<TR id="column1" class=submenu>
-			        <TD><a href="?a=home&amp;column=pg"><img src="img/red.gif" alt="">pg</a></TD>
-			</TR>
+                        <?php
+			$columns = player::getPlayersWithColumns() ;
 
-			<TR id="column2" class=submenu>
-			        <TD><a href="?a=home&amp;column=x"><img src="img/red.gif" alt="">x</a></TD>
-			</TR>
+                         for ($i=0; $i<count($columns); $i++)
+                         {
+			   $w = $columns[$i] ;
+			   print '<TR id="column' . $i. '" class=submenu>
+			                 <TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . substr($w->getValue("name"), 0, 11) . '</a></TD>
+                                 </TR>' ;
+			 }
+                         ?>
 
                         <TR>
                                 <TD class="menuBreak"></TD>

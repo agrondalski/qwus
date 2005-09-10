@@ -65,8 +65,15 @@ if ($displayLogin)
 	      $_SESSION["loggedIn"] = "yes";
 	      $_SESSION["username"] = $_POST["username"] ;
 	    }
+	  else
+	    {
+	      util::throwException('invalid username') ;
+	    }
 	}
-      catch(Exception $e) {}
+      catch(Exception $e)
+	{
+	  $l = new log_entry(array('type'=>'LOGIN', 'str'=>$_POST["username"], 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>util::curdate(), 'log_time'=>util::curtime()));
+	}
       header("location: ?" . $_SERVER['QUERY_STRING']);
     }
 }

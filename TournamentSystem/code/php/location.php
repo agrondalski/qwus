@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class location
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $location_id ;
   private $country_name ;
   private $state_name ;
@@ -21,7 +18,7 @@ class location
 	{
 	  $this->location_id = $id ;
 
-	  if ($this->getLocationInfo()==self::NOTFOUND)
+	  if ($this->getLocationInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No location exists with specified id");
 	    }
@@ -31,29 +28,28 @@ class location
 	    }
 	}
 
-      util::canNotBeNull($a, 'country_name') ;
-
-      $this->country_name  = util::mysql_real_escape_string($a['country_name']) ;
-      $this->state_name    = util::mysql_real_escape_string($a['state_name']) ;
-      $this->logo_url      = util::mysql_real_escape_string($a['logo_url']) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into location(country_name, state_name, logo_url)" .
                          "values('%s', '%s', '%s')",
 			 $this->country_name, $this->state_name, $this->logo_url) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->location_id = mysql_insert_id() ;
     }
 
   private function getLocationInfo()
     {
       $sql_str = sprintf("select country_name, state_name, logo_url from location where location_id=%d", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -63,13 +59,54 @@ class location
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'location_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'country_name')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'state_name')
+	{
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col = 'logo_utl')
+	{
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   public static function getAllLocations()
     {
       $sql_str = sprintf('select l.location_id from location l') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -83,7 +120,7 @@ class location
   public function getTeams()
     {
       $sql_str = sprintf("select t.team_id from team t where t.location_id", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -97,7 +134,7 @@ class location
   public function getPlayers()
     {
       $sql_str = sprintf("select p.player_id from player p where p.location_id", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -120,14 +157,9 @@ class location
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      $this->$col = util::mysql_real_escape_string($val) ;
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update location set %s=%d where location_id=%d", $col, $this->$col, $this->location_id) ;
 	}
@@ -136,13 +168,13 @@ class location
 	  $sql_str = sprintf("update location set %s='%s' where location_id=%d", $col, $this->$col, $this->location_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from location where location_id=%d", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class comment
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $comment_id ;
   private $name ;
   private $player_ip ;
@@ -24,7 +21,7 @@ class comment
 	{
 	  $this->comment_id = $id ;
 
-	  if ($this->getCommentInfo()==self::NOTFOUND)
+	  if ($this->getCommentInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No comment exists with specified id");
 	    }
@@ -34,37 +31,28 @@ class comment
 	    }
 	}
 
-      util::canNotBeNull($a, 'name') ;
-      util::canNotBeNull($a, 'player_ip') ;
-      util::canNotBeNull($a, 'match_id') ;
-      util::canNotBeNull($a, 'comment_text') ;
-      util::canNotBeNull($a, 'comment_date') ;
-      util::canNotBeNull($a, 'comment_time') ;
-
-      $this->name          = util::mysql_real_escape_string($a['name']) ;
-      $this->player_ip     = util::mysql_real_escape_string($a['player_ip']) ;
-      $this->match_id      = util::mysql_real_escape_string($a['match_id']) ;
-      $this->comment_text  = util::mysql_real_escape_string($a['comment_text']) ;
-      $this->comment_date  = util::mysql_real_escape_string($a['comment_date']) ;
-      $this->comment_time  = util::mysql_real_escape_string($a['comment_time']) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into comments(name, player_ip, match_id, comment_text, comment_date, comment_time)" .
                          "values('%s', '%s', %d, '%s', '%s', '%s')",
 			 $this->name, $this->player_ip, $this->match_id, $this->comment_text, $this->comment_date, $this->comment_time) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->comment_id = mysql_insert_id() ;
     }
 
   private function getCommentInfo()
     {
       $sql_str = sprintf("select name, player_ip, match_id, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -77,7 +65,98 @@ class comment
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'comment_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'name')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'player_ip')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'match_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'comment_text')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'comment_date')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!util::isValidDate($val))
+	    {
+	      util::throwException('invalid date specified for ' . $col) ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'comment_time')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!util::isValidTime($val))
+	    {
+	      util::throwException('invalid time specified for ' . $col) ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   public function getMatch()
@@ -97,14 +176,9 @@ class comment
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      $this->$col = util::mysql_real_escape_string($val) ;
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update comments set %s=%d where comment_id=%d", $col, $this->$col, $this->comment_id) ;
 	}
@@ -113,13 +187,13 @@ class comment
 	  $sql_str = sprintf("update comments set %s='%s' where comment_id=%d", $col, $this->$col, $this->comment_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

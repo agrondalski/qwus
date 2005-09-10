@@ -227,7 +227,7 @@ function auto_populate($a)
 
       if (! stats::hasStatsEntry($v1, $v2))
 	{
-	  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4)) ;
+	  //	  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4)) ;
 	}
 
       //$stats[] = $n->getValue("stat_id") ;
@@ -303,7 +303,7 @@ function auto_populate($a)
 	{
 	  $m = new map(array('map_id'=>$maps[generate_integer(count($maps))])) ;
 
-	  if (! $t->usesMap($m->getValue("map_id")))
+	  if (! $t->hasMap($m->getValue("map_id")))
 	  {
 	    $t->addMap($m->getValue("map_id")) ;
 	  }

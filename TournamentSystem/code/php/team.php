@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class team
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $team_id ;
   private $name ;
   private $email ;
@@ -24,7 +21,7 @@ class team
 	{
 	  $this->team_id = $id ;
 
-	  if ($this->getTeamInfo()==self::NOTFOUND)
+	  if ($this->getTeamInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No team exists with specified id");
 	    }
@@ -34,34 +31,28 @@ class team
 	    }
 	}
 
-      util::canNotBeNull($a, 'name') ;
-      util::canNotBeNull($a, 'location_id') ;
-      util::canNotBeNull($a, 'password') ;
-
-      $this->name         = util::mysql_real_escape_string($a['name']) ;
-      $this->email        = util::mysql_real_escape_string($a['email']) ;
-      $this->irc_channel  = util::mysql_real_escape_string($a['irc_channel']) ;
-      $this->location_id  = $a['location_id'] ;
-      $this->password     = md5($a['password']) ;
-      $this->approved     = $a['approved'] ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into team(name, email, irc_channel, location_id, password, approved)" .
                          "values('%s', '%s', '%s', %d, '%s', %d)",
 			 $this->name, $this->email, $this->irc_channel, $this->location_id, $this->password, $this->approved) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . $mysql_error) ;
       $this->team_id = mysql_insert_id() ;
     }
 
   private function getTeamInfo()
     {
       $sql_str = sprintf("select name, email, irc_channel, location_id, password, approved from team where team_id=%d", $this->team_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str" . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str" . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -74,13 +65,84 @@ class team
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'team_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'name')
+	{
+ 	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'email')
+	{
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'irc_channel')
+	{
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'location_id')
+	{
+ 	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'password')
+	{
+ 	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return md5($val) ;
+	}
+
+      elseif ($col == 'approved')
+	{
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'isTeamLeader')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), false) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   public static function getAllTeams()
     {
       $sql_str = sprintf('select t.team_id from team t') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -105,8 +167,10 @@ class team
     
   public function getPlayers($tid)
       {
+	$tid = tourney::validateColumn($tid, 'tourney_id') ;
+
         $sql_str = sprintf("select pi.player_id from player_info pi where pi.tourney_id=%d and pi.team_id=%d", $tid, $this->team_id) ;
-        $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+        $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
   
         while ($row=mysql_fetch_row($result))
   	{
@@ -119,24 +183,34 @@ class team
 
   public function addPlayer($tid, $pid, $itl)
     {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+      $pid = player::validateColumn($pid, 'player_id') ;
+      $itl = $this->validateColumn($itl, 'isTeamLeader') ;
+
       $sql_str = sprintf("insert into player_info(tourney_id, team_id, player_id, isTeamLeader) values(%d, %d, %d, %d)", $tid, $this->team_id, $pid, $itl) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
     }
 
   public function removePlayer($tid, $pid)
     {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+      $pid = player::validateColumn($pid, 'player_id') ;
+
       $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d and player_id=%d", $tid, $this->team_id, $pid) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
     }
 
   public function hasPlayer($tid, $pid)
     {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+      $pid = player::validateColumn($pid, 'player_id') ;
+
       $sql_str = sprintf("select 1 from player_info where tourney_id=%d and team_id=%d and player_id=%d", $tid, $this->team_id, $pid) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)
 	{
@@ -167,21 +241,9 @@ class team
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      if ($col=="password")
-	{
-	  $this->$col = md5($val) ;
-	}
-      else
-	{
-	  $this->$col = util::mysql_real_escape_string($val) ;
-	}
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update team set %s=%d where team_id=%d", $col, $this->$col, $this->team_id) ;
 	}
@@ -190,13 +252,13 @@ class team
 	  $sql_str = sprintf("update team set %s='%s' where team_id=%d", $col, $this->$col, $this->team_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from team where team_id=%d", $this->team_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

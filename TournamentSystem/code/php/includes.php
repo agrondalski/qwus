@@ -12,6 +12,7 @@ require_once 'division.php' ;
 require_once 'game.php' ;
 require_once 'game_type.php' ;
 require_once 'location.php' ;
+require_once 'log_entry.php' ;
 require_once 'map.php' ;
 require_once 'match.php' ;
 require_once 'news.php' ;

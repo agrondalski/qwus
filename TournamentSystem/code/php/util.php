@@ -2,9 +2,13 @@
 
 class util
 {
-  const _DEBUG = 0 ;
+  const _DEBUG   = 0 ;
+
+  const FOUND    = 1 ;
+  const NOTFOUND = 0 ;
 
   const DEFAULT_DATE = '0000-00-00' ;
+  const DEFAULT_TIME = '00:00:00' ;
   const DEFAULT_INT  = -1 ;
   const DEFAULT_STR  = null ;
 
@@ -18,8 +22,10 @@ class util
 	    {
 	      self::throwException("Invalid limit clause") ;
 	    }
-	  return ' limit ' . $l ;
+	  return self::mysql_real_escape_string(' limit ' . $l) ;
 	}
+
+      return null ;
     }
 
   public static function getOrderBy($a)
@@ -33,13 +39,13 @@ class util
 	      $o .= ' desc' ;
 	    }
 
-	  return $o ;
+	  return self::mysql_real_escape_string($o) ;
 	}
     }
 
   public static function mysql_real_escape_string($s)
     {
-      if (!isset($s) || empty($s))
+      if (!isset($s) || $s==="")
 	{
 	  return null ;
 	}
@@ -67,27 +73,67 @@ class util
       return false ;
     }
 
-  public static function canNotBeNull($a, $c)
+  public static function throwSQLException($m)
     {
-      if (util::isNull($a[$c]))
-	{
-	  self::throwException($c . ' cannot be null') ;
-	}
+      self::throwException($m, 'SQL') ;
     }
 
-  public static function throwException($m)
+  public static function throwException($m, $log)
     {
+      if (!self::isNull($log))
+	{
+	  $l = new log_entry(array('type'=>'Exception', 'str'=>$m, 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>self::curdate(), 'log_time'=>self::curtime()));
+	}
+
       if (! self::_DEBUG)
 	{
 	  throw new Exception($m) ;
 	}
-
-      die($m) ;
+      else
+	{
+	  die($m) ;
+	}
     }
 
   public static function htmlstring($s)
     {
       return htmlentities($s) ;
+    }
+
+  public static function curdate()
+    {
+      return date('Y-m-d', time()) ;
+    }
+
+  public static function isValidDate($d)
+    {
+      if (isset($d) && !empty($d))
+	{
+	  if(preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $d))
+	    {
+	      return true ;
+	    }
+	}
+
+      return false ;
+    }
+
+  public static function curtime()
+    {
+      return date('H:i:s', time()) ;
+    }
+
+  public static function isValidTime($d)
+    {
+      if (isset($d) && !empty($d))
+	{
+	  if(preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $d))
+	    {
+	      return true ;
+	    }
+	}
+
+      return false ;
     }
 }
 

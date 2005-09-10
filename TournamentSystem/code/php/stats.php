@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class stats
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $player_id ;
   private $game_id ;
   private $score ;
@@ -23,7 +20,7 @@ class stats
 	  $this->player_id = $id ;
 	  $this->game_id = $id2 ;
 
-	  if ($this->getStatsInfo()==self::NOTFOUND)
+	  if ($this->getStatsInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No stats exists with specified id");
 	    }
@@ -33,32 +30,27 @@ class stats
 	    }
 	}
 
-      util::canNotBeNull($a, 'player_id') ;
-      util::canNotBeNull($a, 'game_id') ;
-      util::canNotBeNull($a, 'score') ;
-      //      util::canNotBeNull($a, 'time') ;
-
-      $this->player_id  = util::mysql_real_escape_string($a['player_id']) ;
-      $this->game_id    = util::mysql_real_escape_string($a['game_id']) ;
-      $this->score      = util::mysql_real_escape_string($a['score']) ;
-      $this->time       = util::mysql_real_escape_string($a['time']) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into stats(player_id, game_id, score, time)" .
                          "values(%d, %d, %d, %d)",
 			 $this->player_id, $this->game_id, $this->score, $this->time) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
     }
 
   private function getStatsInfo()
     {
       $sql_str = sprintf("select score, time from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -67,13 +59,59 @@ class stats
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'player_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'game_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'score')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'time')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   public static function hasStatsEntry($pid, $gid)
     {
+      $pid = player::validateColumn($pid, 'player_id') ;
+      $gid = game::validateColumn($gid, 'game_id') ;
+
       $sql_str = sprintf("select 1 from stats where player_id=%d and game_id=%d", $pid, $gid) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -96,14 +134,9 @@ class stats
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      $this->$col = util::mysql_real_escape_string($val) ;
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update stats set %s=%d where player_id=%d and game_id=%d", $col, $this->$col, $this->player_id, $this->game_id) ;
 	}
@@ -112,13 +145,13 @@ class stats
 	  $sql_str = sprintf("update stats set %s='%s' where player_id=%d and game_id=%d", $col, $this->$col, $this->player_id, $this->game_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

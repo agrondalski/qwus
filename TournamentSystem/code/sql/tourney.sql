@@ -68,7 +68,8 @@ create table division(
   playoff_spots integer      NOT NULL,
   elim_losses   integer      NOT NULL,
 --
-  constraint   division_pk primary key(division_id))
+  constraint   division_pk primary key(division_id),
+  constraint   division_unq1 unique(tourney_id, name))
 ENGINE=INNODB ;
 
 create table team(
@@ -140,7 +141,7 @@ create table match_table(
   winning_team_id      integer,
   approved             boolean NOT NULL default FALSE,
   match_date           date,
-  deadline             date,
+  deadline             date    NOT NULL,
   week_name            varchar(250),
 --
   constraint match_pk primary key(match_id))
@@ -199,6 +200,16 @@ create table news(
   text          MEDIUMTEXT  NOT NULL,
 --
   constraint news_pk primary key(news_id))
+ENGINE=INNODB ;
+
+create table log_table(
+  log_id      bigint NOT NULL auto_increment,
+  type        varchar(250),
+  str         varchar(250),
+  logged_ip   varchar(250),
+  log_date    date,
+  log_time    time,
+  constraint log_table_pk primary key(log_id))
 ENGINE=INNODB ;
 
 

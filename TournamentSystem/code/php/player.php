@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class player
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $player_id ;
   private $name ;
   private $superAdmin ;
@@ -24,7 +21,7 @@ class player
 	    {
 	      $this->player_id = $id ;
 	      
-	      if ($this->getPlayerInfo()==self::NOTFOUND)
+	      if ($this->getPlayerInfo()==util::NOTFOUND)
 		{
 		  util::throwException("No player exists with specified id");
 		}
@@ -36,7 +33,7 @@ class player
 
 	  $this->name = util::mysql_real_escape_string($a['name']) ;
 	      
-	  if ($this->getPlayerInfoByName()==self::NOTFOUND)
+	  if ($this->getPlayerInfoByName()==util::NOTFOUND)
 	    {
 	      util::throwException("No player exists with specified name");
 	    }
@@ -46,34 +43,28 @@ class player
 	    }
 	}
 
-      util::canNotBeNull($a, 'name') ;
-      util::canNotBeNull($a, 'location_id') ;
-      //util::canNotBeNull($a, 'password') ;
-
-      $this->name         = util::mysql_real_escape_string($a['name']) ;
-      $this->superAdmin   = util::nvl(util::mysql_real_escape_string($a['superAdmin']), false) ;
-      $this->location_id  = util::mysql_real_escape_string($a['location_id']) ;
-      $this->password     = md5($a['password']) ;
-      $this->hasColumn    = util::nvl(util::mysql_real_escape_string($a['hasColumn']), false) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into player(name, superAdmin, location_id, password, hasColumn)" .
                          "values('%s', %d, %d, '%s', %d)",
 			 $this->name, $this->superAdmin, $this->location_id, $this->password, $this->hasColumn) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->player_id = mysql_insert_id() ;
     }
-
 
   private function getPlayerInfo()
     {
       $sql_str = sprintf("select name, superAdmin, location_id, password, hasColumn from player where player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -85,18 +76,79 @@ class player
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'player_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'name')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'superAdmin')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val, false)) ;
+	}
+
+      elseif ($col == 'location_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'password')
+	{
+	  return md5($val) ;
+	}
+
+      elseif ($col == 'hasColumn')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), false) ;
+	}
+
+      elseif ($col == 'canPostNews')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), false) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   private function getPlayerInfoByName()
     {
       $sql_str = sprintf("select player_id, superAdmin, location_id, password, hasColumn from player where name='%s'", $this->name) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -108,13 +160,28 @@ class player
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
     }
 
   public static function getAllPlayers()
     {
       $sql_str = sprintf('select p.player_id from player p') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new player(array('player_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+
+  public static function getPlayersWithColumns()
+    {
+      $sql_str = sprintf('select p.player_id from player p where hasColumn=1') ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -157,9 +224,10 @@ class player
 	  return false ;
 	}
 
+      $tid = validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
       
       $row = mysql_fetch_row($result) ;
       $val = $row[0] ;
@@ -188,8 +256,10 @@ class player
 	  return $isa ;
 	}
 
+      $tid = validateColumn($tid, 'tourney_id') ;
+
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $row = mysql_fetch_row($result) ;
       $val = $row[0] ;
@@ -216,10 +286,22 @@ class player
 	}
     }
 
+  public static function columnCount()
+    {
+      $sql_str = sprintf("select count(*) from player p where hasColumn=true") ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
+
+      mysql_free_result($result) ;
+      return $val ;
+    }
+
   public function getStats()
     {
       $sql_str = sprintf("select s.game_id from stats s where s.player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -238,7 +320,7 @@ class player
   public function getNewsColumns($a)
     {
       $sql_str = sprintf("select n.news_id from news n where n.writer_id=%d and isColumn=true %s %s", $this->player_id, util::getOrderBy($a), util::getLimit($a)) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -261,21 +343,9 @@ class player
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      if ($col=="password")
-	{
-	  $this->$col = md5($val) ;
-	}
-      else
-	{
-	  $this->$col = util::mysql_real_escape_string($val) ;
-	}
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update player set %s=%d where player_id=%d", $col, $this->$col, $this->player_id) ;
 	}
@@ -284,13 +354,13 @@ class player
 	  $sql_str = sprintf("update player set %s='%s' where player_id=%d", $col, $this->$col, $this->player_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from player where player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

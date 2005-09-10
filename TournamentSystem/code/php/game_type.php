@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class game_type
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $game_type_id ;
   private $name ;
 
@@ -19,7 +16,7 @@ class game_type
 	{
 	  $this->game_type_id = $id ;
 
-	  if ($this->getGameTypeInfo()==self::NOTFOUND)
+	  if ($this->getGameTypeInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No game_type exists with specified id");
 	    }
@@ -29,27 +26,28 @@ class game_type
 	    }
 	}
 
-      util::canNotBeNull($a, 'name') ;
-
-      $this->name  = util::mysql_real_escape_string($a['name']) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into game_type(name)" .
                          "values('%s')",
 			 $this->name) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->game_type_id = mysql_insert_id() ;
     }
 
   private function getGameTypeInfo()
     {
       $sql_str = sprintf("select name from game_type where game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -57,13 +55,39 @@ class game_type
 
       mysql_free_result($row) ;
 
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'game_type_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+	  
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'name')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
     }
 
   public static function getAllGameTypes()
     {
       $sql_str = sprintf('select gt.game_type_id from game_type gt') ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -77,7 +101,7 @@ class game_type
   public function getTournys()
     {
       $sql_str = sprintf("select t.tourney_id from tourney t where t.game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -91,7 +115,7 @@ class game_type
   public function getMaps()
     {
       $sql_str = sprintf("select m.map_id from maps m where m.game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -114,14 +138,9 @@ class game_type
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      $this->$col = util::mysql_real_escape_string($val) ;
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update game_type set %s=%d where game_type_id=%d", $col, $this->$col, $this->game_type_id) ;
 	}
@@ -130,13 +149,13 @@ class game_type
 	  $sql_str = sprintf("update game_type set %s='%s' where game_type_id=%d", $col, $this->$col, $this->game_type_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from game_type where game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

@@ -3,24 +3,26 @@ require_once 'dbConnect.php' ;
 ?>
 
 <?php
-class map
+class log_entry
 {
-  private $map_id ;
-  private $map_name ;
-  private $map_abbr ;
-  private $game_type_id ;
+  private $log_id ;
+  private $type ;
+  private $str ;
+  private $logged_ip ;
+  private $log_date ;
+  private $log_time ;
 
   function __construct($a)
     {
-      $id = $a['map_id'] ;
+      $id = $a['log_id'] ;
 
       if (isset($id) && is_numeric($id))
 	{
-	  $this->map_id = $id ;
+	  $this->log_id = $id ;
 
-	  if ($this->getMapsInfo()==util::NOTFOUND)
+	  if ($this->getLogEntryInfo()==util::NOTFOUND)
 	    {
-	      util::throwException("No maps exist with specified id");
+	      util::throwException("No log entry exists with specified id");
 	    }
 	  else
 	    {
@@ -33,17 +35,17 @@ class map
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into maps(map_name, map_abbr, game_type_id)" .
-                         "values('%s', '%s', '%s')",
-			 $this->map_name, $this->map_abbr, $this->game_type_id) ;
+      $sql_str = sprintf("insert into log_table(type, str, logged_ip, log_date, log_time)" .
+                         "values('%s', '%s', '%s', '%s', '%s')",
+			 $this->type, $this->str, $this->logged_ip, $this->log_date, $this->log_time) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
-      $this->map_id = mysql_insert_id() ;
+      $this->log_id = mysql_insert_id() ;
     }
 
-  private function getMapsInfo()
+  private function getLogEntryInfo()
     {
-      $sql_str = sprintf("select map_name, map_abbr, game_type_id from maps where map_id=%d", $this->map_id) ;
+      $sql_str = sprintf("select type, str, logged_ip, log_date, log_time from log_table where log_id=%d", $this->log_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -53,9 +55,11 @@ class map
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->map_name      = $row[0] ;
-      $this->map_abbr      = $row[1] ;
-      $this->game_type_id  = $row[2] ; 
+      $this->type       = $row[0] ;
+      $this->str        = $row[1] ;
+      $this->logged_in  = $row[2] ;
+      $this->log_date   = $row[3] ; 
+      $this->log_time   = $row[4] ;
 
       mysql_free_result($row) ;
 
@@ -64,7 +68,7 @@ class map
 
   public static function validateColumn($val, $col, $cons=false)
     {
-      if ($col == 'map_id')
+      if ($col == 'log_id')
 	{
 	  if (!$cons)
 	    {
@@ -77,7 +81,7 @@ class map
 	    }
 	}
 
-      elseif ($col == 'map_name')
+      elseif ($col == 'type')
 	{
 	  if (util::isNull($val))
 	    {
@@ -87,7 +91,7 @@ class map
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'map_abbr')
+      elseif ($col == 'str')
 	{
 	  if (util::isNull($val))
 	    {
@@ -97,13 +101,38 @@ class map
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'game_type_id')
+      elseif ($col == 'logged_ip')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), '0.0.0.0') ;
+	}
+
+      elseif ($col == 'log_date')
 	{
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!util::isValidDate($val))
+	    {
+	      util::throwException('invalid date specified for ' . $col) ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'log_time')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  if (!util::isValidTime($val))
+	    {
+	      util::throwException('invalid time specified for ' . $col) ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -113,34 +142,6 @@ class map
 	}
     }
 
-  public static function getAllMaps()
-    {
-      $sql_str = sprintf('select m.map_id from maps m') ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new map(array('map_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
-  public function getGames()
-    {
-      $sql_str = sprintf("select g.game_id from game g where g.map_id=%d", $this->map_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new game(array('game_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
   public function getValue($col)
     {
       if (!isset($col) || !isset($this->$col))
@@ -148,7 +149,7 @@ class map
 	  return null ;
 	}      
 
-      return $this->$col ;
+      return util::htmlstring($this->$col) ;
     }
 
   public function update($col, $val)
@@ -157,11 +158,11 @@ class map
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update map set %s=%d where map_id=%d", $col, $this->$col, $this->map_id) ;
+	  $sql_str = sprintf("update log_table set %s=%d where log_id=%d", $col, $this->$col, $this->log_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update map set %s='%s' where map_id=%d", $col, $this->$col, $this->map_id) ;
+	  $sql_str = sprintf("update log_table set %s='%s' where log_id=%d", $col, $this->$col, $this->log_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -169,7 +170,7 @@ class map
 
   public function delete()
     {
-      $sql_str = sprintf("delete from maps where map_id=%d", $this->map_id) ;
+      $sql_str = sprintf("delete from log_table where log_id=%d", $this->log_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }

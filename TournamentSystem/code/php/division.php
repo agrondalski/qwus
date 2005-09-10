@@ -5,9 +5,6 @@ require_once 'dbConnect.php' ;
 <?php
 class division
 {
-  const FOUND    = 1 ;
-  const NOTFOUND = 0 ;
-
   private $division_id ;
   private $tourney_id ;
   private $name ;
@@ -24,7 +21,7 @@ class division
 	{
 	  $this->division_id = $id ;
 
-	  if ($this->getDivisionInfo()==self::NOTFOUND)
+	  if ($this->getDivisionInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No division exists with specified id");
 	    }
@@ -34,34 +31,28 @@ class division
 	    }
 	}
 
-      util::canNotBeNull($a, 'tourney_id') ;
-      util::canNotBeNull($a, 'name') ;
-
-      $this->tourney_id     = util::mysql_real_escape_string($a['tourney_id']) ;
-      $this->name           = util::mysql_real_escape_string($a['name']) ;
-
-      $this->max_teams      = util::nvl(util::mysql_real_escape_string($a['max_teams']), 0) ;
-      $this->num_games      = util::nvl(util::mysql_real_escape_string($a['num_games']), 0) ;
-      $this->playoff_spots  = util::nvl(util::mysql_real_escape_string($a['playoff_spots']), 0) ;
-      $this->elim_losses    = util::nvl(util::mysql_real_escape_string($a['elim_losses']), 0) ;
+      foreach($this as $key => $value)
+	{
+	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
+	}
 
       $sql_str = sprintf("insert into division(tourney_id, name, max_teams, num_games, playoff_spots, elim_losses)" .
                          "values(%d, '%s', %d, %d, %d, %d)",
 			 $this->tourney_id, $this->name, $this->max_teams, $this->num_games, $this->playoff_spots, $this->elim_losses) ;
 
-      $result = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->division_id = mysql_insert_id() ;
     }
 
   private function getDivisionInfo()
     {
       $sql_str = sprintf("select tourney_id, name, max_teams, num_games, playoff_spots, elim_losses from division where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
 	  mysql_free_result($result) ;
-	  return self::NOTFOUND ;
+	  return util::NOTFOUND ;
 	}
       $row = mysql_fetch_row($result) ;
 
@@ -73,13 +64,78 @@ class division
       $this->elim_losses    = $row[5] ; 
 
       mysql_free_result($row) ;
-      return self::FOUND ;
+      return util::FOUND ;
+    }
+
+  public static function validateColumn($val, $col, $cons=false)
+    {
+      if ($col == 'division_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'tourney_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'name')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'max_teams')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
+	}
+
+      elseif ($col = 'num_games')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
+	}
+
+      elseif ($col == 'playoff_spots')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
+	}
+
+      elseif ($col == 'elim_losses')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
+	}
+
+      elseif ($col == 'approved')
+	{
+	  return util::nvl(util::mysql_real_escape_string($val), false) ;
+	}
+
+      else
+	{
+	  util::throwException('invalid column specified') ;
+	}
     }
 
   public function getTeams()
     {
       $sql_str = sprintf("select di.team_id from division_info di where di.division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -95,7 +151,7 @@ class division
       $sql_str = sprintf("select pi.player_id from division_info di, player_info pi " .
                          "where di.division_id=%d and di.team_id = pi.team_id and pi.tourney_id=%d",
                          $this->division_id, $this->tourney_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -109,7 +165,7 @@ class division
   public function getMatches()
     {
       $sql_str = sprintf("select m.match_id from match_table m where m.division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -127,24 +183,31 @@ class division
 
   public function addTeam($id, $app)
     {
+      $id  = team::validateColumn($id, 'team_id') ;
+      $app = $this->validateColumn($app, 'approved') ;
+
       $sql_str = sprintf("insert into division_info(division_id, team_id, approved) values(%d, %d, %d)", $this->division_id, $id, $app) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
     }
 
   public function removeTeam($id)
     {
+      $id = tean::validateColumn($id, 'team_id') ;
+
       $sql_str = sprintf("delete from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;
     }
 
   public function hasTeam($id)
     {
+      $id = team::validateColumn($id, 'team_id') ;
+
       $sql_str = sprintf("select 1 from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)
 	{
@@ -170,14 +233,9 @@ class division
 
   public function update($col, $val)
     {
-      if (!isset($col) || !isset($val))
-	{
-	  return null ;
-	}
+      $this->$col = $this->validateColumn($val, $col) ;
 
-      $this->$col = util::mysql_real_escape_string($val) ;
-
-      if (is_numeric($val))
+      if (is_numeric($this->$col))
 	{
 	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
@@ -186,13 +244,13 @@ class division
 	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from division where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>
