@@ -194,7 +194,7 @@ class division
     {
       $id  = team::validateColumn($id, 'team_id') ;
 
-      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d, %d)", $this->division_id, $id) ;
+      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;

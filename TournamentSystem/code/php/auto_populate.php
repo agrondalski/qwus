@@ -109,7 +109,7 @@ function auto_populate($a)
   for ($i=0; $i<$c_tour; $i++)
     {
       $v1 = $gt[generate_integer(count($gt))] ;
-      $v2 = PREFIX . generate_string(10) ;
+      $v2 = 'naql-' . generate_string(5) ;
       $v3 = 'TOURNAMENT' ;
 
       $sd = generate_integer(100) ;
@@ -127,7 +127,7 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_play; $i++)
     {
-      $v1 = PREFIX . generate_string(10) ;
+      $v1 = 'player-' . generate_string(5) ;
       $v2 = generate_boolean() ;
       $v3 = $loc[generate_integer(count($loc))] ;
       $v4 = PREFIX . generate_string(10) ; 
@@ -139,7 +139,7 @@ function auto_populate($a)
   for ($i=0; $i<$c_div; $i++)
     {
       $v1 = $tour[generate_integer(count($tour))] ; 
-      $v2 = PREFIX . generate_string(10) ; 
+      $v2 = 'division-' . generate_string(5) ; 
       $v3 = generate_integer(10) ;
       $v4 = generate_integer(10) ;
       $v5 = generate_integer(10) ;
@@ -151,9 +151,9 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_team; $i++)
     {
-      $v1 = PREFIX . generate_string(10) ; 
-      $v2 = PREFIX . generate_string(10) ; 
-      $v3 = PREFIX . generate_string(10) ; 
+      $v1 = 'team-' . generate_string(5) ; 
+      $v2 = 'email@-' . generate_string(10) ; 
+      $v3 = '#chan_' . generate_string(10) ; 
       $v4 = $loc[generate_integer(count($loc))] ;
       $v5 = generate_string(10) ;
       $v6 = generate_boolean() ;
@@ -185,7 +185,7 @@ function auto_populate($a)
       $v5 = generate_boolean() ;
       $v6 = date('Y-m-d', time()+(60*60*24*(generate_integer(100)))) ;
       $v7 = date('Y-m-d', time()+(60*60*24*(generate_integer(100)))) ;
-      $v8 = PREFIX . generate_string(25) ;
+      $v8 = 'week-' . generate_string(25) ;
       $n = new match(array('division_id'=>$v1, 'team1_id'=>$v2, 'team2_id'=>$v3, 'winning_team_id'=>$v4, 'approved'=>$v5,
 			   'match_date'=>$v6, 'deadline'=>$v7, 'week_name'=>$v8)) ;
 
@@ -198,8 +198,8 @@ function auto_populate($a)
       $v2 = $maps[generate_integer(count($maps))] ;
       $v3 = generate_integer(250) ;
       $v4 = generate_integer(250) ;
-      $v5 = PREFIX . generate_string(25) ;
-      $v6 = PREFIX . generate_string(25) ;
+      $v5 = 'http://' . generate_string(25) ;
+      $v6 = 'http://' . generate_string(25) ;
       $n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
 
       $game[] = $n->getValue("game_id") ;
@@ -207,10 +207,10 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_comm; $i++)
     {
-      $v1 = generate_string(250) ;
+      $v1 = 'player-' . generate_string(250) ;
       $v2 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
       $v3 = $mat[generate_integer(count($mat))] ;
-      $v4 = PREFIX . generate_string(100) ;
+      $v4 = 'comment-' . generate_string(100) ;
       $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
       $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
       $n = new comment(array('name'=>$v1, 'player_ip'=>$v2, 'match_id'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
@@ -256,12 +256,12 @@ function auto_populate($a)
 	  $v3 = true ;
 	}
 
-      $v4 = PREFIX . generate_string(25) ;
+      $v4 = 'subject-' . generate_string(25) ;
 
       $c = $c + generate_integer(25) ;
       $v5 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
 
-      $v6 = PREFIX . generate_string(25) ;
+      $v6 = generate_string(25) ;
       $n = new news(array('writer_id'=>$v1, 'tourney_id'=>$v2, 'isColumn'=>$v3, 'subject'=>$v4, 'news_date'=>$v5, 'text'=>$v6)) ;
 
       //$news[] = $n->getValue("news_id") ;
@@ -359,12 +359,12 @@ try
   for ($i=0; $i<5; $i++)
     {
 
-      $v2 = PREFIX . generate_string(25) ;
+      $v2 = 'subject-' . generate_string(25) ;
 
       $c = $c + generate_integer(25) ;
       $v3 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
 
-      $v4 = PREFIX . generate_string(25) ;
+      $v4 = generate_string(25) ;
 
       $n1 = new news(array('writer_id'=>$v1, 'tourney_id'=>null, 'isColumn'=>true, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
     }
