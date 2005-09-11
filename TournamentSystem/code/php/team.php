@@ -226,8 +226,13 @@ class team
       $pid = player::validateColumn($pid, 'player_id') ;
       $itl = $this->validateColumn($itl, 'isTeamLeader') ;
 
-      $sql_str = sprintf("insert into player_info(tourney_id, team_id, player_id, isTeamLeader) values(%d, %d, %d, %d)", $tid, $this->team_id, $pid, $itl) ;
+      $sql_str = sprintf("insert into player_info(tourney_id, team_id, player_id, isTeamLeader) values(%d, %d, %d, false)", $tid, $this->team_id, $pid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($itl)
+	{
+	  $this->updateTeamLeader($tid, $pid) ;
+	}
 
       mysql_free_result($row) ;
     }

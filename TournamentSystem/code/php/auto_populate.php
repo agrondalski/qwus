@@ -131,9 +131,13 @@ function auto_populate($a)
       $v2 = generate_boolean() ;
       $v3 = $loc[generate_integer(count($loc))] ;
       $v4 = PREFIX . generate_string(10) ; 
-      $n = new player(array('name'=>$v1, 'superAdmin'=>$v2, 'location_id'=>$v3, 'password'=>$v4)) ;
 
-      $play[] = $n->getValue("player_id") ;
+      try
+	{
+	  $n = new player(array('name'=>$v1, 'superAdmin'=>$v2, 'location_id'=>$v3, 'password'=>$v4)) ;
+	  $play[] = $n->getValue("player_id") ;
+	}
+      catch(Exception $e){}
     }
 
   for ($i=0; $i<$c_div; $i++)
