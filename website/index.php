@@ -50,6 +50,8 @@ function hideShowAll(which)
   hideShow(which + '_1') ;
   hideShow(which + '_2') ;
   hideShow(which + '_3') ;
+  hideShow(which + '_4') ;
+  hideShow(which + '_5') ;
 }
 
 function hideShowColumnMenu(which)
@@ -168,15 +170,23 @@ catch(Exception $e) {}
 			</TR>
 
 			<TR id="tourney2_1" class=submenu>
-			        <TD><a href="?a=home&amp;tourney_id=2"><img src="img/red.gif" alt="">Home</a></TD>
+			        <TD><a href="?a=home&amp;tourney_id=2"><img src="img/red.gif" alt="">News</a></TD>
 			</TR>
 
 			<TR id="tourney2_2" class=submenu>
-			        <TD><a href="?a=tourneyHome&amp;tourney_id=2"><img src="img/red.gif" alt="">Admin</a></TD>
+			        <TD><a href=""><img src="img/red.gif" alt="">Standings</a></TD>
 			</TR>
 
 			<TR id="tourney2_3" class=submenu>
+			        <TD><a href=""><img src="img/red.gif" alt="">Schedule</a></TD>
+			</TR>
+
+			<TR id="tourney2_4" class=submenu>
 			        <TD><a href="?a=newsarchive&amp;tourney_id=2"><img src="img/red.gif" alt="">Archive</a></TD>
+			</TR>
+
+			<TR id="tourney2_5" class=submenu>
+			        <TD><a href=""><img src="img/red.gif" alt="">?</a></TD>
 			</TR>
 
 			<TR>
@@ -188,15 +198,23 @@ catch(Exception $e) {}
 			</TR>
 
 			<TR id="tourney3_1" class=submenu>
-			        <TD><a href="?a=home&amp;tourney_id=3"><img src="img/red.gif" alt="">Home</a></TD>
+			        <TD><a href="?a=home&amp;tourney_id=3"><img src="img/red.gif" alt="">News</a></TD>
 			</TR>
 
 			<TR id="tourney3_2" class=submenu>
-			        <TD><a href="?a=tourneyHome&amp;tourney_id=3"><img src="img/red.gif" alt="">Admin</a></TD>
+			        <TD><a href=""><img src="img/red.gif" alt="">Standings</a></TD>
 			</TR>
 
 			<TR id="tourney3_3" class=submenu>
+			        <TD><a href=""><img src="img/red.gif" alt="">Schedule</a></TD>
+			</TR>
+
+			<TR id="tourney3_4" class=submenu>
 			        <TD><a href="?a=newsarchive&amp;tourney_id=3"><img src="img/red.gif" alt="">Archive</a></TD>
+			</TR>
+
+			<TR id="tourney3_5" class=submenu>
+			        <TD><a href=""><img src="img/red.gif" alt="">?</a></TD>
 			</TR>
 
                         <TR>
@@ -224,8 +242,17 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
+				<TD><A href="?a=listTourneys">Login</A></TD>
+			</TR>
+
+                        <TR>
+                                <TD class="menuBreak"></TD>
+                        </TR>
+
+			<TR>
 				<TD><A href="?a=links">Links</A></TD>
 			</TR>
+
 			</TABLE>
 			</TD>
 		</TR>
