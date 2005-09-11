@@ -1,7 +1,36 @@
 b {color: #003AAF; font-size: 12px;}
 body {margin: 30px 0px 12px 50px; background: #EEEEEE;}
-body,td,a,form,inpu,textarea {font-family: "Trebuchet MS",Verdana,serif; font-size: 12px; color: #222;} 
+body,td,a,form,input,textarea {font-family: "Trebuchet MS",Verdana,serif; font-size: 12px; color: #222;} 
 td {vertical-align: top;}
+th {font-size: 10px;}
+input.button {	font-weight: bold;	
+			font-size: 9px;	
+			font-family: Verdana, Arial, Helvetica, sans-serif;	
+			padding: 4px 8px;	
+			border-top: 1px solid white;	
+			border-right: 1px solid black;	
+			border-bottom: 1px solid black;	
+			border-left: 1px solid white;	
+			text-align: center;	
+			min-width: 50px;}
+input.button:link { 	background-color: #ccc; 	
+                    color: #369;	
+                    text-decoration: none;	}
+input.button:visited {	background-color: #ccc; 	
+                    color: #369;	
+                    text-decoration: none;	}
+                    
+input.button:hover { 	background-color: #ccc; 	
+                    color: red;	
+                    border-color: black white white black;	
+                    text-decoration: none;	}
+                    
+input.button:active { 	background-color: #ccc; 	
+					color: #369; 	
+					text-decoration: none;	}
+
+
+
 a {font-family: "Trebuchet MS",Verdana,serif; font-size: 12px; color: #0044CC;}
 small {color:#999; font-size: 10px; text-align:right; padding:6px 12px 0px 5px;}
 img {border: none;}
@@ -47,5 +76,3 @@ img {border: none;}
 .submenu a:HOVER {background: #0055BB; color: #FFF;}
 .submenu table, .bottom table, .news table, .news, .newsarchive, .newsarchive table, .servers {width: 100%;}
 .submenu td {text-align: left;}
-
-.admintbl th {fond-size: 14px;}
