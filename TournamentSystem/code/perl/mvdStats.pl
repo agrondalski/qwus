@@ -6,6 +6,8 @@
 # misc bs
 # optimize
 # either ctf is messed up or blood and forrests names are lame
+# bores, discharges, telefrags, ctf msgs
+# have to check and double check score calculations
 
 use utf8;
 use Benchmark;
@@ -32,8 +34,8 @@ sub new
   $self->{FALL_DEATHS} = 0;
   $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
  #  $self->{SATAN_FRAGS} = 0;
-   $self->{BORES} = 0;
- #  $self->{SELF_GRENADE_DEATHS} = 0;
+  $self->{ROCKET_BORES} = 0;
+  $self->{GRENADE_BORES} = 0;
   $self->{DISCHARGES} = 0;
   $self->{DISCHARGE_DEATHS} = 0;
   $self->{TEAMKILLS} = 0;
@@ -226,11 +228,18 @@ sub squishFrags
   return $self->{SQUISH_FRAGS};
 }
 
-sub bores
+sub rocketBores
 {
   my $self = shift;
-  if (@_) { $self->{BORES} = shift }
-  return $self->{BORES};
+  if (@_) { $self->{ROCKET_BORES} = shift }
+  return $self->{ROCKET_BORES};
+}
+
+sub grenadeBores
+{
+  my $self = shift;
+  if (@_) { $self->{GRENADE_BORES} = shift }
+  return $self->{GRENADE_BORES};
 }
 
 sub teamKills
@@ -238,6 +247,32 @@ sub teamKills
   my $self = shift;
   if (@_) { $self->{TEAMKILLS} = shift }
   return $self->{TEAMKILLS};
+}
+
+sub discharges
+{
+  my $self = shift;
+  if (@_) { $self->{DISCHARGES} = shift }
+  return $self->{DISCHARGES};
+}
+
+sub dischareDeaths
+{
+  my $self = shift;
+  if (@_) { $self->{DISCHARGE_DEATHS} = shift }
+  return $self->{DISCHARGE_DEATHS}; 
+}
+
+sub selfKills
+{
+  my $self = shift;
+  return 
+  (
+    $self->rocketBores + $self->lavaDeaths +
+    $self->slimeDeaths + $self->waterDeaths +
+    $self->fallDeaths + $self->squishDeaths +
+    $self->discharges + $self->grenadeBores
+  );
 }
 
 sub frags
@@ -280,7 +315,7 @@ sub eff
 sub points
 {
   my $self = shift;
-  return ($self->frags - $self->teamKills);
+  return ($self->frags - $self->teamKills - $self->selfKills);
 }
 
 package Team;
@@ -426,6 +461,9 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
+
+# todo: discharges, satan, ctf
+
     elsif ($string =~ /(.*) loses another friend/) 
     {
       $fragger = findPlayer($1);
@@ -436,7 +474,6 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
-
     elsif ($string =~ /(.*) checks his glasses/) 
     {
       $fragger = findPlayer($1);
