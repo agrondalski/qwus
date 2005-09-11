@@ -202,7 +202,7 @@ class division
 
   public function removeTeam($id)
     {
-      $id = tean::validateColumn($id, 'team_id') ;
+      $id = team::validateColumn($id, 'team_id') ;
 
       $sql_str = sprintf("delete from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
