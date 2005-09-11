@@ -22,7 +22,7 @@ echo "<td><font size='2'><a href='?a=listNews&tourney_id=$tid'>Manage news</a></
 echo "</tr>";
 echo "<tr>";
 echo "<td><font size='2'><a href='?a=assignTeamsToDiv&tourney_id=$tid'>Assign Teams to a Div</a></td>";
-echo "<td><font size='2'><a href='?a=standings&tourney_id=$tid'>Manage Schedule</a></td>";
+echo "<td><font size='2'><a href='?a=manageSchedule&tourney_id=$tid'>Manage Schedule</a></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><font size='2'><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
