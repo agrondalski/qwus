@@ -479,12 +479,19 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
+    elsif ($string =~ m/\\map\\/)
+    {
+      $map = $';
+      while ($map =~ /(.*)\\/) { $map = $1; }
+      $map =~ s/\s+$//;      
+    }
     elsif ($string =~ m/\\name\\/)
     {
       $name = $';
       if ($string =~ m/\\team\\/)
       {
         $team = $';
+ # Dont bother with spectators
         if ($string =~ m/\\*spectator\\/i)
         {
           $spec = $';
@@ -519,6 +526,7 @@ print "\n\nBenchmark: " . Benchmark::timestr($diff, 'all') . "\n";
 
 sub outputTeamHTML
 {
+  print "Map:\t" . $map . "\n";
   foreach $team (@teams)
   {
     my @teamPlayers = $team->players;
