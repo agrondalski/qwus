@@ -89,7 +89,6 @@ create table division_info(
 --tourney_id   integer NOT NULL,
   division_id  integer NOT NULL,
   team_id      integer NOT NULL,
-  approved     boolean NOT NULL default FALSE,
   wins         integer NOT NULL default 0,
   losses       integer NOT NULL default 0,
   points       integer NOT NULL default 0,
