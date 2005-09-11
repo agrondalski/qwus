@@ -135,11 +135,6 @@ class division
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
-      elseif ($col == 'approved')
-	{
-	  return util::nvl(util::mysql_real_escape_string($val), false) ;
-	}
-
       else
 	{
 	  util::throwException('invalid column specified') ;
@@ -195,12 +190,11 @@ class division
       return new tourney(array('tourney_id'=>$this->tourney_id)) ;
     }
 
-  public function addTeam($id, $app)
+  public function addTeam($id)
     {
       $id  = team::validateColumn($id, 'team_id') ;
-      $app = $this->validateColumn($app, 'approved') ;
 
-      $sql_str = sprintf("insert into division_info(division_id, team_id, approved) values(%d, %d, %d)", $this->division_id, $id, $app) ;
+      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d, %d)", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($row) ;

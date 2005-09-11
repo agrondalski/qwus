@@ -233,11 +233,6 @@ class player
 
   public function isTourneyAdmin($tid)
     {
-      if (!isset($tid))
-	{
-	  return false ;
-	}
-
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
