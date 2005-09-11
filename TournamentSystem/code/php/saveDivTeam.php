@@ -3,37 +3,31 @@
 require 'includes.php';
 
 $tid = $_POST['tourney_id'];
+$division_id = $_POST['division_id'];
 $team_id = $_POST['team_id'];
-$player_id = $_POST['player_id'];
 
 if ($tid == "") {
 	$tid = $_REQUEST['tourney_id'];
 }
+if ($division_id == "") {
+	$division_id = $_REQUEST['division_id'];
+}
 if ($team_id == "") {
 	$team_id = $_REQUEST['team_id'];
 }
-if ($player_id == "") {
-	$player_id = $_REQUEST['player_id'];
-}
 
 $t  = new tourney(array('tourney_id'=>$tid));
-$tm = new team(array('team_id'=>$team_id));
-$p  = new player(array('player_id'=>$player_id));
+$div = new division(array('division_id'=>$division_id));
+$tm  = new team(array('team_id'=>$team_id));
 
 $mode = $_REQUEST['mode'];
 
-if ($_POST['isteamleader'] == "1") {
-	$itl = $_POST['isteamleader'];
-} else {
-	$itl = "0";
-}
-
 if ($mode=="delete") {
 
-  if ($tm->hasPlayer($tid,$player_id) == true) {
+  if ($div->hasTeam($team_id) == true) {
 	  try {
-		  $tm->removePlayer($tid,$player_id);
-		  $msg = "<br>Player deleted from team!<br>";
+		  $div->removeTeam($team_id);
+		  $msg = "<br>Team deleted from div!<br>";
 		}
 		catch (Exception $e) {
 		  $msg = "<br>Error deleting!<br>";
@@ -45,10 +39,10 @@ if ($mode=="delete") {
 }
 else {
 // add new
-	if ($tm->hasPlayer($tid, $player_id) == false) {
+	if ($div->hasTeam($team_id) == false) {
 		try {
-		  $tm->addPlayer($tid, $player_id, $itl);
-		  $msg = "<br>Player added!<br>";
+		  $div->addTeam($team_id);
+		  $msg = "<br>Team added!<br>";
 		}
 		catch (Exception $e) {
 		  $msg = "<br>Error adding!<br>";
@@ -58,5 +52,5 @@ else {
 	} 
 }
 echo $msg;
-include 'assignPlayersToTeam.php';
+include 'assignTeamsToDiv.php';
 ?>

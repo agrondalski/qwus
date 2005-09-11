@@ -42,7 +42,21 @@ if ($tm != "") {
 		$loc = new location(array('location_id'=>$player->getValue('location_id')));
 		$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
 		echo "\t<tr>\n";
-		echo "\t<td>",$player->getValue('name'),"</td>\n";
+		//try {
+			$tlp = $tm->getTeamLeader($tid);
+			if ($tlp != null) {
+				if ($tlp->getValue('player_id') == $player->getValue('player_id')) {
+					echo "\t<td><font color=red>",$player->getValue('name'),"</font></td>\n";
+				} else {
+					echo "\t<td>",$player->getValue('name'),"</td>\n";
+				}
+			} else {
+				echo "\t<td>",$player->getValue('name'),"</td>\n";
+			}
+		//}
+		//catch (Exception $e) {
+		//	echo "\t<td>",$player->getValue('name'),"</td>\n";
+  		//}
 		echo "\t<td>",$player->getValue('superAdmin'),"</td>\n";
 		$ta = $player->isTourneyAdmin($tid);
 		if ($ta == true) {
@@ -56,6 +70,7 @@ if ($tm != "") {
 Delete</a></td>";
 	}
 	echo "</tr></table>";
+	echo "<p><font color=red>Red = team leader</font></p>";
 	
 // Show players
 echo "<form action='?a=saveTeamPlayer' method=post>";
@@ -69,7 +84,7 @@ foreach ($plist as $tmp) {
 	echo "<option value='",$tmp->getValue('player_id'),"'>",$tmp->getValue('name');
 }
 echo "</select></td></tr>";
-echo "<tr><td>Team Leader?&nbsp;</td><td><input type='checkbox' name='isteamleader'></td></tr>";
+echo "<tr><td>Team Leader?&nbsp;</td><td><input type='checkbox' name='isteamleader' value=1></td></tr>";
 echo "<tr><td>&nbsp;</td><td><input type='submit' value='Add' name='B1' class='button'>";
 echo "<br></td></tr></table></form>";
 	

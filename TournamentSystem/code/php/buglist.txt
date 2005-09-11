@@ -12,7 +12,6 @@ login allowed for player with no password (bad)
 logout link isnt centered when page is stretched
 logout errors when not on tourneyHome page
 non_sa cant add players with sa or update sa flag
-isteamleader needs access methods
 
 
 Pages (% done) (page title) (what to do)
