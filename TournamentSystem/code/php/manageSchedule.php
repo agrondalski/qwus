@@ -57,10 +57,15 @@ echo "<input type='hidden' name='tourney_id' value='$tid'>";
 echo "<input type='hidden' name='division_id' value='$division_id'>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
 echo "<tr>";
-echo "<td>Weeks to play:</td>";
+echo "<td><b>Games to Play:</b></td>";
+echo "<td><b>",$div->getValue('num_games'),"</b></td>";
+echo "</tr>";
+echo "<tr>";
+echo "<td><b>Schedule length in Weeks:</b></td>";
 echo "<td><input type='text' name='num_weeks' value='' size='10'></td>";
 echo "</tr>";
-echo "<tr><td colspan=2><input type='submit' value='Generate Random Schedule' name='B1' class='button'></td>";
+echo "<tr><td><b>Generate New Schedule</b></td><td>";
+echo "<input type='submit' value='Create Schedule' name='B1' class='button'></td>";
 echo "</tr></table></form>";
 	
 // Show teams
@@ -68,7 +73,7 @@ echo "<form action='?a=saveSchedule' method=post>";
 echo "<input type='hidden' name='tourney_id' value='$tid'>";
 echo "<input type='hidden' name='division_id' value='$division_id'>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
-echo "<tr><td colspan=2><b>Schedule a Match:</b></td></tr>";
+echo "<tr><td colspan=2><b>Schedule an individual Match:</b></td></tr>";
 echo "<tr><td><b>Team 1:</b></td>";
 echo "<td><select name='team1_id'>";
 $tlist = $div->getTeams();
