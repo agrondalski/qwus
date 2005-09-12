@@ -8,7 +8,6 @@ class division
   private $division_id ;
   private $tourney_id ;
   private $name ;
-  private $max_teams ;
   private $num_games ;
   private $playoff_spots ;
   private $elim_losses ;
@@ -36,9 +35,9 @@ class division
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into division(tourney_id, name, max_teams, num_games, playoff_spots, elim_losses)" .
-                         "values(%d, '%s', %d, %d, %d, %d)",
-			 $this->tourney_id, $this->name, $this->max_teams, $this->num_games, $this->playoff_spots, $this->elim_losses) ;
+      $sql_str = sprintf("insert into division(tourney_id, name, num_games, playoff_spots, elim_losses)" .
+                         "values(%d, '%s', %d, %d, %d)",
+			 $this->tourney_id, $this->name, $this->num_games, $this->playoff_spots, $this->elim_losses) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->division_id = mysql_insert_id() ;
@@ -46,7 +45,7 @@ class division
 
   private function getDivisionInfo()
     {
-      $sql_str = sprintf("select tourney_id, name, max_teams, num_games, playoff_spots, elim_losses from division where division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("select tourney_id, name, num_games, playoff_spots, elim_losses from division where division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -58,10 +57,9 @@ class division
 
       $this->tourney_id     = $row[0] ;
       $this->name           = $row[1] ;
-      $this->max_teams      = $row[2] ;
-      $this->num_games      = $row[3] ;
-      $this->playoff_spots  = $row[4] ;
-      $this->elim_losses    = $row[5] ; 
+      $this->num_games      = $row[2] ;
+      $this->playoff_spots  = $row[3] ;
+      $this->elim_losses    = $row[4] ; 
 
       mysql_free_result($result) ;
       return util::FOUND ;
@@ -113,11 +111,6 @@ class division
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  return util::mysql_real_escape_string($val) ;
-	}
-
-      elseif ($col == 'max_teams')
-	{
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col = 'num_games')
@@ -173,7 +166,7 @@ class division
 
   public function getMatches()
     {
-      $sql_str = sprintf("select m.match_id from match_table m where m.division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -193,17 +186,6 @@ class division
   public function addTeam($id)
     {
       $id  = team::validateColumn($id, 'team_id') ;
-
-      $sql_str = sprintf("select count(*) from division_info where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      if ($val>=$this->max_teams)
-	{
-	  util::throwException('division has too many teams') ;
-	}
 
       $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
@@ -287,20 +269,27 @@ class division
 	}
 
       $t = $this->getTeams() ;
-      $week_count = 1 ;
+
+      for ($i=0; $i<$num_weeks; $i++)
+	{
+	  $ms = new match_schedule(array('division_id'=>$this->division_id, 'name'=>"week$i")) ;
+	  $msa[] = $ms ;
+	}
+
+      $week_count = 0 ;
       for ($i=0; $i<count($matches); $i++)
 	{
 	  for ($j=0; $j<count($matches[$i]); $j++)
 	  {
-	    $x = $matches[$i][$j] ;
+	    //	    $x = $matches[$i][$j] ;
 	    $team1_id = $t[$i]->getValue('team_id') ;
-	    $team2_id = $t[$x]->getValue('team_id') ;
+	    $team2_id = $t[$matches[$i][$j]]->getValue('team_id') ;
 
-	    $m = new match(array('division_id'=>$this->division_id, 'team1_id'=>$team1_id, 'team2_id'=>$team2_id, 'week_name'=>"week$week_count")) ;
+	    $m = new match(array('schedule_id'=>$msa[$week_count]->getValue('schedule_id'), 'team1_id'=>$team1_id, 'team2_id'=>$team2_id)) ;
 
-	    if (++$week_count > $num_weeks)
+	    if (++$week_count > ($num_weeks-1))
 	      {
-		$week_count = 1 ;
+		$week_count = 0 ;
 	      }
 	  }
 	}
@@ -308,19 +297,11 @@ class division
 
   public function removeSchedule()
     {
-      $sql_str = sprintf("delete from comments where match_id in(select match_id from match_table where division_id=%d)", $this->division_id) ;
+      $sql_str = sprintf("delete from match_table where schedule_id in (select schedule_id from match_schedule where division_id=%d)", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       mysql_free_result($result) ;
 
-      $sql_str = sprintf("delete from stats where game_id in(select game_id from game where match_id in (select match_id from match_table where division_id=%d))", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
-      $sql_str = sprintf("delete from game where match_id in (select match_id from match_table where division_id=%d)", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
-      $sql_str = sprintf("delete from match_table where division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("delete from match_schedule where division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       mysql_free_result($result) ;
     }

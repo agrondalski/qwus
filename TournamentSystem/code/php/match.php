@@ -6,14 +6,12 @@ require_once 'dbConnect.php' ;
 class match
 {
   private $match_id ;
-  private $division_id ;
+  private $schedule_id ;
   private $team1_id ;
   private $team2_id ;
   private $winning_team_id ;
   private $approved ;
   private $match_date ;
-  private $deadline ;
-  private $week_name ;
 
   function __construct($a)
     {
@@ -38,10 +36,9 @@ class match
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into match_table(division_id, team1_id, team2_id, winning_team_id, approved, match_date, deadline, week_name)" .
-                         "values(%d, %d, %d, %s, %d, '%s', '%s', '%s')",
-			 $this->division_id, $this->team1_id, $this->team2_id, util::nvl($this->winning_team_id, 'null'), $this->approved, $this->match_date,
-			 $this->deadline, $this->week_name) ;
+      $sql_str = sprintf("insert into match_table(schedule_id, team1_id, team2_id, winning_team_id, approved, match_date)" .
+                         "values(%d, %d, %d, %s, %d, '%s')",
+			 $this->schedule_id, $this->team1_id, $this->team2_id, util::nvl($this->winning_team_id, 'null'), $this->approved, $this->match_date) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->match_id = mysql_insert_id() ;
@@ -49,7 +46,7 @@ class match
 
   private function getMatchInfo()
     {
-      $sql_str = sprintf("select division_id, team1_id, team2_id, winning_team_id, approved, match_date, deadline, week_name from match_table where match_id=%d", $this->match_id) ;
+      $sql_str = sprintf("select schedule_id, team1_id, team2_id, winning_team_id, approved, match_date from match_table where match_id=%d", $this->match_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -59,14 +56,12 @@ class match
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->division_id      = $row[0] ;
+      $this->schedule_id      = $row[0] ;
       $this->team1_id         = $row[1] ;
       $this->team2_id         = $row[2] ;
       $this->winning_team_id  = $row[3] ; 
       $this->approved         = $row[4] ; 
       $this->match_date       = $row[5] ;
-      $this->deadline         = $row[6] ;
-      $this->week_name        = $row[7] ;
 
       mysql_free_result($result) ;
 
@@ -102,7 +97,7 @@ class match
 	    }
 	}
 
-      elseif ($col == 'division_id')
+      elseif ($col == 'schedule_id')
 	{
 	  if (util::isNull($val))
 	    {
@@ -152,37 +147,24 @@ class match
 	  return util::nvl(util::mysql_real_escape_string($val), util::DEFAULT_DATE) ;
 	}
 
-      elseif ($col == 'deadline')
-	{
-	  /*
- 	  if (util::isNull($val))
-	    {
-	      util::throwException($col . ' cannot be null') ;
-	    }
-	  */
-
-	  if (!util::isNull($val) && !util::isValidDate($val))
-	    {
-	      util::throwException('invalid date specified for ' . $col) ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), util::DEFAULT_DATE) ;
-	}
-
-      elseif ($col == 'week_name')
-	{
-	  if (util::isNull($val))
-	    {
-	      util::throwException($col . ' cannot be null') ;
-	    }
-
-	  return util::mysql_real_escape_string($val) ;
-	}
-
       else
 	{
 	  util::throwException('invalid column specified') ;
 	}
+    }
+
+  public static function getAllMatches()
+    {
+      $sql_str = sprintf('select mt.match_id from match_table mt') ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new match(array('match_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getComments()
@@ -221,11 +203,6 @@ class match
   public function getWinningTeam()
     {
       return new team(array('team_id'=>$this->winning_team_id)) ;
-    }
-
-  public function getDivision()
-    {
-      return new division(array('division_id'=>$this->division_id)) ;
     }
 
   public function getValue($col)

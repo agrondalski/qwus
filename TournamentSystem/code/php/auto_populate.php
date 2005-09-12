@@ -148,7 +148,7 @@ function auto_populate($a)
       $v4 = generate_integer(10) ;
       $v5 = generate_integer(10) ;
       $v6 = generate_integer(10) ;
-      $n = new division(array('tourney_id'=>$v1, 'name'=>$v2, 'max_teams'=>$v3, 'num_games'=>$v4, 'playoff_spots'=>$v5, 'elim_losses'=>$v6)) ;
+      $n = new division(array('tourney_id'=>$v1, 'name'=>$v2, 'num_games'=>$v4, 'playoff_spots'=>$v5, 'elim_losses'=>$v6)) ;
 
       $div[] = $n->getValue("division_id") ;
     }
@@ -166,6 +166,7 @@ function auto_populate($a)
       $team[] = $n->getValue("team_id") ;
     }
 
+  /*
   for ($i=0; $i<$c_match; $i++)
     {
       $v1 = $div[generate_integer(count($div))] ;
@@ -195,47 +196,7 @@ function auto_populate($a)
 
       $mat[] = $n->getValue("match_id") ;
     }
-
-  for ($i=0; $i<$c_game; $i++)
-    {
-      $v1 = $mat[generate_integer(count($mat))] ;
-      $v2 = $maps[generate_integer(count($maps))] ;
-      $v3 = generate_integer(250) ;
-      $v4 = generate_integer(250) ;
-      $v5 = 'http://' . generate_string(25) ;
-      $v6 = 'http://' . generate_string(25) ;
-      $n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
-
-      $game[] = $n->getValue("game_id") ;
-    }
-
-  for ($i=0; $i<$c_comm; $i++)
-    {
-      $v1 = 'player-' . generate_string(250) ;
-      $v2 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
-      $v3 = $mat[generate_integer(count($mat))] ;
-      $v4 = 'comment-' . generate_string(100) ;
-      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
-      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
-      $n = new comment(array('name'=>$v1, 'player_ip'=>$v2, 'match_id'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
-
-      //$comm[] = $n->getValue("comment_id") ;
-    }
-
-  for ($i=0; $i<$c_stats; $i++)
-    {
-      $v1 = $play[generate_integer(count($play))] ;
-      $v2 = $game[generate_integer(count($game))] ;
-      $v3 = generate_integer(125) ;
-      $v4 = generate_integer(20) ;
-
-      if (! stats::hasStatsEntry($v1, $v2))
-	{
-	  //	  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4)) ;
-	}
-
-      //$stats[] = $n->getValue("stat_id") ;
-    }
+  */
 
   for ($i=0; $i<$c_news; $i++)
     {
@@ -299,6 +260,55 @@ function auto_populate($a)
 		      $te->addPlayer($t->getValue("tourney_id"), $p->getValue("player_id"), $v1) ;
 		    }
 		}
+	    }
+
+	  $d->createSchedule(generate_integer(3)+5) ;
+	  $mata = match::getAllMatches() ;
+
+	  for ($i=0; $i<count($mata); $i++)
+	    {
+	      $mat[] = $mata[$i]->getValue('match_id') ;
+	    }
+
+	  for ($i=0; $i<$c_game; $i++)
+	    {
+	      $v1 = $mat[generate_integer(count($mat))] ;
+	      $v2 = $maps[generate_integer(count($maps))] ;
+	      $v3 = generate_integer(250) ;
+	      $v4 = generate_integer(250) ;
+	      $v5 = 'http://' . generate_string(25) ;
+	      $v6 = 'http://' . generate_string(25) ;
+	      $n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
+	      
+	      $game[] = $n->getValue("game_id") ;
+	    }
+
+	  for ($i=0; $i<$c_comm; $i++)
+	    {
+	      $v1 = 'player-' . generate_string(250) ;
+	      $v2 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
+	      $v3 = $mat[generate_integer(count($mat))] ;
+	      $v4 = 'comment-' . generate_string(100) ;
+	      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
+	      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
+	      $n = new comment(array('name'=>$v1, 'player_ip'=>$v2, 'match_id'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
+	      
+	      $comm[] = $n->getValue("comment_id") ;
+	    }
+
+	  for ($i=0; $i<$c_stats; $i++)
+	    {
+	      $v1 = $play[generate_integer(count($play))] ;
+	      $v2 = $game[generate_integer(count($game))] ;
+	      $v3 = generate_integer(125) ;
+	      $v4 = generate_integer(20) ;
+	      
+	      if (! stats::hasStatsEntry($v1, $v2))
+	      {
+		$n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'score'=>$v3, 'time'=>$v4)) ;
+	      }
+	      
+	      //$stats[] = $n->getValue("stat_id") ;
 	    }
 	}
 

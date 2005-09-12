@@ -15,6 +15,7 @@ require_once 'location.php' ;
 require_once 'log_entry.php' ;
 require_once 'map.php' ;
 require_once 'match.php' ;
+require_once 'match_schedule.php' ;
 require_once 'news.php' ;
 require_once 'player.php' ;
 require_once 'stats.php' ;

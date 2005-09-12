@@ -49,21 +49,10 @@ ENGINE=INNODB ;
 --constraint tourney_playoffs_pk primary key(tourney_id, division_id))
 --ENGINE=INNODB ;
 
---create table tourney_schedule(
---  tourney_schedule_id  integer      NOT NULL auto_increment,
---  tourney_id           integer      NOT NULL,
---  division_id          integer      NOT NULL,
---  name                 varchar(250) NOT NULL,  -- Week1, Game4, Quarterfinals
---  deadline             date         NOT NULL,  -- deadline for reporting
---
---  constraint tourney_schedule_pk primary key(tourney_schedule_id))
---ENGINE=INNODB ;
-
 create table division(
   division_id   integer      NOT NULL auto_increment,
   tourney_id    integer      NOT NULL,
   name          varchar(250) NOT NULL,
-  max_teams     integer,     -- null or -1 if no max
   num_games     integer      NOT NULL,
   playoff_spots integer      NOT NULL,
   elim_losses   integer      NOT NULL,
@@ -130,20 +119,28 @@ create table player_info(
   constraint player_lookup_pk primary key(tourney_id, team_id, player_id))
 ENGINE=INNODB ;
 
--- This table also stores the schedule with winning_team_id/match_date/etc. being null.
 create table match_table(
   match_id             integer NOT NULL auto_increment,
-  division_id          integer NOT NULL,
---tourney_schedule_id  integer NOT NULL,
+--  division_id          integer NOT NULL,
+  schedule_id          integer NOT NULL,
   team1_id             integer NOT NULL,
   team2_id             integer NOT NULL,
   winning_team_id      integer,
   approved             boolean NOT NULL default FALSE,
   match_date           date,
-  deadline             date    NOT NULL,
-  week_name            varchar(250),
+--  deadline             date    NOT NULL,
+--  week_name            varchar(250),
 --
   constraint match_pk primary key(match_id))
+ENGINE=INNODB ;
+
+create table match_schedule(
+  schedule_id          integer      NOT NULL auto_increment,
+  division_id          integer      NOT NULL,
+  name                 varchar(250) NOT NULL,
+  deadline             date,
+--
+  constraint match_schedule_pk primary key(schedule_id))
 ENGINE=INNODB ;
 
 create table game(
@@ -224,8 +221,7 @@ alter table tourney_maps add constraint tourney_maps_fk2 foreign key(map_id) ref
 --alter table tourney_playoffs add constraint tourney_playoffs_fk1 foreign key(tourney_id) references tourney(tourney_id) ;
 --alter table tourney_playoffs add constraint tourney_playoffs_fk2 foreign key(division_id) references division(division_id) ;
 
---alter table tourney_schedule add constraint tourney_schedule_fk1 foreign key(tourney_id)  references tourney(tourney_id) ;
---alter table tourney_schedule add constraint tourney_schedule_fk2 foreign key(division_id) references division(division_id) ;
+alter table match_schedule add constraint match_schedule_fk1 foreign key(division_id) references division(division_id) ;
 
 alter table division add constraint division_fk1 foreign key(tourney_id) references tourney(tourney_id) ;
 
@@ -241,8 +237,8 @@ alter table player_info add constraint player_lookup_fk3 foreign key(tourney_id)
 alter table player_info add constraint player_lookup_fk2 foreign key(team_id)    references team(team_id) ;
 alter table player_info add constraint player_lookup_fk1 foreign key(player_id)  references player(player_id) ;
 
---alter table match_table add constraint match_fk1 foreign key(tourney_schedule_id) references tourney_schedule(tourney_schedule_id) ;
-alter table match_table add constraint match_fk1 foreign key(division_id) references division(division_id) ;
+alter table match_table add constraint match_fk1 foreign key(schedule_id) references match_schedule(schedule_id) ;
+--alter table match_table add constraint match_fk1 foreign key(division_id) references division(division_id) ;
 alter table match_table add constraint match_fk2 foreign key(team1_id)    references team(team_id) ;
 alter table match_table add constraint match_fk3 foreign key(team2_id)    references team(team_id) ;
 alter table match_table add constraint match_fk4 foreign key(winning_team_id) references team(team_id) ;
