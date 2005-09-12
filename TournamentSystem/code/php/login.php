@@ -81,7 +81,7 @@ else
 {
   print '<table border=0 width=100% cellspacing=0 cellpadding=0><tr>';
   print '<td>Welcome, ' . $_SESSION['username'] . '</td>';
-  print '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td></tr></table>' ;
+  print '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td></tr></table><hr>' ;
 
   $do = $_GET['action'] ;
 
