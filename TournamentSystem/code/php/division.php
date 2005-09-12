@@ -180,7 +180,7 @@ class division
 
   public function getMatchSchedule()
     {
-      $sql_str = sprintf("select ms.schedule_id from match_schedule ms ms.division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("select ms.schedule_id from match_schedule ms where ms.division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
