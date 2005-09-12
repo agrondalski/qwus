@@ -18,7 +18,7 @@ class match_schedule
 	{
 	  $this->schedule_id = $id ;
 
-	  if ($this->getMatchInfo()==util::NOTFOUND)
+	  if ($this->getMatchScheduleInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No match exists with specified id");
 	    }
@@ -41,9 +41,9 @@ class match_schedule
       $this->schedule_id = mysql_insert_id() ;
     }
 
-  private function getMatchInfo()
+  private function getMatchScheduleInfo()
     {
-      $sql_str = sprintf("select division_id, name, deadline from match_table where schedule_id=%d", $this->schedule_id) ;
+      $sql_str = sprintf("select division_id, name, deadline from match_schedule where schedule_id=%d", $this->schedule_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -54,7 +54,7 @@ class match_schedule
       $row = mysql_fetch_row($result) ;
 
       $this->schedule_id  = $row[0] ;
-      $this->name         = $row[2] ;
+      $this->name         = $row[1] ;
       $this->deadline     = $row[2] ;
 
       mysql_free_result($result) ;
@@ -146,11 +146,11 @@ class match_schedule
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update match_table set %s=%d where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
+	  $sql_str = sprintf("update match_schedule set %s=%d where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update match_table set %s='%s' where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
+	  $sql_str = sprintf("update match_schedule set %s='%s' where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -159,7 +159,7 @@ class match_schedule
 
   public function delete()
     {
-      $sql_str = sprintf("delete from match_table where schedule_id=%d", $this->schedule_id) ;
+      $sql_str = sprintf("delete from match_schedule where schedule_id=%d", $this->schedule_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
       mysql_free_result($result) ;
     }
