@@ -35,7 +35,7 @@ if ($mode=="delete") {
 }
 else {
 // add new
-	if (($_POST['team1_id'] == $_POST['team2_id']) or ($_POST['team1_id']=="") or ($_POST['team2_id']=="") or ($_POST['week_name'] == "") or ($_POST['deadline'] == "")) {
+	if (($_POST['team1_id'] == $_POST['team2_id']) or ($_POST['team1_id']=="") or ($_POST['team2_id']=="")) {
 		$msg = "<br>Error adding match!<br>";	
 	} else {
 		$match_id = $_REQUEST['match_id'];
@@ -43,8 +43,7 @@ else {
 							 'division_id'=>$division_id,
 							 'team1_id'=>$_POST['team1_id'],
 							 'team2_id'=>$_POST['team2_id'],
-							 'deadline'=>$_POST['deadline'],
-							 'week_name'=>$_POST['week_name']));
+							 'schedule_id'=>$_POST['schedule_id']));
 		$msg = "<br>Match added!<br>";
 	}
 
