@@ -11,7 +11,6 @@ $did = $_REQUEST['did'];
 $div = new division(array('division_id'=>$did));
 
 $name=$div->getValue('name');
-$max_teams=$div->getValue('max_teams');
 $num_games=$div->getValue('num_games');
 $playoff_spots=$div->getValue('playoff_spots');
 $elim_losses=$div->getValue('elim_losses');
@@ -19,7 +18,6 @@ $elim_losses=$div->getValue('elim_losses');
 else {
 echo "<p><b>Create a division for tourney:</b></p>";
 $name="";
-$max_teams="";
 $num_games="";
 $playoff_spots="";
 $elim_losses="";
@@ -36,10 +34,6 @@ echo "<input type='hidden' name='mode' value='edit'>";
 <td>division name:</td><td>
 <?php
 echo "<input type='text' name='name' maxlength='50' value='",$name,"' size='20'></td>";
-echo "</tr>";
-echo "<tr>";
-echo "<td>Max Teams:</td><td>";
-echo "<input type='text' name='max_teams' value='",$max_teams,"' size='4'></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td># of Games:</td><td>";

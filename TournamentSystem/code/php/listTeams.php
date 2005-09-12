@@ -8,7 +8,7 @@ $teams = team::getAllTeams();
 include 'tourneyLinks.php';
 
 // Printing results in HTML
-echo "<table border=1 class=admintbl cellpadding=2 cellspacing=0>\n";
+echo "<table border=1 cellpadding=2 cellspacing=0>\n";
 echo "<th>Name</th><th>Email</th><th>IRC</th><th>Loc</th><th>Password</th><th>Approved?</th><th colspan=2>Actions</th>";
 foreach ($teams as $t) {
     $loc = new location(array('location_id'=>$t->getValue('location_id')));

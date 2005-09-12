@@ -13,7 +13,7 @@ if ($mode=="edit") {
   $div = new division(array('division_id'=>$did));
 
   $div->update('name',$_POST['name']);
-  $div->update('max_teams',$_POST['max_teams']);
+
   $div->update('num_games',$_POST['num_games']);
   $div->update('playoff_spots',$_POST['playoff_spots']);
   $div->update('elim_losses',$_POST['elim_losses']);
@@ -34,7 +34,6 @@ elseif ($mode=="delete") {
 else {
   $div = new division(array('tourney_id'=>$tid,
                           'name'=>$_POST['name'],
-                          'max_teams'=>$_POST['max_teams'],
                           'num_games'=>$_POST['num_games'],
                           'playoff_spots'=>$_POST['playoff_spots'],
                  	  'elim_losses'=>$_POST['elim_losses']));
