@@ -263,6 +263,8 @@ function auto_populate($a)
 	    }
 
 	  $d->createSchedule(generate_integer(3)+5) ;
+
+	  /*
 	  $mata = match::getAllMatches() ;
 
 	  for ($i=0; $i<count($mata); $i++)
@@ -310,6 +312,7 @@ function auto_populate($a)
 	      
 	      //$stats[] = $n->getValue("stat_id") ;
 	    }
+	  */
 	}
 
       $c = generate_integer(3) + 2 ;
