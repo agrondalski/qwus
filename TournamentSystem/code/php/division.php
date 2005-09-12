@@ -178,6 +178,20 @@ class division
       return $arr ;
     }
 
+  public function getMatchSchedule()
+    {
+      $sql_str = sprintf("select ms.schedule_id from match_schedule mse ms.division_id=%d", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new match_schedule(array('schedule_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTourney()
     {
       return new tourney(array('tourney_id'=>$this->tourney_id)) ;
