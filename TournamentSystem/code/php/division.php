@@ -238,6 +238,11 @@ class division
 
   public function createSchedule($num_weeks)
     {
+      if (util::isNUll($num_weeks) || $num_weeks==0)
+	{
+	  return ;
+	}
+
       $num_teams = count($this->getTeams()) ;
       $total_games = $num_teams * $this->num_games ;
 
@@ -283,27 +288,34 @@ class division
 	}
 
       $t = $this->getTeams() ;
+      shuffle($t);
 
+      $weeks = array() ;
       for ($i=0; $i<$num_weeks; $i++)
 	{
-	  $ms = new match_schedule(array('division_id'=>$this->division_id, 'name'=>"week$i")) ;
+	  $ms = new match_schedule(array('division_id'=>$this->division_id, 'name'=>'week' . ($i+1))) ;
 	  $msa[] = $ms ;
+
+	  $weeks[$i] = array() ;  
 	}
 
-      $week_count = 0 ;
+      $sched = 0;
       for ($i=0; $i<count($matches); $i++)
 	{
 	  for ($j=0; $j<count($matches[$i]); $j++)
 	  {
-	    //	    $x = $matches[$i][$j] ;
 	    $team1_id = $t[$i]->getValue('team_id') ;
 	    $team2_id = $t[$matches[$i][$j]]->getValue('team_id') ;
 
-	    $m = new match(array('schedule_id'=>$msa[$week_count]->getValue('schedule_id'), 'team1_id'=>$team1_id, 'team2_id'=>$team2_id)) ;
+	    $sched = util::findbestweek($weeks, $sched, $team1_id, $team2_id) ; 
+	    $m = new match(array('schedule_id'=>$msa[$sched]->getValue('schedule_id'), 'team1_id'=>$team1_id, 'team2_id'=>$team2_id)) ;
 
-	    if (++$week_count > ($num_weeks-1))
+	    $weeks[$sched][] = $team1_id ; 
+	    $weeks[$sched][] = $team2_id ; 
+
+	    if (++$sched==count($weeks))
 	      {
-		$week_count = 0 ;
+		$sched = 0 ;
 	      }
 	  }
 	}

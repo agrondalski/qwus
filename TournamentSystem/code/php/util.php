@@ -132,13 +132,13 @@ class util
       return false ;
     }
 
-  function random_integer($val)
+  public static function random_integer($val)
     {
       srand() ;
       return rand(0, $val-1) ;
     }
 
-  function array_value_count($a, $val)
+  public static function array_value_count($a, $val)
     {
       $count=0 ;
       for ($i=0; $i<count($a); $i++)
@@ -152,6 +152,30 @@ class util
       return $count ;
     }
 
+  public static function findbestweek($weeks, $start_idx, $t1, $t2)
+    {
+      $min     = count($weeks, COUNT_RECURSIVE)+1 ; 
+      $min_idx = $start_idx ; 
+      $j       = $start_idx ; 
+
+      for($i=0; $i<count($weeks); $i++) 
+	{ 
+	  $curval = util::array_value_count($weeks[$j], $t1) + util::array_value_count($weeks[$j], $t2) ; 
+
+	  if ($curval < $min) 
+	    { 
+	      $min = $curval ; 
+	      $min_idx = $j ; 
+	    } 
+
+	  if (++$j==count($weeks)) 
+	    { 
+	      $j = 0 ; 
+	    } 
+	} 
+
+      return $min_idx ; 
+    }
 }
 
 ?>
