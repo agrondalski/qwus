@@ -63,7 +63,7 @@ class comment
       $this->comment_date  = $row[4] ; 
       $this->comment_time  = $row[5] ;
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -198,12 +198,14 @@ class comment
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from comments where comment_id=%d", $this->comment_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

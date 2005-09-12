@@ -61,7 +61,7 @@ class log_entry
       $this->log_date   = $row[3] ; 
       $this->log_time   = $row[4] ;
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -176,12 +176,14 @@ class log_entry
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from log_table where log_id=%d", $this->log_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

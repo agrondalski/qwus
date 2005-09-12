@@ -57,7 +57,7 @@ class location
       $this->state_name    = $row[1] ;
       $this->logo_url      = $row[2] ; 
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -179,12 +179,14 @@ class location
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from location where location_id=%d", $this->location_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

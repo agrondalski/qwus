@@ -63,7 +63,7 @@ class division
       $this->playoff_spots  = $row[4] ;
       $this->elim_losses    = $row[5] ; 
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
       return util::FOUND ;
     }
 
@@ -194,10 +194,21 @@ class division
     {
       $id  = team::validateColumn($id, 'team_id') ;
 
+      $sql_str = sprintf("select count(*) from division_info where division_id=%d", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $row = mysql_fetch_row($result) ;
+      $val = $row[0] ;
+
+      if ($val>=$this->max_teams)
+	{
+	  util::throwException('division has too many teams') ;
+	}
+
       $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
     }
 
   public function removeTeam($id)
@@ -207,7 +218,7 @@ class division
       $sql_str = sprintf("delete from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
     }
 
   public function hasTeam($id)
@@ -219,14 +230,99 @@ class division
 
       if (mysql_num_rows($result)==1)
 	{
-	  mysql_free_result($row) ;
+	  mysql_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($row) ;
+	  mysql_free_result($result) ;
 	  return false ;
 	}
+    }
+
+  public function createSchedule($num_weeks)
+    {
+      $num_teams = count($this->getTeams()) ;
+      $total_games = $num_teams * $this->num_games ;
+
+      $extra_matchups = (fmod($total_games, $num_teams*($num_teams-1)))/$num_teams ;
+      $complete_matchups = floor(($total_games - $overflow_matches) / ($num_teams*($num_teams-1))) ;
+
+      $matches = array() ;
+      
+      for ($i=0; $i<$num_teams; $i++)
+	{
+	  $matches[] = array() ;
+	}
+
+      for ($i=0; $i<$complete_matchups; $i++)
+	{
+	  for($j=0; $j<$num_teams; $j++)
+	  {
+	    for ($k=0; $k<$num_teams; $k++)
+	      {
+		if ($j<$k)
+		  {
+		    $matches[$j][] = $k ;
+		  }
+	      }
+	  }
+	}
+
+      $rand_array = array() ;
+      for ($i=0; $i<($extra_matchups*$num_teams/2); $i++)
+	{
+	  do
+	    {
+	      $rand_team1 = util::random_integer($num_teams) ;
+	      $rand_team2 = util::random_integer($num_teams) ;
+	    }
+	  while ((util::array_value_count($rand_array, $rand_team1)>($extra_matchups)) ||
+		 (util::array_value_count($rand_array, $rand_team2)>($extra_matchups)) ||
+		 ($rand_team1 == $rand_team2)) ;
+
+	  $rand_array[] = $rand_team1 ;
+	  $rand_array[] = $rand_team2 ;
+	  $matches[$rand_team1][] = $rand_team2 ;
+	}
+
+      $t = $this->getTeams() ;
+      $week_count = 1 ;
+      for ($i=0; $i<count($matches); $i++)
+	{
+	  for ($j=0; $j<count($matches[$i]); $j++)
+	  {
+	    $x = $matches[$i][$j] ;
+	    $team1_id = $t[$i]->getValue('team_id') ;
+	    $team2_id = $t[$x]->getValue('team_id') ;
+
+	    $m = new match(array('division_id'=>$this->division_id, 'team1_id'=>$team1_id, 'team2_id'=>$team2_id, 'week_name'=>"week$week_count")) ;
+
+	    if (++$week_count > $num_weeks)
+	      {
+		$week_count = 1 ;
+	      }
+	  }
+	}
+    }
+
+  public function removeSchedule()
+    {
+      $sql_str = sprintf("delete from comments where match_id in(select match_id from match_table where division_id=%d)", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("delete from stats where game_id in(select game_id from game where match_id in (select match_id from match_table where division_id=%d))", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("delete from game where match_id in (select match_id from match_table where division_id=%d)", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("delete from match_table where division_id=%d", $this->division_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function getValue($col)
@@ -249,12 +345,14 @@ class division
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from division where division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

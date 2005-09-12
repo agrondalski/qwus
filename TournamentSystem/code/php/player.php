@@ -74,7 +74,7 @@ class player
       $this->password     = $row[3] ; 
       $this->hasColumn    = $row[4] ; 
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -172,7 +172,7 @@ class player
       $this->password     = $row[3] ; 
       $this->hasColumn    = $row[4] ; 
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -370,12 +370,14 @@ class player
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from player where player_id=%d", $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

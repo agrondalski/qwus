@@ -189,7 +189,7 @@ function auto_populate($a)
       $v5 = generate_boolean() ;
       $v6 = date('Y-m-d', time()+(60*60*24*(generate_integer(100)))) ;
       $v7 = date('Y-m-d', time()+(60*60*24*(generate_integer(100)))) ;
-      $v8 = 'week-' . generate_string(25) ;
+      $v8 = 'week-' . generate_string(3) ;
       $n = new match(array('division_id'=>$v1, 'team1_id'=>$v2, 'team2_id'=>$v3, 'winning_team_id'=>$v4, 'approved'=>$v5,
 			   'match_date'=>$v6, 'deadline'=>$v7, 'week_name'=>$v8)) ;
 

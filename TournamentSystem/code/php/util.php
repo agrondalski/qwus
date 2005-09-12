@@ -131,6 +131,27 @@ class util
 
       return false ;
     }
+
+  function random_integer($val)
+    {
+      srand() ;
+      return rand(0, $val-1) ;
+    }
+
+  function array_value_count($a, $val)
+    {
+      $count=0 ;
+      for ($i=0; $i<count($a); $i++)
+	{
+	  if ($a[$i] == $val)
+	    {
+	      $count++ ;
+	    }
+	}
+
+      return $count ;
+    }
+
 }
 
 ?>

@@ -68,7 +68,7 @@ class match
       $this->deadline         = $row[6] ;
       $this->week_name        = $row[7] ;
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -154,17 +154,19 @@ class match
 
       elseif ($col == 'deadline')
 	{
+	  /*
  	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
 	    }
+	  */
 
-	  if (!util::isValidDate($val))
+	  if (!util::isNull($val) && !util::isValidDate($val))
 	    {
 	      util::throwException('invalid date specified for ' . $col) ;
 	    }
 
-	  return util::mysql_real_escape_string($val) ;
+	  return util::nvl(util::mysql_real_escape_string($val), util::DEFAULT_DATE) ;
 	}
 
       elseif ($col == 'week_name')
@@ -246,12 +248,14 @@ class match
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      mysql_free_result($result) ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from match_table where match_id=%d", $this->match_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
     }
 }
 ?>

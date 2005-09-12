@@ -57,7 +57,7 @@ class stats
       $this->score    = $row[0] ;
       $this->time     = $row[1] ; 
 
-      mysql_free_result($row) ;
+      mysql_free_result($result) ;
 
       return util::FOUND ;
     }
