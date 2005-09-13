@@ -10,6 +10,7 @@ if ($mode == "edit") {
 	$tm = new team(array('team_id'=>$team_id));
 
 	$name=$tm->getValue('name');
+	$name_abbr=$tm->getValue('name_abbr');
 	$email=$tm->getValue('email');
 	$irc_channel=$tm->getValue('irc_channel');
 	$location_id=$tm->getValue('location_id');
@@ -21,6 +22,7 @@ if ($mode == "edit") {
 else {
 	echo "<p><b>Create a Team:</b></p>";
 	$name="";
+	$name_abbr="";
 	$email="";
 	$irc_channel="";
 	$location_id="";
@@ -38,6 +40,10 @@ echo "<table border=1 cellpadding=2 cellspacing=0>";
 echo "<tr>";
 echo "<td>Name:</td><td>";
 echo "<input type='text' name='name' maxlength='50' value='",$name,"' size='50'></td>";
+echo "</tr>";
+echo "<tr>";
+echo "<td>Abbr:</td><td>";
+echo "<input type='text' name='name_abbr' maxlength='50' value='",$name_abbr,"' size='50'></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>Email:</td><td>";

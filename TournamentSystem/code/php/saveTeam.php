@@ -12,6 +12,7 @@ if ($mode=="edit") {
 	$team_id = $_POST['team_id'];
 	$tm = new team(array('team_id'=>$team_id));
 	$tm->update('name',$_POST['name']);
+	$tm->update('name_abbr',$_POST['name_abbr']);
 	$tm->update('email',$_POST['email']);
 	$tm->update('irc_channel',$_POST['irc_channel']);
 	$tm->update('location_id',$_POST['location_id']);
@@ -52,6 +53,7 @@ else {
 		$pw = "dumB3as5!";
 	}
 	$tm = new team(array('name'=>$_POST['name'],
+					   'name_abbr'=>$_POST['name_abbr'],
 					   'email'=>$_POST['email'],
 					   'irc_channel'=>$_POST['irc_channel'],
 					   'location_id'=>$_POST['location_id'],
