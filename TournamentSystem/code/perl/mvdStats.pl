@@ -6,8 +6,9 @@
 # misc bs
 # optimize
 # either ctf is messed up or blood and forrests names are lame
-# bores, discharges, telefrags, ctf msgs
+# bores, telefrags, ctf msgs
 # have to check and double check score calculations
+# all bores have \n :(
 
 use utf8;
 use Benchmark;
@@ -33,11 +34,12 @@ sub new
   $self->{WATER_DEATHS} = 0;
   $self->{FALL_DEATHS} = 0;
   $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
+  $self->{SQUISH_BORES} = 0;
  #  $self->{SATAN_FRAGS} = 0;
   $self->{ROCKET_BORES} = 0;
   $self->{GRENADE_BORES} = 0;
-  $self->{DISCHARGES} = 0;
-  $self->{DISCHARGE_DEATHS} = 0;
+  $self->{DISCHARGE_BORES} = 0;
+  $self->{DISCHARGE_FRAGS} = 0; $self->{DISCHARGE_DEATHS} = 0;
   $self->{TEAMKILLS} = 0;
  #  $self->{CTF_CAPTURES} = 0;
  #  $self->{CTF_FLAG_DEFENDS} = 0;
@@ -214,6 +216,13 @@ sub fallDeaths
   return $self->{FALL_DEATHS};
 }
 
+sub squishBores
+{
+  my $self = shift;
+  if (@_) { $self->{SQUISH_BORES} = shift }
+  return $self->{SQUISH_BORES};
+}
+
 sub squishDeaths
 {
   my $self = shift;
@@ -249,14 +258,21 @@ sub teamKills
   return $self->{TEAMKILLS};
 }
 
-sub discharges
+sub dischargeBores
 {
   my $self = shift;
-  if (@_) { $self->{DISCHARGES} = shift }
-  return $self->{DISCHARGES};
+  if (@_) { $self->{DISCHARGE_BORES} = shift }
+  return $self->{DISCHARGE_BORES};
 }
 
-sub dischareDeaths
+sub dischargeFrags
+{
+  my $self = shift;
+  if (@_) { $self->{DISCHARGE_FRAGS} = shift }
+  return $self->{DISCHARGE_FRAGS};
+}
+
+sub dischargeDeaths
 {
   my $self = shift;
   if (@_) { $self->{DISCHARGE_DEATHS} = shift }
@@ -268,10 +284,11 @@ sub selfKills
   my $self = shift;
   return 
   (
-    $self->rocketBores + $self->lavaDeaths +
-    $self->slimeDeaths + $self->waterDeaths +
-    $self->fallDeaths + $self->squishDeaths +
-    $self->discharges + $self->grenadeBores
+    $self->rocketBores() + $self->lavaDeaths() +
+    $self->slimeDeaths() + $self->waterDeaths() +
+    $self->fallDeaths() + $self->squishDeaths() +
+    $self->dischargeBores() + $self->grenadeBores() +
+    $self->squishBores()
   );
 }
 
@@ -283,7 +300,8 @@ sub frags
     $self->axFrags() + $self->shotgunFrags() +
     $self->ssgFrags() + $self->nailgunFrags() +
     $self->sngFrags() + $self->grenadeFrags() +
-    $self->rocketFrags() + $self->lightningFrags()
+    $self->rocketFrags() + $self->lightningFrags() +
+    $self->dischargeFrags() + $self->squishFrags()
   );
 }
  
@@ -295,7 +313,9 @@ sub deaths
     $self->axDeaths() + $self->shotgunDeaths() +
     $self->ssgDeaths() + $self->nailgunDeaths() +
     $self->sngDeaths() + $self->grenadeFrags() +
-    $self->rocketDeaths() + $self->lightningDeaths()
+    $self->rocketDeaths() + $self->lightningDeaths() + 
+    $self->dischargeDeaths() + $self->squishDeaths() +
+    $self->selfKills()
    );
 }
 
@@ -427,6 +447,13 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($2);
       $fragger->ssgFrags($fragger->ssgFrags() + 1);
     }
+    elsif ($string =~ /(.*) rips (.*) a new one/)
+    {
+      $fragger = findPlayer($1);
+      $fragger->rocketFrags($fragger->rocketFrags() + 1);
+      $fraggee = findPlayer($2);
+      $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+    }
     elsif ($string =~ /(.*) was brutalized by (.*)'s quad rocket/) 
     {
       $fraggee = findPlayer($1);
@@ -436,10 +463,10 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) eats (.*)'s pineapple/)
     {
-	$fraggee = findPlayer($1);
-	$fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-	$fragger = findPlayer($2);
-	$fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+      $fraggee = findPlayer($1);
+      $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+      $fragger = findPlayer($2);
+      $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
     }
     elsif ($string =~ /(.*) was gibbed by (.*)'s grenade/) 
     {
@@ -457,12 +484,77 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /(.*) becomes bored with life/)
     {
-#	print "$1 bored\n";
+      $fraggee = findPlayer($1);
+      $fraggee->rocketBores($fraggee->rocketBores() + 1);
+    }
+    elsif ($string =~ /(.*) discovers blast radius/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->rocketBores($fraggee->rocketBores() + 1);
+    }
+    elsif ($string =~ /(.*) tries to put the pin back in/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->grenadeBores($fraggee->grenadeBores() + 1);
+    }
+    elsif ($string =~ /(.*) discharges into the water/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+    }
+    elsif ($string =~ /(.*) discharges into the slime/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+    }
+    elsif ($string =~ /(.*) discharges into the lava/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+    }
+    elsif ($string =~ /(.*) electrocutes himself/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+    }
+    elsif ($string =~ /(.*) accepts (.*)'s discharge/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->dischargeDeaths($fraggee->dischargeDeaths() + 1);
+      $fragger = findPlayer($2);
+      $fragger->dischargeFrags($fragger->dischargeFrags() + 1);
+    }
+    elsif ($string =~ /(.*) was squished/) 
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->squishBores($fraggee->squishBores() + 1);
+    }
+    elsif ($string =~ /(.*) squishes (.*)/)
+    {
+      $fraggee = findPlayer($2);
+      $fraggee->squishDeaths($fraggee->squishDeaths() + 1);
+      $fragger = findPlayer($1);
+      $fraggee->squishFrags($fragger->squishFrags() + 1);
+    }
+    elsif ($string =~ /(.*) visits the Volcano God/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
+    }    
+    elsif ($string =~ /(.*) burst into flames/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
+    }
+    elsif ($string =~ /(.*) turned into hot slag/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
     }
     elsif ($string =~ /(.*) was telefragged by his teammate/) {}
     elsif ($string =~ /(.*) was telefragged by (.*)/) {}
 
-# todo: discharges, satan, ctf
+# todo: satan, ctf, water, fall, slime
 
     elsif ($string =~ /(.*) loses another friend/) 
     {
@@ -514,7 +606,7 @@ foreach $mvd (@ARGV)
 # eliminates the disconnected player list from being added again
     elsif ($string =~ /. - disconnected players/) { last; }
   }
-  $shell = `rm "$tempMvd"`;
+#  $shell = `rm "$tempMvd"`;
 }
 
 #outputHTML();
@@ -556,6 +648,7 @@ sub outputHTML
         "\t\t<TD>LG</TD>\n" .
         "\t\t<TD>TK</TD>\n" .  
         "\t\t<TD>eff</TD>\n" .
+        "\t\t<TD>lava</TD>\n" .
         "\t</TR>\n";
   foreach $player (@players)
   {
@@ -573,6 +666,7 @@ sub outputHTML
       "\t\t<TD>" . $player->lightningFrags . "</TD>\n" .
       "\t\t<TD>" . $player->teamKills . "</TD>\n" .
       "\t\t<TD>" . $player->eff . "</TD>\n" .
+      "\t\t<TD>" . $player->lavaDeaths . "</TD>\n" .
       "\t</TR>\n";
   }
   print "</TABLE></BODY></HTML>";
@@ -593,7 +687,6 @@ sub findPlayer
   push(@players, $newPlayer);
   return $newPlayer;
 }
-
 
 sub findTeam
 {
