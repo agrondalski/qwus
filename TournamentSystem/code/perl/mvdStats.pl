@@ -6,9 +6,10 @@
 # misc bs
 # optimize
 # either ctf is messed up or blood and forrests names are lame
-# bores, telefrags, ctf msgs
+# ctf msgs
 # have to check and double check score calculations
-# all bores have \n :(
+# graphs
+# ^[(.*)](.*):[(.*)](.*)$ should read scores
 
 use utf8;
 use Benchmark;
@@ -500,7 +501,8 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /^(.*) becomes bored with life/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->rocketBores($fraggee->rocketBores() + 1);
     }
     elsif ($string =~ /^(.*) discovers blast radius/)
@@ -508,14 +510,16 @@ foreach $mvd (@ARGV)
       $fraggee = findPlayer($1);
       $fraggee->rocketBores($fraggee->rocketBores() + 1);
     }
-    elsif ($string =~ /^(.*) tries to put the pin back in/)
+    elsif ($string =~ /^ tries to put the pin back in/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->grenadeBores($fraggee->grenadeBores() + 1);
     }
-    elsif ($string =~ /^(.*) discharges into the water/)
+    elsif ($string =~ /^ discharges into the water/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
     }
     elsif ($string =~ /^(.*) discharges into the slime/)
@@ -557,19 +561,22 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($1);
       $fraggee->squishFrags($fragger->squishFrags() + 1);
     }
-    elsif ($string =~ /^(.*) visits the Volcano God/)
+    elsif ($string =~ /^ visits the Volcano God/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
     }    
-    elsif ($string =~ /^(.*) burst into flames/)
+    elsif ($string =~ /^ burst into flames/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
     }
-    elsif ($string =~ /^(.*) turned into hot slag/)
+    elsif ($string =~ /^ turned into hot slag/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
     }
     elsif ($string =~ /^(.*) cratered/)
@@ -686,6 +693,7 @@ foreach $mvd (@ARGV)
 # breaking out of the loop not only provides a speed boost, but
 # eliminates the disconnected player list from being added again
     elsif ($string =~ /. - disconnected players/) { last; }
+    $oldString = $string;
   }
 #  $shell = `rm "$tempMvd"`;
 }
