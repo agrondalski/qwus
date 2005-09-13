@@ -174,11 +174,11 @@ catch(Exception $e) {}
 			</TR>
 
 			<TR id="tourney2_2" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">Standings</a></TD>
+			        <TD><a href="?a=standings&amp;tourney_id=2"><img src="img/red.gif" alt="">Standings</a></TD>
 			</TR>
 
 			<TR id="tourney2_3" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">Schedule</a></TD>
+			        <TD><a href="?a=schedule&amp;tourney_id=2"><img src="img/red.gif" alt="">Schedule</a></TD>
 			</TR>
 
 			<TR id="tourney2_4" class=submenu>
@@ -202,11 +202,11 @@ catch(Exception $e) {}
 			</TR>
 
 			<TR id="tourney3_2" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">Standings</a></TD>
+			        <TD><a href="?a=standings&amp;tourney_id=3"><img src="img/red.gif" alt="">Standings</a></TD>
 			</TR>
 
 			<TR id="tourney3_3" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">Schedule</a></TD>
+			        <TD><a href="?a=schedule&amp;tourney_id=3"><img src="img/red.gif" alt="">Schedule</a></TD>
 			</TR>
 
 			<TR id="tourney3_4" class=submenu>
