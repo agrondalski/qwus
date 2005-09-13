@@ -2,6 +2,7 @@
 
 require_once 'login.php'; 
 
+echo "<h2>Admin Home</h2>";
 echo "<b>Actions</b><br>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
 echo "<tr>";

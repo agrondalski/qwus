@@ -32,23 +32,20 @@ echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='
 echo "<br></td></tr>";
 echo "</table></form>";
 if ($div != "") {
-
-	// List players in this team
 	echo "<table border=1 cellpadding=2 cellspacing=0>\n";
 	echo "<th>Matchup</th><th>Week</th><th>Deadline</th><th>Actions</th>";
 	foreach ($div->getMatches() as $m) {
 	$t1 = new team(array('team_id'=>$m->getValue('team1_id')));
 	$t2 = new team(array('team_id'=>$m->getValue('team2_id')));
 	$s  = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
-		echo "\t<tr>\n";
-		echo "\t<td>",$t1->getValue('name')," vs. ";
-		echo "",$t2->getValue('name'),"</td>\n";
-		//echo "<td>name</td><td>deadline</td>";
-		echo "\t<td>",$s->getValue('name'),"</td>\n";
-		echo "\t<td>",$s->getValue('deadline'),"</td>\n";
-		echo "<td><a href='?a=saveSchedule&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=",$division_id,"&amp;match_id=",$m->getValue('match_id'),"'>";
-		echo "Delete</a></td>";
-	}
+	echo "\t<tr>\n";
+	echo "\t<td>",$t1->getValue('name')," vs. ";
+	echo "",$t2->getValue('name'),"</td>\n";
+	echo "\t<td>",$s->getValue('name'),"</td>\n";
+	echo "\t<td>",$s->getValue('deadline'),"</td>\n";
+	echo "<td><a href='?a=saveSchedule&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=",$division_id,"&amp;match_id=",$m->getValue('match_id'),"'>";
+	echo "Delete</a></td>";
+}
 	echo "</tr></table>";
 	
 	// Randomly Generate schedule button
