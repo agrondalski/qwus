@@ -1,7 +1,3 @@
-drop database if exists dew  ;
-create database if not exists dew ;
-use dew ;
-
 create table game_type(
   game_type_id  integer       NOT NULL auto_increment,
   name          varchar(250)  NOT NULL,
