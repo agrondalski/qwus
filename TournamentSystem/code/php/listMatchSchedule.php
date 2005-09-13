@@ -22,6 +22,9 @@ foreach ($div->getMatchSchedule() as $ms) {
 	echo "\t</tr>\n";
 }
 echo "</table>\n";
-echo "<p><a href='?a=manageMatchSchedule&amp;tourney_id=$tid&amp;division_id=",$div->getValue('division_id'),"'>";
+echo "<p>";
+echo "<a href='?a=manageSchedule&amp;tourney_id=$tid&amp;division_id=",$div->getValue('division_id'),"'>";
+echo "Back to Schedule</a>&nbsp;<b>&gt;&nbsp;</b>";
+echo "<a href='?a=manageMatchSchedule&amp;tourney_id=$tid&amp;division_id=",$div->getValue('division_id'),"'>";
 echo "Create New</a></p>";
 ?>
