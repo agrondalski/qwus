@@ -8,9 +8,10 @@ $mode = $_REQUEST['mode'];
 
 if ($mode=="edit")
 {
+  $nid = $_POST['nid'];
+
   try
     {
-      $nid = $_POST['nid'];
       $news = new news(array('news_id'=>$nid));
 
       $news->update('subject',$_POST['subject']);
@@ -30,7 +31,7 @@ elseif ($mode=="delete")
       $nid = $_REQUEST['nid'];
       $news = new news(array('news_id'=>$nid));
       $news->delete();
-      $msg = "<br>News item deleted!<br>";
+      $msg = "<br>Column entry deleted!<br>";
     }
   catch (Exception $e)
     {
@@ -40,23 +41,17 @@ elseif ($mode=="delete")
 
 else
 {
-  try
-    {
-      $news = new news(array('news_id'=>$nid,
-			     'writer_id'=>$_POST['writer_id'],
-			     'tourney_id'=>$tid,
-			     'subject'=>$_POST['subject'],
-			     'news_date'=>date("Y-m-d"),
-			     'text'=>$_POST['text']));
+  $news = new news(array('news_id'=>$nid,
+                         'writer_id'=>$_POST['writer_id'],
+                         'tourney_id'=>$tid,
+                         'subject'=>$_POST['subject'],
+                         'news_date'=>date("Y-m-d"),
+			 'text'=>$_POST['text'],
+			 'isColumn'=>true));
 
-      $msg = "<br>New News Item created!<br>";
-    }
-  catch (Exception $e)
-    {
-      $msg = "<br>Unable to create news item!<br>";
-    }
+  $msg = "<br>Column entry created!<br>";
 }
 
-include 'listNews.php';
+include 'listColumn.php';
 echo $msg ;
 ?>

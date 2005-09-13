@@ -1,15 +1,22 @@
 <?php
+
 require_once 'includes.php';
 require_once 'login.php';
 
-$tid = $_REQUEST['tourney_id'];
 $mode = $_REQUEST['mode'];
 
-$p = new player(array('name'=>$_SESSION["username"]));
+try
+{
+  $p = new player(array('name'=>$_SESSION["username"]));
+}
+catch(Exception $e)
+{
+  return ;
+}
 
 if ($mode == "edit")
 {
-  echo "<b><p>Modify a news item:</b></p>";
+  echo "<b><p>Modify a Column:</b></p>";
 
   try
     {
@@ -24,25 +31,17 @@ if ($mode == "edit")
     }
   catch(Exception $e){}
 }
+
 else
 {
-  echo "<p><b>Create a news item:</b></p>";
+  echo "<p><b>Create a column:</b></p>";
   $writer_name=$p->getValue('name') ;
   $writer_id=$p->getValue('player_id');
   $subject="";
   $text="";
-} 
-
-echo "<form action='?a=saveNews' method=post>";
-
-if (!util::isNull($tid))
-{
-  echo "<input type='hidden' name='tourney_id' value='$tid'>";
 }
-else
-{
-  echo "<input type='hidden' name='tourney_id' value='$tid'>";
-}
+
+echo "<form action='?a=saveColumn' method=post>";
 
 if ($mode == "edit")
 {
@@ -71,6 +70,5 @@ echo "</form>" ;
 ?>
 
 <?php
-include 'listNews.php';
+include 'listColumn.php';
 ?>
-

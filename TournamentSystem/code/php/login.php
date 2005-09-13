@@ -79,9 +79,22 @@ if ($displayLogin)
 }
 else
 {
-  print '<table border=0 width=100% cellspacing=0 cellpadding=0><tr>';
+  print '<table border=0 width=100% cellspacing=0 cellpadding=0>' ;
+  print '<tr>';
   print '<td>Welcome, ' . $_SESSION['username'] . '</td>';
-  print '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td></tr></table><hr>' ;
+
+  if (!util::isNull($_SESSION['tourney_id']) || !util::isNull($_REQUEST['tourney_id']))
+    {
+      print "<td><a href='?a=adminHome'>Admin Home</a></td>";
+      print "<td><a href='?a=tourneyHome&amp;tourney_id=" . util::nvl($_SESSION['tourney_id'], $_REQUEST['tourney_id']) . "'>Tourney Home</a></td>";
+    }
+  else
+    {
+      print "<td><a href='?a=adminHome'>Admin Home</a></td>";
+    }
+
+  print '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td>' ;
+  print '</tr></table><hr>' ;
 
   $do = $_GET['action'] ;
 

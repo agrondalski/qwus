@@ -23,7 +23,7 @@ try
 	  // General news
 	  else
 	    {
-	      $news  = news::getNews(array('order'=>'news_id desc', 'limit'=>'0,5')) ;
+	      $news  = news::getNews(array('order'=>'news_date desc, news_id desc', 'limit'=>'0,5')) ;
 	      $count = news::getNewsCount() ;
 	    }
 	}
@@ -47,7 +47,7 @@ try
   else
     {
       $p = new player(array('name'=>$_GET['column'])) ;
-      $news = $p->getNewsColumns(array('order'=>'news_id desc', 'limit'=>'0,1')) ;
+      $news = $p->getNewsColumns(array('order'=>'news_date desc, news_id desc', 'limit'=>'0,1')) ;
     }
 }
 catch(Exception $e)

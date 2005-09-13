@@ -242,7 +242,7 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
-				<TD><A href="?a=listTourneys">Login</A></TD>
+				<TD><A href="?a=adminHome">Admin</A></TD>
 			</TR>
 
                         <TR>

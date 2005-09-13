@@ -5,7 +5,21 @@ require_once 'login.php';
 $tid = $_REQUEST['tourney_id'];
 $t = new tourney(array('tourney_id'=>$tid));
 
-echo "<h2>Admin Home</h2>";
+try
+{
+  $p = new player(array('name'=>$_SESSION['username'])) ;
+
+  if (!$p->isSuperAdmin() && !$p->isTourneyAdmin($tid))
+    {
+      return ;
+    }
+}
+catch(Exception $e)
+{
+  return ;
+}
+
+echo "<h2>TOurney Home</h2>";
 echo "<b>Tourney specific Actions</b><br>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
 echo "<tr>";
@@ -37,20 +51,4 @@ echo "<td><font size='2'><a href='?a=standings&tourney_id=$tid'>do:Standings</a>
 echo "<td><font size='2'><a href='?a=schedule&tourney_id=$tid'>do:Schedule</a></td>";
 echo "</tr>";
 echo "</table><br>";
-echo "<br>";
-echo "<b>Global Actions</b><br>";
-echo "<table border=1 cellpadding=2 cellspacing=0>";
-echo "<tr>";
-echo "<td><font size='2'><a href='?a=manageTeam&tourney_id=$tid'>Create a Team</a></td>";
-echo "<td><font size='2'><a href='?a=listTeams&tourney_id=$tid'>Manage Teams</a></td>";
-echo "</tr>";
-echo "<tr>";
-echo "<td><font size='2'><a href='?a=managePlayer&tourney_id=$tid'>Create a Player</a></td>";
-echo "<td><font size='2'><a href='?a=listPlayers&tourney_id=$tid'>Manage Players</a></td>";
-echo "</tr>";
-echo "<tr>";
-echo "<td>&nbsp;</td>";
-echo "<td><font size='2'><a href='?a=listMaps&tourney_id=$tid'>List Maps</a></td>";
-echo "</tr>";
-echo "</table>";
 ?>
