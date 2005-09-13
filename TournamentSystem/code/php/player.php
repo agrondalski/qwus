@@ -33,7 +33,7 @@ class player
 	  if (array_key_exists('name', $a))
 	    {
 	      $this->name = $this->validateColumn($a['name'], 'name') ;
-	      print 1;	      	      
+
 	      if ($this->getPlayerInfoByName()==util::NOTFOUND)
 		{
 		  util::throwException("No player exists with specified name");
