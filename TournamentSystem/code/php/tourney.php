@@ -16,11 +16,9 @@ class tourney
 
   function __construct($a)
     {
-      $id = $a['tourney_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('tourney_id', $a))
 	{
-	  $this->tourney_id = $id ;
+	  $this->tourney_id = $this->validateColumn($a['tourney_id'], 'tourney_id') ;
 
 	  if ($this->getTourneyInfo()==util::NOTFOUND)
 	    {
@@ -97,6 +95,11 @@ class tourney
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -106,6 +109,11 @@ class tourney
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;
@@ -158,11 +166,21 @@ class tourney
 
       elseif ($col == 'team_size')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'timelimit')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 

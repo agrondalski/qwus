@@ -14,11 +14,9 @@ class log_entry
 
   function __construct($a)
     {
-      $id = $a['log_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('log_id', $a))
 	{
-	  $this->log_id = $id ;
+	  $this->log_id = $this->validateColumn($a['log_id'], 'log_id') ;
 
 	  if ($this->getLogEntryInfo()==util::NOTFOUND)
 	    {
@@ -91,6 +89,11 @@ class log_entry
 		  util::throwException($col . ' cannot be null') ;
 		}
 	  
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}

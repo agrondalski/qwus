@@ -14,11 +14,9 @@ class division
 
   function __construct($a)
     {
-      $id = $a['division_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('division_id', $a))
 	{
-	  $this->division_id = $id ;
+	  $this->division_id = $this->validateColumn($a['division_id'], 'division_id') ;
 
 	  if ($this->getDivisionInfo()==util::NOTFOUND)
 	    {
@@ -90,6 +88,11 @@ class division
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -99,6 +102,11 @@ class division
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;
@@ -115,16 +123,31 @@ class division
 
       elseif ($col = 'num_games')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'playoff_spots')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'elim_losses')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 

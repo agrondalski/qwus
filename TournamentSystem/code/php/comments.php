@@ -15,11 +15,9 @@ class comment
 
   function __construct($a)
     {
-      $id = $a['comment_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('comment_id', $a))
 	{
-	  $this->comment_id = $id ;
+	  $this->comment_id = $this->validateColumn($a['comment_id'], 'comment_id') ;
 
 	  if ($this->getCommentInfo()==util::NOTFOUND)
 	    {
@@ -93,6 +91,11 @@ class comment
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -122,6 +125,11 @@ class comment
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;

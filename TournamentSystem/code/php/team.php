@@ -16,11 +16,9 @@ class team
 
   function __construct($a)
     {
-      $id = $a['team_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('team_id', $a))
 	{
-	  $this->team_id = $id ;
+	  $this->team_id = $this->validateColumn($a['team_id'], 'team_id') ;
 
 	  if ($this->getTeamInfo()==util::NOTFOUND)
 	    {
@@ -95,6 +93,11 @@ class team
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -131,6 +134,11 @@ class team
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -156,26 +164,51 @@ class team
 
       elseif ($col == 'wins')
 	{
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'losses')
 	{
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'points')
 	{
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'maps_won')
 	{
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
       elseif ($col == 'maps_lost')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 

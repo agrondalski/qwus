@@ -12,15 +12,13 @@ class match_schedule
 
   function __construct($a)
     {
-      $id = $a['schedule_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('schedule_id', $a))
 	{
-	  $this->schedule_id = $id ;
+	  $this->schedule_id = $this->validateColumn($a['schedule_id'], 'schedule_id') ;
 
 	  if ($this->getMatchScheduleInfo()==util::NOTFOUND)
 	    {
-	      util::throwException("No match exists with specified id");
+	      util::throwException("No match_schedule exists with specified id");
 	    }
 	  else
 	    {
@@ -87,6 +85,11 @@ class match_schedule
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -96,6 +99,11 @@ class match_schedule
  	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;

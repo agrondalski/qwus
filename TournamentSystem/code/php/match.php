@@ -15,11 +15,9 @@ class match
 
   function __construct($a)
     {
-      $id = $a['match_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('match_id', $a))
 	{
-	  $this->match_id = $id ;
+	  $this->match_id = $this->validateColumn($a['match_id'], 'match_id') ;
 
 	  if ($this->getMatchInfo()==util::NOTFOUND)
 	    {
@@ -93,6 +91,11 @@ class match
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -102,6 +105,11 @@ class match
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;
@@ -114,6 +122,11 @@ class match
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -124,11 +137,21 @@ class match
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
       elseif ($col == 'winning_team_id')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 

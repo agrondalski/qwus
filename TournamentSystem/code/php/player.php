@@ -16,11 +16,10 @@ class player
     {
       if (count($a)==1)
 	{
-	  $id = $a['player_id'] ;
-	  if(isset($id) && is_numeric($id))
+	  if (array_key_exists('player_id', $a))
 	    {
-	      $this->player_id = $id ;
-	      
+	      $this->player_id = $this->validateColumn($a['player_id'], 'player_id') ;
+
 	      if ($this->getPlayerInfo()==util::NOTFOUND)
 		{
 		  util::throwException("No player exists with specified id");
@@ -31,15 +30,18 @@ class player
 		}
 	    }
 
-	  $this->name = util::mysql_real_escape_string($a['name']) ;
-	      
-	  if ($this->getPlayerInfoByName()==util::NOTFOUND)
+	  if (array_key_exists('name', $a))
 	    {
-	      util::throwException("No player exists with specified name");
-	    }
-	  else
-	    {
-	      return ;
+	      $this->name = $this->validateColumn($a['name'], 'name') ;
+	      print 1;	      	      
+	      if ($this->getPlayerInfoByName()==util::NOTFOUND)
+		{
+		  util::throwException("No player exists with specified name");
+		}
+	      else
+		{
+		  return ;
+		}
 	    }
 	}
 
@@ -104,6 +106,11 @@ class player
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -130,6 +137,11 @@ class player
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 

@@ -15,11 +15,9 @@ class news
 
   function __construct($a)
     {
-      $id = $a['news_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('news_id', $a))
 	{
-	  $this->news_id = $id ;
+	  $this->news_id = $this->validateColumn($a['news_id'], 'news_id') ;
 
 	  if ($this->getNewsInfo()==util::NOTFOUND)
 	    {
@@ -92,6 +90,11 @@ class news
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -103,11 +106,21 @@ class news
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
       elseif ($col == 'tourney_id')
 	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 

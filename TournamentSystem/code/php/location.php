@@ -12,11 +12,9 @@ class location
 
   function __construct($a)
     {
-      $id = $a['location_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('location_id', $a))
 	{
-	  $this->location_id = $id ;
+	  $this->location_id = $this->validateColumn($a['location_id'], 'location_id') ;
 
 	  if ($this->getLocationInfo()==util::NOTFOUND)
 	    {
@@ -87,6 +85,11 @@ class location
 		  util::throwException($col . ' cannot be null') ;
 		}
 
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -106,7 +109,7 @@ class location
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col = 'logo_utl')
+      elseif ($col = 'logo_url')
 	{
 	  return util::mysql_real_escape_string($val) ;
 	}

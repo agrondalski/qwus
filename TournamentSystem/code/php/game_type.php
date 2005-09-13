@@ -10,11 +10,9 @@ class game_type
 
   function __construct($a)
     {
-      $id = $a['game_type_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('game_type_id', $a))
 	{
-	  $this->game_type_id = $id ;
+	  $this->game_type_id = $this->validateColumn($a['game_type_id'], 'game_type_id') ;
 
 	  if ($this->getGameTypeInfo()==util::NOTFOUND)
 	    {
@@ -83,6 +81,11 @@ class game_type
 		  util::throwException($col . ' cannot be null') ;
 		}
 	  
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}

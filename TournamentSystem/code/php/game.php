@@ -15,11 +15,9 @@ class game
 
   function __construct($a)
     {
-      $id = $a['game_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('game_id', $a))
 	{
-	  $this->game_id = $id ;
+	  $this->game_id = $this->validateColumn($a['game_id'], 'game_id') ;
 
 	  if ($this->getGameInfo()==util::NOTFOUND)
 	    {

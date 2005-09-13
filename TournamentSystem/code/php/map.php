@@ -12,11 +12,9 @@ class map
 
   function __construct($a)
     {
-      $id = $a['map_id'] ;
-
-      if (isset($id) && is_numeric($id))
+      if (array_key_exists('map_id', $a))
 	{
-	  $this->map_id = $id ;
+	  $this->map_id = $this->validateColumn($a['map_id'], 'map_id') ;
 
 	  if ($this->getMapsInfo()==util::NOTFOUND)
 	    {
@@ -87,6 +85,11 @@ class map
 		  util::throwException($col . ' cannot be null') ;
 		}
 	  
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -118,6 +121,11 @@ class map
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
