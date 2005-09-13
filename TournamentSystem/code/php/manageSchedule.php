@@ -64,7 +64,7 @@ echo "<tr>";
 echo "<td><b>Schedule length in Weeks:</b></td>";
 echo "<td><input type='text' name='num_weeks' value='' size='10'></td>";
 echo "</tr>";
-echo "<tr><td><b>Generate New Schedule</b></td><td>";
+echo "<tr><td><b>Generate New Schedule:</b></td><td>";
 echo "<input type='submit' value='Create Schedule' name='B1' class='button'></td>";
 echo "</tr></table></form>";
 	
@@ -94,7 +94,9 @@ $slist = $div->getMatchSchedule();
 foreach ($slist as $tmp) {
 	echo "<option value='",$tmp->getValue('schedule_id'),"'>",$tmp->getValue('name'),":",$tmp->getValue('deadline');
 }
-echo "</select></td></tr>";
+echo "</select><br>";
+echo "<a href='?a=manageMatchSchedule&amp;tourney_id=$tid&amp;division_id=",$division_id,"'>";
+echo "Manage Schedule Weeks</a></td></tr>";
 echo "<tr><td>&nbsp;</td><td><input type='submit' value='Add' name='B1' class='button'>";
 echo "<br></td></tr></table></form>";
 }
