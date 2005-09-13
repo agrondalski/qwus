@@ -64,11 +64,12 @@ ENGINE=INNODB ;
 create table team(
   team_id      integer      NOT NULL auto_increment,
   name         varchar(250) NOT NULL,
+  name_abbr    varchar(10)  NOT NULL,
   email        varchar(250) NOT NULL,
   irc_channel  varchar(250),
   location_id  integer      NOT NULL,
   password     varchar(250) NOT NULL,
-  approved     boolean NOT NULL default FALSE,
+  approved     boolean      NOT NULL default FALSE,
 --
   constraint team_pk   primary key(team_id),
   constraint team_unq1 unique(name))
