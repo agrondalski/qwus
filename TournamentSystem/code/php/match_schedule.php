@@ -53,7 +53,7 @@ class match_schedule
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->schedule_id  = $row[0] ;
+      $this->division_id  = $row[0] ;
       $this->name         = $row[1] ;
       $this->deadline     = $row[2] ;
 

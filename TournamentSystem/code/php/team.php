@@ -7,6 +7,7 @@ class team
 {
   private $team_id ;
   private $name ;
+  private $name_abbr ;
   private $email ;
   private $irc_channel ;
   private $location_id ;
@@ -36,9 +37,9 @@ class team
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into team(name, email, irc_channel, location_id, password, approved)" .
-                         "values('%s', '%s', '%s', %d, '%s', %d)",
-			 $this->name, $this->email, $this->irc_channel, $this->location_id, $this->password, $this->approved) ;
+      $sql_str = sprintf("insert into team(name, name_abbr, email, irc_channel, location_id, password, approved)" .
+                         "values('%s', '%s', '%s', '%s', %d, '%s', %d)",
+			 $this->name, $this->name_abbr, $this->email, $this->irc_channel, $this->location_id, $this->password, $this->approved) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . $mysql_error) ;
       $this->team_id = mysql_insert_id() ;
@@ -46,7 +47,7 @@ class team
 
   private function getTeamInfo()
     {
-      $sql_str = sprintf("select name, email, irc_channel, location_id, password, approved from team where team_id=%d", $this->team_id) ;
+      $sql_str = sprintf("select name, name_abbr, email, irc_channel, location_id, password, approved from team where team_id=%d", $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str" . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -57,11 +58,12 @@ class team
       $row = mysql_fetch_row($result) ;
 
       $this->name         = $row[0] ;
-      $this->email        = $row[1] ;
-      $this->irc_channel  = $row[2] ;
-      $this->location_id  = $row[3] ;
-      $this->password     = $row[4] ; 
-      $this->approved     = $row[5] ;
+      $this->name_abbr    = $row[1] ;
+      $this->email        = $row[2] ;
+      $this->irc_channel  = $row[3] ;
+      $this->location_id  = $row[4] ;
+      $this->password     = $row[5] ; 
+      $this->approved     = $row[6] ;
 
       mysql_free_result($result) ;
 
@@ -104,6 +106,11 @@ class team
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'name_abbr')
+	{
 	  return util::mysql_real_escape_string($val) ;
 	}
 
