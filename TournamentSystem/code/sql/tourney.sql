@@ -151,7 +151,7 @@ create table game(
   demo_url        varchar(250),
 --
   constraint game_pk primary key(game_id),
-  constraint game_unq1 unique(match_id, map_id)
+  constraint game_unq1 unique(match_id, map_id))
 ENGINE=INNODB ;
 
 create table maps(
