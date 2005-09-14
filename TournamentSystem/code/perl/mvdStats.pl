@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # todo:
-# fix remaining fun names errors
 # nice output for easy database entry
 # misc bs
 # optimize
@@ -734,6 +733,13 @@ sub outputTeamHTML
       $player = findPlayer($player);
       print "\t\t" . $player->name . "\t" . $player->points . "\n";
     }  
+  }
+  foreach $player (@players)
+  {
+    if ($player->team eq undef)
+    {
+	print "unknown team:\t\t" .  $player->name . "\t" . $player->points . "\n";
+    }
   }
 }
 
