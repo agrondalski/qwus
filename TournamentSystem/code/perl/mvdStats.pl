@@ -407,7 +407,7 @@ foreach $mvd (@ARGV)
 {
   $tempMvd = $mvd . ".tmp";
   $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
-  @strings = `strings -3 "$tempMvd"`;
+  @strings = `strings -2 "$tempMvd"`;
 
   foreach $string (@strings)
   {
@@ -507,6 +507,7 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /^(.*) discovers blast radius/)
     {
+print $string;
       $fraggee = findPlayer($1);
       $fraggee->rocketBores($fraggee->rocketBores() + 1);
     }
@@ -522,18 +523,21 @@ foreach $mvd (@ARGV)
       $fraggee = findPlayer($oldString);
       $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
     }
-    elsif ($string =~ /^(.*) discharges into the slime/)
+    elsif ($string =~ /^ discharges into the slime/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
     }
-    elsif ($string =~ /^(.*) discharges into the lava/)
+    elsif ($string =~ /^ discharges into the lava/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
     }
     elsif ($string =~ /^(.*) electrocutes himself/)
     {
+print $string;
       $fraggee = findPlayer($1);
       $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
     }
@@ -551,6 +555,7 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /^(.*) squished a teammate/)
     {
+	print $string;
       $fragger = findPlayer($1);
       $fragger->teamKills($fragger->teamKills() + 1);
     }
@@ -581,12 +586,14 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /^(.*) cratered/)
     {
+	print $string;
       $fraggee = findPlayer($1);
       $fraggee->fallDeaths($fraggee->fallDeaths() + 1);
     }
-    elsif ($string =~ /^(.*) fell to his death/)
+    elsif ($string =~ /^ fell to his death/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->fallDeaths($fraggee->fallDeaths() + 1);
     }
     elsif ($string =~ /^(.*) sleeps with the fishes/)
@@ -596,42 +603,50 @@ foreach $mvd (@ARGV)
     }
     elsif ($string =~ /^(.*) sucks it down/)
     {
+	print $string;
       $fraggee = findPlayer($1);
       $fraggee->waterDeaths($fraggee->waterDeaths() + 1);
     }
     elsif ($string =~ /^(.*) gulped a load of slime/)
     {
+print $string;
       $fraggee = findPlayer($1);
       $fraggee->slimeDeaths($fraggee->slimeDeaths() + 1);
     }
     elsif ($string =~ /^(.*) can't exist on slime alone/)
     {
+print $oldString . $string;
       $fraggee = findPlayer($1);
       $fraggee->slimeDeaths($fraggee->slimeDeaths() + 1);
     }
-    elsif ($string =~ /^(.*) was spiked/)
+    elsif ($string =~ /^ was spiked/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->miscBores($fraggee->miscBores() + 1);
     }
     elsif ($string =~ /^(.*) tried to leave/)
     {
+print $string;
       $fraggee = findPlayer($1);
       $fraggee->miscBores($fraggee->miscBores() + 1);
     }
-    elsif ($string =~ /(.*) died/)
+    elsif ($string =~ /^(.*) died/)
     {
+print $string;
       $fraggee = findPlayer($1);
       $fraggee->miscBores($fraggee->miscBores() + 1);
     }
-    elsif ($string =~ /^(.*) suicides/)
+    elsif ($string =~ /^ suicides/)
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->miscBores($fraggee->miscBores() + 2);
     }
-    elsif ($string =~ /^(.*) was telefragged by his teammate/) 
+    elsif ($string =~ /^ was telefragged by his teammate/) 
     {
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->miscBores($fraggee->miscBores() + 1);
     }
     elsif ($string =~ /^(.*) was telefragged by (.*)/) 
@@ -641,7 +656,10 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($2);
       $fragger->teleFrags($fragger->teleFrags() + 1);
     }
-
+    elsif ($string =~ /satan/i)
+    {
+      print $string;
+    }
 # todo: satan, ctf, fall frags
 
     elsif ($string =~ /^(.*) loses another friend/) 
@@ -695,11 +713,12 @@ foreach $mvd (@ARGV)
     elsif ($string =~ /. - disconnected players/) { last; }
     $oldString = $string;
   }
-#  $shell = `rm "$tempMvd"`;
+  $shell = `rm "$tempMvd"`;
 }
 
 #outputHTML();
-outputTeamHTML();
+#outputTeamHTML();
+outputForm();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -790,4 +809,35 @@ sub findTeam
   return $newTeam;
 }
 
+sub outputForm
+{
+  print "<HTML>\n";
+  print "<HEAD></HEAD>\n";
+  print "<BODY>\n";
+  print "Match Report for $mvd\n";
+  print "<TABLE border=0 cellpadding=2 cellspacing=0>\n";
+  foreach $team (@teams)
+  {
+    print "\t<TR>\n";
+    print "\t\t<TD>" . $team->name . "</TD>\n";
+    print "\t</TR>\n";
+    my @teamPlayers = $team->players;
+    foreach $player (@teamPlayers)
+    {
+      $player = findPlayer($player);
+      print "\t<TR>\n";
+      print "\t\t<TD></TD>\n";
+      print "\t\t<TD>" . $player->name . "</TD>\n";
+      print "\t\t<TD>" . $player->points . "</TD>\n";
+      print "\t</TR>\n";
+    }    
+    print "\t<TR>\n";
+    print "\t\t<TD></TD><TD></TD><TD>" . $team->points . "</TD>\n";
+    print "\t</TR>\n";
+  }
+#  print "<input type='hidden' name
+  print "</TABLE>\n";
+  print "</BODY>\n";
+  print "</HTML>\n";
+}
 
