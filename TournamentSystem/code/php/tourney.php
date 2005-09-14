@@ -274,6 +274,25 @@ class tourney
       return $arr ;
     }
 
+  public function getMapByAbbr($mapa)
+    {
+      $mapa = map::validateColumn($mapa, 'map_abbr') ;
+
+      $sql_str = sprintf("select m.map_id from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id and m.map_abbr='%s'", $this->tourney_id, $mapa) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row=mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return new map(array('map_id'=>$row[0])) ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return null ;
+	}
+    }
+
   public function getNews($a)
     {
       $sql_str = sprintf("select n.news_id from news n where n.tourney_id=%d %s", $this->tourney_id, util::getOrderBy($a)) ;
@@ -293,11 +312,16 @@ class tourney
       $sql_str = sprintf("select count(*) from news n where tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      mysql_free_result($result) ;
-      return $val ;
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return $row[0] ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return 0 ;
+	}
     }
 
   public function getGameType()

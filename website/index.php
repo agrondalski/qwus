@@ -1,6 +1,5 @@
 <?php
 require("php/includes.php");
-$page = (empty($_GET["a"])) ? "home" : $_GET["a"];
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -112,17 +111,14 @@ print '<BODY onLoad="' . $s1 . $s2 . '">' ;
 <?php
 try
   {
-    if (file_exists("docs/$page.php"))
-    {
-      include "docs/$page.php" ;
-    }
-    elseif (file_exists("php/$page.php"))
+    $page = (empty($_GET["a"])) ? "home" : $_GET["a"];
+    if (file_exists("php/$page.php"))
     {
       include "php/$page.php" ;
     }
-    elseif (file_exists("$page.php"))
+    elseif (file_exists("docs/$page.php"))
     {
-      include "$page.php" ;
+      include "docs/$page.php" ;
     }
   }
 catch(Exception $e) {}

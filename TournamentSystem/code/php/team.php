@@ -36,8 +36,8 @@ class team
 	}
 
       $sql_str = sprintf("insert into team(name, name_abbr, email, irc_channel, location_id, password, approved)" .
-                         "values('%s', '%s', '%s', '%s', %d, '%s', %d)",
-			 $this->name, $this->name_abbr, $this->email, $this->irc_channel, $this->location_id, $this->password, $this->approved) ;
+                         "values('%s', '%s', '%s', '%s', %s, '%s', %d)",
+			 $this->name, $this->name_abbr, $this->email, $this->irc_channel, util::nvl($this->location_id, 'null'), $this->password, $this->approved) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . $mysql_error) ;
       $this->team_id = mysql_insert_id() ;
@@ -129,12 +129,14 @@ class team
 
       elseif ($col == 'location_id')
 	{
+	  /*
  	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
 	    }
+	  */
 
-	  if (!is_numeric($val))
+	  if (!util::isNull($val) && !is_numeric($val))
 	    {
 	      util::throwException($col . ' is not a numeric value') ;
 	    }
@@ -317,10 +319,12 @@ class team
 
       if ($pid = mysql_fetch_row($result))
 	{
+	  mysql_free_result($result) ;
 	  return new player(array('player_id'=>$pid[0])) ;
 	}
       else
 	{
+	  mysql_free_result($result) ;
 	  return null;
 	}
     }
@@ -367,11 +371,110 @@ class team
 
       $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from division_info where team_id=%d and division_id=%d", $this->team_id, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      $row     = mysql_fetch_row($result) ;
 
-      $arr = array('wins'=>$row[0], 'losses'=>$row[1], 'points'=>$row[2], 'maps_won'=>$row[3], 'maps_lost'=>$row[4]) ;
-      
+      $arr = array() ;
+      if ($row = mysql_fetch_row($result))
+	{
+	  $arr['wins']      = $row[0] ;
+	  $arr['losses']    = $row[1] ;
+	  $arr['points']    = $row[2] ;
+	  $arr['maps_won']  = $row[3] ;
+	  $arr['maps_lost'] = $row[4] ;
+	}
       mysql_free_result($result) ;
+
+      $sql_str = sprintf("select max(s.score), min(s.score), avg(s.score), sum(s.score), sum(s.other)
+                          from (select g.team1_score score, g.team2_score other from match_schedule ms, match_table m, game g
+                                where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.team1_id=%d and m.approved=true and m.match_id=g.match_id
+                               union all
+                                select g.team2_score score, g.team1_score other from match_schedule ms, match_table m, game g
+                                where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.team2_id=%d and m.approved=true and m.match_id=g.match_id) s",
+			 $div, $this->team_id, $div, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  $arr['max_score'] = $row[0] ;
+	  $arr['min_score'] = $row[1] ;
+	  $arr['avg_score'] = $row[2] ;
+	  $arr['frags_for'] = $row[3] ;
+	  $arr['frags_against'] = $row[4] ;
+	}
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("select match_id,
+                                (select count(*) from game g
+                                 where g.match_id=m.match_id and
+                                       (m.team1_id=%d and g.team1_score>g.team2_score or
+                                        m.team2_id=%d and g.team2_score>g.team1_score)) games_won,
+                                (select count(*) from game g
+                                 where g.match_id=m.match_id) total_games
+                          from match_schedule ms, match_table m
+                          where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.approved=true and %d in(m.team1_id, m.team2_id)",
+			 $this->team_id, $this->team_id, $div, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  $match_id  = $row[0] ;
+	  $maps_won  = $row[1] ;
+	  $maps_lost = $row[2] - $maps_won ;
+
+	  $arr_idx = 'match_' . $maps_won . '-' . $maps_lost ;
+
+	  if (!util::isNull($arr[$arr_idx]))
+	    {
+	      $arr[$arr_idx] += 1 ;
+	    }
+	  else
+	    {
+	      $arr[$arr_idx] = 1 ;
+	    }
+	}
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("select winning_team_id
+                          from match_schedule ms, match_table m
+                          where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.approved=true and %d in(m.team1_id, m.team2_id)
+                          order by match_date desc, match_id asc",
+			 $div, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      print $sql_str ;
+      $win_streak    = 0 ;
+      $losing_streak = 0 ;
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  if ($row[0] == $this->team_id)
+	    {
+	      if ($losing_streak>0)
+		{
+		  return ;
+		}
+
+	      $win_streak += 1;
+	    }
+	  else
+	    {
+	      if ($win_streak>0)
+		{
+		  return ;
+		}
+
+	      $losing_streak += 1;
+	    }
+	}
+
+      if ($win_stream>0)
+	{
+	  $arr['winning_streak'] = $row[4] ;
+	}
+      elseif($losing_streak>0)
+	{
+	  $arr['losing_streak'] = $row[4] ;
+	}
+      mysql_free_result($result) ;
+
       return $arr ;
     }
 

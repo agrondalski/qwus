@@ -207,11 +207,16 @@ class news
       $sql_str = sprintf("select count(*) from news n where tourney_id is null and isColumn=false") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      mysql_free_result($result) ;
-      return $val ;
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return $row[0] ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return 0 ;
+	}
     }
 
   public function getValue($col)

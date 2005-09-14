@@ -53,8 +53,7 @@ create table division(
   playoff_spots integer      NOT NULL,
   elim_losses   integer      NOT NULL,
 --
-  constraint   division_pk primary key(division_id),
-  constraint   division_unq1 unique(tourney_id, name))
+  constraint   division_pk primary key(division_id))
 ENGINE=INNODB ;
 
 create table team(
@@ -130,6 +129,7 @@ create table match_table(
 --
   constraint match_pk primary key(match_id))
 ENGINE=INNODB ;
+create index match_idx1 on match_table(schedule_id) ;
 
 create table match_schedule(
   schedule_id          integer      NOT NULL auto_increment,
@@ -139,6 +139,7 @@ create table match_schedule(
 --
   constraint match_schedule_pk primary key(schedule_id))
 ENGINE=INNODB ;
+create index match_schedule_idx1 on match_schedule(division_id) ;
 
 create table game(
   game_id         integer NOT NULL auto_increment,
@@ -149,7 +150,8 @@ create table game(
   screenshot_url  varchar(250),
   demo_url        varchar(250),
 --
-  constraint game2_pk primary key(game_id))
+  constraint game_pk primary key(game_id),
+  constraint game_unq1 unique(match_id, map_id)
 ENGINE=INNODB ;
 
 create table maps(

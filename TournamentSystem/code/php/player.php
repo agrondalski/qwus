@@ -233,14 +233,7 @@ class player
 
   public function isSuperAdmin()
     {
-      if ($this->superAdmin)
-	{
-	  return true ;
-	}
-      else
-	{
-	  return false ;
-	}
+      return $this->superAdmin ;
     }
 
   public function isTourneyAdmin($tid)
@@ -250,16 +243,13 @@ class player
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
       
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      if ($val>0)
+      if ($row = mysql_fetch_row($result))
 	{
-	  return true ;
+	  return ($row[0]>0) ;
 	}
       else
 	{
-	  return false ;
+	  util::throwException('this cannot ever occur') ;
 	}
 
     }
@@ -282,16 +272,13 @@ class player
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      if ($val>0)
+      if ($row = mysql_fetch_row($result))
 	{
-	  return true ;
+	  return ($row[0]>0) ;
 	}
       else
 	{
-	  return false ;
+	  util::throwException('this cannot ever occur') ;
 	}
     }
 
@@ -322,11 +309,15 @@ class player
       $sql_str = sprintf("select count(*) from player p where hasColumn=true") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $row = mysql_fetch_row($result) ;
-      $val = $row[0] ;
-
-      mysql_free_result($result) ;
-      return $val ;
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return $row[0] ;
+	}
+      else
+	{
+	  util::throwException('this cannot ever occur') ;
+	}
     }
 
   public function getStats()
