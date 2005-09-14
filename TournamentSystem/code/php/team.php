@@ -439,7 +439,7 @@ class team
                           order by match_date desc, match_id asc",
 			 $div, $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      print $sql_str ;
+
       $win_streak    = 0 ;
       $losing_streak = 0 ;
 
