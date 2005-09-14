@@ -7,7 +7,6 @@
 # ctf msgs
 # have to check and double check score calculations
 # graphs
-# ^[(.*)](.*):[(.*)](.*)$ should read scores
 
 use utf8;
 use Benchmark;
@@ -371,6 +370,23 @@ sub players
   return @{ $self->{PLAYERS} };
 }
 
+# might need some error checking here
+sub removePlayer
+{
+  my $self = shift;
+  if (@_)
+  {
+    my $playerToRemove = shift;
+    my $id = 0;
+    foreach $player ($self->players)
+    {
+      if ($player eq $playerToRemove) { $playerId = $id }
+      $id++;
+    }
+    splice(@{$self->{PLAYERS}}, $playerId, 1); 
+  }
+}
+
 sub addPlayer
 {
   my $self = shift;
@@ -704,6 +720,25 @@ print $string;
         $team->addPlayer($name);
       }    
     }
+    elsif ($string =~ /^(.*) changed name to (.*)$/)
+    {
+      $player = findPlayerNoCreate($1);
+      if ($player != null) 
+      {
+        $player->name($2);
+        $team = findTeam($player->team);
+        $team->addPlayer($2);
+        $team->removePlayer($1);
+      }
+    }
+    elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/)
+    {
+      $teamOneScore = $2;
+      $teamTwoScore = $4;
+     # print "$1\t$2\t$3\t$4\n";
+      push(@Scores1, $2);
+      push(@Scores2, $4);
+    }
 # once we reach this point the match is over and no good data remains
 # breaking out of the loop not only provides a speed boost, but
 # eliminates the disconnected player list from being added again
@@ -761,6 +796,11 @@ sub outputHTML
         "\t\t<TD>TK</TD>\n" .  
         "\t\t<TD>eff</TD>\n" .
         "\t\t<TD>lava</TD>\n" .
+        "\t\t<TD>tele</TD>\n" .
+        "\t\t<TD>self</TD>\n" .
+        "\t\t<TD>bore rl</TD>\n" .
+        "\t\t<TD>bore lg</TD>\n" .
+        "\t\t<TD>bore m</TD>\n" .
         "\t</TR>\n";
   foreach $player (@players)
   {
@@ -779,6 +819,11 @@ sub outputHTML
       "\t\t<TD>" . $player->teamKills . "</TD>\n" .
       "\t\t<TD>" . $player->eff . "</TD>\n" .
       "\t\t<TD>" . $player->lavaDeaths . "</TD>\n" .
+      "\t\t<TD>" . $player->teleFrags . "</TD>\n" .
+      "\t\t<TD>" . $player->selfKills . "</TD>\n" .
+      "\t\t<TD>" . $player->rocketBores . "</TD>\n" . 
+      "\t\t<TD>" . $player->dischargeBores . "</TD>\n" . 
+      "\t\t<TD>" . $player->miscBores . "</TD>\n" .
       "\t</TR>\n";
   }
   print "</TABLE></BODY></HTML>";
@@ -798,6 +843,16 @@ sub findPlayer
   $newPlayer->name($playerName);
   push(@players, $newPlayer);
   return $newPlayer;
+}
+
+sub findPlayerNoCreate
+{
+  $playerName = shift;
+  foreach $player (@players)
+  {
+      if ($player->name() eq $playerName) { return $player }
+  }
+  return null;
 }
 
 sub findTeam
