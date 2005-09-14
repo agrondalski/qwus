@@ -5,7 +5,6 @@
 # nice output for easy database entry
 # misc bs
 # optimize
-# either ctf is messed up or blood and forrests names are lame
 # ctf msgs
 # have to check and double check score calculations
 # graphs
@@ -400,9 +399,8 @@ sub points
 }
 
 package main;
-
 $start = new Benchmark;
-
+outputHeader();
 foreach $mvd (@ARGV)
 {
   $tempMvd = $mvd . ".tmp";
@@ -713,12 +711,12 @@ print $string;
     elsif ($string =~ /. - disconnected players/) { last; }
     $oldString = $string;
   }
-  $shell = `rm "$tempMvd"`;
+ # $shell = `rm "$tempMvd"`;
 }
 
 #outputHTML();
-#outputTeamHTML();
-outputForm();
+outputTeamHTML();
+#outputForm();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -841,3 +839,10 @@ sub outputForm
   print "</HTML>\n";
 }
 
+sub outputHeader
+{
+  print "<HTML>\n";
+  print "<HEAD>\n";
+  print "\t<TITLE>QuakeWorld.US MVD Analyzer</TITLE>\n";
+  print "<BODY>\n";
+}
