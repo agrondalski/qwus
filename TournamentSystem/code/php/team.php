@@ -373,9 +373,29 @@ class team
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 
-  public function getDivisionInfo($div)
+  public function getDivision($tid)
     {
-      $div = division::validateColumn($div, 'division_id') ;
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
+      $sql_str = sprintf("select d.division_id
+                          from division_info di, division d
+                          where di.team_id=%d and di.division_id=d.division_id and d.tourney_id=%d", $this->team_id, $tid) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  return new division(array('division_id'=>$row[0])) ;
+	}
+      else
+	{
+	  return null ;
+	}
+    }
+
+  public function getDivisionInfo($tid)
+    {
+      $tid = division::validateColumn($tid, 'tourney_id') ;
+      $div = $this->getDivision($tid)->getValue('division_id') ;
 
       /*
       $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from division_info where team_id=%d and division_id=%d", $this->team_id, $div) ;

@@ -359,7 +359,7 @@ class player
 
       $sql_str = sprintf("select pi.team_id
                           from player_info pi, tourney t, division d
-                          where pi.player_id=%d and pi.tourney_id=t.tourney_id and t.tourney_id=d.tourney_id", $this->player_id, $div) ;
+                          where pi.player_id=%d and pi.tourney_id=t.tourney_id and t.tourney_id=d.tourney_id and d.division_id=%d", $this->player_id, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -372,6 +372,25 @@ class player
 	}
 
 
+    }
+
+  public function getDivision($tid)
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
+      $sql_str = sprintf("select d.division_id
+                          from player_info pi, tourney t, division d, division_info di
+                          where pi.player_id=%d and pi.tourney_id=$tid and pi.team_id=di.team_id and di.division_id=d.division_id and d.tourney_id=pi.tourney_id", $this->player_id, $tid) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  return new division(array('division_id'=>$row[0])) ;
+	}
+      else
+	{
+	  return null ;
+	}
     }
 
   public function getCareerInfo($div)
@@ -453,9 +472,10 @@ class player
       return $arr ;
     }
 
-  public function getDivisionInfo($div)
+  public function getDivisionInfo($tid)
     {
-      $div = division::validateColumn($div, 'division_id') ;
+      $tid = division::validateColumn($tid, 'tourney_id') ;
+      $div = $this->getDivision($tid)->getValue('division_id') ;
 
       $team_id = $this->getTeam($div)->getValue('team_id') ;
 
