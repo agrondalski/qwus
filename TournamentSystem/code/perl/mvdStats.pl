@@ -10,6 +10,7 @@
 
 use utf8;
 use Benchmark;
+use GD::Graph::lines;
 
 package Player;
 sub new
@@ -416,6 +417,9 @@ sub points
 package main;
 $start = new Benchmark;
 outputHeader();
+$teamOneScore = 0;
+$teamTwoScore = 0;
+
 foreach $mvd (@ARGV)
 {
   $tempMvd = $mvd . ".tmp";
@@ -731,13 +735,25 @@ print $string;
         $team->removePlayer($1);
       }
     }
+    elsif ($string =~ /^(.*) min left$/)
+    {
+      if ($graphStarted == 0)
+      {
+    #    push(@graphTime, $1 + 1);
+    #    push(@graphTeamOneScore, 0);
+    #    push(@graphTeamTwoScore, 0);
+        $graphStarted = 1;
+      }
+      push(@graphTime, $1);
+      push(@graphTeamOneScore, $teamOneScore);
+      push(@graphTeamTwoScore, $teamTwoScore);
+    }
     elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/)
     {
       $teamOneScore = $2;
       $teamTwoScore = $4;
-     # print "$1\t$2\t$3\t$4\n";
-      push(@Scores1, $2);
-      push(@Scores2, $4);
+      $teamOneName = $1;
+      $teamTwoName = $3;
     }
 # once we reach this point the match is over and no good data remains
 # breaking out of the loop not only provides a speed boost, but
@@ -745,12 +761,19 @@ print $string;
     elsif ($string =~ /. - disconnected players/) { last; }
     $oldString = $string;
   }
+  push(@graphTime, 0);
+  push(@graphTeamOneScore, $teamOneScore);
+  push(@graphTeamTwoScore, $teamTwoScore);
+  @graphTime = reverse(@graphTime);
+  push(@graphTeams, $teamOneName);
+  push(@graphTeams, $teamTwoName);
  # $shell = `rm "$tempMvd"`;
 }
 
 #outputHTML();
 outputTeamHTML();
 #outputForm();
+outputGraph();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -906,4 +929,23 @@ sub outputHeader
   print "<HEAD>\n";
   print "\t<TITLE>QuakeWorld.US MVD Analyzer</TITLE>\n";
   print "<BODY>\n";
+}
+
+sub outputGraph
+{
+  my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
+  my $graph = GD::Graph::lines->new(400,300);
+  $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
+              x_label => "time", 
+              x_label_position => .5,
+              y_label => "score"
+             );
+  $graph->set_legend(@graphTeams);
+  my $image = $graph->plot(\@data) or die ("Died creating image");
+#  open(OUT, ">image.png");
+  open(OUT, ">" . $teamOneName . "_" . $teamTwoName . "_" . $map . ".png");
+  binmode OUT;
+  print OUT $image->png();
+  close OUT;
+ 
 }
