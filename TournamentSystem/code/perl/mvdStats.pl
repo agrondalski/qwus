@@ -380,6 +380,7 @@ sub removePlayer
   {
     my $playerToRemove = shift;
     my $id = 0;
+    my $playerId = null;
     foreach $player ($self->players)
     {
       if ($player eq $playerToRemove) { $playerId = $id }
@@ -394,7 +395,7 @@ sub addPlayer
   my $self = shift;
   if (@_) 
   {
-    $playerToAdd = shift; 
+    my $playerToAdd = shift; 
     foreach $player ($self->players)
     {
       if ($playerToAdd eq $player) { return; }
@@ -406,7 +407,7 @@ sub addPlayer
 sub points
 {
   my $self = shift;
-  $points = 0;
+  my $points = 0;
   foreach $player ($self->players)
   {
     $player = main::findPlayer($player);
@@ -423,10 +424,11 @@ $teamTwoScore = 0;
 
 foreach $mvd (@ARGV)
 {
-  $tempMvd = $mvd . ".tmp";
-  $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
-  @strings = `strings -2 "$tempMvd"`;
-
+  my $tempMvd = $mvd . ".tmp";
+  my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
+  my @strings = `strings -2 "$tempMvd"`;
+  my $fraggee = undef;
+  my $fragger = undef;
   foreach $string (@strings)
   {
     if (length($string) < 8)
@@ -859,12 +861,12 @@ sub outputHTML
 # Returns player object if found or new player object if not
 sub findPlayer
 {
-  $playerName = shift;
+  my $playerName = shift;
   foreach $player (@players)
   {
     if ($player->name() eq $playerName) { return $player }    
   }
-  $newPlayer = Player->new();
+  my $newPlayer = Player->new();
   $newPlayer->name($playerName);
   push(@players, $newPlayer);
   return $newPlayer;
@@ -872,7 +874,7 @@ sub findPlayer
 
 sub findPlayerNoCreate
 {
-  $playerName = shift;
+  my $playerName = shift;
   foreach $player (@players)
   {
       if ($player->name() eq $playerName) { return $player }
@@ -882,12 +884,12 @@ sub findPlayerNoCreate
 
 sub findTeam
 {
-  $teamName = shift;
+  my $teamName = shift;
   foreach $team (@teams)
   {
     if ($team->name eq $teamName) { return $team }
   }
-  $newTeam = Team->new();
+  my $newTeam = Team->new();
   $newTeam->name($teamName);
   push(@teams, $newTeam);
   return $newTeam;
