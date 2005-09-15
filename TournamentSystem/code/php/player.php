@@ -441,7 +441,7 @@ class player
       $arr['frags_per_game'] = round($total_frags/$total_games, 1) ;
       $arr['matches_won']    = $matches_won ;
       $arr['matches_lost']   = $matches_lost ;
-      $arr['frag_diff']      = round(($team_score/$total_games)-($total_frags)/($total_games), 1) ;
+      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$total_games), 1) ;
       mysql_free_result($result) ;
 
 
