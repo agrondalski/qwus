@@ -134,6 +134,34 @@ class location
       return $arr ;
     }
 
+  public static function getCountryLocations()
+    {
+      $sql_str = sprintf('select l.location_id from location l where state_name is null') ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new location(array('location_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public static function getStateLocations()
+    {
+      $sql_str = sprintf('select l.location_id from location l where state_name is not null') ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new location(array('location_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTeams()
     {
       $sql_str = sprintf("select t.team_id from team t where t.location_id", $this->location_id) ;

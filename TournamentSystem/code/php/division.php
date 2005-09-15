@@ -220,11 +220,20 @@ class division
       return new tourney(array('tourney_id'=>$this->tourney_id)) ;
     }
 
-  public function addTeam($id)
+  public function addTeam($team_id)
     {
-      $id  = team::validateColumn($id, 'team_id') ;
+      $team_id  = team::validateColumn($team_id, 'team_id') ;
+      $tid = $this->getTourney() ;
 
-      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $id) ;
+      $sql_str = sprintf("select 1 from division_info di, division d where di.team_id=%d and d.tourney_id=%d", $team_id, $tid) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row=mysql_fetch_row($result))
+	{
+	  util::throwException('this team is already in the specified tourney') ;
+	}
+
+      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
@@ -240,11 +249,11 @@ class division
       mysql_free_result($result) ;
     }
 
-  public function hasTeam($id)
+  public function hasTeam($team_id)
     {
-      $id = team::validateColumn($id, 'team_id') ;
+      $team_id = team::validateColumn($team_id, 'team_id') ;
 
-      $sql_str = sprintf("select 1 from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
+      $sql_str = sprintf("select 1 from division_info where division_id=%d and team_id=%d", $this->division_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)

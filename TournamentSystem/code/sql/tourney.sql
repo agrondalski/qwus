@@ -112,7 +112,7 @@ create table player_info(
   player_id     integer NOT NULL,
   isTeamLeader  boolean NOT NULL default FALSE,
 --
-  constraint player_lookup_pk primary key(tourney_id, team_id, player_id))
+  constraint player_lookup_pk primary key(tourney_id, player_id))
 ENGINE=INNODB ;
 
 create table match_table(
@@ -150,8 +150,7 @@ create table game(
   screenshot_url  varchar(250),
   demo_url        varchar(250),
 --
-  constraint game_pk primary key(game_id),
-  constraint game_unq1 unique(match_id, map_id))
+  constraint game_pk primary key(game_id))
 ENGINE=INNODB ;
 
 create table maps(
@@ -164,12 +163,12 @@ create table maps(
 ENGINE=INNODB ;
 
 create table stats(
-  player_id  integer  NOT NULL,
-  game_id    integer  NOT NULL,
-  score      integer  NOT NULL,
-  time       integer  NOT NULL,  -- needed ?  should also be tourney timelimit, if a player dropped we really wont know actual time anyways
+  player_id  integer       NOT NULL,
+  game_id    integer       NOT NULL,
+  stat_name  varchar(250)  NOT NULL,
+  value      integer       NOT NULL,
 --
-  constraint stats_pk primary key(player_id, game_id))
+  constraint stats_pk primary key(player_id, game_id, stat_name))
 ENGINE=INNODB ;
 
 create table comments(
@@ -178,13 +177,12 @@ create table comments(
   player_ip     varchar(250)  NOT NULL,
   match_id      integer       NOT NULL,
   comment_text  MEDIUMTEXT    NOT NULL,
-  comment_date  date          NOT NULL, -- needed for sorting
+  comment_date  date          NOT NULL,
   comment_time  time          NOT NULL,
 --
   constraint comments_pk primary key(comment_id))
 ENGINE=INNODB ;
 
--- Need a way to select tourney when posting news. Needs permission from tourney_admins table or SuperAdmin from player_table.
 create table news(
   news_id       bigint      NOT NULL auto_increment, 
   writer_id     integer     NOT NULL,

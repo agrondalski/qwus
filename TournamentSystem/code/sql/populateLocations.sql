@@ -4,6 +4,10 @@
 
 INSERT INTO `location` 
 	( `location_id` , `country_name` , `state_name` , `logo_url` )
+VALUES ('', 'United States', '' , 'img/flags/us.gif');
+
+INSERT INTO `location` 
+	( `location_id` , `country_name` , `state_name` , `logo_url` )
 VALUES ('', 'United States', 'Alaska' , 'img/flags/ak.gif');
 
 INSERT INTO `location`

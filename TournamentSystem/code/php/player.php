@@ -353,6 +353,183 @@ class player
       return $arr ;
     }
 
+  public function getTeam($div)
+    {
+      $div = division::validateColumn($div, 'division_id') ;
+
+      $sql_str = sprintf("select pi.team_id
+                          from player_info pi, tourney t, division d
+                          where pi.player_id=%d and pi.tourney_id=t.tourney_id and t.tourney_id=d.tourney_id", $this->player_id, $div) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  return new team(array('team_id'=>$row[0])) ;
+	}
+      else
+	{
+	  return null ;
+	}
+
+
+    }
+
+  public function getCareerInfo($div)
+    {
+      $div = division::validateColumn($div, 'division_id') ;
+
+      $team_id = $this->getTeam($div)->getValue('team_id') ;
+
+      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=tm.team_id then g.team1_score else g.team2_score end)
+                          from stats s, game g, match_table m, match_schedule ms, player_info pi, team tm, division d, tourney t
+                          where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id
+                            and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id
+                            and d.division_id=t.tourney_id and t.tourney_id=pi.tourney_id and pi.player_id=%d and pi.team_id=tm.team_id
+                          order by m.match_id", $this->player_id, $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      print $sql_str ;
+      $total_games = 0 ;
+      $total_frags = 0 ;
+      $total_matches = 0 ;
+      $matches_won = 0 ;
+      $matches_lost = 0 ;
+      $team_score = 0 ;
+      $old_match_id = 0 ;
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  $total_games += 1 ;
+	  $total_frags += $row[0] ;
+	  $team_score += $row[3] ;
+
+	  print "<br>" . $old_match_id . "::" . $row[1] . "<br>" ;
+	  if ($row[1] != $old_match_id)
+	    {
+	      print AA;
+	      $total_matches += 1 ;
+
+	      $old_match_id = $row[1] ;
+
+	      if ($row[2]==$team_id)
+		{
+		  $matches_won += 1 ;
+		}
+	      else
+		{
+		  $matches_lost += 1 ;
+		}
+	    }
+	}
+
+      $arr = array() ;
+      $arr['matches_played'] = $total_matches ;
+      $arr['games_played']   = $total_games;
+      $arr['total_frags']    = $total_frags;
+      $arr['frags_per_game'] = round($total_frags/$total_games);
+      $arr['matches_won']    = $matches_won ;
+      $arr['matches_lost']   = $matches_lost ;
+      $arr['frag_diff']      = round(($team_score/$total_games)-($total_frags)/($total_games)) ;
+      mysql_free_result($result) ;
+
+
+      $sql_str = sprintf("select s.stat_name, s.value
+                          from stats s, game g, match_table m
+                          where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true",
+			 $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  if (!isset($arr[$row[0]]))
+	    {
+	      $arr[$row[0]] = $row[1] ;
+	    }
+	  else
+	    {
+	      $arr[$row[0]] += $row[1] ;
+	    }
+	}
+      return $arr ;
+    }
+
+  public function getDivisionInfo($div)
+    {
+      $div = division::validateColumn($div, 'division_id') ;
+
+      $team_id = $this->getTeam($div)->getValue('team_id') ;
+
+      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end)
+                          from stats s, game g, match_table m, match_schedule ms
+                          where s.player_id=%d and s.stat_name = 'SCORE' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                            and m.schedule_id=ms.schedule_id and ms.division_id=%d
+                          order by m.match_id", $team_id, $this->player_id, $div) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      $total_games = 0 ;
+      $total_frags = 0 ;
+      $total_matches = 0 ;
+      $matches_won = 0 ;
+      $matches_lost = 0 ;
+      $team_score = 0 ;
+      $old_match_id = 0 ;
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  $total_games += 1 ;
+	  $total_frags += $row[0] ;
+	  $team_score += $row[3] ;
+
+	  if ($row[1] != $old_match_id)
+	    {
+	      $total_matches += 1 ;
+
+	      $old_match_id = $row[1] ;
+
+	      if ($row[2]==$team_id)
+		{
+		  $matches_won += 1 ;
+		}
+	      else
+		{
+		  $matches_lost += 1 ;
+		}
+	    }
+	}
+
+      $arr = array() ;
+      $arr['matches_played'] = $total_matches ;
+      $arr['games_played']   = $total_games;
+      $arr['total_frags']    = $total_frags;
+      $arr['frags_per_game'] = round($total_frags/$total_games);
+      $arr['matches_won']    = $matches_won ;
+      $arr['matches_lost']   = $matches_lost ;
+      $arr['frag_diff']      = round(($team_score/$total_games)-($total_frags)/($total_games)) ;
+      mysql_free_result($result) ;
+
+
+      $sql_str = sprintf("select s.stat_name, s.value
+                          from stats s, game g, match_table m, match_schedule ms
+                          where s.player_id=%d and s.stat_name = 'SCORE' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                            and m.schedule_id=ms.schedule_id and ms.division_id=%d", $this->player_id, $div) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  if (!isset($arr[$row[0]]))
+	    {
+	      $arr[$row[0]] = $row[1] ;
+	    }
+	  else
+	    {
+	      $arr[$row[0]] += $row[1] ;
+	    }
+	}
+      mysql_free_result($result) ;
+
+      return $arr ;
+    }
+
   public function getValue($col)
     {
       $this->validateColumnName($col) ;

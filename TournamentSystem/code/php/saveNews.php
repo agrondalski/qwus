@@ -42,8 +42,7 @@ else
 {
   try
     {
-      $news = new news(array('news_id'=>$nid,
-			     'writer_id'=>$_POST['writer_id'],
+      $news = new news(array('writer_id'=>$_POST['writer_id'],
 			     'tourney_id'=>$tid,
 			     'subject'=>$_POST['subject'],
 			     'news_date'=>date("Y-m-d"),
