@@ -393,12 +393,8 @@ class player
 	}
     }
 
-  public function getCareerInfo($div)
+  public function getCareerInfo()
     {
-      $div = division::validateColumn($div, 'division_id') ;
-
-      $team_id = $this->getTeam($div)->getValue('team_id') ;
-
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=tm.team_id then g.team1_score else g.team2_score end)
                           from stats s, game g, match_table m, match_schedule ms, player_info pi, team tm, division d, tourney t
                           where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id
@@ -407,7 +403,6 @@ class player
                           order by m.match_id", $this->player_id, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
-      print $sql_str ;
       $total_games = 0 ;
       $total_frags = 0 ;
       $total_matches = 0 ;
@@ -422,10 +417,8 @@ class player
 	  $total_frags += $row[0] ;
 	  $team_score += $row[3] ;
 
-	  print "<br>" . $old_match_id . "::" . $row[1] . "<br>" ;
 	  if ($row[1] != $old_match_id)
 	    {
-	      print AA;
 	      $total_matches += 1 ;
 
 	      $old_match_id = $row[1] ;
@@ -445,10 +438,10 @@ class player
       $arr['matches_played'] = $total_matches ;
       $arr['games_played']   = $total_games;
       $arr['total_frags']    = $total_frags;
-      $arr['frags_per_game'] = round($total_frags/$total_games);
+      $arr['frags_per_game'] = $total_frags/$total_games;
       $arr['matches_won']    = $matches_won ;
       $arr['matches_lost']   = $matches_lost ;
-      $arr['frag_diff']      = round(($team_score/$total_games)-($total_frags)/($total_games)) ;
+      $arr['frag_diff']      = ($team_score/$total_games)-($total_frags)/($total_games) ;
       mysql_free_result($result) ;
 
 
