@@ -11,6 +11,7 @@
 use utf8;
 use Benchmark;
 use GD::Graph::lines;
+use GD::Graph::pie;
 
 package Player;
 sub new
@@ -774,6 +775,7 @@ print $string;
 outputTeamHTML();
 #outputForm();
 outputGraph();
+outputPlayerPie("boss ult");
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -948,4 +950,38 @@ sub outputGraph
   print OUT $image->png();
   close OUT;
  
+}
+
+sub outputPlayerPie
+{
+  if (@_)
+  {
+    my $player = findPlayerNoCreate(shift);
+    if ($player == null) { print "NULL BIATCH"; return; }
+    my @fred = ($player->shotgunFrags(),
+                $player->ssgFrags(),
+                $player->nailgunFrags(),
+                $player->sngFrags(),
+                $player->grenadeFrags(),
+                $player->rocketFrags(), 
+                $player->lightningFrags()
+              );
+    my @bob = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
+    my @data = (\@bob, \@fred);
+
+    my $graph = GD::Graph::pie->new(400,300);
+    $graph->set(title   => "Frags by " . $player->name
+              #  x_label => "time",
+              #  x_label_position => .5,
+              #  y_label => "score"
+		) or warn $graph->error;
+  #$graph->set_legend(@graphTeams);
+    my $image = $graph->plot(\@data) or die $graph->error;
+#  open(OUT, ">image.png");
+    open(OUT, ">player.png");
+    binmode OUT;
+    print OUT $image->png();
+    close OUT;
+    
+  }
 }
