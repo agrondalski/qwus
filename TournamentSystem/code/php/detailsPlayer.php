@@ -28,7 +28,7 @@ echo "Team: <a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$tm->g
 echo $tm->getValue('name'),"</a><p></p>";
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
-echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th>";
+echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
 // List player info
 echo "\t<tr>\n<td>";
 echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player->getValue('player_id'),"'>";
@@ -42,11 +42,22 @@ if ($tlp != null) {
 } else {
 	echo $player->getValue('name'),"</a></td>\n";
 }
+$info = $player->getDivisionInfo($tid);
+
+//$info['matches_played']
+//$info['games_played']  
+//$info['total_frags']   
+//$info['frags_per_game']
+//$info['matches_won']   
+//$info['matches_lost']  
+//$info['frag_diff']     
+
 echo "\t<td>",$loc_name,"</td>\n";
-echo "<td>&nbsp;</td>";
-echo "<td>&nbsp;</td>";
-echo "<td>&nbsp;</td>";
-echo "<td>&nbsp;</td>";
+echo "<td>",$info['games_played'],"</td>";
+echo "<td>",$info['frags_per_game'],"</td>";
+echo "<td>",$info['total_frags'],"</td>";
+echo "<td>",$info['matches_won'],"-",$info['matches_lost'],"</td>";
+echo "<td nowrap>",$info['frag_diff'],"</td>";
 echo "</tr></table>";
 echo "<br><b>Recent Games:  (example)</b><br>";
 echo "33 frags in game vs. Team Bleh, (dm3:W:204-197)<br>";

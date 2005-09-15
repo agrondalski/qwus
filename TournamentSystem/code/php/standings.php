@@ -67,11 +67,11 @@ foreach ($t->getDivisions() as $div)
 		echo "<td>",$info['frags_against'],"&nbsp;</td>"; 
 		if ($info['winning_streak'] != null) 
 		{
-			echo "<td>",$info['winning_streak'],"</td>";  
+			echo "<td>",$info['winning_streak'],"W</td>";  
 		} 
 		elseif ($info['losing_streak'] != null)
 		{
-			echo "<td>",$info['losing_streak'],"</td>"; 
+			echo "<td>",$info['losing_streak'],"L</td>"; 
 		} 
 		else 
 		{

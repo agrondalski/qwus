@@ -34,7 +34,7 @@ echo "<tr><td><b>IRC</b></td><td>",$irc_channel,"</td></tr>\n";
 echo "</table><br>";
 // List players in this team
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
-echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th>";
+echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
 foreach ($tm->getPlayers($tid) as $player) 
 {
 	$loc = new location(array('location_id'=>$player->getValue('location_id')));
@@ -51,11 +51,13 @@ foreach ($tm->getPlayers($tid) as $player)
 		} else {
 			echo $player->getValue('name'),"</a></td>\n";
 		}
+	$info = $player->getDivisionInfo($tid);
 	echo "\t<td>",$loc_name,"</td>\n";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
+	echo "<td>",$info['games_played'],"</td>";
+	echo "<td>",$info['frags_per_game'],"</td>";
+	echo "<td>",$info['total_frags'],"</td>";
+	echo "<td>",$info['matches_won'],"-",$info['matches_lost'],"</td>";
+	echo "<td nowrap>",$info['frag_diff'],"</td>";
 }
 echo "</tr></table>";
 echo "<p><font color=red>Red = team leader</font></p>";

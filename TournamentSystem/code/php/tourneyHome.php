@@ -47,8 +47,8 @@ echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourne
 echo "<td><a href='?a=reportMatch&tourney_id=$tid'>do:Report Match</a></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td><a href='?a=standings&tourney_id=$tid'>do:Standings</a></td>";
-echo "<td><a href='?a=schedule&tourney_id=$tid'>do:Schedule</a></td>";
+echo "<td><a href='?a=standings&tourney_id=$tid'>Standings</a></td>";
+echo "<td><a href='?a=schedule&tourney_id=$tid'>Schedule</a></td>";
 echo "</tr>";
 echo "</table><br>";
 ?>
