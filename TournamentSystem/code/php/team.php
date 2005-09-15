@@ -438,7 +438,7 @@ class team
       $total_losses    = 0 ;
       $total_maps_won  = 0 ;
       $total_maps_lost = 0 ;
-      $win_streak      = 0 ;
+      $winning_streak  = 0 ;
       $losing_streak   = 0 ;
 
       while ($row = mysql_fetch_row($result))
@@ -454,13 +454,13 @@ class team
 	      $total_wins += 1 ;
 	      if ($losing_streak==0)
 		{
-		  $win_streak += 1;
+		  $winning_streak += 1;
 		}
 	    }
 	  else
 	    {
 	      $total_losses += 1 ;
-	      if ($win_streak==0)
+	      if ($winning_streak==0)
 		{
 		  $losing_streak += 1;
 		}
@@ -484,9 +484,9 @@ class team
       $arr['maps_won']  = $total_maps_won ;
       $arr['maps_lost'] = $total_maps_lost ;
       
-      if ($win_stream>0)
+      if ($winning_streak>0)
 	{
-	  $arr['winning_streak'] = $win_streak ;
+	  $arr['winning_streak'] = $winning_streak ;
 	}
       elseif($losing_streak>0)
 	{
