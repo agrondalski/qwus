@@ -6,9 +6,7 @@
 # optimize
 # ctf msgs
 # have to check and double check score calculations
-# graphs
 
-use utf8;
 use Benchmark;
 use GD::Graph::lines;
 use GD::Graph::pie;
@@ -418,7 +416,6 @@ sub points
 
 package main;
 $start = new Benchmark;
-outputHeader();
 $teamOneScore = 0;
 $teamTwoScore = 0;
 
@@ -773,11 +770,13 @@ print $string;
  # $shell = `rm "$tempMvd"`;
 }
 
+outputHeader();
 #outputHTML();
 outputTeamHTML();
 #outputForm();
 outputGraph();
-outputPlayerPie("boss ult");
+outputPlayerPieCharts();
+outputFooter();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -807,7 +806,7 @@ sub outputTeamHTML
 
 sub outputHTML
 {
-  print "<HTML><BODY><TABLE>\n";
+  print "<TABLE>\n";
   print "\t<TR>\n" .
         "\t\t<TD>Name</TD>\n" .
         "\t\t<TD>Team</TD>\n" .
@@ -853,7 +852,7 @@ sub outputHTML
       "\t\t<TD>" . $player->miscBores . "</TD>\n" .
       "\t</TR>\n";
   }
-  print "</TABLE></BODY></HTML>";
+  print "</TABLE>\n";
 }
 
 
@@ -932,7 +931,14 @@ sub outputHeader
   print "<HTML>\n";
   print "<HEAD>\n";
   print "\t<TITLE>QuakeWorld.US MVD Analyzer</TITLE>\n";
+  print "</HEAD\n";
   print "<BODY>\n";
+}
+
+sub outputFooter
+{
+  print "</BODY>\n";
+  print "</HTML>\n";
 }
 
 sub outputGraph
@@ -954,36 +960,30 @@ sub outputGraph
  
 }
 
-sub outputPlayerPie
+sub outputPlayerPieCharts
 {
-  if (@_)
+  @weaponList = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
+  foreach $player (@players)
   {
-    my $player = findPlayerNoCreate(shift);
-    if ($player == null) { print "NULL BIATCH"; return; }
-    my @fred = ($player->shotgunFrags(),
-                $player->ssgFrags(),
-                $player->nailgunFrags(),
-                $player->sngFrags(),
-                $player->grenadeFrags(),
-                $player->rocketFrags(), 
-                $player->lightningFrags()
-              );
-    my @bob = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
-    my @data = (\@bob, \@fred);
-
+    my @stats = ($player->shotgunFrags(),
+                 $player->ssgFrags(),
+                 $player->nailgunFrags(),
+                 $player->sngFrags(),
+                 $player->grenadeFrags(),
+                 $player->rocketFrags(), 
+                 $player->lightningFrags()
+                );
+    my @data = (\@weaponList, \@stats);
     my $graph = GD::Graph::pie->new(400,300);
-    $graph->set(title   => "Frags by " . $player->name
-              #  x_label => "time",
-              #  x_label_position => .5,
-              #  y_label => "score"
+    $graph->set(title       => "Frags by " . $player->name
+             
+             
 		) or warn $graph->error;
-  #$graph->set_legend(@graphTeams);
+ 
     my $image = $graph->plot(\@data) or die $graph->error;
-#  open(OUT, ">image.png");
-    open(OUT, ">player.png");
+    open(OUT, ">" . $player->name . ".png");
     binmode OUT;
     print OUT $image->png();
-    close OUT;
-    
+    close OUT;    
   }
 }
