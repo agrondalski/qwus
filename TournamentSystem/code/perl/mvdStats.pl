@@ -352,6 +352,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{PLAYERS} = [];
+  $self->{COLOR} = undef;
   bless ($self, $class);
   return $self;
 }
@@ -361,6 +362,13 @@ sub name
   my $self = shift;
   if (@_) { $self->{NAME} = shift }
   return $self->{NAME};
+}
+
+sub color
+{
+  my $self = shift;
+  if (@_) { $self->{COLOR} = shift }
+  return $self->{COLOR};
 }
 
 sub players
@@ -722,6 +730,13 @@ print $string;
         $player->team($team);
         $team = findTeam($team);
         $team->addPlayer($name);
+        if ($string =~ m/\\bottomcolor\\/)
+        {
+          $color = $';
+          while ($color =~ /(.*)\\/) { $color = $1; }
+          $color =~ s/\s+$//;
+          $team->color($color);
+        }
       }    
     }
     elsif ($string =~ /^(.*) changed name to (.*)$/)
@@ -774,8 +789,8 @@ outputHeader();
 #outputHTML();
 outputTeamHTML();
 #outputForm();
-outputGraph();
-outputPlayerPieCharts();
+#outputGraph();
+#outputPlayerPieCharts();
 outputFooter();
 
 $end = new Benchmark;
@@ -788,7 +803,7 @@ sub outputTeamHTML
   foreach $team (@teams)
   {
     my @teamPlayers = $team->players;
-    print $team->name . ":\t" . $team->points . "\n";
+    print $team->name . "(" . $team->color . ")" . " :\t" . $team->points . "\n";
     foreach $player (@teamPlayers)
     {
       $player = findPlayer($player);
@@ -986,4 +1001,13 @@ sub outputPlayerPieCharts
     print OUT $image->png();
     close OUT;    
   }
+}
+
+sub colorConverter
+{
+  if (!@_) { return "white" }
+  my $color = shift;
+  if ($color == 0) { return "white" }
+  if ($color == 2) { return "light blue" }
+  return "white";
 }
