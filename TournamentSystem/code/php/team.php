@@ -377,9 +377,9 @@ class team
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-      $sql_str = sprintf("select d.division_id
-                          from division_info di, division d
-                          where di.team_id=%d and di.division_id=d.division_id and d.tourney_id=%d", $this->team_id, $tid) ;
+      $sql_str = sprintf("select ti.division_id
+                          from tourney_info ti
+                          where ti.team_id=%d and ti.tourney_id=%d", $this->team_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -392,13 +392,138 @@ class team
 	}
     }
 
-  public function getDivisionInfo($tid)
+  public function getCareerInfo()
+    {
+      $sql_str = sprintf("select max(s.score), min(s.score), avg(s.score), sum(s.score), sum(s.other)
+                          from (select g.team1_score score, g.team2_score other
+                                from match_table m, game g
+                                where m.team1_id=%d and m.approved=true and m.match_id=g.match_id
+                               union all
+                                select g.team2_score score, g.team1_score other
+                                from match_table m, game g
+                                where m.team2_id=%d and m.approved=true and m.match_id=g.match_id) s",
+			 $this->team_id, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  $arr['max_score'] = $row[0] ;
+	  $arr['min_score'] = $row[1] ;
+	  $arr['avg_score'] = $row[2] ;
+	  $arr['frags_for'] = $row[3] ;
+	  $arr['frags_against'] = $row[4] ;
+	}
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("select winning_team_id,
+                                (select count(*) from game g
+                                 where g.match_id=m.match_id and
+                                       (m.team1_id=%d and g.team1_score>g.team2_score or
+                                        m.team2_id=%d and g.team2_score>g.team1_score)) games_won,
+                                (select count(*) from game g
+                                 where g.match_id=m.match_id) total_games
+                          from match_table m
+                          where m.approved=true and %d in(m.team1_id, m.team2_id)
+                           order by match_date desc, match_id desc",
+			 $this->team_id, $this->team_id, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      $total_wins      = 0 ;
+      $total_losses    = 0 ;
+      $total_maps_won  = 0 ;
+      $total_maps_lost = 0 ;
+      $winning_streak  = 0 ;
+      $losing_streak   = 0 ;
+
+      $max_winning_streak = 0 ;
+      $max_losing_streak  = 0 ;
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  $maps_won  = $row[1] ;
+	  $maps_lost = $row[2] - $maps_won ;
+
+	  $total_maps_won  += $maps_won ;
+	  $total_maps_lost += $maps_lost ;
+
+	  if ($row[0] == $this->team_id)
+	    {
+	      $total_wins += 1 ;
+
+	      if ($losing_steak>0)
+		{
+		  $losing_steak = 0 ;
+		  $winning_steak = 0 ;
+		}
+
+	      $winning_streak += 1;
+
+	      if ($winning_streak>$max_winning_streak)
+		{
+		  $max_winning_streak = $winning_streak ;
+		}
+	    }
+	  else
+	    {
+	      $total_losses += 1 ;
+
+	      if ($winning_steak>0)
+		{
+		  $winning_steak = 0;
+		  $losing_streak = 0 ;
+		}
+
+	      $winning_steak = 0 ;
+	      $losing_streak += 1;
+
+	      if ($losing_streak>$max_losing_streak)
+		{
+		  $max_losing_streak = $losing_streak ;
+		}
+	    }
+
+	  $arr_idx = 'match_' . $maps_won . '-' . $maps_lost ;
+
+	  if (!util::isNull($arr[$arr_idx]))
+	    {
+	      $arr[$arr_idx] += 1 ;
+	    }
+	  else
+	    {
+	      $arr[$arr_idx] = 1 ;
+	    }
+	}
+
+      $arr['wins']      = $total_wins ;
+      $arr['losses']    = $total_losses ;
+      $arr['points']    = 0 ;
+      $arr['maps_won']  = $total_maps_won ;
+      $arr['maps_lost'] = $total_maps_lost ;
+      
+      $arr['max_winning_streak'] = $max_winning_streak ;
+      $arr['max_losing_streak']  = $max_losing_streak ;
+
+      mysql_free_result($result) ;
+
+      return $arr ;
+    }
+
+  public function getTourneyInfo($tid)
     {
       $tid = division::validateColumn($tid, 'tourney_id') ;
-      $div = $this->getDivision($tid)->getValue('division_id') ;
+
+      $div = $this->getDivision($tid) ;
+      if (!util::isNull($div))
+	{
+	  $div = $div->getValue('division_id') ;
+	}
+      else
+	{
+	  util::throwException('team is not in specified tourney') ;
+	}
 
       /*
-      $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from division_info where team_id=%d and division_id=%d", $this->team_id, $div) ;
+      $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from tourney_info where team_id=%d and tourney_id=%d", $this->team_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $arr = array() ;
@@ -412,15 +537,6 @@ class team
 	}
       mysql_free_result($result) ;
       */
-
-      $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from division_info where team_id=%d and division_id=%d", $this->team_id, $div) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-
-      $arr = array() ;
-      if ($row = mysql_fetch_row($result))
-	{
-	}
-      mysql_free_result($result) ;
 
       $sql_str = sprintf("select max(s.score), min(s.score), avg(s.score), sum(s.score), sum(s.other)
                           from (select g.team1_score score, g.team2_score other from match_schedule ms, match_table m, game g
@@ -517,18 +633,41 @@ class team
       return $arr ;
     }
 
+  public static function getSortedCareerInfo($sort_key, $desc=true)
+    {
+      if (util::isNull($sort_key))
+	{
+	  return array() ;
+	}
+
+      $a = array() ;
+      foreach(self::getAllTeams() as $t)
+	{
+	  $a[] = $t->getCareerInfo() ;
+	}
+
+      if ($desc)
+	{
+	  return util::masort_desc($a, $sort_key) ;
+	}
+      else
+	{
+	  return util::masort_asc($a, $sort_key) ;
+	}
+    }
+
   public function updateInfo($col, $val, $div)
     {
-      $div = division::validateColumn($div, 'division_id') ;
+      $tid = tourney::validateColumn($div, 'tourney_id') ;
       $val = $this->validateColumn($val, $col) ;
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update division_info set %s=%d where team_id=%d and division_id=%d", $col, $val, $this->team_id, $div) ;
+	  $sql_str = sprintf("update tourney_info set %s=%d where team_id=%d and division_id=%d", $col, $val, $this->team_id, $tid) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update division_info set %s='%s' where team_id=%d and division_id=%d", $col, $val, $this->team_id, $div) ;
+	  $sql_str = sprintf("update tourney_info set %s='%s' where team_id=%d and division_id=%d", $col, $val, $this->team_id, $tid) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

@@ -192,7 +192,7 @@ class match
 
   public function getComments()
     {
-      $sql_str = sprintf("select c.comment_id from comments c where c.match_id=%d order by comment_date, comment_time", $this->match_id) ;
+      $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='MATCH' and c.id=%d order by comment_date, comment_time", $this->match_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))

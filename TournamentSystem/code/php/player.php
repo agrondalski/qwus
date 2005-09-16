@@ -341,7 +341,7 @@ class player
 
   public function getNewsColumns($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where n.writer_id=%d and isColumn=true %s %s", $this->player_id, util::getOrderBy($a), util::getLimit($a)) ;
+      $sql_str = sprintf("select n.news_id from news n where n.writer_id=%d and n.news_type='COLUMN' %s %s", $this->player_id, util::getOrderBy($a), util::getLimit($a)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -353,13 +353,13 @@ class player
       return $arr ;
     }
 
-  public function getTeam($div)
+  public function getTeam($tid)
     {
-      $div = division::validateColumn($div, 'division_id') ;
+      $tid = division::validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select pi.team_id
-                          from player_info pi, tourney t, division d
-                          where pi.player_id=%d and pi.tourney_id=t.tourney_id and t.tourney_id=d.tourney_id and d.division_id=%d", $this->player_id, $div) ;
+                          from player_info pi
+                          where pi.player_id=%d and pi.tourney_id=%d", $this->player_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -378,9 +378,9 @@ class player
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-      $sql_str = sprintf("select d.division_id
-                          from player_info pi, tourney t, division d, division_info di
-                          where pi.player_id=%d and pi.tourney_id=$tid and pi.team_id=di.team_id and di.division_id=d.division_id and d.tourney_id=pi.tourney_id", $this->player_id, $tid) ;
+      $sql_str = sprintf("select ti.division_id
+                          from player_info pi, tourney_info ti
+                          where pi.player_id=%d and pi.tourney_id=%d and pi.team_id=ti.team_id and ti.tourney_id=pi.tourney_id", $this->player_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -396,10 +396,10 @@ class player
   public function getCareerInfo()
     {
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=tm.team_id then g.team1_score else g.team2_score end)
-                          from stats s, game g, match_table m, match_schedule ms, player_info pi, team tm, division d, tourney t
+                          from stats s, game g, match_table m, match_schedule ms, tourney_info di, team tm, player_info pi
                           where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id
-                            and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id
-                            and d.division_id=t.tourney_id and t.tourney_id=pi.tourney_id and pi.player_id=%d and pi.team_id=tm.team_id
+                            and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=di.division_id
+                            and di.team_id=tm.team_id and di.team_id=pi.team_id and di.tourney_id=pi.tourney_id and pi.player_id=%d
                           order by m.match_id", $this->player_id, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
@@ -465,12 +465,21 @@ class player
       return $arr ;
     }
 
-  public function getDivisionInfo($tid)
+  public function getTourneyInfo($tid)
     {
       $tid = division::validateColumn($tid, 'tourney_id') ;
-      $div = $this->getDivision($tid)->getValue('division_id') ;
 
-      $team_id = $this->getTeam($div)->getValue('team_id') ;
+      $div = $this->getDivision($tid) ;
+      if (!util::isNull($div))
+	{
+	  $div = $div->getValue('division_id') ;
+	}
+      else
+	{
+	  util::throwException('player is not in specified tourney') ;
+	}
+
+      $team_id = $this->getTeam($tid)->getValue('team_id') ;
 
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end)
                           from stats s, game g, match_table m, match_schedule ms
@@ -541,6 +550,29 @@ class player
       mysql_free_result($result) ;
 
       return $arr ;
+    }
+
+  public static function getSortedCareerInfo($sort_key, $desc=true)
+    {
+      if (util::isNull($sort_key))
+	{
+	  return array() ;
+	}
+
+      $a = array() ;
+      foreach(self::getAllPlayers() as $p)
+	{
+	  $a[] = $p->getCareerInfo() ;
+	}
+
+      if ($desc)
+	{
+	  return util::masort_desc($a, $sort_key) ;
+	}
+      else
+	{
+	  return util::masort_asc($a, $sort_key) ;
+	}
     }
 
   public function getValue($col)

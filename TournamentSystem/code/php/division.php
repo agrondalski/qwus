@@ -159,7 +159,7 @@ class division
 
   public function getTeams()
     {
-      $sql_str = sprintf("select di.team_id from division_info di where di.division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -173,8 +173,9 @@ class division
 
   public function getPlayers()
     {
-      $sql_str = sprintf("select pi.player_id from division_info di, player_info pi " .
-                         "where di.division_id=%d and di.team_id = pi.team_id and pi.tourney_id=%d",
+      $sql_str = sprintf("select pi.player_id
+                          from tourney_info ti, player_info pi
+                          where ti.division_id=%d and ti.tourney_id=%d and ti.team_id = pi.team_id and pi.tourney_id=ti.tourney_id",
                          $this->division_id, $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
@@ -223,17 +224,9 @@ class division
   public function addTeam($team_id)
     {
       $team_id  = team::validateColumn($team_id, 'team_id') ;
-      $tid = $this->getTourney() ;
+      $tid = $this->getTourney()->getValue('tourney_id') ;
 
-      $sql_str = sprintf("select 1 from division_info di, division d where di.team_id=%d and d.tourney_id=%d", $team_id, $tid) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if ($row=mysql_fetch_row($result))
-	{
-	  util::throwException('this team is already in the specified tourney') ;
-	}
-
-      $sql_str = sprintf("insert into division_info(division_id, team_id) values(%d, %d)", $this->division_id, $team_id) ;
+      $sql_str = sprintf("insert into tourney_info(tourney_id, team_id, division_id) values(%d, %d, %d)", $tid, $team_id, $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
@@ -242,47 +235,32 @@ class division
   public function removeTeam($id)
     {
       $id = team::validateColumn($id, 'team_id') ;
+      $tid = $this->getTourney() ;
 
-      $sql_str = sprintf("delete from division_info where division_id=%d and team_id=%d", $this->division_id, $id) ;
+      $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $tid, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
     }
 
-  public function hasTeam($team_id)
-    {
-      $team_id = team::validateColumn($team_id, 'team_id') ;
-
-      $sql_str = sprintf("select 1 from division_info where division_id=%d and team_id=%d", $this->division_id, $team_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if (mysql_num_rows($result)==1)
-	{
-	  mysql_free_result($result) ;
-	  return true ;
-	}
-      else
-	{
-	  mysql_free_result($result) ;
-	  return false ;
-	}
-    }
-
   public function createSchedule($num_weeks)
     {
-      if (util::isNUll($num_weeks) || $num_weeks==0)
+      $this->removeSchedule() ;
+
+      $num_teams = count($this->getTeams()) ;
+
+      if (util::isNUll($num_weeks) || $num_weeks==0 || $num_teams<2)
 	{
 	  return ;
 	}
 
-      $num_teams = count($this->getTeams()) ;
       $total_games = $num_teams * $this->num_games ;
 
       $extra_matchups = (fmod($total_games, $num_teams*($num_teams-1)))/$num_teams ;
       $complete_matchups = floor(($total_games - $overflow_matches) / ($num_teams*($num_teams-1))) ;
 
       $matches = array() ;
-      
+
       for ($i=0; $i<$num_teams; $i++)
 	{
 	  $matches[] = array() ;
@@ -303,8 +281,9 @@ class division
 	}
 
       $rand_array = array() ;
-      for ($i=0; $i<($extra_matchups*$num_teams/2); $i++)
+      for ($i=0; $i<1000 && $i<($extra_matchups*$num_teams/2); $i++)
 	{
+	  $k = 0 ;
 	  do
 	    {
 	      $rand_team1 = util::random_integer($num_teams) ;
@@ -350,6 +329,56 @@ class division
 		$sched = 0 ;
 	      }
 	  }
+	}
+    }
+
+  public function getSortedTeamInfo($sort_key, $desc=true)
+    {
+      if (util::isNull($sort_key))
+	{
+	  return array() ;
+	}
+
+      $tid = $this->tourney_id ;
+
+      $a = array() ;
+      foreach($this->getTeams() as $t)
+	{
+	  $a[] = $t->getTourneyInfo($tid) ;
+	}
+
+      if ($desc)
+	{
+	  return util::masort_desc($a, $sort_key) ;
+	}
+      else
+	{
+	  return util::masort_asc($a, $sort_key) ;
+	}
+    }
+
+  public function getSortedPlayerInfo($sort_key, $desc=true)
+    {
+      if (util::isNull($sort_key))
+	{
+	  return array() ;
+	}
+
+      $tid = $this->tourney_id ;
+
+      $a = array() ;
+      foreach($this->getPlayers() as $p)
+	{
+	  $a[] = $p->getTourneyInfo($tid) ;
+	}
+
+      if ($desc)
+	{
+	  return util::masort_desc($a, $sort_key) ;
+	}
+      else
+	{
+	  return util::masort_asc($a, $sort_key) ;
 	}
     }
 

@@ -127,7 +127,7 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_play; $i++)
     {
-      $v1 = 'player-' . generate_string(5) ;
+      $v1 = 'player-' . generate_string(8) ;
       $v2 = generate_boolean() ;
       $v3 = $loc[generate_integer(count($loc))] ;
       $v4 = PREFIX . generate_string(10) ; 
@@ -155,7 +155,7 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_team; $i++)
     {
-      $v1 = 'team-' . generate_string(5) ; 
+      $v1 = 'team-' . generate_string(8) ; 
       $v2 = 'email@-' . generate_string(10) ; 
       $v3 = '#chan_' . generate_string(10) ; 
       $v4 = $loc[generate_integer(count($loc))] ;
@@ -206,21 +206,13 @@ function auto_populate($a)
 
       if (generate_boolean())
 	{
-	  $v2 = $tour[generate_integer(count($tour))] ;
+	  $v2 = 'TOURNEY' ;
+	  $v3 = $tour[generate_integer(count($tour))] ;
 	}
       else
 	{
-	  $v2 = null ;
-	}
-
-
-      if (generate_integer(100)<75)
-	{
-	  $v3 = false ;
-	}
-      else
-	{
-	  $v3 = true ;
+	  $v2 = 'NEWS' ;
+	  $v3 = null ;
 	}
 
       $v4 = 'subject-' . generate_string(25) ;
@@ -229,109 +221,15 @@ function auto_populate($a)
       $v5 = date('Y-m-d', time()-(60*60*24*($sd+$c))) ;
 
       $v6 = generate_string(25) ;
-      $n = new news(array('writer_id'=>$v1, 'tourney_id'=>$v2, 'isColumn'=>$v3, 'subject'=>$v4, 'news_date'=>$v5, 'text'=>$v6)) ;
+      $n = new news(array('writer_id'=>$v1, 'news_type'=> $v2, 'id'=>$v3, 'subject'=>$v4, 'news_date'=>$v5, 'text'=>$v6)) ;
 
       //$news[] = $n->getValue("news_id") ;
     }
 
+
   for ($i=0; $i<count($tour); $i++)
     {
       $t = new tourney(array('tourney_id'=>$tour[$i])) ;
-
-      for ($j=0; $j<count($div); $j++)
-	{
-	  $d = new division(array('division_id'=>$div[$j])) ;
-
-	  $c = generate_integer(2) + 3 ;
-	  for ($k=0; $k<$c; $k++)
-	    {
-	      $te = new team(array('team_id'=>$team[generate_integer(count($team))])) ;
-
-	      if (! $d->hasTeam($te->getValue("team_id")))
-		{
-		  try
-		    {
-		      $d->addTeam($te->getValue("team_id")) ;
-		      $dteam[] = $te->getValue("team_id") ;
-		    }
-		  catch(Exception $e) {}
-		}
-
-	      $pc = generate_integer(10) + 1 ;
-	      for ($l=0; $l<$pc; $l++)
-		{
-		  $p = new player(array('player_id'=>$play[generate_integer(count($team))])) ;
-		  $v1 = generate_boolean() ;
-		  if (! $te->hasPlayer($t->getValue("tourney_id"), $p->getValue("player_id")))
-		    {
-		      try
-			{
-			  $te->addPlayer($t->getValue("tourney_id"), $p->getValue("player_id"), $v1) ;
-			  $dplay[] = $p->getValue("player_id") ;
-			}
-		      catch(Exception $e) {}
-		    }
-		}
-	    }
-
-	  $d->createSchedule(generate_integer(3)+5) ;
-
-	  $mata = $d->getMatches() ;
-
-	  $mat = array() ;
-	  for ($i=0; $i<count($mata); $i++)
-	    {
-	      $mat[] = $mata[$i]->getValue('match_id') ;
-	    }
-
-	  for ($i=0; $i<$c_game; $i++)
-	    {
-	      $v1 = $mat[generate_integer(count($mat))] ;
-	      $v2 = $maps[generate_integer(count($maps))] ;
-	      $v3 = generate_integer(250) ;
-	      $v4 = generate_integer(250) ;
-	      $v5 = 'http://' . generate_string(25) ;
-	      $v6 = 'http://' . generate_string(25) ;
-
-	      try{
-
-		$n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
-		$dgame[] = $n->getValue("game_id") ;
-	      }
-	      catch(Exception $e) {var_dump($mat); throw new Exception($d->getValue('division_id'));}
-	      
-	    }
-
-	  for ($i=0; $i<$c_comm; $i++)
-	    {
-	      $v1 = 'player-' . generate_string(250) ;
-	      $v2 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
-	      $v3 = $mat[generate_integer(count($mat))] ;
-	      $v4 = 'comment-' . generate_string(100) ;
-	      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
-	      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
-	      $n = new comment(array('name'=>$v1, 'player_ip'=>$v2, 'match_id'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
-	      
-	      //$comm[] = $n->getValue("comment_id") ;
-	    }
-
-	  for ($i=0; $i<$c_stats; $i++)
-	    {
-	      $v1 = $play[generate_integer(count($dplay))] ;
-	      $v2 = $dgame[generate_integer(count($dgame))] ;
-	      //$v3 = generate_string(20) ;
-	      $v3 = 'SCORE' ;
-	      $v4 = generate_integer(20) ;
-	      
-	      try
-		{
-		  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'stat_name'=>$v3, 'value'=>$v4)) ;
-		}
-	      catch(Exception $e) {}
-	      
-	      //$stats[] = $n->getValue("stat_id") ;
-	    }
-	}
 
       $c = generate_integer(3) + 2 ;
       for ($j=0; $j<$c; $j++)
@@ -354,6 +252,104 @@ function auto_populate($a)
 	    {
 	      $t->addAdmin($p->getValue("player_id"), $v1) ;
 	    }
+	}
+    
+      $tdiv = $t->getDivisions() ;
+      for ($j=0; $j<count($tdiv); $j++)
+	{
+	  $d = $tdiv[$j] ;
+
+	  $c = generate_integer(2) + 3 ;
+	  for ($k=0; $k<$c; $k++)
+	    {
+	      $te = new team(array('team_id'=>$team[generate_integer(count($team))])) ;
+
+	      if (! $t->hasTeam($te->getValue("team_id")))
+		{
+		  try
+		    {
+		      $d->addTeam($te->getValue("team_id")) ;
+		      $dteam[] = $te->getValue("team_id") ;
+		    }
+		  catch(Exception $e) {}
+		}
+	      
+	      $pc = generate_integer(10) + 1 ;
+	      for ($l=0; $l<$pc; $l++)
+		{
+		  $p = new player(array('player_id'=>$play[generate_integer(count($team))])) ;
+		  $v1 = generate_boolean() ;
+		  if (! $t->hasPlayer($p->getValue("player_id")))
+		    {
+		      try
+			{
+			  $te->addPlayer($t->getValue("tourney_id"), $p->getValue("player_id"), $v1) ;
+			  $dplay[] = $p->getValue("player_id") ;
+			}
+		      catch(Exception $e) {print $e;}
+		    }
+		}
+	    }
+
+	  $d->createSchedule(generate_integer(3)+5) ;
+	  $mata = $d->getMatches() ;
+
+	  $mat = array() ;
+	  for ($k=0; $k<count($mata); $k++)
+	    {
+	      $mat[] = $mata[$k]->getValue('match_id') ;
+	    }
+
+	  for ($k=0; $k<$c_game; $k++)
+	    {
+	      $v1 = $mat[generate_integer(count($mat))] ;
+	      $v2 = $maps[generate_integer(count($maps))] ;
+	      $v3 = generate_integer(250) ;
+	      $v4 = generate_integer(250) ;
+	      $v5 = 'http://' . generate_string(25) ;
+	      $v6 = 'http://' . generate_string(25) ;
+	  
+	      try{
+		$n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
+		$dgame[] = $n->getValue("game_id") ;
+	      }
+	      catch(Exception $e) {}
+	    }
+
+	  for ($k=0; $k<$c_comm; $k++)
+	    {
+	      $v1 = 'player-' . generate_string(5) ;
+	      $v2 = $mat[generate_integer(count($mat))] ;
+	      $v3 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
+	      $v4 = 'comment-' . generate_string(100) ;
+	      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
+	      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
+	      $n = new comment(array('name'=>$v1, 'comment_type'=>'MATCH', 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
+	  
+	      //$comm[] = $n->getValue("comment_id") ;
+	    }
+
+	  for ($k=0; $k<$c_stats; $k++)
+	    {
+	      $v1 = $dplay[generate_integer(count($dplay))] ;
+	      $v2 = $dgame[generate_integer(count($dgame))] ;
+	      //$v3 = generate_string(20) ;
+	      $v3 = 'SCORE' ;
+	      $v4 = generate_integer(20) ;
+	  
+	      try
+		{
+		  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'stat_name'=>$v3, 'value'=>$v4)) ;
+		}
+	      catch(Exception $e) {}
+             
+	      //$stats[] = $n->getValue("stat_id") ;
+	    }
+
+	  $sql_str = sprintf("update match_table set approved=true, winning_team_id=(case when 0.5<rand() then team1_id else team2_id end)
+                              where schedule_id in(select schedule_id from match_schedule where division_id=%d)", $d->getValue('division_id')) ;
+	  $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+
 	}
     }
 }
@@ -389,24 +385,31 @@ $te = microtime(true) ;
 try
 {
   $p = new player(array('name'=>'x')) ;
-  $v1 = $p->getValue("player_id") ;
+}
+catch (Exception $e)
+{
+  $p = new player(array('name'=>'x', 'superAdmin'=>true, 'location_id'=>1, 'password'=>'x', 'hasColumn'=>true)) ;
+}
 
+try
+{
+  $v1 = $p->getValue("player_id") ;
+  
   for ($i=0; $i<5; $i++)
     {
-
       $v2 = 'subject-' . generate_string(25) ;
-
+      
       $c = $c + generate_integer(25) ;
       $v3 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
-
+      
       $v4 = generate_string(25) ;
-
-      $n1 = new news(array('writer_id'=>$v1, 'tourney_id'=>null, 'isColumn'=>true, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
+      
+      $n1 = new news(array('writer_id'=>$v1, 'news_type'=>'COLUMN', 'id'=>null, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
     }
 }
 catch (Exception $e)
 {
-  $np = new player(array('name'=>'x', 'superAdmin'=>true, 'location_id'=>1, 'password'=>'x')) ;
+  print $e;
 }
 
 print "DONE in " . ($te-$ts) . " seconds" ;

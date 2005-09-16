@@ -29,7 +29,7 @@ foreach ($t->getDivisions() as $div)
 	foreach ($div->getTeams() as $tm)
 	{
 		$rank += 1;
-		$info = $tm->getDivisionInfo($div->getValue('division_id'));
+		$info = $tm->getTourneyInfo($t->getValue('tourney_id'));
 		$m20 = $info['match_2-0'];
 		$m21 = $info['match_2-1'];
 		$m12 = $info['match_1-2'];

@@ -176,6 +176,18 @@ class util
 
       return $min_idx ; 
     }
+
+  public static function masort_asc($arr, $sort_key)
+    {
+      usort($arr, create_function('$a, $b', "return (int)\$a['" . $sort_key . "']>(int)\$b['" . $sort_key . "'];")) ;
+      return $arr ;
+    }
+
+  public static function masort_desc($arr, $sort_key)
+    {
+      usort($arr, create_function('$a, $b', "return (int)\$a['" . $sort_key . "']<(int)\$b['" . $sort_key . "'];")) ;
+      return $arr ;
+    }
 }
 
 ?>

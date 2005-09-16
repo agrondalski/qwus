@@ -6,9 +6,10 @@ require_once 'dbConnect.php' ;
 class comment
 {
   private $comment_id ;
+  private $comment_type ;
+  private $id ;
   private $name ;
   private $player_ip ;
-  private $match_id ;
   private $comment_text ;
   private $comment_date ;
   private $comment_time ;
@@ -34,9 +35,9 @@ class comment
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into comments(name, player_ip, match_id, comment_text, comment_date, comment_time)" .
-                         "values('%s', '%s', %d, '%s', '%s', '%s')",
-			 $this->name, $this->player_ip, $this->match_id, $this->comment_text, $this->comment_date, $this->comment_time) ;
+      $sql_str = sprintf("insert into comments(name, comment_type, player_ip, id, comment_text, comment_date, comment_time)" .
+                         "values('%s', '%s', '%s', %s, '%s', '%s', '%s')",
+			 $this->name, $this->comment_type, $this->player_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->comment_id = mysql_insert_id() ;
@@ -44,7 +45,7 @@ class comment
 
   private function getCommentInfo()
     {
-      $sql_str = sprintf("select name, player_ip, match_id, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
+      $sql_str = sprintf("select name, comment_type, id, player_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -55,11 +56,12 @@ class comment
       $row = mysql_fetch_row($result) ;
 
       $this->name          = $row[0] ;
-      $this->player_ip     = $row[1] ;
-      $this->match_id      = $row[2] ;
-      $this->comment_text  = $row[3] ; 
-      $this->comment_date  = $row[4] ; 
-      $this->comment_time  = $row[5] ;
+      $this->comment_type  = $row[1] ; 
+      $this->id            = $row[2] ;
+      $this->player_ip     = $row[3] ;
+      $this->comment_text  = $row[4] ; 
+      $this->comment_date  = $row[5] ; 
+      $this->comment_time  = $row[6] ;
 
       mysql_free_result($result) ;
 
@@ -100,6 +102,31 @@ class comment
 	    }
 	}
 
+      elseif ($col == 'comment_type')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!util::isNull($val) && $val!='MATCH' && $val!='NEWS' && $val!='COLUMN')
+	    {
+	      util::throwException('invalid value specified for ' . $col) ;
+	    }
+
+	  return util::nvl(util::mysql_real_escape_string($val), 'MATCH');
+	}
+
+      elseif ($col == 'id')
+	{
+	  if (!util::isNull($val) && !is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
+	}
+
       elseif ($col == 'name')
 	{
 	  if (util::isNull($val))
@@ -115,21 +142,6 @@ class comment
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
-	    }
-
-	  return util::mysql_real_escape_string($val) ;
-	}
-
-      elseif ($col == 'match_id')
-	{
-	  if (util::isNull($val))
-	    {
-	      util::throwException($col . ' cannot be null') ;
-	    }
-
-	  if (!is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;
@@ -179,11 +191,6 @@ class comment
 	{
 	  util::throwException('invalid column specified') ;
 	}
-    }
-
-  public function getMatch()
-    {
-      return new match(array('match_id'=>$this->match_id)) ;
     }
 
   public function getValue($col)

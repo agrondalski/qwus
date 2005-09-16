@@ -116,6 +116,10 @@ try
     {
       include "php/$page.php" ;
     }
+    elseif (file_exists("php/classes/$page.php"))
+    {
+      include "php/classes/$page.php" ;
+    }
     elseif (file_exists("docs/$page.php"))
     {
       include "docs/$page.php" ;

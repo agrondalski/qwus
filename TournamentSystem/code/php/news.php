@@ -7,8 +7,8 @@ class news
 {
   private $news_id ;
   private $writer_id ;
-  private $tourney_id ;
-  private $isColumn ;
+  private $news_type ;
+  private $id ;
   private $subject ;
   private $news_date ;
   private $text ;
@@ -34,9 +34,9 @@ class news
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into news(writer_id, tourney_id, isColumn, subject, news_date, text)" .
-                         "values(%d, %s, %d, '%s', '%s', '%s')",
-			 $this->writer_id, util::nvl($this->tourney_id, 'null'), $this->isColumn, $this->subject, $this->news_date, $this->text) ;
+      $sql_str = sprintf("insert into news(writer_id, news_type, id, subject, news_date, text)" .
+                         "values(%d, '%s', %s, '%s', '%s', '%s')",
+			 $this->writer_id, $this->news_type, util::nvl($this->id, 'null'), $this->subject, $this->news_date, $this->text) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->news_id = mysql_insert_id() ;
@@ -44,7 +44,7 @@ class news
 
   private function getNewsInfo()
     {
-      $sql_str = sprintf("select writer_id, tourney_id, subject, news_date, text from news where news_id=%d", $this->news_id) ;
+      $sql_str = sprintf("select writer_id, news_type, id, subject, news_date, text from news where news_id=%d", $this->news_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -55,10 +55,11 @@ class news
       $row = mysql_fetch_row($result) ;
 
       $this->writer_id   = $row[0] ;
-      $this->tourney_id  = $row[1] ;
-      $this->subject     = $row[2] ;
-      $this->news_date   = $row[3] ; 
-      $this->text        = $row[4] ;
+      $this->news_tyoe   = $row[1] ;
+      $this->id          = $row[2] ;
+      $this->subject     = $row[3] ;
+      $this->news_date   = $row[4] ; 
+      $this->text        = $row[5] ;
 
       mysql_free_result($result) ;
 
@@ -114,7 +115,22 @@ class news
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'tourney_id')
+      elseif ($col == 'news_type')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!util::isNull($val) && $val!='NEWS' && $val!='TOURNEY' && $val!='COLUMN')
+	    {
+	      util::throwException('invalid value specified for ' . $col) ;
+	    }
+
+	  return util::nvl(util::mysql_real_escape_string($val), 'NEWS');
+	}
+
+      elseif ($col == 'id')
 	{
 	  if (!util::isNull($val) && !is_numeric($val))
 	    {
@@ -159,25 +175,10 @@ class news
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'isColumn')
-	{
-	  return util::nvl(util::mysql_real_escape_string($val), false);
-	}
-
       else
 	{
 	  util::throwException('invalid column specified') ;
 	}
-    }
-
-  public function getTourney()
-    {
-      if (isset($this->tourney_id))
-	{
-	  return new tourney(array('tourney_id'=>$this->tourney_id)) ;
-	}
-
-      return null ;
     }
 
   public function getWriter()
@@ -190,7 +191,7 @@ class news
 
   public static function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where tourney_id is null and isColumn=false %s %s", util::getOrderBy($a), util::getLimit($a)) ;
+      $sql_str = sprintf("select n.news_id from news n where news_type='NEWS' %s %s", util::getOrderBy($a), util::getLimit($a)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -204,7 +205,7 @@ class news
 
   public static function getNewsCount()
     {
-      $sql_str = sprintf("select count(*) from news n where tourney_id is null and isColumn=false") ;
+      $sql_str = sprintf("select count(*) from news n where news_type='NEWS'") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -217,6 +218,20 @@ class news
 	  mysql_free_result($result) ;
 	  return 0 ;
 	}
+    }
+
+  public function getComments()
+    {
+      $sql_str = sprintf("select n.news_id from news n where n.comment_type='NEWS' and n.id=%d order by comment_date, comment_time", $this->match_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new mews(array('news_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getValue($col)

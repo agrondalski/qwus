@@ -17,6 +17,7 @@ require_once 'match.php' ;
 require_once 'match_schedule.php' ;
 require_once 'news.php' ;
 require_once 'player.php' ;
+require_once 'poll.php' ;
 require_once 'stats.php' ;
 require_once 'team.php' ;
 require_once 'tourney.php' ;

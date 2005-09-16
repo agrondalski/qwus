@@ -13,7 +13,7 @@ create table tourney(
   tourney_type       ENUM ('LADDER', 'LEAGUE', 'TOURNAMENT') NOT NULL default 'LEAGUE',
   signup_start       date          NOT NULL,
   signup_end         date          NOT NULL,
-  team_size          integer       NOT NULL,  -- 4v4, 1v1, etc
+  team_size          integer       NOT NULL,
   timelimit          integer       NOT NULL,
 --
   constraint tournament_pk   primary key(tourney_id),
@@ -70,17 +70,17 @@ create table team(
   constraint team_unq1 unique(name))
 ENGINE=INNODB ;
 
-create table division_info(
---tourney_id   integer NOT NULL,
-  division_id  integer NOT NULL,
+create table tourney_info(
+  tourney_id   integer NOT NULL,
   team_id      integer NOT NULL,
+  division_id  integer NOT NULL,
   wins         integer NOT NULL default 0,
   losses       integer NOT NULL default 0,
   points       integer NOT NULL default 0,
   maps_won     integer NOT NULL default 0,
   maps_lost    integer NOT NULL default 0,
 --
-  constraint tourney_participants_pk primary key(division_id, team_id))
+  constraint tourney_participants_pk primary key(tourney_id, team_id))
 ENGINE=INNODB ;
 
 create table player(
@@ -108,8 +108,8 @@ ENGINE=INNODB ;
 
 create table player_info(
   tourney_id    integer NOT NULL,
-  team_id       integer NOT NULL,
   player_id     integer NOT NULL,
+  team_id       integer NOT NULL,
   isTeamLeader  boolean NOT NULL default FALSE,
 --
   constraint player_lookup_pk primary key(tourney_id, player_id))
@@ -117,15 +117,12 @@ ENGINE=INNODB ;
 
 create table match_table(
   match_id             integer NOT NULL auto_increment,
---  division_id          integer NOT NULL,
   schedule_id          integer NOT NULL,
   team1_id             integer NOT NULL,
   team2_id             integer NOT NULL,
   winning_team_id      integer,
   approved             boolean NOT NULL default FALSE,
   match_date           date,
---  deadline             date    NOT NULL,
---  week_name            varchar(250),
 --
   constraint match_pk primary key(match_id))
 ENGINE=INNODB ;
@@ -173,9 +170,10 @@ ENGINE=INNODB ;
 
 create table comments(
   comment_id    integer       NOT NULL auto_increment,
-  name          integer       NOT NULL,
+  comment_type  ENUM('MATCH', 'NEWS', 'COLUMN') NOT NULL default 'NEWS', 
+  id            integer,
+  name          varchar(250)  NOT NULL,
   player_ip     varchar(250)  NOT NULL,
-  match_id      integer       NOT NULL,
   comment_text  MEDIUMTEXT    NOT NULL,
   comment_date  date          NOT NULL,
   comment_time  time          NOT NULL,
@@ -186,8 +184,8 @@ ENGINE=INNODB ;
 create table news(
   news_id       bigint      NOT NULL auto_increment, 
   writer_id     integer     NOT NULL,
-  tourney_id    integer,
-  isColumn      boolean     NOT NULL default FALSE,
+  news_type     ENUM('NEWS', 'TOURNEY', 'COLUMN') NOT NULL default 'NEWS', 
+  id            integer,
   subject       text        NOT NULL,
   news_date     date        NOT NULL,
   text          MEDIUMTEXT  NOT NULL,
@@ -205,6 +203,25 @@ create table log_table(
   constraint log_table_pk primary key(log_id))
 ENGINE=INNODB ;
 
+create table poll( 
+  poll_id     integer NOT NULL auto_increment, 
+  topic       varchar(250),
+  poll_type   ENUM('MATCH', 'NEWS', 'TOURNEY', 'COLUMN') NOT NULL default 'MATCH', 
+  id          integer, 
+  isCurrent   boolean  NOT NULL default FALSE,
+--
+  constraint poll_pk primary key(poll_id))
+ENGINE=INNODB ;
+  
+create table poll_options( 
+   poll_id      integer      NOT NULL, 
+   option_id    integer      NOT NULL,
+   poll_option  varchar(250) NOT NULL, 
+   votes        integer      NOT NULL default 0, 
+--
+   constraint poll_options_pk primary key(poll_id, poll_option))
+ENGINE=INNODB ;
+;
 
 -- Add RIC constraints
 alter table tourney add constraint tourney_fk1 foreign key(game_type_id) references game_type(game_type_id) ;
@@ -224,9 +241,9 @@ alter table division add constraint division_fk1 foreign key(tourney_id) referen
 
 alter table team add constraint team_fk1 foreign key(location_id) references location(location_id) ;
 
---alter table division_info add constraint tourney_info_fk1 foreign key(tourney_id)  references tourney(tourney_id) ; 
-alter table division_info add constraint tourney_info_fk2 foreign key(division_id) references division(division_id) ;
-alter table division_info add constraint tourney_info_fk3 foreign key(team_id)     references team(team_id) ; 
+alter table tourney_info add constraint tourney_info_fk1 foreign key(tourney_id)  references tourney(tourney_id) ; 
+alter table tourney_info add constraint tourney_info_fk2 foreign key(division_id) references division(division_id) ;
+alter table tourney_info add constraint tourney_info_fk3 foreign key(team_id)     references team(team_id) ; 
 
 alter table player add constraint player_fk2 foreign key(location_id) references location(location_id) ;
 
@@ -235,7 +252,6 @@ alter table player_info add constraint player_lookup_fk2 foreign key(team_id)   
 alter table player_info add constraint player_lookup_fk1 foreign key(player_id)  references player(player_id) ;
 
 alter table match_table add constraint match_fk1 foreign key(schedule_id) references match_schedule(schedule_id) ;
---alter table match_table add constraint match_fk1 foreign key(division_id) references division(division_id) ;
 alter table match_table add constraint match_fk2 foreign key(team1_id)    references team(team_id) ;
 alter table match_table add constraint match_fk3 foreign key(team2_id)    references team(team_id) ;
 alter table match_table add constraint match_fk4 foreign key(winning_team_id) references team(team_id) ;
@@ -248,7 +264,9 @@ alter table maps add constraint maps_fk1 foreign key(game_type_id) references ga
 alter table stats add constraint stats_fk1 foreign key(player_id) references player(player_id) ;
 alter table stats add constraint stats_fk2 foreign key(game_id)   references game(game_id) ;
 
-alter table comments add constraint comments_fk2 foreign key(match_id)  references match_table(match_id) ;
+--alter table comments add constraint comments_fk2 foreign key(match_id)  references match_table(match_id) ;
 
 alter table news add constraint news_fk1 foreign key(writer_id) references player(player_id) ;
-alter table news add constraint news_fk2 foreign key(tourney_id) references tourney(tourney_id) ;
+--alter table news add constraint news_fk2 foreign key(tourney_id) references tourney(tourney_id) ;
+
+alter table poll_options add constraint poll_options_fk1 foreign key(poll_id) references poll(poll_id) ;

@@ -51,7 +51,7 @@ foreach ($tm->getPlayers($tid) as $player)
 		} else {
 			echo $player->getValue('name'),"</a></td>\n";
 		}
-	$info = $player->getDivisionInfo($tid);
+		$info = $player->getTourneyInfo($tid);
 	echo "\t<td>",$loc_name,"</td>\n";
 	echo "<td>",$info['games_played'],"</td>";
 	echo "<td>",$info['frags_per_game'],"</td>";
