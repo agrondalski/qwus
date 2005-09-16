@@ -337,7 +337,7 @@ class player
 
   public function getNewsColumns($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='COLUMN' %s", $this->player_id, util::getLimit($a)) ;
+      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='COLUMN' %s", $this->player_id, util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_assoc($result))
