@@ -28,5 +28,7 @@ Delete</a></td>";
 	echo "\t</tr>\n";
 }
 echo "</table>\n";
+
+echo "<p><a href='?a=manageTeam'>Create Team</a>";
 ?>
 

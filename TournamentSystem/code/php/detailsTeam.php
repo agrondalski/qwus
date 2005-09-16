@@ -11,7 +11,6 @@ try {
     $tm = "";
 }
 
-include 'tourneyLinks.php';
 echo "<br>";
 
 // Gather team info

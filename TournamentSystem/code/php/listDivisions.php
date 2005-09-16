@@ -25,4 +25,5 @@ foreach ($t->getDivisions() as $div) {
 	echo "\t</tr>\n";
 }
 echo "</table>\n";
+echo "<p><a href='?a=manageDivision&amp;tourney_id=$tid'>Create Division</a>";
 ?>

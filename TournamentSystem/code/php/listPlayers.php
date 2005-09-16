@@ -26,5 +26,6 @@ Delete</a></td>";
 	echo "\t</tr>\n";
 }
 echo "</table>\n";
+echo "<p><a href='?a=managePlayer'>Create Player</a>";
 ?>
 

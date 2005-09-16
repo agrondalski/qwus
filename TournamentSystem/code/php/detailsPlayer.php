@@ -14,7 +14,6 @@ try {
     $p = "";
 }
 
-include 'tourneyLinks.php';
 echo "<br>";
 
 

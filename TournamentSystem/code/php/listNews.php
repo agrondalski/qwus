@@ -48,4 +48,14 @@ foreach ($allNews as $news)
 }
 
 echo "</table>\n";
+
+if (!util::isNull($t))
+{
+	echo "<p><a href='?a=manageNews&amp;tourney_id=$tid'>Create News</a>";
+}
+else 
+{
+	echo "<p><a href='?a=manageNews'>Create News</a>";
+}
+
 ?>
