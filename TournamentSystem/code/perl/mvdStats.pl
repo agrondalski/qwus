@@ -483,6 +483,13 @@ foreach $mvd (@ARGV)
       $fragger = findPlayer($2);
       $fragger->ssgFrags($fragger->ssgFrags() + 1);
     }
+    elsif ($string =~ /^(.*) was ax-murdered by (.*)/)
+    {
+      $fraggee = findPlayer($1);
+      $fraggee->axDeaths($fraggee->axDeaths() + 1);
+      $fragger = findPlayer($2);
+      $fragger->axFrags($fragger->axFrags() + 1);
+    }
     elsif ($string =~ /^(.*) rips (.*) a new one/)
     {
       $fragger = findPlayer($1);
