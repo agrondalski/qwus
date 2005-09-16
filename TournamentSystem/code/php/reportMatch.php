@@ -125,7 +125,7 @@ if ($winning_team_id != "")
 	echo "<hr>";
 	echo "<h2>Add Game Data</h2>";
 	echo "<form action='?a=reportMatch' method=post>";
-	echo "<table border=1 cellpadding=4 cellspacing=0>";
+	echo "<table border=0 cellpadding=4 cellspacing=0>";
 	echo "<tr><td><b>Add game MVD:</b></td>";
 	echo "<input type='hidden' name='tourney_id' value='$tid'>";
 	echo "<input type='hidden' name='division_id' value='$division_id'>";
