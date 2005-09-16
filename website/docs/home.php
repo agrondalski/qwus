@@ -16,7 +16,7 @@ try
 	  if (isset($_GET["tourney_id"]))
 	    {
 	      $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-	      $news = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
+	      $news = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>'0,5')) ;
 	      $count = $t->getNewsCount() ;
 	    }
 

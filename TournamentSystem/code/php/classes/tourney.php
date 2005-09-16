@@ -296,9 +296,9 @@ class tourney
 	}
     }
 
-  public function getNews($a)
+  public function getNews($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.news_type='TOURNEY' and n.id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select n.* from news n where n.news_type='TOURNEY' and n.id=%d %s", $this->tourney_id, util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_assoc($result))
