@@ -6,6 +6,8 @@
 # optimize
 # ctf msgs
 # have to check and double check score calculations
+# frags in a row
+# better team color support
 
 use Benchmark;
 use GD::Graph::lines;
@@ -41,6 +43,8 @@ sub new
   $self->{DISCHARGE_BORES} = 0;
   $self->{DISCHARGE_FRAGS} = 0; $self->{DISCHARGE_DEATHS} = 0;
   $self->{TEAMKILLS} = 0;
+  $self->{MAX_FRAG_STREAK} = 0;
+  $self->{CURRENT_FRAG_STREAK} = 0;
  #  $self->{CTF_CAPTURES} = 0;
  #  $self->{CTF_FLAG_DEFENDS} = 0;
  #  $self->{CTF_CARRIER_DEFENDS} = 0;
@@ -65,196 +69,196 @@ sub team
 sub rocketDeaths
 {
   my $self = shift;
-  if (@_) { $self->{ROCKET_DEATHS} = shift }
+  if (@_) { $self->{ROCKET_DEATHS} = shift; $self->resetFragStreak }
   return $self->{ROCKET_DEATHS};
 }
 
 sub rocketFrags
 {
   my $self = shift;
-  if (@_) { $self->{ROCKET_FRAGS} = shift }
+  if (@_) { $self->{ROCKET_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{ROCKET_FRAGS};
 }
 
 sub shotgunDeaths
 {
   my $self = shift;
-  if (@_) { $self->{SHOTGUN_DEATHS} = shift }
+  if (@_) { $self->{SHOTGUN_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{SHOTGUN_DEATHS};
 }
 
 sub shotgunFrags
 {
   my $self = shift;
-  if (@_) { $self->{SHOTGUN_FRAGS} = shift }
+  if (@_) { $self->{SHOTGUN_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{SHOTGUN_FRAGS};
 }
 
 sub ssgDeaths
 {
   my $self = shift;
-  if (@_) { $self->{SSG_DEATHS} = shift }
+  if (@_) { $self->{SSG_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{SSG_DEATHS};
 }
 
 sub ssgFrags
 {
   my $self = shift;
-  if (@_) { $self->{SSG_FRAGS} = shift }
+  if (@_) { $self->{SSG_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{SSG_FRAGS};
 }
 
 sub nailgunDeaths
 {
   my $self = shift;
-  if (@_) { $self->{NAILGUN_DEATHS} = shift }
+  if (@_) { $self->{NAILGUN_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{NAILGUN_DEATHS};
 }
 
 sub nailgunFrags
 {
   my $self = shift;
-  if (@_) { $self->{NAILGUN_FRAGS} = shift }
+  if (@_) { $self->{NAILGUN_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{NAILGUN_FRAGS};
 }
 
 sub sngDeaths
 {
   my $self = shift;
-  if (@_) { $self->{SNG_DEATHS} = shift }
+  if (@_) { $self->{SNG_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{SNG_DEATHS};
 }
 
 sub sngFrags
 {
   my $self = shift;
-  if (@_) { $self->{SNG_FRAGS} = shift }
+  if (@_) { $self->{SNG_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{SNG_FRAGS};
 }
 
 sub grenadeDeaths
 {
   my $self = shift;
-  if (@_) { $self->{GRENADE_DEATHS} = shift }
+  if (@_) { $self->{GRENADE_DEATHS} = shift; $self->resetFragStreak }
   return $self->{GRENADE_DEATHS};
 }
 
 sub grenadeFrags
 {
   my $self = shift;
-  if (@_) { $self->{GRENADE_FRAGS} = shift }
+  if (@_) { $self->{GRENADE_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{GRENADE_FRAGS};
 }
 
 sub lightningDeaths
 {
   my $self = shift;
-  if (@_) { $self->{LIGHTNING_DEATHS} = shift }
+  if (@_) { $self->{LIGHTNING_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{LIGHTNING_DEATHS};
 }
 
 sub lightningFrags
 {
   my $self = shift;
-  if (@_) { $self->{LIGHTNING_FRAGS} = shift }
+  if (@_) { $self->{LIGHTNING_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{LIGHTNING_FRAGS};
 }
 
 sub axDeaths
 {
   my $self = shift;
-  if (@_) { $self->{AX_DEATHS} = shift }
+  if (@_) { $self->{AX_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{AX_DEATHS};
 }
 
 sub axFrags
 {
   my $self = shift;
-  if (@_) { $self->{AX_FRAGS} = shift }
+  if (@_) { $self->{AX_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{AX_FRAGS};
 }
 
 sub teleDeaths
 {
   my $self = shift;
-  if (@_) { $self->{TELEDEATHS} = shift }
+  if (@_) { $self->{TELEDEATHS} = shift; $self->resetFragStreak; }
   return $self->{TELEDEATHS};
 }
 
 sub teleFrags
 {
   my $self = shift;
-  if (@_) { $self->{TELEFRAGS} = shift }
+  if (@_) { $self->{TELEFRAGS} = shift; $self->incrementFragStreak; }
   return $self->{TELEFRAGS};
 }
 
 sub lavaBores
 {
   my $self = shift;
-  if (@_) { $self->{LAVA_BORES} = shift }
+  if (@_) { $self->{LAVA_BORES} = shift; $self->resetFragStreak; }
   return $self->{LAVA_BORES};
 }
 
 sub slimeBores
 {
   my $self = shift;
-  if (@_) { $self->{SLIME_BORES} = shift }
+  if (@_) { $self->{SLIME_BORES} = shift; $self->resetFragStreak; }
   return $self->{SLIME_BORES};
 }
 
 sub waterBores
 {
   my $self = shift;
-  if (@_) { $self->{WATER_BORES} = shift }
+  if (@_) { $self->{WATER_BORES} = shift; $self->resetFragStreak; }
   return $self->{WATER_BORES};
 }
 
 sub fallBores
 {
   my $self = shift;
-  if (@_) { $self->{FALL_BORES} = shift }
+  if (@_) { $self->{FALL_BORES} = shift; $self->resetFragStreak; }
   return $self->{FALL_BORES};
 }
 
 sub squishBores
 {
   my $self = shift;
-  if (@_) { $self->{SQUISH_BORES} = shift }
+  if (@_) { $self->{SQUISH_BORES} = shift; $self->resetFragStreak; }
   return $self->{SQUISH_BORES};
 }
 
 sub squishDeaths
 {
   my $self = shift;
-  if (@_) { $self->{SQUISH_DEATHS} = shift }
+  if (@_) { $self->{SQUISH_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{SQUISH_DEATHS};
 }
 
 sub squishFrags
 {
   my $self = shift;
-  if (@_) { $self->{SQUISH_FRAGS} = shift }
+  if (@_) { $self->{SQUISH_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{SQUISH_FRAGS};
 }
 
 sub miscBores
 {
   my $self = shift;
-  if (@_) { $self->{MISC_BORES} = shift }
+  if (@_) { $self->{MISC_BORES} = shift; $self->resetFragStreak; }
   return $self->{MISC_BORES};
 }
 
 sub rocketBores
 {
   my $self = shift;
-  if (@_) { $self->{ROCKET_BORES} = shift }
+  if (@_) { $self->{ROCKET_BORES} = shift; $self->resetFragStreak; }
   return $self->{ROCKET_BORES};
 }
 
 sub grenadeBores
 {
   my $self = shift;
-  if (@_) { $self->{GRENADE_BORES} = shift }
+  if (@_) { $self->{GRENADE_BORES} = shift; $self->resetFragStreak; }
   return $self->{GRENADE_BORES};
 }
 
@@ -268,21 +272,21 @@ sub teamKills
 sub dischargeBores
 {
   my $self = shift;
-  if (@_) { $self->{DISCHARGE_BORES} = shift }
+  if (@_) { $self->{DISCHARGE_BORES} = shift; $self->resetFragStreak; }
   return $self->{DISCHARGE_BORES};
 }
 
 sub dischargeFrags
 {
   my $self = shift;
-  if (@_) { $self->{DISCHARGE_FRAGS} = shift }
+  if (@_) { $self->{DISCHARGE_FRAGS} = shift; $self->incrementFragStreak; }
   return $self->{DISCHARGE_FRAGS};
 }
 
 sub dischargeDeaths
 {
   my $self = shift;
-  if (@_) { $self->{DISCHARGE_DEATHS} = shift }
+  if (@_) { $self->{DISCHARGE_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{DISCHARGE_DEATHS}; 
 }
 
@@ -344,6 +348,28 @@ sub points
 {
   my $self = shift;
   return ($self->frags - $self->teamKills - $self->selfKills);
+}
+
+sub incrementFragStreak
+{
+  my $self = shift;
+  $self->{CURRENT_FRAG_STREAK} = $self->{CURRENT_FRAG_STREAK} + 1;
+  if ($self->{CURRENT_FRAG_STREAK} > $self->{MAX_FRAG_STREAK})
+  {
+    $self->{MAX_FRAG_STREAK} = $self->{CURRENT_FRAG_STREAK};
+  }  
+}
+
+sub resetFragStreak
+{
+  my $self = shift;
+  $self->{CURRENT_FRAG_STREAK} = 0;
+}
+
+sub fragStreak
+{
+  my $self = shift;
+  return $self->{MAX_FRAG_STREAK};
 }
 
 package Team;
@@ -812,11 +838,13 @@ sub outputTeamHTML
   foreach $team (@teams)
   {
     my @teamPlayers = $team->players;
-    print $team->name . "(" . $team->color . ")" . " :\t" . $team->points . "\n";
-    foreach $player (@teamPlayers)
+ #   print $team->name . "(" . $team->color . ")" . " :\t" . $team->points . "\n";
+     print $team->name . "(" . $team->points . ")\n";
+
+     foreach $player (@teamPlayers)
     {
       $player = findPlayer($player);
-      print "\t\t" . $player->name . "\t" . $player->points . "\n";
+      print "\t\t" . $player->name . "\t" . $player->points . "\t" . $player->fragStreak . "\n";
     }  
   }
   foreach $player (@players)
