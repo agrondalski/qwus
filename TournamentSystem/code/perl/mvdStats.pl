@@ -6,8 +6,8 @@
 # optimize
 # ctf msgs
 # have to check and double check score calculations
-# frags in a row
-# better team color support
+# better team color support (store for player and calculate player based on mode)
+# team stats
 
 use Benchmark;
 use GD::Graph::lines;
@@ -21,6 +21,8 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
+  $self->{TOP_COLOR} = undef;
+  $self->{BOTTOM_COLOR} = undef;
   $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
   $self->{SHOTGUN_FRAGS} = 0;   $self->{SHOTGUN_DEATHS} = 0;
   $self->{SSG_FRAGS} = 0;       $self->{SSG_DEATHS} = 0;
@@ -66,10 +68,24 @@ sub team
   return $self->{TEAM};
 }
 
+sub topColor
+{
+  my $self = shift;
+  if (@_) {$self->{TOP_COLOR} = shift }
+  return $self->{TOP_COLOR};
+}
+
+sub bottomColor
+{
+  my $self = shift;
+  if (@_) {$self->{BOTTOM_COLOR} = shift }
+  return $self->{BOTTOM_COLOR};
+}
+
 sub rocketDeaths
 {
   my $self = shift;
-  if (@_) { $self->{ROCKET_DEATHS} = shift; $self->resetFragStreak }
+  if (@_) { $self->{ROCKET_DEATHS} = shift; $self->resetFragStreak; }
   return $self->{ROCKET_DEATHS};
 }
 
@@ -297,7 +313,7 @@ sub selfKills
   (
     $self->rocketBores() + $self->lavaBores() +
     $self->slimeBores() + $self->waterBores() +
-    $self->fallBores() +     # $self->squishDeaths() +
+    $self->fallBores() +  
     $self->dischargeBores() + $self->grenadeBores() +
     $self->squishBores() + $self->miscBores()
   );
@@ -704,9 +720,10 @@ print $string;
     }
     elsif ($string =~ /^ was telefragged by his teammate/) 
     {
-      chomp($oldString);
-      $fraggee = findPlayer($oldString);
-      $fraggee->miscBores($fraggee->miscBores() + 1);
+      # this seems to have no effect on score in ktpro ??
+      #chomp($oldString);
+      #$fraggee = findPlayer($oldString);
+      #$fraggee->miscBores($fraggee->miscBores() + 1);
     }
     elsif ($string =~ /^(.*) was telefragged by (.*)/) 
     {
@@ -766,10 +783,19 @@ print $string;
         $team->addPlayer($name);
         if ($string =~ m/\\bottomcolor\\/)
         {
-          $color = $';
-          while ($color =~ /(.*)\\/) { $color = $1; }
-          $color =~ s/\s+$//;
-          $team->color($color);
+          my $bottomColor = $';
+          while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
+          $bottomColor =~ s/\s+$//;
+# should calculate this later based on players mode color
+          $team->color($bottomColor);
+          $player->bottomColor($bottomColor);
+        }
+        if ($string =~ m/\\topcolor\\/)
+        {
+          my $topColor = $';
+          while ($topColor =~ /(.*)\\/) { $topColor = $1; }
+          $topColor =~ s/\s+$//;
+          $player->topColor($topColor);
         }
       }    
     }
@@ -786,13 +812,6 @@ print $string;
     }
     elsif ($string =~ /^(.*) min left$/)
     {
-      if ($graphStarted == 0)
-      {
-    #    push(@graphTime, $1 + 1);
-    #    push(@graphTeamOneScore, 0);
-    #    push(@graphTeamTwoScore, 0);
-        $graphStarted = 1;
-      }
       push(@graphTime, $1);
       push(@graphTeamOneScore, $teamOneScore);
       push(@graphTeamTwoScore, $teamTwoScore);
@@ -1014,6 +1033,10 @@ sub outputGraph
   my $teamOne = findTeam($teamOneName);
   my $teamTwo = findTeam($teamTwoName);
   #$teamOne->color(6);
+  if ($teamOne->color == $teamTwo->color) 
+  {
+      $teamOne->color(complementColor($teamOne->color));
+  }
   push(@colorArray, colorConverter($teamOne->color));
   push(@colorArray, colorConverter($teamTwo->color));
   $graph->set(dclrs => [@colorArray]);
@@ -1053,18 +1076,36 @@ sub outputPlayerPieCharts
   }
 }
 
+# returns the quake color corresponding to the number passed in
+# white becomes black for display purposes
 sub colorConverter
 {
   if (!@_) { return "black" }
   my $color = shift;
+  # why no switch in perl D:
   if ($color == 0) { return "black" }
+  if ($color == 1) { return "brown" }
   if ($color == 2) { return "lblue" }
+  if ($color == 3) { return "dgreen" }
   if ($color == 4) { return "red" }
+  if ($color == 5) { return "yellow" }
   if ($color == 6) { return "pink" }
-  if ($color == 12) { return "yellow" }
+  if ($color == 7) { return "lbrown" }
+  if ($color == 8) { return "purple" }
+  if ($color == 9) { return "purple" }
+  if ($color == 10) { return "lbrown" }
+  if ($color == 11) { return "cyan" }
+  if ($color == 12) { return "lyellow" }
   if ($color == 13) { return "blue" }
   return "black";
 }
 
 # available colors:
 # white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
+
+
+sub complementColor
+{
+  my $color = shift;
+  return 13;
+}
