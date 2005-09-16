@@ -635,8 +635,8 @@ print $string;
     }
     elsif ($string =~ /^(.*) gulped a load of slime/)
     {
-print $string;
-      $fraggee = findPlayer($1);
+      chomp($oldString);
+      $fraggee = findPlayer($oldString);
       $fraggee->slimeBores($fraggee->slimeBores() + 1);
     }
     elsif ($string =~ /^(.*) can't exist on slime alone/)
@@ -774,7 +774,7 @@ print $string;
 # once we reach this point the match is over and no good data remains
 # breaking out of the loop not only provides a speed boost, but
 # eliminates the disconnected player list from being added again
-    elsif ($string =~ /. - disconnected players/) { last; }
+    elsif ($string =~ /. - disconnected player/) { last; }
     $oldString = $string;
   }
   push(@graphTime, 0);
