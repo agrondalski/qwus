@@ -296,7 +296,7 @@ function auto_populate($a)
 
 	  for ($k=0; $k<count($mata); $k++)
 	    {
-	      $c = generate_integer(2)+1 ;
+	      $c = generate_integer(2)+2 ;
 
 	      for ($l=0; $l<$c; $l++)
 		{
