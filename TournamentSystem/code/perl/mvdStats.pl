@@ -10,6 +10,7 @@
 use Benchmark;
 use GD::Graph::lines;
 use GD::Graph::pie;
+use GD::Graph::colour;
 
 package Player;
 sub new
@@ -789,7 +790,8 @@ outputHeader();
 #outputHTML();
 outputTeamHTML();
 #outputForm();
-#outputGraph();
+outputGraph(200,150);
+outputGraph(800,600);
 #outputPlayerPieCharts();
 outputFooter();
 
@@ -958,17 +960,30 @@ sub outputFooter
 
 sub outputGraph
 {
+  my $x = 400; my $y = 300;
+  if (@_) { $x = shift; $y = shift; }
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
-  my $graph = GD::Graph::lines->new(400,300);
+  my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
               x_label => "time", 
               x_label_position => .5,
-              y_label => "score"
+              y_label => "score",
+              line_width => 2
+              
              );
+  if ($x < 400) 
+  {
+      $graph->set(x_label_skip => 5);
+  }
   $graph->set_legend(@graphTeams);
+  my $teamOne = findTeam($teamOneName);
+  my $teamTwo = findTeam($teamTwoName);
+  #$teamOne->color(6);
+  push(@colorArray, colorConverter($teamOne->color));
+  push(@colorArray, colorConverter($teamTwo->color));
+  $graph->set(dclrs => [@colorArray]);
   my $image = $graph->plot(\@data) or die ("Died creating image");
-#  open(OUT, ">image.png");
-  open(OUT, ">" . $teamOneName . "_" . $teamTwoName . "_" . $map . ".png");
+  open(OUT, ">" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
   binmode OUT;
   print OUT $image->png();
   close OUT;
@@ -1005,9 +1020,16 @@ sub outputPlayerPieCharts
 
 sub colorConverter
 {
-  if (!@_) { return "white" }
+  if (!@_) { return "black" }
   my $color = shift;
-  if ($color == 0) { return "white" }
-  if ($color == 2) { return "light blue" }
-  return "white";
+  if ($color == 0) { return "black" }
+  if ($color == 2) { return "lblue" }
+  if ($color == 4) { return "red" }
+  if ($color == 6) { return "pink" }
+  if ($color == 12) { return "yellow" }
+  if ($color == 13) { return "blue" }
+  return "black";
 }
+
+# available colors:
+# white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
