@@ -28,10 +28,10 @@ sub new
   $self->{LIGHTNING_FRAGS} = 0; $self->{LIGHTNING_DEATHS} = 0;
   $self->{AX_FRAGS} = 0;        $self->{AX_DEATHS} = 0;
   $self->{TELEFRAGS} = 0;       $self->{TELEDEATHS} = 0;
-  $self->{LAVA_DEATHS} = 0;
-  $self->{SLIME_DEATHS} = 0;
-  $self->{WATER_DEATHS} = 0;
-  $self->{FALL_DEATHS} = 0;
+  $self->{LAVA_BORES} = 0;
+  $self->{SLIME_BORES} = 0;
+  $self->{WATER_BORES} = 0;
+  $self->{FALL_BORES} = 0;
   $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
   $self->{SQUISH_BORES} = 0;
   $self->{MISC_BORES} = 0;
@@ -188,32 +188,32 @@ sub teleFrags
   return $self->{TELEFRAGS};
 }
 
-sub lavaDeaths
+sub lavaBores
 {
   my $self = shift;
-  if (@_) { $self->{LAVA_DEATHS} = shift }
-  return $self->{LAVA_DEATHS};
+  if (@_) { $self->{LAVA_BORES} = shift }
+  return $self->{LAVA_BORES};
 }
 
-sub slimeDeaths
+sub slimeBores
 {
   my $self = shift;
-  if (@_) { $self->{SLIME_DEATHS} = shift }
-  return $self->{SLIME_DEATHS};
+  if (@_) { $self->{SLIME_BORES} = shift }
+  return $self->{SLIME_BORES};
 }
 
-sub waterDeaths
+sub waterBores
 {
   my $self = shift;
-  if (@_) { $self->{WATER_DEATHS} = shift }
-  return $self->{WATER_DEATHS};
+  if (@_) { $self->{WATER_BORES} = shift }
+  return $self->{WATER_BORES};
 }
 
-sub fallDeaths
+sub fallBores
 {
   my $self = shift;
-  if (@_) { $self->{FALL_DEATHS} = shift }
-  return $self->{FALL_DEATHS};
+  if (@_) { $self->{FALL_BORES} = shift }
+  return $self->{FALL_BORES};
 }
 
 sub squishBores
@@ -291,9 +291,9 @@ sub selfKills
   my $self = shift;
   return 
   (
-    $self->rocketBores() + $self->lavaDeaths() +
-    $self->slimeDeaths() + $self->waterDeaths() +
-    $self->fallDeaths() + $self->squishDeaths() +
+    $self->rocketBores() + $self->lavaBores() +
+    $self->slimeBores() + $self->waterBores() +
+    $self->fallBores() +     # $self->squishDeaths() +
     $self->dischargeBores() + $self->grenadeBores() +
     $self->squishBores() + $self->miscBores()
   );
@@ -330,7 +330,7 @@ sub deaths
 sub rank
 {
   my $self = shift;
-  return $self->frags - $self->deaths;
+  return $self->frags - $self->deaths; # - teamkills??
 }
 
 sub eff
@@ -596,54 +596,54 @@ print $string;
     {
       chomp($oldString);
       $fraggee = findPlayer($oldString);
-      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
+      $fraggee->lavaBores($fraggee->lavaBores() + 1);
     }    
     elsif ($string =~ /^ burst into flames/)
     {
       chomp($oldString);
       $fraggee = findPlayer($oldString);
-      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
+      $fraggee->lavaBores($fraggee->lavaBores() + 1);
     }
     elsif ($string =~ /^ turned into hot slag/)
     {
       chomp($oldString);
       $fraggee = findPlayer($oldString);
-      $fraggee->lavaDeaths($fraggee->lavaDeaths() + 1);
+      $fraggee->lavaBores($fraggee->lavaBores() + 1);
     }
     elsif ($string =~ /^(.*) cratered/)
     {
 	print $string;
       $fraggee = findPlayer($1);
-      $fraggee->fallDeaths($fraggee->fallDeaths() + 1);
+      $fraggee->fallBores($fraggee->fallBores() + 1);
     }
     elsif ($string =~ /^ fell to his death/)
     {
       chomp($oldString);
       $fraggee = findPlayer($oldString);
-      $fraggee->fallDeaths($fraggee->fallDeaths() + 1);
+      $fraggee->fallBores($fraggee->fallBores() + 1);
     }
     elsif ($string =~ /^(.*) sleeps with the fishes/)
     {
       $fraggee = findPlayer($1);
-      $fraggee->waterDeaths($fraggee->waterDeaths() + 1);
+      $fraggee->waterBores($fraggee->waterBores() + 1);
     }
     elsif ($string =~ /^(.*) sucks it down/)
     {
 	print $string;
       $fraggee = findPlayer($1);
-      $fraggee->waterDeaths($fraggee->waterDeaths() + 1);
+      $fraggee->waterBores($fraggee->waterBores() + 1);
     }
     elsif ($string =~ /^(.*) gulped a load of slime/)
     {
 print $string;
       $fraggee = findPlayer($1);
-      $fraggee->slimeDeaths($fraggee->slimeDeaths() + 1);
+      $fraggee->slimeBores($fraggee->slimeBores() + 1);
     }
     elsif ($string =~ /^(.*) can't exist on slime alone/)
     {
 print $oldString . $string;
       $fraggee = findPlayer($1);
-      $fraggee->slimeDeaths($fraggee->slimeDeaths() + 1);
+      $fraggee->slimeBores($fraggee->slimeBores() + 1);
     }
     elsif ($string =~ /^ was spiked/)
     {
