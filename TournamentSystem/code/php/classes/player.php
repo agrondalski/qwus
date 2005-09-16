@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class player
 {
   private $player_id ;
@@ -339,14 +335,22 @@ class player
       return new location(array('location_id'=>$this->location_id)) ;
     }
 
-  public function getNewsColumns($a)
+  public function getNewsColumns($a, $l)
     {
-      $sql_str = sprintf("select n.news_id from news n where n.writer_id=%d and n.news_type='COLUMN' %s %s", $this->player_id, util::getOrderBy($a), util::getLimit($a)) ;
+      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='COLUMN' %s", $this->player_id, util::getLimit($a)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new news(array('news_id'=>$row[0])) ;
+	  $arr[] = $row ;
+	}
+
+      $sorted_arr = util::row_sort($arr, $a) ;
+
+      $arr = array() ;
+      foreach($sorted_arr as $row)
+	{
+	  $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	}
 
       mysql_free_result($result) ;
@@ -410,12 +414,16 @@ class player
       $matches_lost = 0 ;
       $team_score = 0 ;
       $old_match_id = 0 ;
+      $player_games = 0 ;
 
       while ($row = mysql_fetch_row($result))
 	{
 	  $total_games += 1 ;
 	  $total_frags += $row[0] ;
 	  $team_score += $row[3] ;
+
+	  $g = new game(array('game_id'=>$row[4])) ;
+	  $player_games += count($g->getPlayers()) ;
 
 	  if ($row[1] != $old_match_id)
 	    {
@@ -441,7 +449,7 @@ class player
       $arr['frags_per_game'] = round($total_frags/$total_games, 1) ;
       $arr['matches_won']    = $matches_won ;
       $arr['matches_lost']   = $matches_lost ;
-      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$total_games), 1) ;
+      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
       mysql_free_result($result) ;
 
 
@@ -481,11 +489,11 @@ class player
 
       $team_id = $this->getTeam($tid)->getValue('team_id') ;
 
-      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end)
+      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms
-                          where s.player_id=%d and s.stat_name = 'SCORE' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                          where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
                             and m.schedule_id=ms.schedule_id and ms.division_id=%d
-                          order by m.match_id", $team_id, $this->player_id, $div) ;
+                          order by m.match_id", $team_id, $this->player_id, util::SCORE, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $total_games = 0 ;
@@ -501,6 +509,9 @@ class player
 	  $total_games += 1 ;
 	  $total_frags += $row[0] ;
 	  $team_score += $row[3] ;
+
+	  $g = new game(array('game_id'=>$row[4])) ;
+	  $player_games += count($g->getTeamPlayers($team_id)) ;
 
 	  if ($row[1] != $old_match_id)
 	    {
@@ -526,14 +537,15 @@ class player
       $arr['frags_per_game'] = round($total_frags/$total_games, 1);
       $arr['matches_won']    = $matches_won ;
       $arr['matches_lost']   = $matches_lost ;
-      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$total_games), 1) ;
+      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
+
       mysql_free_result($result) ;
 
 
       $sql_str = sprintf("select s.stat_name, s.value
                           from stats s, game g, match_table m, match_schedule ms
-                          where s.player_id=%d and s.stat_name = 'SCORE' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
-                            and m.schedule_id=ms.schedule_id and ms.division_id=%d", $this->player_id, $div) ;
+                          where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                            and m.schedule_id=ms.schedule_id and ms.division_id=%d", $this->player_id, util::SCORE, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       while ($row = mysql_fetch_row($result))

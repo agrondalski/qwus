@@ -1,13 +1,10 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class stats
 {
   private $player_id ;
   private $game_id ;
   private $stat_name ;
+  private $team_id ;
   private $value ;
 
   function __construct($a)
@@ -42,16 +39,16 @@ class stats
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into stats(player_id, game_id, stat_name, value)" .
-                         "values(%d, %d, '%s', %d)",
-			 $this->player_id, $this->game_id, $this->stat_name, $this->value) ;
+      $sql_str = sprintf("insert into stats(player_id, game_id, stat_name, team_id, value)" .
+                         "values(%d, %d, '%s', %d, %d)",
+			 $this->player_id, $this->game_id, $this->stat_name, $this->team_id, $this->value) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
     }
 
   private function getStatsInfo()
     {
-      $sql_str = sprintf("select value from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id, $this->stat_name) ;
+      $sql_str = sprintf("select team_id, value from stats where player_id=%d and game_id=%d", $this->player_id, $this->game_id, $this->stat_name) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -61,7 +58,8 @@ class stats
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->value     = $row[0] ; 
+      $this->value    = $row[0] ; 
+      $this->team_id  = $row[0] ; 
 
       mysql_free_result($result) ;
 
@@ -124,6 +122,16 @@ class stats
 	  return util::mysql_real_escape_string($val) ;
 	}
 
+      elseif ($col == 'team_id')
+	{
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+	  
+	  return util::mysql_real_escape_string($val) ;
+	}
+
       elseif ($col == 'value')
 	{
 	  if (util::isNull($val))
@@ -144,7 +152,7 @@ class stats
     {
       $pid = player::validateColumn($pid, 'player_id') ;
       $gid = game::validateColumn($gid, 'game_id') ;
-      $sn  = game::validateColumn($sn, 'stat_name') ;
+      $sn  = self::validateColumn($sn, 'stat_name') ;
 
       $sql_str = sprintf("select 1 from stats where player_id=%d and game_id=%d and stat_name='%s'", $pid, $gid, $sn) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());

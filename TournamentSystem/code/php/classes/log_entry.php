@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class log_entry
 {
   private $log_id ;

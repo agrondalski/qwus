@@ -7,6 +7,8 @@ class util
   const FOUND    = 1 ;
   const NOTFOUND = 0 ;
 
+  const SCORE = 'SCORE' ;
+
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;
   const DEFAULT_INT  = -1 ;
@@ -23,17 +25,6 @@ class util
 	      self::throwException("Invalid limit clause") ;
 	    }
 	  return self::mysql_real_escape_string(' limit ' . $l) ;
-	}
-
-      return null ;
-    }
-
-  public static function getOrderBy($a)
-    {
-      if (isset($a['order']))
-	{
-	  $o = ' order by ' . $a['order'] ;
-	  return self::mysql_real_escape_string($o) ;
 	}
 
       return null ;
@@ -158,7 +149,7 @@ class util
       $min_idx = $start_idx ; 
       $j       = $start_idx ; 
 
-      for($i=0; $i<count($weeks); $i++) 
+      for ($i=0; $i<count($weeks); $i++) 
 	{ 
 	  $curval = util::array_value_count($weeks[$j], $t1) + util::array_value_count($weeks[$j], $t2) ; 
 
@@ -187,6 +178,71 @@ class util
     {
       usort($arr, create_function('$a, $b', "return (int)\$a['" . $sort_key . "']<(int)\$b['" . $sort_key . "'];")) ;
       return $arr ;
+    }
+
+  function row_sort($data, $sort_a)
+    { 
+      if (!is_array($data) || !is_array($sort_a) || count($sort_a)==0)
+	{ 
+	  return null ; 
+	} 
+  
+      $str_idxs = array() ; 
+      for ($i=0; $i<count($sort_a); $i++) 
+	{ 
+	  if (is_string($sort_a[$i])) 
+	    { 
+	      $str_idxs[] = $i ; 
+	    } 
+  
+	  elseif (!is_integer($sort_a[$i])) 
+	    { 
+	      return $data ; 
+	    } 
+	} 
+
+      $s = array() ; 
+      foreach($data as $key=>$row) 
+	{ 
+	  $i=0 ; 
+	  foreach($str_idxs as $idx) 
+	    { 
+	      $s[$i++][$key] = $row[$sort_a[$idx]] ; 
+	    } 
+	} 
+  
+  
+      $amlist = null ; 
+      $j=0 ; 
+      for ($i=0; $i<count($sort_a); $i++) 
+	{ 
+	  if (array_search($i, $str_idxs)===false) 
+	    { 
+	      if ($amlist == null) 
+		{ 
+		  $amlist .= "$sort_a[$i]" ; 
+		} 
+	      else 
+		{ 
+		  $amlist .= ",$sort_a[$i]" ; 
+		} 
+	    } 
+	  else 
+	    { 
+	      if ($amlist == null) 
+		{ 
+		  $amlist .= '$s[' . $j++ . ']' ; 
+		} 
+	      else 
+		{ 
+		  $amlist .= ',$s[' . $j++ . ']' ; 
+		} 
+	    } 
+	} 
+
+      eval('array_multisort(' . $amlist . ',$data);') ; 
+  
+      return $data ; 
     }
 }
 

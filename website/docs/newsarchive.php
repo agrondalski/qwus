@@ -13,7 +13,7 @@ try
   if (isset($_GET['tourney_id']))
     {
       $t    = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-      $news = $t->getNews(array('order'=>'news_date desc')) ;
+      $news = $t->getNews(array('news_date', SORT_DESC)) ;
       $info = '&amp;tourney_id=' . $_GET['tourney_id'] ;
     }
 
@@ -21,14 +21,14 @@ try
   elseif (isset($_GET['column']))
     {
       $p    = new player(array('name'=>$_GET['column'])) ;
-      $news = $p->getNewsColumns(array('order'=>'news_date desc')) ;
+      $news = $p->getNewsColumns(array('news_date', SORT_DESC)) ;
       $info = '&amp;column=' . $_GET['column'] ;
     }
 
   // General archive
   else
     {
-      $news = news::getNews(array('order'=>'news_date desc')) ;
+      $news = news::getNews(array('news_date', SORT_DESC)) ;
     }
 }
 catch (Exception $e)

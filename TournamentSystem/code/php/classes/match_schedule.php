@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class match_schedule
 {
   private $schedule_id ;

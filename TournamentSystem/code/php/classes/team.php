@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class team
 {
   private $team_id ;
@@ -473,7 +469,6 @@ class team
 		  $losing_streak = 0 ;
 		}
 
-	      $winning_steak = 0 ;
 	      $losing_streak += 1;
 
 	      if ($losing_streak>$max_losing_streak)
@@ -496,7 +491,6 @@ class team
 
       $arr['wins']      = $total_wins ;
       $arr['losses']    = $total_losses ;
-      $arr['points']    = 0 ;
       $arr['maps_won']  = $total_maps_won ;
       $arr['maps_lost'] = $total_maps_lost ;
       
@@ -588,7 +582,7 @@ class team
 	  if ($row[0] == $this->team_id)
 	    {
 	      $total_wins += 1 ;
-	      if ($losing_streak==0)
+	      if ($total_losses==0)
 		{
 		  $winning_streak += 1;
 		}
@@ -596,7 +590,7 @@ class team
 	  else
 	    {
 	      $total_losses += 1 ;
-	      if ($winning_streak==0)
+	      if ($total_wins==0)
 		{
 		  $losing_streak += 1;
 		}
@@ -616,7 +610,7 @@ class team
 
       $arr['wins']      = $total_wins ;
       $arr['losses']    = $total_losses ;
-      $arr['points']    = 0 ;
+      $arr['points']    = ($arr['match_2-0']*3) + ($arr['match_2-1']*2) + ($arr['match_1-2']) ;
       $arr['maps_won']  = $total_maps_won ;
       $arr['maps_lost'] = $total_maps_lost ;
       

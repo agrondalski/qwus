@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class comment
 {
   private $comment_id ;

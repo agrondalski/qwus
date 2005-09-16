@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class game
 {
   private $game_id ;
@@ -159,6 +155,22 @@ class game
       while ($row=mysql_fetch_row($result))
 	{
 	  $arr[] = new stats(array('player_id'=>$row[0], 'game_id'=>$this->game_id)) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getTeamPlayers($team_id)
+    {
+      $team_id = team::validateColumn($team_id, 'team_id') ;
+
+      $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s'", $this->game_id, $team_id, util::SCORE) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;

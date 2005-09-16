@@ -1,14 +1,11 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class tourney
 {
   private $tourney_id ;
   private $game_type_id ;
   private $name ;
   private $tourney_type ;
+  private $status ;
   private $signup_start ;
   private $signup_end ;
   private $team_size ;
@@ -35,9 +32,9 @@ class tourney
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, signup_start, signup_end, team_size, timelimit)" .
-                         "values(%d, '%s', '%s', '%s', '%s', %d, %d)",
-			 $this->game_type_id, $this->name, $this->tourney_type, $this->signup_start, $this->signup_end, $this->team_size, $this->timelimit) ;
+      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, status, signup_start, signup_end, team_size, timelimit)" .
+                         "values(%d, '%s', '%s', '%s', '%s', '%s', %d, %d)",
+			 $this->game_type_id, $this->name, $this->tourney_type, $this->status, $this->signup_start, $this->signup_end, $this->team_size, $this->timelimit) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->tourney_id = mysql_insert_id() ;
@@ -47,7 +44,7 @@ class tourney
 
   private function getTourneyInfo()
     {
-      $sql_str = sprintf("select game_type_id, name, tourney_type, signup_start, signup_end, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select game_type_id, name, tourney_type, status, signup_start, signup_end, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -60,10 +57,11 @@ class tourney
       $this->game_type_id  = $row[0] ;
       $this->name          = $row[1] ;
       $this->tourney_type  = $row[2] ;
-      $this->signup_start  = $row[3] ;
-      $this->signup_end    = $row[4] ;
-      $this->team_size     = $row[5] ; 
-      $this->timelimit     = $row[6] ;
+      $this->status        = $row[3] ;
+      $this->signup_start  = $row[4] ;
+      $this->signup_end    = $row[5] ;
+      $this->team_size     = $row[6] ; 
+      $this->timelimit     = $row[7] ;
 
       mysql_free_result($result) ;
 
@@ -142,6 +140,11 @@ class tourney
 	    }
 
 	  return util::nvl(util::mysql_real_escape_string($val), 'TOURNAMENT') ;
+	}
+
+      elseif ($col == 'status')
+	{
+	  return util::mysql_real_escape_string($val) ;
 	}
 
       elseif ($col == 'signup_start')
@@ -295,12 +298,20 @@ class tourney
 
   public function getNews($a)
     {
-      $sql_str = sprintf("select n.news_id from news n where n.news_type='TOURNEY' and n.id=%d %s", $this->tourney_id, util::getOrderBy($a)) ;
+      $sql_str = sprintf("select n.* from news n where n.news_type='TOURNEY' and n.id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new news(array('news_id'=>$row[0])) ;
+	  $arr[] = $row ;
+	}
+
+      $sorted_arr = util::row_sort($arr, $a) ;
+
+      $arr = array() ;
+      foreach($sorted_arr as $row)
+	{
+	  $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	}
 
       mysql_free_result($result) ;

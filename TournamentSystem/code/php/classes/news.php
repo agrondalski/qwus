@@ -1,8 +1,4 @@
 <?php
-require_once 'dbConnect.php' ;
-?>
-
-<?php
 class news
 {
   private $news_id ;
@@ -189,14 +185,22 @@ class news
 	}
     }
 
-  public static function getNews($a)
+  public static function getNews($a, $l)
     {
-      $sql_str = sprintf("select n.news_id from news n where news_type='NEWS' %s %s", util::getOrderBy($a), util::getLimit($a)) ;
+      $sql_str = sprintf("select n.* from news n where news_type='NEWS' %s", util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new news(array('news_id'=>$row[0])) ;
+	  $arr[] = $row ;
+	}
+
+      $sorted_arr = util::row_sort($arr, $a) ;
+
+      $arr = array() ;
+      foreach($sorted_arr as $row)
+	{
+	  $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	}
 
       mysql_free_result($result) ;

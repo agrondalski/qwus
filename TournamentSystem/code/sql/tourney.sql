@@ -11,6 +11,7 @@ create table tourney(
   game_type_id       integer       NOT NULL,
   name               varchar(250)  NOT NULL,
   tourney_type       ENUM ('LADDER', 'LEAGUE', 'TOURNAMENT') NOT NULL default 'LEAGUE',
+  status             varchar(250),
   signup_start       date          NOT NULL,
   signup_end         date          NOT NULL,
   team_size          integer       NOT NULL,
@@ -163,10 +164,13 @@ create table stats(
   player_id  integer       NOT NULL,
   game_id    integer       NOT NULL,
   stat_name  varchar(250)  NOT NULL,
+  team_id    integer       NOT NULL,
   value      integer       NOT NULL,
 --
   constraint stats_pk primary key(player_id, game_id, stat_name))
 ENGINE=INNODB ;
+create index stats_idx1 on stats(game_id) ;
+--create index stats_idx2 on stats(stat_name) ;
 
 create table comments(
   comment_id    integer       NOT NULL auto_increment,
@@ -263,6 +267,7 @@ alter table maps add constraint maps_fk1 foreign key(game_type_id) references ga
 
 alter table stats add constraint stats_fk1 foreign key(player_id) references player(player_id) ;
 alter table stats add constraint stats_fk2 foreign key(game_id)   references game(game_id) ;
+alter table stats add constraint stats_fk3 foreign key(team_id)   references team(team_id) ;
 
 --alter table comments add constraint comments_fk2 foreign key(match_id)  references match_table(match_id) ;
 
