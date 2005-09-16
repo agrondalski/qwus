@@ -294,61 +294,70 @@ function auto_populate($a)
 	  $d->createSchedule(generate_integer(3)+5) ;
 	  $mata = $d->getMatches() ;
 
-	  $mat = array() ;
 	  for ($k=0; $k<count($mata); $k++)
 	    {
-	      $mat[] = $mata[$k]->getValue('match_id') ;
-	    }
+	      $c = generate_integer(2)+1 ;
 
-	  for ($k=0; $k<$c_game; $k++)
-	    {
-	      $v1 = $mat[generate_integer(count($mat))] ;
-	      $v2 = $maps[generate_integer(count($maps))] ;
-	      $v3 = generate_integer(250) ;
-	      $v4 = generate_integer(250) ;
-	      $v5 = 'http://' . generate_string(25) ;
-	      $v6 = 'http://' . generate_string(25) ;
-	  
-	      try{
-		$n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
-		$dgame[] = $n->getValue("game_id") ;
-	      }
-	      catch(Exception $e) {}
-	    }
-
-	  for ($k=0; $k<$c_comm; $k++)
-	    {
-	      $v1 = 'player-' . generate_string(5) ;
-	      $v2 = $mat[generate_integer(count($mat))] ;
-	      $v3 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
-	      $v4 = 'comment-' . generate_string(100) ;
-	      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
-	      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
-	      $n = new comment(array('name'=>$v1, 'comment_type'=>'MATCH', 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
-	  
-	      //$comm[] = $n->getValue("comment_id") ;
-	    }
-
-	  for ($k=0; $k<$c_stats; $k++)
-	    {
-	      $v1 = $dplay[generate_integer(count($dplay))] ;
-	      $v2 = $dgame[generate_integer(count($dgame))] ;
-	      //$v3 = generate_string(20) ;
-	      $v3 = 'SCORE' ;
-	      $v4 = generate_integer(20) ;
-	  
-	      try
+	      for ($l=0; $l<$c; $l++)
 		{
-		  $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'stat_name'=>$v3, 'value'=>$v4)) ;
+		  $v1 = $mata[$k]->getValue('match_id') ;
+		  $v2 = $maps[generate_integer(count($maps))] ;
+		  $v3 = generate_integer(250) ;
+		  $v4 = generate_integer(250) ;
+		  $v5 = 'http://' . generate_string(25) ;
+		  $v6 = 'http://' . generate_string(25) ;
+		  
+		  try{
+		    $n = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
+		    $game[] = $n->getValue("game_id") ;
+		  }
+		  catch(Exception $e) {}
 		}
-	      catch(Exception $e) {}
-             
+	    }
+
+	  for ($k=0; $k<count($game); $k++)
+	    {
+	      $c = generate_integer(4)+4 ;
+
+	      for ($l=0; $l<$c; $l++)
+		{
+		  $v1 = $dplay[generate_integer(count($dplay))] ;
+		  $v2 = $game[generate_integer(count($game))] ;
+		  //$v3 = generate_string(20) ;
+		  $v3 = 'SCORE' ;
+		  $v4 = generate_integer(20) ;
+	  
+		  try
+		    {
+		      $n = new stats(array('player_id'=>$v1, 'game_id'=>$v2, 'stat_name'=>$v3, 'value'=>$v4)) ;
+		    }
+		  catch(Exception $e) {}
+		}
+
 	      //$stats[] = $n->getValue("stat_id") ;
 	    }
 
 	  $sql_str = sprintf("update match_table set approved=true, winning_team_id=(case when 0.5<rand() then team1_id else team2_id end)
                               where schedule_id in(select schedule_id from match_schedule where division_id=%d)", $d->getValue('division_id')) ;
 	  $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+
+	  for ($k=0; $k<count($mata); $k++)
+	    {
+	      $c = generate_integer(3)+2 ;
+
+	      for ($l=0; $l<$c; $l++)
+		{
+		  $v1 = 'player-' . generate_string(5) ;
+		  $v2 = $mata[$k]->getValue('match_id') ;
+		  $v3 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
+		  $v4 = 'comment-' . generate_string(100) ;
+		  $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
+		  $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
+		  $n = new comment(array('name'=>$v1, 'comment_type'=>'MATCH', 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
+		  
+		  //$comm[] = $n->getValue("comment_id") ;
+		}
+	    }
 
 	}
     }
