@@ -190,17 +190,29 @@ class news
       $sql_str = sprintf("select n.* from news n where news_type='NEWS' %s", util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
+      $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
+
       while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = $row ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
 	}
 
-      $sorted_arr = util::row_sort($arr, $a) ;
-
-      $arr = array() ;
-      foreach($sorted_arr as $row)
+      if ($sort)
 	{
-	  $arr[] = new news(array('news_id'=>$row['news_id'])) ;
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;

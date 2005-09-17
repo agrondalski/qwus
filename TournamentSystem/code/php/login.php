@@ -14,18 +14,23 @@ if ($displayLogin)
 {
   if (!$_POST)
     {
-      /*
-      $tourney_id = $_GET["tourney_id"];
-      $q = mysql_query("SELECT team_id from tourney_info where tourney_id = $tourney_id");
-      echo mysql_result($q,0,"team_id");
       echo '
-            <FORM METHOD="POST" ACTION="login.php">
-            <table cellspacing="2" cellpadding="2">
+           <form method="post" action="?' . $_SERVER['QUERY_STRING'] . '">
+           <table cellspacing="2" cellpadding="2">
+
             <TR>
-               <TD><B>Team</B>:</TD>
-               <TD>DROPDOWN HERE</TD>
+              <TD><B>Team</B>:</TD>
+              <TD><select name="team_id">' ;
+
+      $teamlist = team::getAllTeams(array('name', SORT_ASC));
+
+      foreach ($teamlist as $t)
+	{
+      	  echo "<option value='" . $t->getValue('team_id') . "'>" . $t->getValue('name') ;
+	}
+
+      echo '  </select></TD>
             </TR>
-            <TR></TR>
             <TR>
                <TD><B>Password</B>:</TD>
                <TD><INPUT TYPE="password" name="password"></TD>
@@ -35,7 +40,6 @@ if ($displayLogin)
             </FORM>
     
             <BR><BR>' ;
-      */
 
       echo '
             <FORM METHOD="POST" ACTION="?' . $_SERVER['QUERY_STRING'] . '">
@@ -57,23 +61,50 @@ if ($displayLogin)
     }
   else
     {
-      try
+      if (!util::isNUll($_POST["username"]))
 	{
-	  $p = new player(array('name'=>$_POST["username"])) ;      
-	  if ($p->passwordMatches($_POST["password"]))
+	  try
 	    {
-	      $_SESSION["loggedIn"] = "yes";
-	      $_SESSION["username"] = $_POST["username"] ;
+	      $p = new player(array('name'=>$_POST["username"])) ;      
+	      if ($p->passwordMatches($_POST["password"]))
+		{
+		  $_SESSION["loggedIn"]   = "yes";
+		  $_SESSION["username"]   = $_POST["username"] ;
+		  $_SESSION["user_id"]  = $p->getValue('player_id') ;
+		}
+	      else
+		{
+		  util::throwException('invalid password') ;
+		}
 	    }
-	  else
+	  catch(Exception $e)
 	    {
-	      util::throwException('invalid password') ;
+	      $l = new log_entry(array('type'=>'LOGIN', 'str'=>$_POST["username"], 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>util::curdate(), 'log_time'=>util::curtime()));
 	    }
 	}
-      catch(Exception $e)
+
+      if (!util::isNUll($_POST["team_id"]))
 	{
-	  $l = new log_entry(array('type'=>'LOGIN', 'str'=>$_POST["username"], 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>util::curdate(), 'log_time'=>util::curtime()));
+	  try
+	    {
+	      $t = new team(array('team_id'=>$_POST["team_id"])) ;      
+	      if ($t->passwordMatches($_POST["password"]))
+		{
+		  $_SESSION["loggedIn"] = "yes";
+		  $_SESSION["teamname"] = $t->getValue('name') ;
+		  $_SESSION["team_id"]  = $_POST["team_id"] ;
+		}
+	      else
+		{
+		  util::throwException('invalid password') ;
+		}
+	    }
+	  catch(Exception $e)
+	    {
+	      $l = new log_entry(array('type'=>'LOGIN', 'str'=>$_POST["team_id"], 'logged_ip'=>$_SERVER['REMOTE_ADDR'], 'log_date'=>util::curdate(), 'log_time'=>util::curtime()));
+	    }
 	}
+
       header("location: ?" . $_SERVER['QUERY_STRING']);
     }
 }
@@ -81,7 +112,15 @@ else
 {
   print '<table border=0 width=100% cellspacing=0 cellpadding=0>' ;
   print '<tr>';
-  print '<td colspan=2>Welcome, ' . $_SESSION['username'] . '</td></tr><tr>';
+
+  if (!util::isNull($_SESSION['username']))
+    {
+      print '<td colspan=2>Welcome, ' . $_SESSION['username'] . '</td></tr><tr>';
+    }
+  elseif (!util::isNull($_SESSION['teamname']))
+    {
+      print '<td colspan=2>Welcome, ' . $_SESSION['teamname'] . '</td></tr><tr>';
+    }
 
   if (!util::isNull($_SESSION['tourney_id']) || !util::isNull($_REQUEST['tourney_id']))
     {
@@ -100,10 +139,13 @@ else
 
   if ($do=="logout")
     {
-      $_SESSION["loggedIn"]="no";
-      $_SESSION["username"]="";
+      $_SESSION["loggedIn"] = "no";
+      $_SESSION["username"] = null;
+      $_SESSION["user_id"]  = null ;
+      $_SESSION["teamname"] = null ;
+      $_SESSION["team_id"]  = null ;
 
-      header("location: ?" . str_replace('&action=logout', '', $_SERVER['QUERY_STRING'])) ;
+      header("location: ?a=adminHome") ;
     }
 }
 ?>

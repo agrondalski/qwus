@@ -231,12 +231,32 @@ class division
   public function removeTeam($id)
     {
       $id = team::validateColumn($id, 'team_id') ;
-      $tid = $this->getTourney() ;
+      $tid = $this->getTourney()->getValue('tourney_id') ;
 
       $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $tid, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
+    }
+
+  public function hasTeam($team_id)
+    {
+      $team_id = team::validateColumn($team_id, 'team_id') ;
+      $tid = $this->getTourney()->getValue('tourney_id') ;
+
+      $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d", $tid, $team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if (mysql_num_rows($result)==1)
+	{
+	  mysql_free_result($result) ;
+	  return true ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return false ;
+	}
     }
 
   public function createSchedule($num_weeks)

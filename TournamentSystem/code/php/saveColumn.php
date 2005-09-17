@@ -3,54 +3,69 @@
 require_once 'includes.php';
 require_once 'login.php';
 
-$tid = $_POST['tourney_id'];
-$mode = $_REQUEST['mode'];
-
-if ($mode=="edit")
+try
 {
-  $nid = $_POST['nid'];
-
-  try
+  if (!util::isNull($tid))
     {
-      $news = new news(array('news_id'=>$nid));
+      $t = new tourney(array('tourney_id'=>$tid));
+    }
 
-      $news->update('subject',$_POST['subject']);
-      $news->update('text',$_POST['text']);
-      $msg = "<br>News updated!<br>";
-    }
-  catch (Exception $e)
+  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+
+  if (!$p->hasColumn())
     {
-      $msg = "<br>Error modifying!<br>";
+      util::throwException('not authorized') ;
     }
+
+  $mode = $_REQUEST['mode'];
+
+  if ($mode=="edit")
+    {
+      $nid = $_POST['nid'];
+      
+      try
+	{
+	  $news = new news(array('news_id'=>$nid));
+	  
+	  $news->update('subject',$_POST['subject']);
+	  $news->update('text',$_POST['text']);
+	  $msg = "<br>News updated!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error modifying!<br>";
+	}
+    }
+  
+  elseif ($mode=="delete")
+    {
+      try
+	{
+	  $nid = $_REQUEST['nid'];
+	  $news = new news(array('news_id'=>$nid));
+	  $news->delete();
+	  $msg = "<br>Column entry deleted!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error deleting!<br>";
+	}
+    }
+
+  else
+    {
+      $news = new news(array('writer_id'  => $_POST['writer_id'],
+			     'subject'    => $_POST['subject'],
+			     'news_date'  => date("Y-m-d"),
+			     'news_type'  => 'COLUMN',
+			     'id'         => null,
+			     'text'       => $_POST['text'])) ;
+
+      $msg = "<br>Column entry created!<br>";
+    }
+  
+  echo $msg ;
+  include 'listColumn.php';
 }
-
-elseif ($mode=="delete")
-{
-  try
-    {
-      $nid = $_REQUEST['nid'];
-      $news = new news(array('news_id'=>$nid));
-      $news->delete();
-      $msg = "<br>Column entry deleted!<br>";
-    }
-  catch (Exception $e)
-    {
-      $msg = "<br>Error deleting!<br>";
-    }
-}
-
-else
-{
-  $news = new news(array('writer_id'=>$_POST['writer_id'],
-                         'tourney_id'=>$tid,
-                         'subject'=>$_POST['subject'],
-                         'news_date'=>date("Y-m-d"),
-			 'text'=>$_POST['text'],
-			 'isColumn'=>true));
-
-  $msg = "<br>Column entry created!<br>";
-}
-
-include 'listColumn.php';
-echo $msg ;
+catch (Exception $e) {}
 ?>

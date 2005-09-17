@@ -277,6 +277,20 @@ class tourney
       return $arr ;
     }
 
+  public function getGameTypeMaps()
+    {
+      $sql_str = sprintf("select m.map_id from maps m where m.game_type_id=%d", $this->game_type_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new map(array('map_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getMapByAbbr($mapa)
     {
       $mapa = map::validateColumn($mapa, 'map_abbr') ;
@@ -301,17 +315,29 @@ class tourney
       $sql_str = sprintf("select n.* from news n where n.news_type='TOURNEY' and n.id=%d %s", $this->tourney_id, util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
+      $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
+
       while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = $row ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
+	    }
 	}
 
-      $sorted_arr = util::row_sort($arr, $a) ;
-
-      $arr = array() ;
-      foreach($sorted_arr as $row)
+      if ($sort)
 	{
-	  $arr[] = new news(array('news_id'=>$row['news_id'])) ;
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -340,31 +366,38 @@ class tourney
       return new game_type(array('game_type_id'=>$this->game_type_id)) ;
     }
 
-  public function addMap($id)
+  public function addMap($mid)
     {
-      $id = map::validateColumn($id, 'map_id') ;
+      $mid = map::validateColumn($mid, 'map_id') ;
 
-      $sql_str = sprintf("insert into tourney_maps(tourney_id, map_id) values(%d, %d)", $this->tourney_id, $id) ;
+      $m = new map(array('map_id'=>$mid)) ;
+
+      if ($m->getValue('game_type_id') != $this->game_type_id)
+	{
+	  util::throwException('map type differs from tourney type') ;
+	}
+
+      $sql_str = sprintf("insert into tourney_maps(tourney_id, map_id) values(%d, %d)", $this->tourney_id, $mid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
     }
 
-  public function removeMap($id)
+  public function removeMap($mid)
     {
-      $id = map::validateColumn($id, 'map_id') ;
+      $mid = map::validateColumn($mid, 'map_id') ;
 
-      $sql_str = sprintf("delete from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $id) ;
+      $sql_str = sprintf("delete from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $mid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
     }
 
-  public function hasMap($id)
+  public function hasMap($mid)
     {
-      $id = map::validateColumn($id, 'map_id') ;
+      $mid = map::validateColumn($mid, 'map_id') ;
 
-      $sql_str = sprintf("select 1 from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $id) ;
+      $sql_str = sprintf("select 1 from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $mid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)

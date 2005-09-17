@@ -63,15 +63,18 @@ function auto_populate($a)
       $loc[] = $l->getValue("location_id") ;
     }
 
+  /*
   $mapsa = map::getAllMaps() ;
   foreach ($mapsa as $m)
     {
       $maps[] = $m->getValue("map_id") ;
     }
+  */
 
   for ($i=0; $i<$c_tour; $i++)
     {
-      $v1 = $gt[generate_integer(count($gt))] ;
+      //$v1 = $gt[generate_integer(count($gt))] ;
+      $v1 = 1 ;
       $v2 = 'naql-' . generate_string(5) ;
       $v3 = 'TOURNAMENT' ;
 
@@ -122,7 +125,8 @@ function auto_populate($a)
       $v2 = 'email@-' . generate_string(10) ; 
       $v3 = '#chan_' . generate_string(10) ; 
       $v4 = $loc[generate_integer(count($loc))] ;
-      $v5 = generate_string(10) ;
+      //$v5 = generate_string(10) ;
+      $v5 = 'x' ;
       $v6 = generate_boolean() ;
       $v7 = generate_string(4) ;
 
@@ -165,6 +169,12 @@ function auto_populate($a)
   for ($i=0; $i<count($tour); $i++)
     {
       $t = new tourney(array('tourney_id'=>$tour[$i])) ;
+
+      $mapsa = $t->getGameTypeMaps() ;
+      foreach ($mapsa as $m)
+	{
+	  $maps[] = $m->getValue("map_id") ;
+	}
 
       $c = generate_integer(3) + 2 ;
       for ($j=0; $j<$c; $j++)
@@ -262,7 +272,7 @@ function auto_populate($a)
 		      $players = $team_s->getPlayers($t->getValue('tourney_id')) ;
 
 		      $c2 = min(generate_integer(2)+3, count($players)) ;
-		      for ($l=0; $l<$c2 && $score>0; $l++)
+		      for ($l=0; $l<$c2; $l++)
 			{
 			  do
 			    {

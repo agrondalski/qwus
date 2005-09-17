@@ -6,56 +6,65 @@ require_once 'login.php';
 try
 {
   $tid = $_REQUEST['tourney_id'];
-  $t = new tourney(array('tourney_id'=>$tid));
-}
-catch(Exception $e) {}
+  if (!util::isNull($tid))
+    {
+      $t = new tourney(array('tourney_id'=>$tid));
+    }
 
-echo "<br>";
+  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-if (!util::isNull($t))
-{
-  $allNews = $t->getNews() ;
-}
-else
-{
-  $allNews = news::getNews() ;
-}
+  if (!$p->isSuperAdmin() && $t!=null && $p->canPostNews($t->getValue('tourney_id')))
+    {
+      util::throwException('not authorized') ;
+    }
 
-echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-echo "<th>Author</th><th>Subject</th><th>Date</th><th>Text</th><th colspan=2>Actions</th>";
-
-foreach ($allNews as $news)
-{
-  $p = new player(array('player_id'=>$news->getValue('writer_id')));
-  echo "\t<tr>\n";
-  echo "\t<td>",$p->getValue('name'),"</td>\n";
-  echo "\t<td>",$news->getValue('subject'),"</td>\n";
-  echo "\t<td>",$news->getValue('news_date'),"</td>\n";
-  echo "\t<td>",$news->getValue('text'),"</td>\n";
+  echo "<br>";
 
   if (!util::isNull($t))
     {
-      echo "<td><a href='?a=manageNews&amp;tourney_id=$tid&amp;mode=edit&amp;nid=",$news->getValue('news_id'),"'>Edit</a></td>";
-      echo "<td><a href='?a=saveNews&amp;tourney_id=$tid&amp;mode=delete&amp;nid=",$news->getValue('news_id'),"'>Delete</a></td>";
+      $allNews = $t->getNews() ;
     }
   else
     {
-      echo "<td><a href='?a=manageNews&amp;mode=edit&amp;nid=",$news->getValue('news_id'),"'>Edit</a></td>";
-      echo "<td><a href='?a=saveNews&amp;mode=delete&amp;nid=",$news->getValue('news_id'),"'>Delete</a></td>";
+      $allNews = news::getNews() ;
     }
 
-  echo "\t</tr>\n";
-}
+  echo "<table border=1 cellpadding=2 cellspacing=0>\n";
+  echo "<th>Author</th><th>Subject</th><th>Date</th><th>Text</th><th colspan=2>Actions</th>";
 
-echo "</table>\n";
+  foreach ($allNews as $news)
+    {
+      $p = new player(array('player_id'=>$news->getValue('writer_id')));
+      echo "\t<tr>\n";
+      echo "\t<td>",$p->getValue('name'),"</td>\n";
+      echo "\t<td>",$news->getValue('subject'),"</td>\n";
+      echo "\t<td>",$news->getValue('news_date'),"</td>\n";
+      echo "\t<td>",$news->getValue('text'),"</td>\n";
+      
+      if (!util::isNull($t))
+	{
+	  echo "<td><a href='?a=manageNews&amp;tourney_id=$tid&amp;mode=edit&amp;nid=",$news->getValue('news_id'),"'>Edit</a></td>";
+	  echo "<td><a href='?a=saveNews&amp;tourney_id=$tid&amp;mode=delete&amp;nid=",$news->getValue('news_id'),"'>Delete</a></td>";
+	}
+      else
+	{
+	  echo "<td><a href='?a=manageNews&amp;mode=edit&amp;nid=",$news->getValue('news_id'),"'>Edit</a></td>";
+	  echo "<td><a href='?a=saveNews&amp;mode=delete&amp;nid=",$news->getValue('news_id'),"'>Delete</a></td>";
+	}
+      
+      echo "\t</tr>\n";
+    }
 
-if (!util::isNull($t))
-{
-	echo "<p><a href='?a=manageNews&amp;tourney_id=$tid'>Create News</a>";
-}
-else 
-{
-	echo "<p><a href='?a=manageNews'>Create News</a>";
-}
+  echo "</table>\n";
 
+  if (!util::isNull($t))
+    {
+      echo "<p><a href='?a=manageNews&amp;tourney_id=$tid'>Create News</a>";
+    }
+  else 
+    {
+      echo "<p><a href='?a=manageNews'>Create News</a>";
+    }
+}
+catch (Exception $e) {print $e;}
 ?>

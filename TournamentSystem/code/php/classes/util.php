@@ -50,6 +50,16 @@ class util
       return $v1 ;
     }
 
+  public static function choose($b, $v1, $v2)
+    {
+      if ($b)
+	{
+	  return $v1 ;
+	}
+
+      return $v2 ;
+    }
+
   public static function isNull($v)
     {
       if (!isset($v) || $v==="")

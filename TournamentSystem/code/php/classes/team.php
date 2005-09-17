@@ -216,14 +216,34 @@ class team
 	}
     }
 
-  public static function getAllTeams()
+  public static function getAllTeams($a)
     {
-      $sql_str = sprintf('select t.team_id from team t') ;
+      $sql_str = sprintf('select t.* from team t') ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -340,6 +360,20 @@ class team
 
       $sql_str = sprintf("update player_info pi set pi.isTeamLeader=(case when pi.player_id=%d then 1 else 0 end) where pi.tourney_id=%d and pi.team_id=%d", $pid, $tid, $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+    }
+
+  public function getTourneys()
+    {
+      $sql_str = sprintf("select t.tourney_id from tourney_info t where t.team_id=%d", $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getLocation()
