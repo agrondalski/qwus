@@ -56,8 +56,8 @@ try
       $msg = "<br>New division created!<br>";
     }
 
-  include 'listDivisions.php';
   echo $msg ;
+  include 'listDivisions.php';
 }
 catch (Exception $e) {}
 ?>

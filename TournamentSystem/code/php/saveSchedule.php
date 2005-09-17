@@ -1,53 +1,63 @@
 <?php
 
 require 'includes.php';
+require_once 'login.php';
 
-//tourney_id,division_id,team1_id,team2_id,deadline,week_name
+try
+{
+  $tid = util::nvl($_REQUEST['tourney_id'], $_REQUEST['tourney_id']) ;
 
-$tid = $_POST['tourney_id'];
-$division_id = $_POST['division_id'];
+  $t = new tourney(array('tourney_id'=>$tid));
+  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-if ($tid == "") {
-	$tid = $_REQUEST['tourney_id'];
-}
-if ($division_id == "") {
-	$division_id = $_REQUEST['division_id'];
-}
+  if (!$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
+    {
+      util::throwException('not authorized') ;
+    }
 
+  //tourney_id,division_id,team1_id,team2_id,deadline,week_name
+  $division_id = util::nvl($_POST['division_id'], $_REQUEST['division_id']) ;
+  $div = new division(array('division_id'=>$division_id));
 
-$t  = new tourney(array('tourney_id'=>$tid));
-$div = new division(array('division_id'=>$division_id));
+  $mode = $_REQUEST['mode'];
 
-$mode = $_REQUEST['mode'];
+  if ($mode=="delete")
+    {
+      $match_id = $_REQUEST['match_id'];
+      $m = new match(array('match_id'=>$match_id));
 
-if ($mode=="delete") {
-	$match_id = $_REQUEST['match_id'];
-	$m = new match(array('match_id'=>$match_id));
-
-	try {
+      try
+	{
 	  $m->delete();
 	  $msg = "<br>Match deleted!<br>";
 	}
-	catch (Exception $e) {
+      catch (Exception $e)
+	{
 	  $msg = "<br>Error deleting!<br>";
 	}
-  
-}
-else {
-// add new
-	if (($_POST['team1_id'] == $_POST['team2_id']) or ($_POST['team1_id']=="") or ($_POST['team2_id']=="")) {
-		$msg = "<br>Error adding match!<br>";	
-	} else {
-		$match_id = $_REQUEST['match_id'];
-		$m = new match(array('match_id'=>$match_id,
-							 'division_id'=>$division_id,
-							 'team1_id'=>$_POST['team1_id'],
-							 'team2_id'=>$_POST['team2_id'],
-							 'schedule_id'=>$_POST['schedule_id']));
-		$msg = "<br>Match added!<br>";
-	}
+    }
 
+  // add new
+  else
+    {
+      if (($_POST['team1_id'] == $_POST['team2_id']) or ($_POST['team1_id']=="") or ($_POST['team2_id']==""))
+	{
+	  $msg = "<br>Error adding match!<br>";	
+	}
+      else
+	{
+	  $match_id = $_REQUEST['match_id'];
+	  $m = new match(array('match_id'=>$match_id,
+			       'division_id'=>$division_id,
+			       'team1_id'=>$_POST['team1_id'],
+			       'team2_id'=>$_POST['team2_id'],
+			       'schedule_id'=>$_POST['schedule_id']));
+	  $msg = "<br>Match added!<br>";
+	}
+    }
+
+  echo $msg;
+  include 'manageSchedule.php';
 }
-echo $msg;
-include 'manageSchedule.php';
+catch (Exception $e) {}
 ?>

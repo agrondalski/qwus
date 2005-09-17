@@ -27,6 +27,7 @@ try
       echo "<td><a href='?a=saveTourneyMap&amp;tourney_id=$tid&amp;mode=delete&amp;map_id=",$map->getValue('map_id'),"'>Delete</a></td>";
       echo "\t</tr>\n";
     }
+
   echo "</table>\n";
 
   echo "<form action='?a=saveTourneyMap' method=post>";

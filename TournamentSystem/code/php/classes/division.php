@@ -184,9 +184,18 @@ class division
       return $arr ;
     }
 
-  public function getMatches()
+  public function getMatches($team_id)
     {
-      $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id", $this->division_id) ;
+      if (util::isNull($team_id))
+	{
+	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id", $this->division_id) ;
+	}
+      else
+	{
+	  $team_id = team::validateColumn($team_id, 'team_id') ;
+	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms
+                              where ms.division_id=%d and ms.schedule_id=mt.schedule_id and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
+	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
