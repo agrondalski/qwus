@@ -61,5 +61,5 @@ try
 
   include 'listMatchSchedule.php';
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>

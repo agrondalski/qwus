@@ -200,7 +200,7 @@ class news
 	    }
 	  else
 	    {
-	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	    }
 	}
 

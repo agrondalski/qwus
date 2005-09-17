@@ -20,7 +20,7 @@ try
 
   echo "<br>";
 
-  if (!util::isNull($t))
+  if (!util::isNull($tid))
     {
       $allNews = $t->getNews() ;
     }
