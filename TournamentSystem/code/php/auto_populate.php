@@ -252,8 +252,8 @@ function auto_populate($a)
 			}
 
 		      $players = $team_s->getPlayers($t->getValue('tourney_id')) ;
-		      $c2 = min(generate_integer(2)+3, count($players)) ;
 
+		      $c2 = min(generate_integer(2)+3, count($players)) ;
 		      for ($l=0; $l<$c2 && $score>0; $l++)
 			{
 			  do
@@ -267,7 +267,7 @@ function auto_populate($a)
 			    }
 			  else
 			    {
-			      $player_score = generate_integer(0, $score) ;
+			      $player_score = generate_integer($score) ;
 			    }
 			  $score = $score - $player_score ;
 

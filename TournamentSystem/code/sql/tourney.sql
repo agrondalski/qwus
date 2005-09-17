@@ -127,7 +127,7 @@ create table match_table(
 --
   constraint match_pk primary key(match_id))
 ENGINE=INNODB ;
-create index match_idx1 on match_table(schedule_id) ;
+--create index match_idx1 on match_table(schedule_id) ;
 
 create table match_schedule(
   schedule_id          integer      NOT NULL auto_increment,
@@ -137,7 +137,7 @@ create table match_schedule(
 --
   constraint match_schedule_pk primary key(schedule_id))
 ENGINE=INNODB ;
-create index match_schedule_idx1 on match_schedule(division_id) ;
+--create index match_schedule_idx1 on match_schedule(division_id) ;
 
 create table game(
   game_id         integer NOT NULL auto_increment,
@@ -169,7 +169,7 @@ create table stats(
 --
   constraint stats_pk primary key(player_id, game_id, stat_name))
 ENGINE=INNODB ;
-create index stats_idx1 on stats(game_id) ;
+--create index stats_idx1 on stats(game_id) ;
 --create index stats_idx2 on stats(stat_name) ;
 
 create table comments(
