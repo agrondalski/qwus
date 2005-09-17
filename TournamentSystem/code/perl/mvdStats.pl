@@ -7,7 +7,8 @@
 # ctf msgs
 # have to check and double check score calculations
 # better team color support (calculate based on mode of players)
-# team stats (from mvd + minutes with lead)
+# team stats
+# player minutes played
 
 use Benchmark;
 use GD::Graph::lines;
@@ -1081,9 +1082,12 @@ sub outputGraph
   else
   { 
     my @pointData = undef;
-    $pointData[0] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-    for ($i = 0; $i < 21; $i++)
+    my @tempTime = @graphTime;
+    my $timePlayed = pop(@tempTime);
+
+    for ($i = 0; $i <= $timePlayed; $i++)
     {
+      push(@{$pointData[0]}, $i);
       if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
       { 
         push(@{$pointData[1]}, $graphTeamOneScore[$i] - $graphTeamTwoScore[$i]);
@@ -1164,5 +1168,5 @@ sub colorConverter
 sub complementColor
 {
   my $color = shift;
-  return 13;
+  return 0;
 }
