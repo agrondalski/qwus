@@ -1023,16 +1023,14 @@ sub outputGraph
               x_label_position => .5,
               y_label => "score",
               line_width => 2
-              
              );
-  if ($x < 400) 
-  {
-      $graph->set(x_label_skip => 5);
-  }
+#  if ($x < 400) 
+#  {
+#      $graph->set(x_label_skip => 5);
+#  }
   $graph->set_legend(@graphTeams);
   my $teamOne = findTeam($teamOneName);
   my $teamTwo = findTeam($teamTwoName);
-  #$teamOne->color(6);
   if ($teamOne->color == $teamTwo->color) 
   {
       $teamOne->color(complementColor($teamOne->color));
@@ -1040,6 +1038,30 @@ sub outputGraph
   push(@colorArray, colorConverter($teamOne->color));
   push(@colorArray, colorConverter($teamTwo->color));
   $graph->set(dclrs => [@colorArray]);
+  if ($x < 401)
+  {
+    $graph->set(x_label_skip => 5)
+  }
+  else
+  { 
+    print "fred loves you";   
+    my @pointData = undef;
+    $pointData[0] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    for ($i = 0; $i < 21; $i++)
+    {
+      if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
+      { 
+        push(@{$pointData[1]}, $graphTeamOneScore[$i] - $graphTeamTwoScore[$i]);
+        push(@{$pointData[2]}, undef);
+      }
+      else
+      {
+        push(@{$pointData[2]}, $graphTeamTwoScore[$i] - $graphTeamOneScore[$i]);
+        push(@{$pointData[1]}, undef);
+      }
+    }
+    $graph->set(show_values => \@pointData);
+  }
   my $image = $graph->plot(\@data) or die ("Died creating image");
   open(OUT, ">" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
   binmode OUT;
