@@ -90,7 +90,7 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_play; $i++)
     {
-      $v1 = 'player-' . generate_string(8) ;
+      $v1 = 'player-' . generate_string(10) ;
       $v2 = generate_boolean() ;
       $v3 = $loc[generate_integer(count($loc))] ;
       $v4 = PREFIX . generate_string(10) ; 
@@ -108,7 +108,7 @@ function auto_populate($a)
       $v1 = $tour[generate_integer(count($tour))] ; 
       $v2 = 'division-' . generate_string(5) ; 
       $v3 = generate_integer(10) ;
-      $v4 = generate_integer(8) + 4;
+      $v4 = generate_integer(8) + 6;
       $v5 = generate_integer(10) ;
       $v6 = generate_integer(10) ;
       $n = new division(array('tourney_id'=>$v1, 'name'=>$v2, 'num_games'=>$v4, 'playoff_spots'=>$v5, 'elim_losses'=>$v6)) ;
@@ -118,7 +118,7 @@ function auto_populate($a)
 
   for ($i=0; $i<$c_team; $i++)
     {
-      $v1 = 'team-' . generate_string(8) ; 
+      $v1 = 'team-' . generate_string(10) ; 
       $v2 = 'email@-' . generate_string(10) ; 
       $v3 = '#chan_' . generate_string(10) ; 
       $v4 = $loc[generate_integer(count($loc))] ;
@@ -194,21 +194,30 @@ function auto_populate($a)
 	  $c = generate_integer(2) + 3 ;
 	  for ($j=0; $j<$c; $j++)
 	    {
-	      $te = new team(array('team_id'=>$team[generate_integer(count($team))])) ;
+	      $c2=0 ;
+	      do
+		{
+		  $te = new team(array('team_id'=>$team[generate_integer(count($team))])) ;
+		} while ($t->hasTeam($te->getValue("team_id")) && $c2++<5) ;
 
-	      if (! $t->hasTeam($te->getValue("team_id")))
+	      if ($c2<5)
 		{
 		  $d->addTeam($te->getValue("team_id")) ;
-		}
-	      
-	      $pc = generate_integer(10) + 1 ;
-	      for ($l=0; $l<$pc; $l++)
-		{
-		  $p = new player(array('player_id'=>$play[generate_integer(count($play))])) ;
-		  $v1 = generate_boolean() ;
-		  if (! $t->hasPlayer($p->getValue("player_id")))
+
+		  $pc = generate_integer(6) + 4 ;
+		  for ($l=0; $l<$pc; $l++)
 		    {
-		      $te->addPlayer($t->getValue("tourney_id"), $p->getValue("player_id"), $v1) ;
+		      $c2 = 0 ;
+		      do
+			{
+			  $p = new player(array('player_id'=>$play[generate_integer(count($play))])) ;
+			} while ($t->hasPlayer($p->getValue("player_id")) and $c2++<10) ;
+		      
+		      if ($c2<10)
+			{
+			  $v1 = generate_boolean() ;
+			  $te->addPlayer($t->getValue("tourney_id"), $p->getValue("player_id"), $v1) ;
+			}
 		    }
 		}
 	    }
@@ -229,15 +238,14 @@ function auto_populate($a)
 
 		  do
 		    {
-		      $v3 = generate_integer(250) ;
-		      $v4 = generate_integer(250) ;
+		      $v3 = generate_integer(400) ;
+		      $v4 = generate_integer(400) ;
 		    } while ($v3 == $v4) ;
 
 		  $v5 = 'http://' . generate_string(25) ;
 		  $v6 = 'http://' . generate_string(25) ;
 		  $g = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
 
-		  // Generate stats for game
 		  for ($k=0; $k<2; $k++)
 		    {
 		      if ($k==0)
@@ -269,7 +277,7 @@ function auto_populate($a)
 			    {
 			      $player_score = generate_integer($score) ;
 			    }
-			  $score = $score - $player_score ;
+			  $score -= $player_score ;
 
 			  $v1 = $p->getValue('player_id') ;
 			  $v2 = $g->getValue('game_id') ;
