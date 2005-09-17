@@ -610,7 +610,7 @@ class team
 
       $arr['wins']      = $total_wins ;
       $arr['losses']    = $total_losses ;
-      $arr['points']    = ($arr['match_2-0']*3) + ($arr['match_2-1']*2) + ($arr['match_1-2']) ;
+      $arr['points']    = ($arr['match_2-0']*3) + ($arr['match_2-1']*3) + ($arr['match_1-2']) ;
       $arr['maps_won']  = $total_maps_won ;
       $arr['maps_lost'] = $total_maps_lost ;
       
