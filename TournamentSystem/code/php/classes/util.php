@@ -254,6 +254,16 @@ class util
   
       return $data ; 
     }
+
+  public static function strbool($b)
+    {
+      if ($b)
+	{
+	  return 'Yes' ;
+	}
+
+      return 'No' ;
+    }
 }
 
 ?>

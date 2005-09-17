@@ -24,7 +24,6 @@ try
       $superadmin=$p->getValue('superAdmin');
       $location_id=$p->getValue('location_id');
       $loc = new location(array('location_id'=>$location_id));
-      $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
       $password=$p->getValue('password');
       $hascolumn=$p->getValue('hasColumn');
     }
@@ -36,7 +35,6 @@ try
       $name="";
       $superadmin="";
       $location_id="";
-      $loc_name = "";
       $password="";
       $hascolumn="";
     }
@@ -72,7 +70,7 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
  
-  foreach (location::getAllLocations() as $l)
+  foreach (location::getStateLocations() as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)
@@ -80,7 +78,16 @@ try
 	  $sel = "selected";
 	}
 
-      echo "<option value='",$l->getValue('location_id'),"'",$sel,">",$l->getValue('country_name'),":",$l->getValue('state_name');
+      $state_name = $l->getValue('state_name') ;
+      if (!util::isNull($state_name))
+	{
+	  $state_name = ':' . $state_name ;
+	}
+
+      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
+
+
+      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
     }
 
   echo "</select></td>";

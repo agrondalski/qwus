@@ -26,7 +26,6 @@ try
       $irc_channel=$tm->getValue('irc_channel');
       $location_id=$tm->getValue('location_id');
       $loc = new location(array('location_id'=>$location_id));
-      $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
       $password=$tm->getValue('password');
       $approved=$tm->getValue('approved');
     }
@@ -40,7 +39,6 @@ try
       $email="";
       $irc_channel="";
       $location_id="";
-      $loc_name = "";
       $password="";
       $approved="";
     } 
@@ -74,14 +72,21 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
 
-  foreach (location::getAllLocations() as $l)
+  foreach (location::getCountryLocations() as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)
 	{
 	  $sel = "selected";
 	}
-      echo "<option value='",$l->getValue('location_id'),"'",$sel,">",$l->getValue('country_name'),":",$l->getValue('state_name');
+
+      $state_name = $l->getValue('state_name') ;
+      if (!util::isNull($state_name))
+	{
+	  $state_name = ':' . $state_name ;
+	}
+
+      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
     }
 
   echo "</select></td>";

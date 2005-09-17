@@ -13,7 +13,7 @@ try
     }
 
   echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-  echo "<th>Name</th><th>Abbr</th><th>Game_Type_id</th>";
+  echo "<th>Name</th><th>Abbr</th><th>Game Type</th>";
 
   foreach (map::getAllMaps() as $m)
     {

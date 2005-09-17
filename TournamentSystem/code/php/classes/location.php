@@ -132,7 +132,7 @@ class location
 
   public static function getCountryLocations()
     {
-      $sql_str = sprintf('select l.location_id from location l where state_name is null') ;
+      $sql_str = sprintf("select l.location_id from location l where l.state_name is null or l.state_name=''") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -146,7 +146,7 @@ class location
 
   public static function getStateLocations()
     {
-      $sql_str = sprintf('select l.location_id from location l where state_name is not null') ;
+      $sql_str = sprintf("select l.location_id from location l where state_name is not null and l.state_name!=''") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))

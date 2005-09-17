@@ -14,7 +14,7 @@ try
 
   // Printing results in HTML
   echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-  echo "<th>Name</th><th>Abbr</th><th>Email</th><th>IRC</th><th>Loc</th><th>Password</th><th>Approved?</th><th colspan=2>Actions</th>";
+  echo "<th>Name</th><th>Abbr</th><th>Email</th><th>IRC</th><th>Locaction</th><th>Approved?</th><th colspan=2>Actions</th>";
 
   foreach (team::getAllTeams() as $t)
     {
@@ -26,8 +26,8 @@ try
       echo "\t<td>",$t->getValue('email'),"</td>\n";
       echo "\t<td>",$t->getValue('irc_channel'),"</td>\n";
       echo "\t<td>",$loc_name,"</td>\n";
-      echo "\t<td>(encrypted)</td>\n";
-      echo "\t<td>",$t->getValue('approved'),"</td>\n";
+      //      echo "\t<td>(encrypted)</td>\n";
+      echo "\t<td>",util::strbool($t->getValue('approved')),"</td>\n";
       echo "<td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=",$t->getValue('team_id'),"'>Edit</a></td>";
       echo "<td><a href='?a=saveTeam&amp;mode=delete&amp;team_id=",$t->getValue('team_id'),"'>Delete</a></td>";
       echo "\t</tr>\n";

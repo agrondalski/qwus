@@ -17,16 +17,12 @@ if (!util::isNull($_SESSION['user_id']))
       echo "<td>&nbsp;</td>";
       echo "</tr>";
 
-      if ($p->hasColumn())
-	{
-	  echo "<tr>";
-	  echo "<td><a href='?a=manageColumn'>Create Column</a></td>";
-	  echo "<td><a href='?a=listColumn'>Manage Column</a></td>";
-	  echo "</tr>";
-	}
-      
       if ($p->isSuperAdmin())
 	{
+	  echo "<tr>";
+	  echo "<td><a href='?a=manageTourney'>do: Create Tourney</a></td>";
+	  echo "<td><a href='?a=listTourney'>do: Manage Tourney</a></td>";
+	  echo "</tr>";
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageNews'>Create News</a></td>";
 	  echo "<td><a href='?a=listNews'>Manage News</a></td>";
@@ -40,10 +36,19 @@ if (!util::isNull($_SESSION['user_id']))
 	  echo "<td><a href='?a=listPlayers'>Manage Players</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
-	  echo "<td>&nbsp;</td>";
-	  echo "<td><a href='?a=listMaps'>List Maps</a></td>";
+	  echo "<td><a href='?a=manageMap'>do: Create a Map</a></td>";
+	  echo "<td><a href='?a=listMaps'>Manage Maps</a></td>";
 	  echo "</tr>";
 	}
+
+      if ($p->hasColumn())
+	{
+	  echo "<tr>";
+	  echo "<td><a href='?a=manageColumn'>Create Column</a></td>";
+	  echo "<td><a href='?a=listColumn'>Manage Column</a></td>";
+	  echo "</tr>";
+	}
+      
     }
   catch(Exception $e){}
 }

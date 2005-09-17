@@ -34,7 +34,7 @@ try
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<td><select name='team_id'>";
 
-  foreach (team::getAllTeams() as $tmp)
+  foreach ($t->getTeams() as $tmp)
     {
       $sel = "";
       if ($tmp->getValue('team_id') == $team_id)
@@ -57,7 +57,7 @@ try
       
       // List players in this team
       echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-      echo "<th>Name</th><th>Super<br>Admin?</th><th>Tourney<br>Admin?</th><th>Location</th><th>Actions</th>";
+      echo "<th>Name</th><th>Super<br>Admin</th><th>Tourney<br>Admin</th><th>Location</th><th>Actions</th>";
 
       foreach ($tm->getPlayers($tid) as $player)
 	{
@@ -82,10 +82,9 @@ try
 	      echo "\t<td>",$player->getValue('name'),"</td>\n";
 	    }
 
-	  echo "\t<td>",$player->getValue('superAdmin'),"</td>\n";
+	  echo "\t<td>",util::strbool($player->getValue('superAdmin')),"</td>\n";
 	  $ta = $player->isTourneyAdmin($tid);
-
-	  $ta = util::choose($ta, 1, 0) ;
+	  $ta = util::strbool($ta) ;
 
 	  echo "\t<td>",$ta,"</td>\n";
 	  echo "\t<td>",$loc_name,"</td>\n";
@@ -105,7 +104,10 @@ try
 
       foreach (player::getAllPlayers() as $tmp)
 	{
-	  echo "<option value='",$tmp->getValue('player_id'),"'>",$tmp->getValue('name');
+	  if ($t->hasPlayer($tmp->getValue('player_id')))
+	    {
+	      echo "<option value='",$tmp->getValue('player_id'),"'>",$tmp->getValue('name');
+	    }
 	}
 
       echo "</select></td></tr>";

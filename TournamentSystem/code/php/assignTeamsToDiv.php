@@ -82,7 +82,10 @@ try
 
 	foreach (team::getAllTeams() as $tmp)
 	  {
-	    echo "<option value='",$tmp->getValue('team_id'),"'>",$tmp->getValue('name');
+	    if (!$t->hasTeam($tmp->getValue('team_id')))
+	      {
+		echo "<option value='",$tmp->getValue('team_id'),"'>",$tmp->getValue('name');
+	      }
 	  }
 
 	echo "</select></td></tr>";
