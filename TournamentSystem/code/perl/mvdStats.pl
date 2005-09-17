@@ -6,8 +6,8 @@
 # optimize
 # ctf msgs
 # have to check and double check score calculations
-# better team color support (store for player and calculate player based on mode)
-# team stats
+# better team color support (calculate based on mode of players)
+# team stats (from mvd + minutes with lead)
 
 use Benchmark;
 use GD::Graph::lines;
@@ -396,6 +396,8 @@ sub new
   $self->{NAME} = undef;
   $self->{PLAYERS} = [];
   $self->{COLOR} = undef;
+  $self->{MINUTES_PLAYED} = 0;
+  $self->{MINUTES_WITH_LEAD} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -419,6 +421,20 @@ sub players
   my $self = shift;
   if (@_) { @{ $self->{PLAYERS} } = @_ }
   return @{ $self->{PLAYERS} };
+}
+
+sub minutesPlayed
+{
+  my $self = shift;
+  if (@_) { $self->{MINUTES_PLAYED} = shift }
+  return $self->{MINUTES_PLAYED};
+}
+
+sub minutesWithLead
+{
+  my $self = shift;
+  if (@_) { $self->{MINUTES_WITH_LEAD} = shift }
+  return $self->{MINUTES_WITH_LEAD};
 }
 
 # might need some error checking here
@@ -835,8 +851,31 @@ print $string;
   @graphTime = reverse(@graphTime);
   push(@graphTeams, $teamOneName);
   push(@graphTeams, $teamTwoName);
+
+# this seems like a suboptimal solution
+  my $teamOne = findTeam($teamOneName);
+  my $teamTwo = findTeam($teamTwoName);
+  my @tempGraphTime = @graphTime;
+  my $time = pop(@tempGraphTime);
+  $teamOne->minutesPlayed($time);
+  $teamTwo->minutesPlayed($time);
+  for (my $i = 0; $i <= $time; $i++)
+  {
+    # do nothing if ==
+    if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
+    {
+      $teamOne->minutesWithLead($teamOne->minutesWithLead() + 1);
+    }
+    elsif ($graphTeamTwoScore[$i] > $graphTeamOneScore[$i])
+    {
+      $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
+    }
+  }
+  
  # $shell = `rm "$tempMvd"`;
 }
+
+
 
 outputHeader();
 #outputHTML();
@@ -859,6 +898,7 @@ sub outputTeamHTML
     my @teamPlayers = $team->players;
  #   print $team->name . "(" . $team->color . ")" . " :\t" . $team->points . "\n";
      print $team->name . "(" . $team->points . ")\n";
+    print "minutes played: " . $team->minutesPlayed . "\tminutes with lead: " . $team->minutesWithLead . "\n";
 
      foreach $player (@teamPlayers)
     {
@@ -1024,10 +1064,6 @@ sub outputGraph
               y_label => "score",
               line_width => 2
              );
-#  if ($x < 400) 
-#  {
-#      $graph->set(x_label_skip => 5);
-#  }
   $graph->set_legend(@graphTeams);
   my $teamOne = findTeam($teamOneName);
   my $teamTwo = findTeam($teamTwoName);
@@ -1044,7 +1080,6 @@ sub outputGraph
   }
   else
   { 
-    print "fred loves you";   
     my @pointData = undef;
     $pointData[0] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
     for ($i = 0; $i < 21; $i++)
