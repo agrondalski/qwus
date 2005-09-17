@@ -195,7 +195,7 @@ try
 
   //try
   //{
-  //  $p = new player(array('name'=>$_SESSION['username'])) ;
+  //  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
   //  if ($p->hasColumn())
   //  if ($p->isSuperAdmin())
   //  if ($p->isTourneyAdmin())

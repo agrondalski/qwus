@@ -346,6 +346,10 @@ function auto_populate($a)
 	    }
 	}
     }
+
+  $sql_str = sprintf("delete from team
+                      where team_id not in(select team_id from tourney_info)", $winning_team, $v1, $m->getValue('match_id')) ;
+  $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
 }
 
 ?>
