@@ -419,6 +419,10 @@ class player
                           order by m.match_id", $this->player_id, $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
+      $arr = array() ;
+      $arr['player_id'] = $this->player_id ;
+      $arr['name']      = $this->name ;
+
       $total_games   = 0 ;
       $total_frags   = 0 ;
       $total_matches = 0 ;
@@ -454,7 +458,6 @@ class player
 	    }
 	}
 
-      $arr = array() ;
       $arr['matches_played'] = $total_matches ;
       $arr['games_played']   = $total_games;
       $arr['total_frags']    = $total_frags;
@@ -501,6 +504,10 @@ class player
 
       $team_id = $this->getTeam($tid)->getValue('team_id') ;
 
+      $arr = array() ;
+      $arr['player_id'] = $this->player_id ;
+      $arr['name']      = $this->name ;
+
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms
                           where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
@@ -542,7 +549,6 @@ class player
 	    }
 	}
 
-      $arr = array() ;
       $arr['matches_played'] = $total_matches ;
       $arr['games_played']   = $total_games;
       $arr['total_frags']    = $total_frags;

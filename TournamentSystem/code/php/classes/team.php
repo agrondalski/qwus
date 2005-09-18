@@ -435,6 +435,10 @@ class team
 			 $this->team_id, $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
+      $arr = array() ;
+      $arr['team_id'] = $this->team_id ;
+      $arr['name'] = $this->name ;
+
       if ($row = mysql_fetch_row($result))
 	{
 	  $arr['max_score'] = $row[0] ;
@@ -550,11 +554,14 @@ class team
 	  util::throwException('team is not in specified tourney') ;
 	}
 
+      $arr = array() ;
+      $arr['team_id'] = $this->team_id ;
+      $arr['name'] = $this->name ;
+
       /*
       $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from tourney_info where team_id=%d and tourney_id=%d", $this->team_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
-      $arr = array() ;
       if ($row = mysql_fetch_row($result))
 	{
 	  $arr['wins']      = $row[0] ;

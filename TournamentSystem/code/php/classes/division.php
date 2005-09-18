@@ -306,7 +306,7 @@ class division
 	}
 
       $rand_array = array() ;
-      for ($i=0; $i<1000 && $i<($extra_matchups*$num_teams/2); $i++)
+      for ($i=0; $i<($extra_matchups*$num_teams/2); $i++)
 	{
 	  $k = 0 ;
 	  do
