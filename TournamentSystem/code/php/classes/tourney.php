@@ -291,23 +291,13 @@ class tourney
       return $arr ;
     }
 
-  public function getMapByAbbr($mapa)
+  public function getTourneyTypes()
     {
-      $mapa = map::validateColumn($mapa, 'map_abbr') ;
+      $arr[] = 'LADDER' ;
+      $arr[] = 'LEAGUE' ;
+      $arr[] = 'TOURNAMENT' ;
 
-      $sql_str = sprintf("select m.map_id from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id and m.map_abbr='%s'", $this->tourney_id, $mapa) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if ($row=mysql_fetch_row($result))
-	{
-	  mysql_free_result($result) ;
-	  return new map(array('map_id'=>$row[0])) ;
-	}
-      else
-	{
-	  mysql_free_result($result) ;
-	  return null ;
-	}
+      return $arr ;
     }
 
   public function getNews($a, $l)

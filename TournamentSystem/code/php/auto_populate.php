@@ -76,7 +76,7 @@ function auto_populate($a)
       //$v1 = $gt[generate_integer(count($gt))] ;
       $v1 = 1 ;
       $v2 = 'naql-' . generate_string(5) ;
-      $v3 = 'TOURNAMENT' ;
+      $v3 = 'LEAGUE' ;
 
       $sd = generate_integer(100) ;
 

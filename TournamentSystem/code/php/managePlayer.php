@@ -85,9 +85,6 @@ try
 	}
 
       echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
-
-
-      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
     }
 
   echo "</select></td>";

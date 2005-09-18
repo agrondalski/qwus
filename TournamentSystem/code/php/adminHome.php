@@ -13,15 +13,15 @@ if (!util::isNull($_SESSION['user_id']))
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
       echo "<tr>";
-      echo "<td><a href='?a=listTourneys'>Select Tourney</a></td>";
+      echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";
       echo "<td>&nbsp;</td>";
       echo "</tr>";
 
       if ($p->isSuperAdmin())
 	{
 	  echo "<tr>";
-	  echo "<td><a href='?a=manageTourney'>do: Create Tourney</a></td>";
-	  echo "<td><a href='?a=listTourney'>do: Manage Tourney</a></td>";
+	  echo "<td><a href='?a=manageTourney'>Create Tourney</a></td>";
+	  echo "<td><a href='?a=listTourneys'>Manage Tourney</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageNews'>Create News</a></td>";
@@ -36,7 +36,7 @@ if (!util::isNull($_SESSION['user_id']))
 	  echo "<td><a href='?a=listPlayers'>Manage Players</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
-	  echo "<td><a href='?a=manageMap'>do: Create a Map</a></td>";
+	  echo "<td><a href='?a=manageMap'>Create a Map</a></td>";
 	  echo "<td><a href='?a=listMaps'>Manage Maps</a></td>";
 	  echo "</tr>";
 	}
@@ -58,7 +58,7 @@ elseif (!util::isNull($_SESSION['team_id']))
   try
     {
       $t = new team(array('team_id'=>$_SESSION['team_id'])) ;
-      header("location: ?a=listTourneys") ;
+      header("location: ?a=selectTourney") ;
     }
   catch(Exception $e) {}
 }

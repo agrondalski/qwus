@@ -25,7 +25,7 @@ try
   echo "<b>Tourney specific Actions</b><br>";
   echo "<table border=1 cellpadding=2 cellspacing=0>";
   echo "<tr>";
-  echo "<td><a href='?a=listTourneys'>Select a Tourney</a></td>";
+  echo "<td><a href='?a=selectTourney'>Select a Tourney</a></td>";
   echo "<td><font color=red>",$t->getValue('name'),"</font></td>";
   echo "</tr>";
   echo "<tr>";
