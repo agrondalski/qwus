@@ -668,27 +668,20 @@ class team
       return $arr ;
     }
 
-  public static function getSortedCareerInfo($sort_key, $desc=true)
+  public static function getSortedCareerInfo($a)
     {
       if (util::isNull($sort_key))
 	{
 	  return array() ;
 	}
 
-      $a = array() ;
+      $arr = array() ;
       foreach(self::getAllTeams() as $t)
 	{
-	  $a[] = $t->getCareerInfo() ;
+	  $arr[] = $t->getCareerInfo() ;
 	}
 
-      if ($desc)
-	{
-	  return util::masort_desc($a, $sort_key) ;
-	}
-      else
-	{
-	  return util::masort_asc($a, $sort_key) ;
-	}
+      return util::row_sort($arr, $a) ;
     }
 
   public function updateInfo($col, $val, $div)

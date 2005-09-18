@@ -178,23 +178,11 @@ class util
       return $min_idx ; 
     }
 
-  public static function masort_asc($arr, $sort_key)
-    {
-      usort($arr, create_function('$a, $b', "return (int)\$a['" . $sort_key . "']>(int)\$b['" . $sort_key . "'];")) ;
-      return $arr ;
-    }
-
-  public static function masort_desc($arr, $sort_key)
-    {
-      usort($arr, create_function('$a, $b', "return (int)\$a['" . $sort_key . "']<(int)\$b['" . $sort_key . "'];")) ;
-      return $arr ;
-    }
-
   function row_sort($data, $sort_a)
     { 
       if (!is_array($data) || !is_array($sort_a) || count($sort_a)==0)
 	{ 
-	  return null ; 
+	  return $data ;
 	} 
   
       $str_idxs = array() ; 
@@ -251,7 +239,7 @@ class util
 	} 
 
       eval('array_multisort(' . $amlist . ',$data);') ; 
-  
+
       return $data ; 
     }
 

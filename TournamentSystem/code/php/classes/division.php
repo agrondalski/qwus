@@ -357,32 +357,20 @@ class division
 	}
     }
 
-  public function getSortedTeamInfo($sort_key, $desc=true)
+  public function getSortedTeamInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $tid = $this->tourney_id ;
 
-      $a = array() ;
+      $arr = array() ;
       foreach($this->getTeams() as $t)
 	{
-	  $a[] = $t->getTourneyInfo($tid) ;
+	  $arr[] = $t->getTourneyInfo($tid) ;
 	}
 
-      if ($desc)
-	{
-	  return util::masort_desc($a, $sort_key) ;
-	}
-      else
-	{
-	  return util::masort_asc($a, $sort_key) ;
-	}
+      return util::row_sort($arr, $a) ;
     }
 
-  public function getSortedPlayerInfo($sort_key, $desc=true)
+  public function getSortedPlayerInfo($a)
     {
       if (util::isNull($sort_key))
 	{
@@ -391,20 +379,13 @@ class division
 
       $tid = $this->tourney_id ;
 
-      $a = array() ;
+      $arr = array() ;
       foreach($this->getPlayers() as $p)
 	{
-	  $a[] = $p->getTourneyInfo($tid) ;
+	  $arr[] = $p->getTourneyInfo($tid) ;
 	}
 
-      if ($desc)
-	{
-	  return util::masort_desc($a, $sort_key) ;
-	}
-      else
-	{
-	  return util::masort_asc($a, $sort_key) ;
-	}
+      return util::row_sort($arr, $a) ;
     }
 
   public function removeSchedule()
