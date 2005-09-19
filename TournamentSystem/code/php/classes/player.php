@@ -420,8 +420,8 @@ class player
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $arr = array() ;
-      $arr['player_id'] = $this->player_id ;
-      $arr['name']      = $this->name ;
+      $arr['player_id']   = $this->player_id ;
+      $arr['location_id'] = $this->location_id ;
 
       $total_games   = 0 ;
       $total_frags   = 0 ;
@@ -507,6 +507,7 @@ class player
       $arr = array() ;
       $arr['player_id'] = $this->player_id ;
       $arr['name']      = $this->name ;
+      $arr['location_id'] = $this->location_id ;
 
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms
@@ -584,11 +585,6 @@ class player
 
   public static function getSortedCareerInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $arr = array() ;
       foreach(self::getAllPlayers() as $p)
 	{

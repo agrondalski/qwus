@@ -372,11 +372,6 @@ class division
 
   public function getSortedPlayerInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $tid = $this->tourney_id ;
 
       $arr = array() ;

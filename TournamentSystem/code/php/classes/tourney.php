@@ -482,11 +482,6 @@ class tourney
 
   public function getSortedTeamInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $tid = $this->tourney_id ;
 
       $arr = array() ;
@@ -500,11 +495,6 @@ class tourney
 
   public function getSortedPlayerInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $tid = $this->tourney_id ;
 
       $arr = array() ;

@@ -670,16 +670,22 @@ class team
 
   public static function getSortedCareerInfo($a)
     {
-      if (util::isNull($sort_key))
-	{
-	  return array() ;
-	}
-
       $arr = array() ;
       foreach(self::getAllTeams() as $t)
 	{
 	  $arr[] = $t->getCareerInfo() ;
 	}
+
+      return util::row_sort($arr, $a) ;
+    }
+
+  public function getSortedPlayers($tid, $a)
+      {
+	$arr = array() ;
+	foreach($this->getPlayers($tid) as $p)
+	  {
+	    $arr[] = $p->getTourneyInfo($tid) ;
+	  }
 
       return util::row_sort($arr, $a) ;
     }
