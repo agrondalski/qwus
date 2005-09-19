@@ -438,6 +438,7 @@ class team
       $arr = array() ;
       $arr['team_id'] = $this->team_id ;
       $arr['name'] = $this->name ;
+      $arr['location_id'] = $this->location_id ;
 
       if ($row = mysql_fetch_row($result))
 	{
@@ -557,6 +558,7 @@ class team
       $arr = array() ;
       $arr['team_id'] = $this->team_id ;
       $arr['name'] = $this->name ;
+      $arr['location_id'] = $this->location_id ;
 
       /*
       $sql_str = sprintf("select wins, losses, points, maps_won, maps_lost from tourney_info where team_id=%d and tourney_id=%d", $this->team_id, $tid) ;
