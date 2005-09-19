@@ -60,6 +60,7 @@ if (isset($_GET["tourney_id"]))
 {
   include 'userLinks.php';
   echo "<br>";
+  echo "<h2>News</h2>";
 }
 
 for ($i=0; $i<count($news); $i++)

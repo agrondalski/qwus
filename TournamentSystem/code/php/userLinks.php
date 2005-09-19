@@ -10,6 +10,5 @@ if ($tid != "")
 	echo "&nbsp;<a href='?a=statistics&tourney_id=",$tid,"'>Stats</a>&nbsp;-";
 	echo "&nbsp;<a href='?a=results&tourney_id=",$tid,"'>Results</a>";
 	echo "<br>";
-	echo "<h2>News</h2>";
 }
 ?>
