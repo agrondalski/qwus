@@ -11,6 +11,7 @@ try {
     $tm = "";
 }
 
+include 'userLinks.php';
 echo "<br>";
 
 // Gather team info
@@ -34,29 +35,30 @@ echo "</table><br>";
 // List players in this team
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
-foreach ($tm->getPlayers($tid) as $player) 
+//foreach ($tm->getPlayers($tid) as $player) 
+foreach ($tm->getSortedPlayers($tid, array('frags_per_game',SORT_DESC)) as $player)
 {
-	$loc = new location(array('location_id'=>$player->getValue('location_id')));
+	$loc = new location(array('location_id'=>$player['location_id']));
 	$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
 	echo "\t<tr>\n<td>";
-	echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player->getValue('player_id'),"'>";
+	echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player['player_id'],"'>";
 		$tlp = $tm->getTeamLeader($tid);
 		if ($tlp != null) {
-			if ($tlp->getValue('player_id') == $player->getValue('player_id')) {
-				echo "<font color=red>",$player->getValue('name'),"</font></a></td>\n";
+			if ($tlp->getValue('player_id') == $player['player_id']) {
+				echo "<font color=red>",$player['name'],"</font></a></td>\n";
 			} else {
-				echo $player->getValue('name'),"</a></td>\n";
+				echo $player['name'],"</a></td>\n";
 			}
 		} else {
-			echo $player->getValue('name'),"</a></td>\n";
+			echo $player['name'],"</a></td>\n";
 		}
-		$info = $player->getTourneyInfo($tid);
+		//$info = $player->getTourneyInfo($tid);
 	echo "\t<td>",$loc_name,"</td>\n";
-	echo "<td>",$info['games_played'],"</td>";
-	echo "<td>",$info['frags_per_game'],"</td>";
-	echo "<td>",$info['total_frags'],"</td>";
-	echo "<td>",$info['matches_won'],"-",$info['matches_lost'],"</td>";
-	echo "<td nowrap>",$info['frag_diff'],"</td>";
+	echo "<td>",$player['games_played'],"</td>";
+	echo "<td>",$player['frags_per_game'],"</td>";
+	echo "<td>",$player['total_frags'],"</td>";
+	echo "<td>",$player['matches_won'],"-",$player['matches_lost'],"</td>";
+	echo "<td nowrap>",$player['frag_diff'],"</td>";
 }
 echo "</tr></table>";
 echo "<p><font color=red>Red = team leader</font></p>";

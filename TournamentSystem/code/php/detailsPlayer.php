@@ -14,6 +14,7 @@ try {
     $p = "";
 }
 
+include 'userLinks.php';
 echo "<br>";
 
 

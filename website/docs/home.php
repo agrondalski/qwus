@@ -56,6 +56,12 @@ catch(Exception $e)
   $count = 0 ;
 }
 
+if (isset($_GET["tourney_id"]))
+{
+  include 'userLinks.php';
+  echo "<br>";
+}
+
 for ($i=0; $i<count($news); $i++)
 {
   $writer = $news[$i]->getWriter()->getValue("name") ;
