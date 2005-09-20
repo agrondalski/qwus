@@ -16,14 +16,14 @@ try
 	  if (isset($_GET["tourney_id"]))
 	    {
 	      $t = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-	      $news = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>'0,5')) ;
+	      $news = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>5)) ;
 	      $count = $t->getNewsCount() ;
 	    }
 
 	  // General news
 	  else
 	    {
-	      $news  = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_ASC), array('limit'=>'0,5')) ;
+	      $news  = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_ASC), array('limit'=>5)) ;
 	      $count = news::getNewsCount() ;
 	    }
 	}
@@ -46,8 +46,15 @@ try
     }
   else
     {
-      $p = new player(array('name'=>$_GET['column'])) ;
-      $news = $p->getNewsColumns(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>'0,1')) ;
+      if ($morenews)
+	{
+	  $p = new player(array('name'=>$_GET['column'])) ;
+	  $news = $p->getNewsColumns(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>1)) ;
+	}
+      else
+	{
+	  $news = array(new news(array('news_id'=>$_GET["id"]))) ;
+	}
     }
 }
 catch(Exception $e)

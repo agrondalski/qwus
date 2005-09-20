@@ -335,7 +335,7 @@ class tourney
 
   public function getNews($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.news_type='Tournament' and n.id=%d %s", $this->tourney_id, util::getLimit($l)) ;
+      $sql_str = sprintf("select n.* from news n where n.news_type='Tournament' and n.id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
@@ -361,6 +361,11 @@ class tourney
 	    {
 	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	    }
+	}
+
+      if (is_array($l) && is_integer($l['limit']))
+	{
+	  $arr = array_slice($arr, 0, $l['limit']) ;
 	}
 
       mysql_free_result($result) ;

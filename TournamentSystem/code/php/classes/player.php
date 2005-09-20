@@ -293,7 +293,7 @@ class player
 
   public function getNewsColumns($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column' %s", $this->player_id, util::getLimit($l)) ;
+      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column'", $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
@@ -319,6 +319,11 @@ class player
 	    {
 	      $arr[] = new news(array('news_id'=>$row['news_id'])) ;
 	    }
+	}
+
+      if (is_array($l) && is_integer($l['limit']))
+	{
+	  $arr = array_slice($arr, 0, $l['limit']) ;
 	}
 
       mysql_free_result($result) ;

@@ -385,7 +385,7 @@ try
       $v2 = 'subject-' . generate_string(25) ;
       
       $c = $c + generate_integer(25) ;
-      $v3 = date('Y-m-d', time()+(60*60*24*($sd+$c))) ;
+      $v3 = date('Y-m-d', time()-(60*60*24*($sd+$c))) ;
       
       $v4 = generate_string(25) ;
       
