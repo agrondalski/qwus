@@ -37,15 +37,15 @@ try
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
-      echo "<td><a href='?a=statistics&tourney_id=$tid'>do:Statistics</a></td>";
-      echo "</tr>";
-      echo "<tr>";
-      echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";
       echo "<td><a href='?a=reportMatch&tourney_id=$tid'>Report Match</a></td>";
       echo "</tr>";
       echo "<tr>";
+      echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";
+      echo "<td></td>";
+      echo "</tr>";
+      echo "<tr>";
       echo "<td><a href='?a=assignAdminsToTourney&tourney_id=$tid'>Assign Admins to Tourney</a></td>";
-      echo "<td>&nbsp;</td>";
+      echo "<td>:O</td>";
       echo "</tr>";
       echo "</table>";
     }
