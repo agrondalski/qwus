@@ -61,7 +61,6 @@ class division
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -226,12 +225,12 @@ class division
       return new tourney(array('tourney_id'=>$this->tourney_id)) ;
     }
 
-  public function addTeam($team_id)
+  public function assignTeam($team_id)
     {
       $team_id  = team::validateColumn($team_id, 'team_id') ;
       $tid = $this->getTourney()->getValue('tourney_id') ;
 
-      $sql_str = sprintf("insert into tourney_info(tourney_id, team_id, division_id) values(%d, %d, %d)", $tid, $team_id, $this->division_id) ;
+      $sql_str = sprintf("update tourney_info set division_id= values(%d, %d, %d)", $tid, $team_id, $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
@@ -253,7 +252,7 @@ class division
       $team_id = team::validateColumn($team_id, 'team_id') ;
       $tid = $this->getTourney()->getValue('tourney_id') ;
 
-      $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d", $tid, $team_id) ;
+      $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d and division_id=%d", $tid, $team_id, $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)
@@ -280,6 +279,11 @@ class division
 	}
 
       $total_games = $num_teams * $this->num_games ;
+
+      if (fmod($total_games,2)==1)
+	{
+	  $total_games -= $num_teams ;
+	}
 
       $extra_matchups = (fmod($total_games, $num_teams*($num_teams-1)))/$num_teams ;
       $complete_matchups = floor(($total_games - $overflow_matches) / ($num_teams*($num_teams-1))) ;
@@ -314,8 +318,8 @@ class division
 	      $rand_team1 = util::random_integer($num_teams) ;
 	      $rand_team2 = util::random_integer($num_teams) ;
 	    }
-	  while ((util::array_value_count($rand_array, $rand_team1)>($extra_matchups)) ||
-		 (util::array_value_count($rand_array, $rand_team2)>($extra_matchups)) ||
+	  while ((util::array_value_count($rand_array, $rand_team1)==($extra_matchups)) ||
+		 (util::array_value_count($rand_array, $rand_team2)==($extra_matchups)) ||
 		 ($rand_team1 == $rand_team2)) ;
 
 	  $rand_array[] = $rand_team1 ;

@@ -77,14 +77,12 @@ function initTourneyMenus(which)
 
 <?php
 
-$s1 = 'initTourneyMenus(' . $_GET['tourney_id'] . ');' ;
-
 if (!isset($_GET['column']))
 {
-  $s2 = 'hideShowColumnMenu();' ;
+  $s1 = 'hideShowColumnMenu();' ;
 }
 
-print '<BODY onLoad="' . $s1 . $s2 . '">' ;
+print '<BODY onLoad="' . $s1 . '">' ;
 ?>
 
 <A name="top"></A>
@@ -169,54 +167,6 @@ catch(Exception $e) {}
 			        <TD><a href="?a=home&amp;tourney_id=2">NA NQR 2</a></TD>
 			</TR>
 
-			<TR id="tourney2_1" class=submenu>
-			        <TD><a href="?a=home&amp;tourney_id=2"><img src="img/red.gif" alt="">News</a></TD>
-			</TR>
-
-			<TR id="tourney2_2" class=submenu>
-			        <TD><a href="?a=standings&amp;tourney_id=2"><img src="img/red.gif" alt="">Standings</a></TD>
-			</TR>
-
-			<TR id="tourney2_3" class=submenu>
-			        <TD><a href="?a=schedule&amp;tourney_id=2"><img src="img/red.gif" alt="">Schedule</a></TD>
-			</TR>
-
-			<TR id="tourney2_4" class=submenu>
-			        <TD><a href="?a=newsarchive&amp;tourney_id=2"><img src="img/red.gif" alt="">Archive</a></TD>
-			</TR>
-
-			<TR id="tourney2_5" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">?</a></TD>
-			</TR>
-
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-
-                        <TR>
-			        <TD><a href="?a=home&amp;tourney_id=3">NA NQR 3</a></TD>
-			</TR>
-
-			<TR id="tourney3_1" class=submenu>
-			        <TD><a href="?a=home&amp;tourney_id=3"><img src="img/red.gif" alt="">News</a></TD>
-			</TR>
-
-			<TR id="tourney3_2" class=submenu>
-			        <TD><a href="?a=standings&amp;tourney_id=3"><img src="img/red.gif" alt="">Standings</a></TD>
-			</TR>
-
-			<TR id="tourney3_3" class=submenu>
-			        <TD><a href="?a=schedule&amp;tourney_id=3"><img src="img/red.gif" alt="">Schedule</a></TD>
-			</TR>
-
-			<TR id="tourney3_4" class=submenu>
-			        <TD><a href="?a=newsarchive&amp;tourney_id=3"><img src="img/red.gif" alt="">Archive</a></TD>
-			</TR>
-
-			<TR id="tourney3_5" class=submenu>
-			        <TD><a href=""><img src="img/red.gif" alt="">?</a></TD>
-			</TR>
-
                         <TR>
                                 <TD class="menuBreak"></TD>
                         </TR>
@@ -242,7 +192,7 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
-				<TD><A href="?a=adminHome">Admin</A></TD>
+				<TD><A href="?a=adminHome">Login</A></TD>
 			</TR>
 
                         <TR>

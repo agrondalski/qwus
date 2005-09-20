@@ -6,10 +6,17 @@ class tourney
   private $name ;
   private $tourney_type ;
   private $status ;
-  private $signup_start ;
-  private $signup_end ;
   private $team_size ;
   private $timelimit ;
+
+  const TYPE_LEAGUE= 0 ;
+  const TYPE_TOURNAMENT = 1 ;
+  const TYPE_LADDER = 2 ;
+
+  const STATUS_SIGNUPS = 3 ;
+  const STATUS_REGULAR_SEASON = 4 ;
+  const STATUS_PLAYOFFS= 5 ;
+  const STATUS_COMPLETE = 6 ;
 
   function __construct($a)
     {
@@ -32,9 +39,9 @@ class tourney
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, status, signup_start, signup_end, team_size, timelimit)" .
-                         "values(%d, '%s', '%s', '%s', '%s', '%s', %d, %d)",
-			 $this->game_type_id, $this->name, $this->tourney_type, $this->status, $this->signup_start, $this->signup_end, $this->team_size, $this->timelimit) ;
+      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, status, team_size, timelimit)" .
+                         "values(%d, '%s', '%s', '%s', %d, %d)",
+			 $this->game_type_id, $this->name, $this->tourney_type, $this->status, $this->team_size, $this->timelimit) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->tourney_id = mysql_insert_id() ;
@@ -44,7 +51,7 @@ class tourney
 
   private function getTourneyInfo()
     {
-      $sql_str = sprintf("select game_type_id, name, tourney_type, status, signup_start, signup_end, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select game_type_id, name, tourney_type, status, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -58,10 +65,8 @@ class tourney
       $this->name          = $row[1] ;
       $this->tourney_type  = $row[2] ;
       $this->status        = $row[3] ;
-      $this->signup_start  = $row[4] ;
-      $this->signup_end    = $row[5] ;
-      $this->team_size     = $row[6] ; 
-      $this->timelimit     = $row[7] ;
+      $this->team_size     = $row[4] ; 
+      $this->timelimit     = $row[5] ;
 
       mysql_free_result($result) ;
 
@@ -70,7 +75,6 @@ class tourney
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -84,6 +88,9 @@ class tourney
 
   public static function validateColumn($val, $col, $cons=false)
     {
+      $tourney_type_enum = array(self::TYPE_LEAGUE=>'League', self::TYPE_TOURNAMENT=>'Tournament', self::TYPE_LADDER=>'Ladder') ;
+      $status_enum = array(self::STATUS_SIGNUPS=>'Signups', self::STATUS_REGULAR_SEASON=>'Regular Season', self::STATUS_PLAYOFFS=>'Playoffs', self::STATUS_COMPLETE=>'Complete') ;
+
       if ($col == 'tourney_id')
 	{
 	  if (!$cons)
@@ -131,40 +138,30 @@ class tourney
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = self::TYPE_LEAGUE ;
 	    }
-
-	  if (!util::isNull($val) && $val!='LADDER' && $val!='LEAGUE' && $val!='TOURNAMENT')
+	  
+	  if (!is_numeric($val))
 	    {
 	      util::throwException('invalid value specified for ' . $col) ;
 	    }
 
-	  return util::nvl(util::mysql_real_escape_string($val), 'TOURNAMENT') ;
+	  return $tourney_type_enum[$val] ;
 	}
 
       elseif ($col == 'status')
 	{
-	  return util::mysql_real_escape_string($val) ;
-	}
-
-      elseif ($col == 'signup_start')
-	{
-	  if (!util::isNull($val) && !util::isValidDate($val))
+	  if (util::isNull($val))
 	    {
-	      util::throwException('invalid date specified for ' . $col) ;
+	      $val = self::STATUS_SIGNUPS ;
+	    }
+	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException('invalid value specified for ' . $col) ;
 	    }
 
-	  return util::nvl(util::mysql_real_escape_string($val), util::DEFAULT_DATE) ;
-	}
-
-      elseif ($col == 'signup_end')
-	{
-	  if (!util::isNull($val) && !util::isValidDate($val))
-	    {
-	      util::throwException('invalid date specified for ' . $col) ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), util::DEFAULT_DATE) ;
+	  return $status_enum[$val] ;
 	}
 
       elseif ($col == 'team_size')
@@ -207,6 +204,22 @@ class tourney
       return $arr ;
     }
 
+  public static function getTourneysByStatus($status)
+    {
+      $status = self::validateColumn($status, 'status') ;
+      
+      $sql_str = sprintf("select t.tourney_id from tourney t where status='%s'", $status) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTourneyAdmins()
     {
       $sql_str = sprintf("select ta.player_id from tourney_admins ta where ta.tourney_id=%d", $this->tourney_id) ;
@@ -214,7 +227,7 @@ class tourney
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = $row[0] ;
+	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;
@@ -238,6 +251,20 @@ class tourney
   public function getTeams()
     {
       $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.tourney_id=%d", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getUnassignedTeams()
+    {
+      $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.tourney_id=%d and division_id is null", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -293,16 +320,19 @@ class tourney
 
   public function getTourneyTypes()
     {
-      $arr[] = 'LADDER' ;
-      $arr[] = 'LEAGUE' ;
-      $arr[] = 'TOURNAMENT' ;
+      $arr = array(self::TYPE_LEAGUE=>'League', self::TYPE_TOURNAMENT=>'Tournament', self::TYPE_LADDER=>'Ladder') ;
+      return $arr ;
+    }
 
+  public function getStatusTypes()
+    {
+      $arr = array(self::STATUS_SIGNUPS=>'Signups', self::STATUS_REGULAR_SEASON=>'Regular Season', self::STATUS_PLAYOFFS=>'Playoffs', self::STATUS_COMPLETE=>'Complete') ;
       return $arr ;
     }
 
   public function getNews($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.news_type='TOURNEY' and n.id=%d %s", $this->tourney_id, util::getLimit($l)) ;
+      $sql_str = sprintf("select n.* from news n where n.news_type='Tournament' and n.id=%d %s", $this->tourney_id, util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
@@ -336,7 +366,7 @@ class tourney
 
   public function getNewsCount()
     {
-      $sql_str = sprintf("select count(*) from news n where n.news_type='TOURNEY' and n.id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select count(*) from news n where n.news_type='Tournament' and n.id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -354,6 +384,67 @@ class tourney
   public function getGameType()
     {
       return new game_type(array('game_type_id'=>$this->game_type_id)) ;
+    }
+
+  public function addTeam($team_id)
+    {
+      $team_id  = team::validateColumn($team_id, 'team_id') ;
+
+      $sql_str = sprintf("insert into tourney_info(tourney_id, team_id, division_id) values(%d, %d, null)", $this->tourney_id, $team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      mysql_free_result($result) ;
+    }
+
+  public function removeTeam($id)
+    {
+      $id = team::validateColumn($id, 'team_id') ;
+
+      $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      mysql_free_result($result) ;
+    }
+
+  public function hasTeam($team_id)
+    {
+      $team_id = team::validateColumn($team_id, 'team_id') ;
+
+      $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if (mysql_num_rows($result)==1)
+	{
+	  mysql_free_result($result) ;
+	  return true ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return false ;
+	}
+    }
+
+  public function assignTeamToDiv($team_id, $div)
+    {
+      $team_id  = team::validateColumn($team_id, 'team_id') ;
+      $div = division::validateColumn($div, 'division_id') ;
+
+      $sql_str = sprintf("update tourney_info set division_id=%d where tourney_id=%d and team_id=%d", $div, $this->tourney_id, $team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      mysql_free_result($result) ;
+    }
+
+  public function removeTeamFromDiv($team_id, $div)
+    {
+      $team_id  = team::validateColumn($team_id, 'team_id') ;
+      $div = division::validateColumn($div, 'division_id') ;
+
+      $sql_str = sprintf("update tourney_info set division_id=null where tourney_id=%d and team_id=%d and division_id=%d", $this->tourney_id, $team_id, $div) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      mysql_free_result($result) ;
     }
 
   public function addMap($mid)
@@ -428,25 +519,6 @@ class tourney
       $id = player::validateColumn($id, 'player_id') ;
 
       $sql_str = sprintf("select 1 from tourney_admins where tourney_id=%d and player_id=%d", $this->tourney_id, $id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if (mysql_num_rows($result)==1)
-	{
-	  mysql_free_result($result) ;
-	  return true ;
-	}
-      else
-	{
-	  mysql_free_result($result) ;
-	  return false ;
-	}
-    }
-
-  public function hasTeam($team_id)
-    {
-      $team_id = team::validateColumn($team_id, 'team_id') ;
-
-      $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)==1)

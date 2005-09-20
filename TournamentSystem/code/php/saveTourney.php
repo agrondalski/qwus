@@ -14,19 +14,6 @@ try
 
   $mode = $_REQUEST['mode'];
 
-  if ($_POST['tourney_type']==1)
-    {
-      $ttype = 'LEAGUE' ;
-    }
-  elseif ($_POST['tourney_type']==2)
-    {
-      $ttype = 'TOURNAMENT' ;
-    }
-  elseif ($_POST['tourney_type']==3)
-    {
-      $ttype = 'LADDER' ;
-    }
-  print $ttype ;
   if ($mode=="edit")
     {
       $tourney_id = $_POST['tourney_id'];
@@ -35,10 +22,9 @@ try
       try
 	{
 	  $tour->update('name', $_POST['tourney_name']);
-	  $tour->update('tourney_type', $ttype) ;
+	  $tour->update('tourney_type', $_POST['tourney_type']);
 	  $tour->update('game_type_id', $_POST['game_type_id']);
-	  $tour->update('signup_start', $_POST['signup_start']);
-	  $tour->update('signup_end', $_POST['signup_end']);
+	  $tour->update('status', $_POST['status']);
 	  $tour->update('team_size', $_POST['team_size']);
 	  $tour->update('timelimit', $_POST['timelimit']);
       
@@ -46,6 +32,7 @@ try
 	}
       catch (Exception $e)
 	{
+	  print $e ;
 	  $msg = "<br>Error updating!<br>";
 	}
     }
@@ -72,9 +59,8 @@ try
 	{
 	  $tour = new tourney(array('name'         => $_POST['tourney_name'],
 				    'game_type_id' => $_POST['game_type_id'],
-				    'tourney_type' => $ttype,
-				    'signup_start' => $_POST['signup_start'],
-				    'signup_end'   => $_POST['signup_end'],
+				    'tourney_type' => $_POST['tourney_type'],
+				    'status'       => $_POST['status'],
 				    'team_size'    => $_POST['team_size'],
 				    'timelimit'    => $_POST['timelimit'])) ;
 	  
@@ -89,5 +75,5 @@ try
   echo $msg;
   include 'listTourneys.php';
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>

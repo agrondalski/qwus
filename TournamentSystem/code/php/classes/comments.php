@@ -10,6 +10,10 @@ class comment
   private $comment_date ;
   private $comment_time ;
 
+  const TYPE_MATCH = 0 ;
+  const TYPE_NEWS =  1 ;
+  const TYPE_COLUMN = 2 ;
+
   function __construct($a)
     {
       if (array_key_exists('comment_id', $a))
@@ -66,7 +70,6 @@ class comment
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -80,6 +83,8 @@ class comment
 
   public static function validateColumn($val, $col, $cons=false)
     {
+      $comment_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column') ;
+
       if ($col == 'comment_id')
 	{
 	  if (!$cons)
@@ -102,15 +107,15 @@ class comment
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = self::TYPE_MATCH ;
 	    }
-
-	  if (!util::isNull($val) && $val!='MATCH' && $val!='NEWS' && $val!='COLUMN')
+	  
+	  if (!is_numeric($val))
 	    {
 	      util::throwException('invalid value specified for ' . $col) ;
 	    }
 
-	  return util::nvl(util::mysql_real_escape_string($val), 'MATCH');
+	  return $comment_type_enum[$val] ;
 	}
 
       elseif ($col == 'id')
@@ -187,6 +192,12 @@ class comment
 	{
 	  util::throwException('invalid column specified') ;
 	}
+    }
+
+  public function getCommentTypes()
+    {
+      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column') ;
+      return $arr ;
     }
 
   public function getValue($col)

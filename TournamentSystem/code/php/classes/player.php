@@ -79,7 +79,6 @@ class player
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -337,7 +336,7 @@ class player
 
   public function getNewsColumns($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='COLUMN' %s", $this->player_id, util::getLimit($l)) ;
+      $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column' %s", $this->player_id, util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
@@ -502,12 +501,15 @@ class player
 	  util::throwException('player is not in specified tourney') ;
 	}
 
-      $team_id = $this->getTeam($tid)->getValue('team_id') ;
+      $tm = $this->getTeam($tid) ;
+      $team_id = $tm->getValue('team_id') ;
 
       $arr = array() ;
       $arr['player_id'] = $this->player_id ;
       $arr['name']      = $this->name ;
       $arr['location_id'] = $this->location_id ;
+      $arr['team_id']   = $team_id ;
+      $arr['team_name'] = $tm->getValue('name') ;
 
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms

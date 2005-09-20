@@ -57,7 +57,7 @@ try
       $news = new news(array('writer_id'  => $_POST['writer_id'],
 			     'subject'    => $_POST['subject'],
 			     'news_date'  => date("Y-m-d"),
-			     'news_type'  => 'COLUMN',
+			     'news_type'  => news::TYPE_COLUMN,
 			     'id'         => null,
 			     'text'       => $_POST['text'])) ;
 

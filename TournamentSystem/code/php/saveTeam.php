@@ -5,14 +5,28 @@ require_once 'login.php' ;
 
 try
 {
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+  $mode = $_REQUEST['mode'];
 
-  if (!$p->isSuperAdmin())
+  if (!util::isNull($_SESSION['user_id']))
     {
-      util::throwException('not authorized') ;
+      $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+
+      if (!$p->isSuperAdmin())
+	{
+	  util::throwException('not authorized') ;
+	}
     }
 
-  $mode = $_REQUEST['mode'];
+  elseif (!util::isNull($_SESSION['team_id']))
+    {
+      $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
+
+      if ($_SESSION[team_id] != $_REQUEST['team_id'] || $mode!='edit')
+	{
+	  util::throwException('not authorized') ;
+	}
+    }
+
 
   if ($mode=="edit")
     {
@@ -30,15 +44,18 @@ try
 	  $tm->update('password',$_POST['password']);
 	}
 
-      if ($_POST['approved'] == "1")
+      if (util::isNull($_SESSION['team_id']))
 	{
-	  $appr = "1";
+	  if ($_POST['approved'] == "1")
+	    {
+	      $appr = "1";
+	    }
+	  else
+	    {
+	      $appr = "0";
+	    }
+	  $tm->update('approved',$appr);
 	}
-      else
-	{
-	  $appr = "0";
-	}
-      $tm->update('approved',$appr);
  
       $msg = "<br>Team updated!<br>";
     }

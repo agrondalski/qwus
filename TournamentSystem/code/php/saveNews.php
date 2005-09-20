@@ -59,7 +59,7 @@ try
 	  $news = new news(array('writer_id'  => $_POST['writer_id'],
 				 'subject'    => $_POST['subject'],
 				 'news_date'  => date("Y-m-d"),
-				 'news_type'  => util::choose(($tid==null), 'NEWS', 'TOURNEY'),
+				 'news_type'  => util::choose(($tid==null), news::TYPE_NEWS, news::TYPE_TOURNEY)
 				 'id'         => $tid,
 				 'text'       => $_POST['text']));
 	  print $tid ;	  

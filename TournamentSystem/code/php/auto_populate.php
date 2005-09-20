@@ -76,17 +76,14 @@ function auto_populate($a)
       //$v1 = $gt[generate_integer(count($gt))] ;
       $v1 = 1 ;
       $v2 = 'naql-' . generate_string(5) ;
-      $v3 = 'LEAGUE' ;
+      $v3 = tourney::TYPE_LEAGUE ;
 
       $sd = generate_integer(100) ;
 
-      $v4 = date('Y-m-d', time()+(60*60*24*$sd)) ;
-      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
-      $v6 = generate_integer(20) ;
-      $v7 = generate_integer(20) ;
+      $v4 = generate_integer(20) ;
+      $v5 = generate_integer(20) ;
 
-      $n = new tourney(array('game_type_id'=>$v1, 'name'=>$v2, 'tourney_type'=>$v3, 'status'=>'Regular Season',
-			     'signup_start'=>$v4, 'signup_end'=>$v5, 'team_size'=>$v6, 'timelimit'=>$v7)) ;
+      $n = new tourney(array('game_type_id'=>$v1, 'name'=>$v2, 'tourney_type'=>$v3, 'team_size'=>$v4, 'timelimit'=>$v5)) ;
 
       $tour[] = $n->getValue("tourney_id") ;
     }
@@ -145,12 +142,12 @@ function auto_populate($a)
 
       if (generate_boolean())
 	{
-	  $v2 = 'TOURNEY' ;
+	  $v2 = news::TYPE_TOURNEY ;
 	  $v3 = $tour[generate_integer(count($tour))] ;
 	}
       else
 	{
-	  $v2 = 'NEWS' ;
+	  $v2 = news::TYPE_NEWS ;
 	  $v3 = null ;
 	}
 
@@ -198,7 +195,7 @@ function auto_populate($a)
 	      $t->addAdmin($p->getValue("player_id"), $v1) ;
 	    }
 	}
-    
+
       foreach($t->getDivisions() as $d)
 	{
 	  $c = generate_integer(2) + 3 ;
@@ -212,7 +209,8 @@ function auto_populate($a)
 
 	      if ($c2<5)
 		{
-		  $d->addTeam($te->getValue("team_id")) ;
+		  $t->addTeam($te->getValue("team_id")) ;
+		  $t->assignTeamToDiv($te->getValue('team_id'), $d->getValue('division_id')) ;
 
 		  $pc = generate_integer(6) + 4 ;
 		  for ($l=0; $l<$pc; $l++)
@@ -270,6 +268,7 @@ function auto_populate($a)
 			}
 
 		      $players = $team_s->getPlayers($t->getValue('tourney_id')) ;
+
 
 		      $c2 = min(generate_integer(2)+3, count($players)) ;
 		      for ($l=0; $l<$c2; $l++)
@@ -338,7 +337,7 @@ function auto_populate($a)
 		      $v4 = 'comment-' . generate_string(100) ;
 		      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
 		      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
-		      $n = new comment(array('name'=>$v1, 'comment_type'=>'MATCH', 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
+		      $n = new comment(array('name'=>$v1, 'comment_type'=>comment::TYPE_MATCH, 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
 		      
 		      //$comm[] = $n->getValue("comment_id") ;
 		    }
@@ -347,8 +346,7 @@ function auto_populate($a)
 	}
     }
 
-  $sql_str = sprintf("delete from team
-                      where team_id not in(select team_id from tourney_info)", $winning_team, $v1, $m->getValue('match_id')) ;
+  $sql_str = sprintf("delete from team where team_id not in(select team_id from tourney_info)") ;
   $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
 }
 
@@ -395,7 +393,7 @@ try
       
       $v4 = generate_string(25) ;
       
-      $n1 = new news(array('writer_id'=>$v1, 'news_type'=>'COLUMN', 'id'=>null, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
+      $n1 = new news(array('writer_id'=>$v1, 'news_type'=>news::TYPE_COLUMN, 'id'=>null, 'subject'=>$v2, 'news_date'=>$v3, 'text'=>$v4)) ;
     }
 }
 catch (Exception $e)

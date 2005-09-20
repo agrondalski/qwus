@@ -4,14 +4,27 @@ require_once 'login.php' ;
 
 try
 {
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+  $mode = $_REQUEST['mode'];
 
-  if (!$p->isSuperAdmin())
+  if (!util::isNull($_SESSION['user_id']))
     {
-      util::throwException('not authorized') ;
+      $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+
+      if (!$p->isSuperAdmin())
+	{
+	  util::throwException('not authorized') ;
+	}
     }
 
-  $mode = $_REQUEST['mode'];
+  elseif (!util::isNull($_SESSION['team_id']))
+    {
+      $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
+
+      if ($_SESSION[team_id] != $_REQUEST['team_id'] || $mode!='edit')
+	{
+	  util::throwException('not authorized') ;
+	}
+    }
 
   if ($mode == "edit")
     {
@@ -103,12 +116,17 @@ try
   echo "<input type='text' name='password' value='' size='50'></td>";
   echo "</tr>";
   echo "<tr>";
-  echo "<td>Approved:</td><td>";
 
-  $check = util::choose(($approved == "1"), 'checked', '') ;
+  if (util::isNull($_SESSION['team_id']))
+    {
+      echo "<td>Approved:</td><td>";
 
-  echo "<input type='checkbox' name='approved' value='1' ",$check,"></td>";
-  echo "</tr>";
+      $check = util::choose(($approved == "1"), 'checked', '') ;
+
+      echo "<input type='checkbox' name='approved' value='1' ",$check,"></td>";
+      echo "</tr>";
+    }
+
   echo "<tr><td>&nbsp;</td><td><input type='submit' value='Submit' name='B1' class='button'>";
   echo "&nbsp;<input type='reset' value='Reset' name='B2' class='button'></td></tr></table>";
   echo "</p></font>";

@@ -66,7 +66,6 @@ class team
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -157,56 +156,6 @@ class team
 
       elseif ($col == 'isTeamLeader')
 	{
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
-	}
-
-      elseif ($col == 'wins')
-	{
-	  if (!is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
-	}
-
-      elseif ($col == 'losses')
-	{
-	  if (!is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
-	}
-
-      elseif ($col == 'points')
-	{
-	  if (!is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
-	}
-
-      elseif ($col == 'maps_won')
-	{
-	  if (!is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
-	    }
-
-	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
-	}
-
-      elseif ($col == 'maps_lost')
-	{
-	  if (!util::isNull($val) && !is_numeric($val))
-	    {
-	      util::throwException($col . ' is not a numeric value') ;
-	    }
-
 	  return util::nvl(util::mysql_real_escape_string($val), 0) ;
 	}
 
@@ -381,28 +330,6 @@ class team
       return new location(array('location_id'=>$this->location_id)) ;
     }
 
-  public function getValue($col)
-    {
-      $this->validateColumnName($col) ;
-      return htmlentities($this->$col) ;
-    }
-
-  public function update($col, $val)
-    {
-      $this->$col = $this->validateColumn($val, $col) ;
-
-      if (is_numeric($this->$col))
-	{
-	  $sql_str = sprintf("update team set %s=%d where team_id=%d", $col, $this->$col, $this->team_id) ;
-	}
-      else
-	{
-	  $sql_str = sprintf("update team set %s='%s' where team_id=%d", $col, $this->$col, $this->team_id) ;
-	}
-
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-    }
-
   public function getDivision($tid)
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
@@ -414,12 +341,16 @@ class team
 
       if ($row = mysql_fetch_row($result))
 	{
-	  return new division(array('division_id'=>$row[0])) ;
+	  if (!util::isNull($row[0]))
+	  {
+	    mysql_free_result($result) ;
+	    return new division(array('division_id'=>$row[0])) ;
+	  }
 	}
-      else
-	{
-	  return null ;
-	}
+	  
+      
+      mysql_free_result($result) ;
+      return null ;
     }
 
   public function getCareerInfo()
@@ -692,22 +623,26 @@ class team
       return util::row_sort($arr, $a) ;
     }
 
-  public function updateInfo($col, $val, $div)
+  public function getValue($col)
     {
-      $tid = tourney::validateColumn($div, 'tourney_id') ;
-      $val = $this->validateColumn($val, $col) ;
+      $this->validateColumnName($col) ;
+      return htmlentities($this->$col) ;
+    }
+
+  public function update($col, $val)
+    {
+      $this->$col = $this->validateColumn($val, $col) ;
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update tourney_info set %s=%d where team_id=%d and division_id=%d", $col, $val, $this->team_id, $tid) ;
+	  $sql_str = sprintf("update team set %s=%d where team_id=%d", $col, $this->$col, $this->team_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update tourney_info set %s='%s' where team_id=%d and division_id=%d", $col, $val, $this->team_id, $tid) ;
+	  $sql_str = sprintf("update team set %s='%s' where team_id=%d", $col, $this->$col, $this->team_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
     }
 
   public function delete()

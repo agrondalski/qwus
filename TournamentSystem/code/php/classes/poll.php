@@ -7,6 +7,11 @@ class poll
   private $id ;
   private $isCurrent ;
 
+  const TYPE_MATCH =  0 ;
+  const TYPE_NEWS = 1 ;
+  const TYPE_TOURNEY = 2 ;
+  const TYPE_COLUMN = 3 ;
+
   function __construct($a)
     {
       if (array_key_exists('poll_id', $a))
@@ -60,7 +65,6 @@ class poll
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -74,6 +78,8 @@ class poll
 
   public static function validateColumn($val, $col, $cons=false)
     {
+      $poll_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+
       if ($col == 'poll_id')
 	{
 	  if (!$cons)
@@ -106,15 +112,15 @@ class poll
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = self::TYPE_MATCH ;
 	    }
-
-	  if (!util::isNull($val) && $val!='MATCH' && $val!='NEWS' && $val!='TOURNEY' && $val!='COLUMN')
+	  
+	  if (!is_numeric($val))
 	    {
 	      util::throwException('invalid value specified for ' . $col) ;
 	    }
 
-	  return util::nvl(util::nvl(util::mysql_real_escape_string($val), false), 'NEWS');
+	  return $poll_type_enum[$val] ;
 	}
 
       elseif ($col == 'id')
@@ -166,6 +172,12 @@ class poll
 	{
 	  util::throwException('invalid column specified') ;
 	}
+    }
+
+  public function getPollTypes()
+    {
+      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+      return $arr ;
     }
 
   public function addPollOption($popt)

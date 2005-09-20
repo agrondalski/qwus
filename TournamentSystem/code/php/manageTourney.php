@@ -23,8 +23,7 @@ try
       $t_name    = $tour->getValue('name');
       $gt_id     = $tour->getValue('game_type_id');
       $tour_type = $tour->getValue('tourney_type');
-      $sstart    = $tour->getValue('signup_start');
-      $send      = $tour->getValue('signup_end');
+      $status    = $tour->getValue('status');
       $team_size = $tour->getValue('team_size');
       $timelimit = $tour->getValue('timelimit');
     }
@@ -73,47 +72,40 @@ try
   echo "</select></td>";
   echo "</tr>";
 
-  echo "<tr><td>Game Type:</td><td>";
+  echo "<tr><td>Tournament Type:</td><td>";
   echo "<select name='tourney_type'>";
 
-  if ($tour_type=='LEAGUE')
+  foreach(tourney::getTourneyTypes() as $key=>$value)
     {
-      echo "<option value='1' selected>League" ;
-    }
-  else
-    {
-      echo "<option value='1'>League" ;
-    }
+      $sel = "";
+      if ($value == $tour_type)
+	{
+	  $sel = "selected";
+	}
 
-  if ($tour_type=='TOURNAMENT')
-    {
-      echo "<option value='2' selected>Tournament" ;
-    }
-  else
-    {
-      echo "<option value='2'>Tournament" ;
-    }
-
-  if ($tour_type=='LADDER')
-    {
-      echo "<option value='3' selected>Ladder" ;
-    }
-  else
-    {
-      echo "<option value='3'>Ladder" ;
+      echo "<option value='" . $key . "'" . $sel . ">" . $value . $state_name ;
     }
 
   echo "</select></td>";
   echo "</tr>";
 
-  echo "<tr>";
-  echo "<td>Signup Start:</td><td>";
-  echo "<input type='text' name='signup_start' maxlength='50' value='" . $sstart . "' size='50'></td>";
+  echo "<tr><td>Status:</td><td>";
+  echo "<select name='status'>";
+
+  foreach(tourney::getStatusTypes() as $key=>$value)
+    {
+      $sel = "";
+      if ($value == $status)
+	{
+	  $sel = "selected";
+	}
+
+      echo "<option value='" . $key . "'" . $sel . ">" . $value . $state_name ;
+    }
+
+  echo "</select></td>";
   echo "</tr>";
-  echo "<tr>";
-  echo "<td>Signup End:</td><td>";
-  echo "<input type='text' name='signup_end' maxlength='50' value='" . $send . "' size='50'></td>";
-  echo "</tr>";
+
   echo "<tr>";
   echo "<td>Team size:</td><td>";
   echo "<input type='text' name='team_size' maxlength='50' value='" . $team_size . "' size='50'></td>";
@@ -130,5 +122,5 @@ try
 
   include 'listTourneys.php';
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>

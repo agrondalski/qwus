@@ -4,8 +4,9 @@ require_once 'login.php' ;
 
 try
 {
-  $tid = $_POST['tourney_id'];
+  $tid = $_REQUEST['tourney_id'];
 
+  $t = new tourney(array('tourney_id'=>$tid));
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
   if (!$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
@@ -27,7 +28,7 @@ try
 	{
 	  try
 	    {
-	      $div->removeTeam($team_id);
+	      $t->removeTeamFromDiv($team_id, $div->getValue('division_id'));
 	      $msg = "<br>Team deleted from div!<br>";
 	    }
 	  catch (Exception $e)
@@ -49,7 +50,7 @@ try
 	{
 	  try
 	    {
-	      $div->addTeam($team_id);
+	      $t->assignTeamToDiv($team_id, $div->getValue('division_id'));
 	      $msg = "<br>Team added!<br>";
 	    }
 	  catch (Exception $e)

@@ -62,5 +62,5 @@ try
   echo $msg;
   include 'listMaps.php';
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>

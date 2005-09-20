@@ -9,6 +9,10 @@ class news
   private $news_date ;
   private $text ;
 
+  const TYPE_NEWS = 0 ;
+  const TYPE_TOURNEY = 1 ;
+  const TYPE_COLUMN = 2 ;
+
   function __construct($a)
     {
       if (array_key_exists('news_id', $a))
@@ -64,7 +68,6 @@ class news
 
   public function validateColumnName($col)
     {
-      $found ;
       foreach($this as $key => $value)
 	{
 	  if ($col === $key)
@@ -78,6 +81,8 @@ class news
 
   public static function validateColumn($val, $col, $cons=false)
     {
+      $news_type_enum = array(self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+
       if ($col == 'news_id')
 	{
 	  if (!$cons)
@@ -115,15 +120,15 @@ class news
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = self::TYPE_NEWS ;
 	    }
-
-	  if (!util::isNull($val) && $val!='NEWS' && $val!='TOURNEY' && $val!='COLUMN')
+	  
+	  if (!is_numeric($val))
 	    {
 	      util::throwException('invalid value specified for ' . $col) ;
 	    }
 
-	  return util::nvl(util::mysql_real_escape_string($val), 'NEWS');
+	  return $news_type_enum[$val] ;
 	}
 
       elseif ($col == 'id')
@@ -187,7 +192,7 @@ class news
 
   public static function getNews($a, $l)
     {
-      $sql_str = sprintf("select n.* from news n where news_type='NEWS' %s", util::getLimit($l)) ;
+      $sql_str = sprintf("select n.* from news n where news_type='News' %s", util::getLimit($l)) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
@@ -221,7 +226,7 @@ class news
 
   public static function getNewsCount()
     {
-      $sql_str = sprintf("select count(*) from news n where news_type='NEWS'") ;
+      $sql_str = sprintf("select count(*) from news n where news_type='News'") ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if ($row = mysql_fetch_row($result))
@@ -234,6 +239,12 @@ class news
 	  mysql_free_result($result) ;
 	  return 0 ;
 	}
+    }
+
+  public function getNewsTypes()
+    {
+      $arr = array(self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+      return $arr ;
     }
 
   public function getComments()

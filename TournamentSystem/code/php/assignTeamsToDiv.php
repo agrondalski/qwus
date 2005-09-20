@@ -80,12 +80,9 @@ try
 	echo "<input type='hidden' name='division_id' value='$division_id'>";
 	echo "<td><select name='team_id'>";
 
-	foreach (team::getAllTeams() as $tmp)
+	foreach ($t->getUnassignedTeams() as $tmp)
 	  {
-	    if (!$t->hasTeam($tmp->getValue('team_id')))
-	      {
-		echo "<option value='",$tmp->getValue('team_id'),"'>",$tmp->getValue('name');
-	      }
+	    echo "<option value='",$tmp->getValue('team_id'),"'>",$tmp->getValue('name');
 	  }
 
 	echo "</select></td></tr>";

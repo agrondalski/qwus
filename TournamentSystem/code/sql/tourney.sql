@@ -10,10 +10,8 @@ create table tourney(
   tourney_id         integer       NOT NULL auto_increment,
   game_type_id       integer       NOT NULL,
   name               varchar(250)  NOT NULL,
-  tourney_type       ENUM ('LADDER', 'LEAGUE', 'TOURNAMENT') NOT NULL default 'LEAGUE',
-  status             varchar(250),
-  signup_start       date          NOT NULL,
-  signup_end         date          NOT NULL,
+  tourney_type       ENUM ('Tournament', 'League', 'Ladder') NOT NULL default 'LEAGUE',
+  status             ENUM ('Signups', 'Regular Season', 'Playoffs', 'Complete') NOT NULL default 'Signups',
   team_size          integer       NOT NULL,
   timelimit          integer       NOT NULL,
 --
@@ -74,13 +72,8 @@ ENGINE=INNODB ;
 create table tourney_info(
   tourney_id   integer NOT NULL,
   team_id      integer NOT NULL,
-  division_id  integer NOT NULL,
-  wins         integer NOT NULL default 0,
-  losses       integer NOT NULL default 0,
-  points       integer NOT NULL default 0,
-  maps_won     integer NOT NULL default 0,
-  maps_lost    integer NOT NULL default 0,
---
+  division_id  integer,
+
   constraint tourney_participants_pk primary key(tourney_id, team_id))
 ENGINE=INNODB ;
 
@@ -174,7 +167,7 @@ ENGINE=INNODB ;
 
 create table comments(
   comment_id    integer       NOT NULL auto_increment,
-  comment_type  ENUM('MATCH', 'NEWS', 'COLUMN') NOT NULL default 'NEWS', 
+  comment_type  ENUM('Match', 'News', 'Column') NOT NULL default 'NEWS', 
   id            integer,
   name          varchar(250)  NOT NULL,
   player_ip     varchar(250)  NOT NULL,
@@ -188,7 +181,7 @@ ENGINE=INNODB ;
 create table news(
   news_id       bigint      NOT NULL auto_increment, 
   writer_id     integer     NOT NULL,
-  news_type     ENUM('NEWS', 'TOURNEY', 'COLUMN') NOT NULL default 'NEWS', 
+  news_type     ENUM('News', 'Tournament', 'Column') NOT NULL default 'NEWS', 
   id            integer,
   subject       text        NOT NULL,
   news_date     date        NOT NULL,
@@ -210,7 +203,7 @@ ENGINE=INNODB ;
 create table poll( 
   poll_id     integer NOT NULL auto_increment, 
   topic       varchar(250),
-  poll_type   ENUM('MATCH', 'NEWS', 'TOURNEY', 'COLUMN') NOT NULL default 'MATCH', 
+  poll_type   ENUM('Match', 'News', 'Tournament', 'Column') NOT NULL default 'MATCH', 
   id          integer, 
   isCurrent   boolean  NOT NULL default FALSE,
 --

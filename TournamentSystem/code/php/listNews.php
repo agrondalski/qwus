@@ -66,5 +66,5 @@ try
       echo "<p><a href='?a=manageNews'>Create News</a>";
     }
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>
