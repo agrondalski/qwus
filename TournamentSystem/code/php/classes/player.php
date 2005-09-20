@@ -489,12 +489,12 @@ class player
 
   public function getTourneyInfo($tid)
     {
-      $tid = division::validateColumn($tid, 'tourney_id') ;
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-      $div = $this->getDivision($tid) ;
-      if (!util::isNull($div))
+      $diva = $this->getDivision($tid) ;
+      if (!util::isNull($diva))
 	{
-	  $div = $div->getValue('division_id') ;
+	  $div = $diva->getValue('division_id') ;
 	}
       else
 	{
@@ -508,8 +508,11 @@ class player
       $arr['player_id'] = $this->player_id ;
       $arr['name']      = $this->name ;
       $arr['location_id'] = $this->location_id ;
-      $arr['team_id']   = $team_id ;
-      $arr['team_name'] = $tm->getValue('name') ;
+
+      $arr['team_id']       = $tm->getValue('team_id') ;
+      $arr['team_name']     = $tm->getValue('name') ;
+      $arr['division_id']   = $diva->getValue('division_id') ;
+      $arr['division_name'] = $diva->getValue('name') ;
 
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms

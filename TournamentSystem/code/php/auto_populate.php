@@ -401,5 +401,5 @@ catch (Exception $e)
   print $e;
 }
 
-print "DONE in " . ($te-$ts) . " seconds" ;
+print "<br>DONE in " . ($te-$ts) . " seconds<br>" ;
 ?>

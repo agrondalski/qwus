@@ -474,7 +474,7 @@ class team
 
   public function getTourneyInfo($tid)
     {
-      $tid = division::validateColumn($tid, 'tourney_id') ;
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
       $div = $this->getDivision($tid) ;
       if (!util::isNull($div))
