@@ -9,6 +9,7 @@
 # better team color support (calculate based on mode of players)
 # team stats
 # player minutes played
+# player line graph
 
 use Benchmark;
 use GD::Graph::lines;
@@ -22,6 +23,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
+  $self->{SCORE_GRAPH} = [];
   $self->{TOP_COLOR} = undef;
   $self->{BOTTOM_COLOR} = undef;
   $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
@@ -81,6 +83,33 @@ sub bottomColor
   my $self = shift;
   if (@_) {$self->{BOTTOM_COLOR} = shift }
   return $self->{BOTTOM_COLOR};
+}
+
+sub scoreArray
+{
+    my $self = shift;
+    if (@_) { @{ $self->{SCORE_GRAPH} } = @_ }
+    return @{ $self->{SCORE_GRAPH} };
+}
+
+sub padScoreArray
+{
+  my $self = shift;
+  unshift(@{$self->{SCORE_GRAPH}}, 0);
+}
+
+sub addScore
+{
+  my $self = shift;
+  if (@_)
+  {
+    my $scoreToAdd = shift;
+   # foreach $player ($self->players)
+   # {
+#	if ($playerToAdd eq $player) { return; }
+ #    }
+      push(@{ $self->{SCORE_GRAPH} }, $scoreToAdd);
+  }
 }
 
 sub rocketDeaths
@@ -832,6 +861,10 @@ print $string;
       push(@graphTime, $1);
       push(@graphTeamOneScore, $teamOneScore);
       push(@graphTeamTwoScore, $teamTwoScore);
+      foreach $player (@players)
+      {
+        $player->addScore($player->points);
+      }
     }
     elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/)
     {
@@ -853,6 +886,19 @@ print $string;
   push(@graphTeams, $teamOneName);
   push(@graphTeams, $teamTwoName);
 
+  # first we add the last score to each players score array
+  # then if the size of the score array is smaller than the time
+  # array we pad it with leading zeroes
+  foreach $player (@players)
+  {
+    $player->addScore($player->points);
+    my @playerScoreArray = $player->scoreArray();
+    for($i = 0; $i < @graphTime - @playerScoreArray; $i++)
+    {
+      $player->padScoreArray();
+    }
+  }
+
 # this seems like a suboptimal solution
   my $teamOne = findTeam($teamOneName);
   my $teamTwo = findTeam($teamTwoName);
@@ -871,20 +917,19 @@ print $string;
     {
       $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
     }
-  }
-  
- # $shell = `rm "$tempMvd"`;
+  }  
+  $shell = `rm "$tempMvd"`;
 }
 
-
-
+calculateTeamColors();
 outputHeader();
 #outputHTML();
 outputTeamHTML();
 #outputForm();
-outputGraph(200,150);
-outputGraph(800,600);
-#outputPlayerPieCharts();
+outputTeamScoreGraph(200,150);
+outputTeamScoreGraph(800,600);
+outputPlayerScoreGraph(800,600);
+outputPlayerPieCharts();
 outputFooter();
 
 $end = new Benchmark;
@@ -1053,7 +1098,35 @@ sub outputFooter
   print "</HTML>\n";
 }
 
-sub outputGraph
+sub outputPlayerScoreGraph
+{
+    my $x = 400; my $y = 300;
+    if (@_) { $x = shift; $y = shift; }
+   # my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
+    my @data = (\@graphTime);
+    foreach $player (@players)
+    { 
+       my @scoreArray = $player->scoreArray();
+       push(@data, \@scoreArray); 
+       push(@legendPlayers, $player->name);
+    }
+    my $graph = GD::Graph::lines->new($x,$y);
+  $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")\
+",
+              x_label => "time",
+              x_label_position => .5,
+              y_label => "score",
+              line_width => 2
+	      );
+    $graph->set_legend(@legendPlayers);
+    my $image = $graph->plot(\@data) or die ("Died creating image");
+    open(OUT, ">Players_" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
+    binmode OUT;
+    print OUT $image->png();
+    close OUT;
+}
+
+sub outputTeamScoreGraph
 {
   my $x = 400; my $y = 300;
   if (@_) { $x = shift; $y = shift; }
@@ -1164,9 +1237,45 @@ sub colorConverter
 # available colors:
 # white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
 
-
 sub complementColor
 {
   my $color = shift;
   return 0;
+}
+
+sub calculateMode
+{
+  my @array = @_;
+  my @mode = undef;
+  foreach $element (@array)
+  {
+    $mode[$element]++;
+  }
+  my $i = 0; my $max = 0; my $maxLocation = 0;
+  foreach $element (@mode)
+  {
+#    if ($element > $max)
+#    {
+#      $max = $element;
+#      $maxLocation = $i;
+#    }
+    $i++;
+  }
+  return $array[$maxLocation];
+}
+
+sub calculateTeamColors
+{
+  foreach $team (@teams)
+  {
+      my @teamPlayers = $team->players;
+      my @colors = undef;
+      foreach $player (@teamPlayers)
+      {
+	 $player = findPlayer($player);
+         push(@colors, $player->bottomColor);
+         print $player->bottomColor . " ";
+      }
+#      print calculateMode(\@colors) . "\n";
+  }
 }
