@@ -139,6 +139,15 @@ try
   // *** PART 3
   if ($match_id != "") 
     {
+    
+      if ($_SESSION['team_id'] != "")
+      {
+      	$dis = "disabled";
+      }
+      else
+      {
+      	$dis = "";
+      }
       echo "<h2>Match Details</h2>";
       echo "<form action='?a=reportMatch' method=post>";
       echo "<table border=0 cellpadding=2 cellspacing=0>";
@@ -155,7 +164,7 @@ try
       echo "<option value='",$t2->getValue('team_id'),"'>",$t2->getValue('name'),"";
       echo "</select></td></tr>";
       echo "<tr><td><b>Match Approved?</b></td>";
-      echo "<td><input type='checkbox' name='approved' value='1'></td></tr>";
+      echo "<td><input type='checkbox' name='approved' value='1' $dis></td></tr>";
       echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button'>";
       echo "<br></td></tr>";
       echo "</table></form>";

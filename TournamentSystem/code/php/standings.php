@@ -13,7 +13,7 @@ foreach ($t->getDivisions() as $div)
 {
 	echo "<b>",$div->getValue('name'),"</b><br>";
 	echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-	echo "<tr>";
+	echo "<tr bgcolor='#999999'>";
 	echo "<th>#</th>";
 	echo "<th>Team</th>";
 	echo "<th nowrap>W (2-0 2-1)</th>";
@@ -52,7 +52,16 @@ foreach ($t->getDivisions() as $div)
 			$m02 = "0";
 		}
 		
-		echo "<tr>";
+		if ($rank % 2 == 1) 
+		{
+			$clr = "#CCCCCC";
+		}
+		else
+		{
+			$clr = "#C0C0C0";
+		}
+		
+		echo "<tr bgcolor='$clr'>";
 		echo "<td nowrap>",$rank,"</td>";
 		echo "<td nowrap><a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$tm['team_id'],"'>";
 		echo $tm['name'],"</a></td>";
