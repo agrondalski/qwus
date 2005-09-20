@@ -518,7 +518,7 @@ class player
                           from stats s, game g, match_table m, match_schedule ms
                           where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
                             and m.schedule_id=ms.schedule_id and ms.division_id=%d
-                          order by m.match_id", $team_id, $this->player_id, util::SCORE, $div) ;
+                          order by m.match_id", $this->player_id, util::SCORE, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $total_games   = 0 ;
@@ -534,7 +534,6 @@ class player
 	  $total_games += 1 ;
 	  $total_frags += $row[0] ;
 
-	  /*
 	  if ($team_id==$row[3])
 	    {
 	      $team_score += $row[4] ;
@@ -543,7 +542,6 @@ class player
 	    {
 	      $team_score += $row[5] ;
 	    }
-	  */
 
 	  $g = new game(array('game_id'=>$row[6])) ;
 	  $player_games += count($g->getTeamPlayers($team_id)) ;
@@ -574,6 +572,7 @@ class player
       $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
 
       mysql_free_result($result) ;
+
 
       $sql_str = sprintf("select s.stat_name, s.value
                           from stats s, game g, match_table m, match_schedule ms
