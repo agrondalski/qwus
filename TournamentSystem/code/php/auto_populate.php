@@ -192,7 +192,7 @@ function auto_populate($a)
 	  
 	  if (! $t->hasAdmin($p->getValue("player_id")))
 	    {
-	      $t->addAdmin($p->getValue("player_id"), $v1) ;
+	      $t->addAdmin($p->getValue("player_id")) ;
 	    }
 	}
 
@@ -325,22 +325,18 @@ function auto_populate($a)
 		    }
 		}
 
-	      for ($j=0; $j<count($mata); $j++)
-		{
-		  $c = generate_integer(3)+2 ;
+	      $c = generate_integer(3)+2 ;
 		  
-		  for ($l=0; $l<$c; $l++)
-		    {
-		      $v1 = 'player-' . generate_string(5) ;
-		      $v2 = $mata[$j]->getValue('match_id') ;
-		      $v3 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
-		      $v4 = 'comment-' . generate_string(100) ;
-		      $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
-		      $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
-		      $n = new comment(array('name'=>$v1, 'comment_type'=>comment::TYPE_MATCH, 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
-		      
-		      //$comm[] = $n->getValue("comment_id") ;
-		    }
+	      for ($l=0; $l<$c; $l++)
+		{
+		  $v1 = 'player-' . generate_string(5) ;
+		  $v2 = $m->getValue('match_id') ;
+		  $v3 = generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) . "." . generate_integer(1000) ;
+		  $v4 = 'comment-' . generate_string(100) ;
+		  $v5 = date('Y-m-d', time()+(60*60*24*($sd+generate_integer(100)+1))) ;
+		  $v6 = date('H:i:s', time()+(60*(generate_integer(1440)))) ;
+		  $n = new comment(array('name'=>$v1, 'comment_type'=>comment::TYPE_MATCH, 'id'=>$v2, 'player_ip'=>$v3, 'comment_text'=>$v4, 'comment_date'=>$v5, 'comment_time'=>$v6)) ;
+		  //$comm[] = $n->getValue("comment_id") ;
 		}
 	    }
 	}

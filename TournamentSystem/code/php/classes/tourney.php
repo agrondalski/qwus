@@ -500,7 +500,7 @@ class tourney
     {
       $id = player::validateColumn($id, 'player_id') ;
 
-      $sql_str = sprintf("insert into tourney_admins(tourney_id, player_id) values(%d, %d, %d)", $this->tourney_id, $id) ;
+      $sql_str = sprintf("insert into tourney_admins(tourney_id, player_id) values(%d, %d)", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;
