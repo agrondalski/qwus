@@ -13,7 +13,7 @@ try
 
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-  if (!$p->isSuperAdmin() && $t!=null && $p->canPostNews($t->getValue('tourney_id')))
+  if (!$p->isSuperAdmin() && $t!=null && $p->isTourneyAdmin($t->getValue('tourney_id')))
     {
       util::throwException('not authorized') ;
     }
@@ -59,7 +59,7 @@ try
 	  $news = new news(array('writer_id'  => $_POST['writer_id'],
 				 'subject'    => $_POST['subject'],
 				 'news_date'  => date("Y-m-d"),
-				 'news_type'  => util::choose(($tid==null), news::TYPE_NEWS, news::TYPE_TOURNEY)
+				 'news_type'  => util::choose(($tid==null), news::TYPE_NEWS, news::TYPE_TOURNEY),
 				 'id'         => $tid,
 				 'text'       => $_POST['text']));
 	  print $tid ;	  

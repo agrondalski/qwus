@@ -22,7 +22,6 @@ ENGINE=INNODB ;
 create table tourney_admins(
   tourney_id   integer  NOT NULL,
   player_id    integer  NOT NULL,
-  canPostNews  boolean  NOT NULL default false,
 --
   constraint tourney_admins_fk primary key(tourney_id, player_id))
 ENGINE=INNODB ;
@@ -168,7 +167,7 @@ ENGINE=INNODB ;
 create table comments(
   comment_id    integer       NOT NULL auto_increment,
   comment_type  ENUM('Match', 'News', 'Column') NOT NULL default 'NEWS', 
-  id            integer,
+  id            integer       NOT NULL,
   name          varchar(250)  NOT NULL,
   player_ip     varchar(250)  NOT NULL,
   comment_text  MEDIUMTEXT    NOT NULL,
@@ -204,21 +203,38 @@ create table poll(
   poll_id     integer NOT NULL auto_increment, 
   topic       varchar(250),
   poll_type   ENUM('Match', 'News', 'Tournament', 'Column') NOT NULL default 'MATCH', 
-  id          integer, 
+  id          integer  NOT NULL, 
   isCurrent   boolean  NOT NULL default FALSE,
 --
   constraint poll_pk primary key(poll_id))
 ENGINE=INNODB ;
   
 create table poll_options( 
-   poll_id      integer      NOT NULL, 
-   option_id    integer      NOT NULL,
-   poll_option  varchar(250) NOT NULL, 
-   votes        integer      NOT NULL default 0, 
+  poll_id      integer      NOT NULL, 
+  option_id    integer      NOT NULL,
+  poll_option  varchar(250) NOT NULL, 
+  votes        integer      NOT NULL default 0, 
 --
-   constraint poll_options_pk primary key(poll_id, poll_option))
+  constraint poll_options_pk primary key(poll_id, poll_option))
 ENGINE=INNODB ;
-;
+
+create table poll_votes(
+  poll_id  integer     NOT NULL,
+  vote_ip  varchar(25) NOT NULL,
+--
+  constraint poll_votes_pk primary key(poll_id, vote_ip))
+ENGINE=INNODB ;
+
+create table file_table(
+  file_id    integer       NOT NULL auto_increment,
+  file_type  ENUM('Game', 'Match') NOT NULL default 'Game',
+  id         integer       NOT NULL,
+  file_desc  varchar(250)  NOT NULL,
+  url        varchar(250)  NOT NULL,
+--
+  constraint file_table_pk primary key(file_id),
+  constraint file_table_unq1 unique(file_type, file_desc, id))
+ENGINE=INNODB ;
 
 -- Add RIC constraints
 alter table tourney add constraint tourney_fk1 foreign key(game_type_id) references game_type(game_type_id) ;

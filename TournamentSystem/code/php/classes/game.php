@@ -6,8 +6,6 @@ class game
   private $map_id ;
   private $team1_score ;
   private $team2_score ;
-  private $screenshot_url ;
-  private $demo_url ;
 
   function __construct($a)
     {
@@ -30,9 +28,9 @@ class game
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into game(match_id, map_id, team1_score, team2_score, screenshot_url, demo_url)" .
-                         "values(%d, %d, %d, %d, '%s', '%s')",
-			 $this->match_id, $this->map_id, $this->team1_score, $this->team2_score, $this->screenshot_url, $this->demo_url) ;
+      $sql_str = sprintf("insert into game(match_id, map_id, team1_score, team2_score)" .
+                         "values(%d, %d, %d, %d)",
+			 $this->match_id, $this->map_id, $this->team1_score, $this->team2_score) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->game_id = mysql_insert_id() ;
@@ -40,7 +38,7 @@ class game
 
   private function getGameInfo()
     {
-      $sql_str = sprintf("select match_id, map_id, team1_score, team2_score, screenshot_url, demo_url from game where game_id=%d", $this->game_id) ;
+      $sql_str = sprintf("select match_id, map_id, team1_score, team2_score from game where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -54,8 +52,6 @@ class game
       $this->map_id          = $row[1] ;
       $this->team1_score     = $row[2] ;
       $this->team2_score     = $row[3] ; 
-      $this->screenshot_url  = $row[4] ; 
-      $this->demo_url        = $row[5] ;
 
       mysql_free_result($result) ;
 
@@ -130,16 +126,6 @@ class game
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'screenshot_url')
-	{
-	  return util::mysql_real_escape_string($val) ;
-	}
-
-      elseif ($col == 'demo_url')
-	{
-	  return util::mysql_real_escape_string($val) ;
-	}
-
       else
 	{
 	  util::throwException('invalid column specified') ;
@@ -154,6 +140,22 @@ class game
       while ($row=mysql_fetch_row($result))
 	{
 	  $arr[] = new stats(array('player_id'=>$row[0], 'game_id'=>$this->game_id)) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getFiles()
+    {
+      $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
+
+      $sql_str = sprintf("select f.file_id from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new file(array('file_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;

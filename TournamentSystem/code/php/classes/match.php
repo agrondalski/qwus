@@ -213,6 +213,22 @@ class match
       return $arr ;
     }
 
+  public function getFiles()
+    {
+      $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
+
+      $sql_str = sprintf("select f.file_id from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new file(array('file_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTeams()
     {
       return array(new team(array('team_id'=>$this->team2_id)), new team(array('team_id'=>$this->team1_id))) ;

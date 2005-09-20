@@ -124,7 +124,7 @@ function auto_populate($a)
       $v4 = $loc[generate_integer(count($loc))] ;
       //$v5 = generate_string(10) ;
       $v5 = 'x' ;
-      $v6 = generate_boolean() ;
+      $v6 = true ;
       $v7 = generate_string(4) ;
 
       try

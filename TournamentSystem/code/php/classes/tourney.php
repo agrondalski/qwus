@@ -278,7 +278,10 @@ class tourney
 
   public function getPlayers()
     {
-      $sql_str = sprintf("select pi.player_id from player_info pi where pi.tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select pi.player_id from
+                          player_info pi, tourney_info ti
+                          where pi.tourney_id=%d and pi.team_id=ti.team_id and ti.tourney_id=pi.tourney_id and ti.division_id is not null",
+			 $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -493,12 +496,11 @@ class tourney
 	}
     }
 
-  public function addAdmin($id, $pn)
+  public function addAdmin($id)
     {
       $id = player::validateColumn($id, 'player_id') ;
-      $pn = player::validateColumn($pn, 'canPostNews') ;
 
-      $sql_str = sprintf("insert into tourney_admins(tourney_id, player_id, canPostNews) values(%d, %d, %d)", $this->tourney_id, $id, $pn) ;
+      $sql_str = sprintf("insert into tourney_admins(tourney_id, player_id) values(%d, %d, %d)", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       mysql_free_result($result) ;

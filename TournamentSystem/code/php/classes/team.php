@@ -201,7 +201,7 @@ class team
 
   public function passwordMatches($pass)
     {
-      if (md5($pass)==$this->password)
+      if (md5($pass)==$this->password and $this->approved)
 	{
 	  return true ;
 	}

@@ -150,11 +150,6 @@ class player
 	  return util::nvl(util::mysql_real_escape_string($val), false) ;
 	}
 
-      elseif ($col == 'canPostNews')
-	{
-	  return util::nvl(util::mysql_real_escape_string($val), false) ;
-	}
-
       else
 	{
 	  util::throwException('invalid column specified') ;
@@ -248,44 +243,6 @@ class player
 	}
 
     }
-
-  public function canPostNews($tid)
-    {
-      $isa = $this->isSuperAdmin() ;
-
-      if ($isa)
-	{
-	  return true;
-	}
-      elseif (util::isNull($tid))
-	{
-	  return false ;
-	}
-
-      $tid = tourney::validateColumn($tid, 'tourney_id') ;
-
-      $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d and canPostNews=true", $tid, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if ($row = mysql_fetch_row($result))
-	{
-	  return ($row[0]>0) ;
-	}
-      else
-	{
-	  util::throwException('this cannot ever occur') ;
-	}
-    }
-
-  public function updateCanPostNews($tid, $pn)
-    {
-      $tid = tourney::validateColumn($tid, 'tourney_id') ;
-      $pn = player::validateColumn($pn, 'canPostNews') ;
-
-      $sql_str = sprintf("update tourney_admins ta set ta.canPostNews=%d where ta.tourney_id=%d and ta.player_id=%d", $pn, $tid, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-    }
-
 
   public function hasColumn()
     {
@@ -514,11 +471,12 @@ class player
       $arr['division_id']   = $diva->getValue('division_id') ;
       $arr['division_name'] = $diva->getValue('name') ;
 
-      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, m.team1_id, g.team1_score, g.team2_score, g.game_id
+      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, m.team1_id, g.team1_score, g.team2_score,
+                                (select count(*) from stats s2 where s2.game_id=g.game_id and s2.stat_name='%s' and s2.team_id=s.team_id)
                           from stats s, game g, match_table m, match_schedule ms
-                          where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                          where s.player_id=%d and s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
                             and m.schedule_id=ms.schedule_id and ms.division_id=%d
-                          order by m.match_id", $this->player_id, util::SCORE, $div) ;
+                          order by m.match_id", util::SCORE, $this->player_id, util::SCORE, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $total_games   = 0 ;
@@ -528,6 +486,7 @@ class player
       $matches_lost  = 0 ;
       $team_score    = 0 ;
       $old_match_id  = 0 ;
+      $game_avg = 0 ;
 
       while ($row = mysql_fetch_row($result))
 	{
@@ -536,15 +495,14 @@ class player
 
 	  if ($team_id==$row[3])
 	    {
-	      $team_score += $row[4] ;
+	      $team_score = $row[4] ;
 	    }
 	  else
 	    {
-	      $team_score += $row[5] ;
+	      $team_score = $row[5] ;
 	    }
 
-	  $g = new game(array('game_id'=>$row[6])) ;
-	  $player_games += count($g->getTeamPlayers($team_id)) ;
+	  $game_avg += $team_score/$row[6] ;
 
 	  if ($row[1] != $old_match_id)
 	    {
@@ -569,7 +527,7 @@ class player
       $arr['frags_per_game'] = round($total_frags/$total_games, 1);
       $arr['matches_won']    = $matches_won ;
       $arr['matches_lost']   = $matches_lost ;
-      $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
+      $arr['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
 
       mysql_free_result($result) ;
 

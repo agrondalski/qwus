@@ -18,9 +18,9 @@ class poll
 	{
 	  $this->poll_id = $this->validateColumn($a['poll_id'], 'poll_id') ;
 
-	  if ($this->getNewsInfo()==util::NOTFOUND)
+	  if ($this->getPollInfo()==util::NOTFOUND)
 	    {
-	      util::throwException("No news exists with specified id");
+	      util::throwException("No poll exists with specified id");
 	    }
 	  else
 	    {
@@ -41,9 +41,9 @@ class poll
       $this->poll_id = mysql_insert_id() ;
     }
 
-  private function getNewsInfo()
+  private function getPollInfo()
     {
-      $sql_str = sprintf("select topic, poll_type, id, isCurrent from news where poll_id=%d", $this->poll_id) ;
+      $sql_str = sprintf("select topic, poll_type, id, isCurrent from poll where poll_id=%d", $this->poll_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -54,7 +54,7 @@ class poll
       $row = mysql_fetch_row($result) ;
 
       $this->topic       = $row[0] ;
-      $this->news_tyoe   = $row[1] ;
+      $this->poll_tyoe   = $row[1] ;
       $this->id          = $row[2] ;
       $this->isCurrent   = $row[3] ;
 
@@ -125,7 +125,12 @@ class poll
 
       elseif ($col == 'id')
 	{
-	  if (!util::isNull($val) && !is_numeric($val))
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
 	    {
 	      util::throwException($col . ' is not a numeric value') ;
 	    }
@@ -135,12 +140,7 @@ class poll
 
       elseif ($col == 'isCurrent')
 	{
-	  if (util::isNull($val))
-	    {
-	      util::throwException($col . ' cannot be null') ;
-	    }
-
-	  return util::mysql_real_escape_string($val) ;
+	  return util::nvl(util::mysql_real_escape_string($val), true) ;
 	}
 
       elseif ($col == 'option_id')
@@ -204,6 +204,17 @@ class poll
     {
       $oid = $this->validateColumn($oid, 'option_id') ;
 
+      $sql_str = sprintf("select 1 from poll_votes pv where pv.poll_id=%d and vote_ip='%s'", $this->poll_id, $_SERVER['REMOTE_ADDR']) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if (!($row==mysql_fetch_row($result)))
+	{
+	  return ;
+	}
+
+      $sql_str = sprintf("insert into poll_votes(poll_id, vote_ip) values(%d, '%s')", $this->poll_id, $_SERVER['REMOTE_ADDR']) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
       $sql_str = sprintf("update poll_options po set votes=votes+1 where po.poll_id=%d and po.option_id=%d", $this->poll_id, $oid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
     }
@@ -253,11 +264,11 @@ class poll
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update news set %s=%d where poll_id=%d", $col, $this->$col, $this->poll_id) ;
+	  $sql_str = sprintf("update poll set %s=%d where poll_id=%d", $col, $this->$col, $this->poll_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update news set %s='%s' where poll_id=%d", $col, $this->$col, $this->poll_id) ;
+	  $sql_str = sprintf("update poll set %s='%s' where poll_id=%d", $col, $this->$col, $this->poll_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -266,7 +277,7 @@ class poll
 
   public function delete()
     {
-      $sql_str = sprintf("delete from news where poll_id=%d", $this->poll_id) ;
+      $sql_str = sprintf("delete from poll where poll_id=%d", $this->poll_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
       mysql_free_result($result) ;
     }

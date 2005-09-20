@@ -120,7 +120,12 @@ class comment
 
       elseif ($col == 'id')
 	{
-	  if (!util::isNull($val) && !is_numeric($val))
+	  if (util::isNull($val))
+	    {
+	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
 	    {
 	      util::throwException($col . ' is not a numeric value') ;
 	    }
@@ -140,12 +145,7 @@ class comment
 
       elseif ($col == 'player_ip')
 	{
-	  if (util::isNull($val))
-	    {
-	      util::throwException($col . ' cannot be null') ;
-	    }
-
-	  return util::mysql_real_escape_string($val) ;
+	  return util::nvl(util::mysql_real_escape_string($val), $_SERVER['REMOTE_ADDR']) ;
 	}
 
       elseif ($col == 'comment_text')

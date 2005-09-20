@@ -1,6 +1,7 @@
 
 <?php
-
+try
+{
 require 'includes.php';
 $tid = $_REQUEST['tourney_id'];
 $division_id = $_REQUEST['division_id'];
@@ -109,4 +110,6 @@ foreach ($arr as $player)
 	echo "<td nowrap>",$player['frag_diff'],"</td>";
 }
 echo "</tr></table>";
+}
+catch (Exception $e) {print $e;}
 ?>

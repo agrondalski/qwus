@@ -7,6 +7,7 @@ function __autoload($class_name) {
 require_once 'dbConnect.php' ;
 require_once 'classes/comments.php' ;
 require_once 'classes/division.php' ;
+require_once 'classes/file.php' ;
 require_once 'classes/game.php' ;
 require_once 'classes/game_type.php' ;
 require_once 'classes/location.php' ;
