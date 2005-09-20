@@ -514,7 +514,7 @@ class player
       $arr['division_id']   = $diva->getValue('division_id') ;
       $arr['division_name'] = $diva->getValue('name') ;
 
-      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=%d then g.team1_score else g.team2_score end), g.game_id
+      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, m.team1_id, g.team1_score, g.team2_score, g.game_id
                           from stats s, game g, match_table m, match_schedule ms
                           where s.player_id=%d and s.stat_name = '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
                             and m.schedule_id=ms.schedule_id and ms.division_id=%d
@@ -533,9 +533,19 @@ class player
 	{
 	  $total_games += 1 ;
 	  $total_frags += $row[0] ;
-	  $team_score += $row[3] ;
 
-	  $g = new game(array('game_id'=>$row[4])) ;
+	  /*
+	  if ($team_id==$row[3])
+	    {
+	      $team_score += $row[4] ;
+	    }
+	  else
+	    {
+	      $team_score += $row[5] ;
+	    }
+	  */
+
+	  $g = new game(array('game_id'=>$row[6])) ;
 	  $player_games += count($g->getTeamPlayers($team_id)) ;
 
 	  if ($row[1] != $old_match_id)
@@ -564,7 +574,6 @@ class player
       $arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
 
       mysql_free_result($result) ;
-
 
       $sql_str = sprintf("select s.stat_name, s.value
                           from stats s, game g, match_table m, match_schedule ms
