@@ -111,5 +111,5 @@ foreach ($arr as $player)
 }
 echo "</tr></table>";
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>

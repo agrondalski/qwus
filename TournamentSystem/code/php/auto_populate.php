@@ -93,7 +93,8 @@ function auto_populate($a)
       $v1 = 'player-' . generate_string(10) ;
       $v2 = generate_boolean() ;
       $v3 = $loc[generate_integer(count($loc))] ;
-      $v4 = PREFIX . generate_string(10) ; 
+      //$v4 = PREFIX . generate_string(10) ; 
+      $v4 = 'x' ;
 
       try
 	{

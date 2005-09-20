@@ -398,6 +398,11 @@ class tourney
     {
       $team_id  = team::validateColumn($team_id, 'team_id') ;
 
+      if ($this->status!='Signups')
+	{
+	  util::throwException('Teams can only be added during signup phase') ;
+	}
+
       $sql_str = sprintf("insert into tourney_info(tourney_id, team_id, division_id) values(%d, %d, null)", $this->tourney_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
@@ -407,6 +412,11 @@ class tourney
   public function removeTeam($id)
     {
       $id = team::validateColumn($id, 'team_id') ;
+
+      if ($this->status!='Signups')
+	{
+	  util::throwException('Teams can only be added during signup phase') ;
+	}
 
       $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
