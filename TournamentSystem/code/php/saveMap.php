@@ -52,11 +52,19 @@ try
 
   else
     {
-      $m = new map(array('map_name'=>$_POST['map_name'],
-			 'map_abbr'=>$_POST['map_abbr'],
-			 'game_type_id'=>$_POST['game_type_id'])) ;
-	
-      $msg = "<br>New Map created!<br>";
+      try
+	{
+	  $gt = new game_type(array('game_type_id'=>$_POST['game_type_id'])) ;
+
+	  $gt->addMap(array('map_name'=>$_POST['map_name'],
+			    'map_abbr'=>$_POST['map_abbr'])) ;
+	  
+	  $msg = "<br>New Map created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Errot creating map!<br>";
+	}
     }
 
   echo $msg;

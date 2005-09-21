@@ -6,7 +6,7 @@ try
 {
   $mode = $_REQUEST['mode'];
 
-  if (!util::isNull($_SESSION['user_id']))
+  if (util::isLoggedInAsPlayer())
     {
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
@@ -16,7 +16,7 @@ try
 	}
     }
 
-  elseif (!util::isNull($_SESSION['team_id']))
+  elseif (util::isLoggedInAsTeam())
     {
       $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
 
@@ -117,7 +117,7 @@ try
   echo "</tr>";
   echo "<tr>";
 
-  if (util::isNull($_SESSION['team_id']))
+  if (!util::isLoggedInAsTeam())
     {
       echo "<td>Approved:</td><td>";
 

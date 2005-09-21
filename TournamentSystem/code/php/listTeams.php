@@ -5,7 +5,7 @@ require_once 'login.php' ;
 
 try
 {
-  if (!util::isNull($_SESSION['user_id']))
+  if (util::isLoggedInAsPlayer())
     {
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 

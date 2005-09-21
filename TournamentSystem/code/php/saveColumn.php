@@ -54,14 +54,19 @@ try
 
   else
     {
-      $news = new news(array('writer_id'  => $_POST['writer_id'],
-			     'subject'    => $_POST['subject'],
-			     'news_date'  => date("Y-m-d"),
-			     'news_type'  => news::TYPE_COLUMN,
-			     'id'         => null,
-			     'text'       => $_POST['text'])) ;
+      try
+	{
+	  $p->addColumn(array('subject'    => $_POST['subject'],
+			      'news_date'  => date("Y-m-d"),
+			      'id'         => null,
+			      'text'       => $_POST['text'])) ;
 
-      $msg = "<br>Column entry created!<br>";
+	  $msg = "<br>Column entry created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error creating column!<br>" ;
+	}
     }
   
   echo $msg ;

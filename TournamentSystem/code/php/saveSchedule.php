@@ -46,13 +46,20 @@ try
 	}
       else
 	{
-	  $match_id = $_REQUEST['match_id'];
-	  $m = new match(array('match_id'=>$match_id,
-			       'division_id'=>$division_id,
-			       'team1_id'=>$_POST['team1_id'],
-			       'team2_id'=>$_POST['team2_id'],
-			       'schedule_id'=>$_POST['schedule_id']));
-	  $msg = "<br>Match added!<br>";
+	  try
+	    {
+	      $ms = new match_schedule(array('schedule_id'=>$_POST['schedule_id'])) ;
+
+	      $ms->addMatch(array('division_id'=>$division_id,
+				  'team1_id'=>$_POST['team1_id'],
+				  'team2_id'=>$_POST['team2_id'])) ;
+
+	      $msg = "<br>Match added!<br>";
+	    }
+	  catch (Exception $e)
+	    {
+	      $msg = "<br>Error creating match!<br>";
+	    }
 	}
     }
 

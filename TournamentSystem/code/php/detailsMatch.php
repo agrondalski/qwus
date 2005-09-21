@@ -72,10 +72,10 @@ foreach ($m->getGames() as $g)
 	$gameout .= "<tr><td align=center>".$g->getValue('team1_score')."</td>";
 	$gameout .= "<td align=center>".$g->getValue('team2_score')."</td></tr>";
 	$gameout .= "</table>";
-	$gameout .= "<img src='".$g->getValue('screenshot_url')."'><p>";
+	$gameout .= "<img src='". 'SS column no longer exists' ."'><p>";
 	$gameout .= "[score over time graph img]<p>";
 	$gameout .= "[detailed stats link]<p>";
-	$gameout .= "<a href='".$g->getValue('demo_url')."'>demo url</a><br>";
+	$gameout .= "<a href='". 'demo columns no longer exists' ."'>demo url</a><br>";
 	$gameout .= "</td></tr></table>\n";
 }
 echo " (",$team1,"-",$team2,")";

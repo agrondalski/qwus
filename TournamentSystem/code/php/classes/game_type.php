@@ -96,6 +96,12 @@ class game_type
 	}
     }
 
+  public function addMap($a)
+    {
+      $a['game_type_id'] = $this->game_type_id ;
+      $m = new map($a) ;
+    }
+
   public static function getAllGameTypes()
     {
       $sql_str = sprintf('select gt.game_type_id from game_type gt') ;

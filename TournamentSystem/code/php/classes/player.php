@@ -193,6 +193,19 @@ class player
       return $arr ;
     }
 
+  public function addColumn($a)
+    {
+      $a['writer_id'] = $this->player_id ;
+      $a['news_type'] = news::TYPE_COLUMN ;
+      $n = new news($a) ;
+    }
+
+  public function addColumnComment($a)
+    {
+      $a['id'] = $this->player_id ;
+      $a['comment_type'] = comment::TYPE_COLUMN ;
+      $c = new comment($a) ;
+    }
 
   public static function getPlayersWithColumns()
     {
@@ -211,7 +224,7 @@ class player
 
   public function passwordMatches($pass)
     {
-      if (md5($pass)==$this->password)
+      if (md5($pass)==$this->password && !util::isNull($pass))
 	{
 	  return true ;
 	}

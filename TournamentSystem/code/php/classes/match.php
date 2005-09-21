@@ -171,6 +171,33 @@ class match
 	}
     }
 
+  public function addGame($a)
+    {
+      $a['match_id'] = $this->match_id ;
+      $g = new game($a) ;
+    }
+
+  public function addComment($a)
+    {
+      $a['match_id'] = $this->match_id ;
+      $a['comment_type'] = comment::TYPE_MATCH ;
+      $c = new comment($a) ;
+    }
+
+  public function addPoll($a)
+    {
+      $a['id'] = $this->match_id ;
+      $a['poll_type'] = comment::TYPE_MATCH ;
+      $p = new poll($a) ;
+    }
+
+  public function addFile($a)
+    {
+      $a['id'] = $this->match_id ;
+      $a['file_type'] = file::TYPE_MATCH ;
+      $f = new file($a) ;
+    }
+
   public static function getAllMatches()
     {
       $sql_str = sprintf('select mt.match_id from match_table mt') ;

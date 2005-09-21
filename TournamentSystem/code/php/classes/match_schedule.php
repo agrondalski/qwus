@@ -137,6 +137,12 @@ class match_schedule
 	}
     }
 
+  public function addMatch($a)
+    {
+      $a['schedule_id'] = $this->schedule_id ;
+      $m = new match($a) ;
+    }
+
   public function getValue($col)
     {
       $this->validateColumnName($col) ;

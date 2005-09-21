@@ -70,13 +70,21 @@ try
 
       // All players dont need a password
       $pw = $_POST['password'];
-      $p = new player(array('name'=>$_POST['name'],
-			    'superAdmin'=>$_POST['superadmin'],
-			    'location_id'=>$_POST['location_id'],
-			    'password'=>$pw,
-			    'hasColumn'=>$hascolumn));
+
+      try
+	{
+	  $p = new player(array('name'=>$_POST['name'],
+				'superAdmin'=>$_POST['superadmin'],
+				'location_id'=>$_POST['location_id'],
+				'password'=>$pw,
+				'hasColumn'=>$hascolumn));
 	
-      $msg = "<br>New player created!<br>";
+	  $msg = "<br>New player created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error creating player!<br>" ;
+	}
     }
 
   echo $msg;

@@ -140,7 +140,7 @@ try
   if ($match_id != "") 
     {
     
-      if ($_SESSION['team_id'] != "")
+      if (util::isLoggedInAsTeam())
       {
       	$dis = "disabled";
       }

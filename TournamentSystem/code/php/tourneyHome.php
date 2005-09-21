@@ -7,7 +7,7 @@ try
   $tid = $_REQUEST['tourney_id'];
   $t = new tourney(array('tourney_id'=>$tid));
 
-  if (!util::isNull($_SESSION['user_id']))
+  if (util::isLoggedInAsPlayer())
     {
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
       
@@ -51,7 +51,7 @@ try
     }
 
 
-  if (!util::isNull($_SESSION['team_id']))
+  if (util::isLoggedInAsTeam())
     {
       $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
 

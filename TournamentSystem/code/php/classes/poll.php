@@ -10,7 +10,6 @@ class poll
   const TYPE_MATCH =  0 ;
   const TYPE_NEWS = 1 ;
   const TYPE_TOURNEY = 2 ;
-  const TYPE_COLUMN = 3 ;
 
   function __construct($a)
     {
@@ -78,7 +77,7 @@ class poll
 
   public static function validateColumn($val, $col, $cons=false)
     {
-      $poll_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+      $poll_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament') ;
 
       if ($col == 'poll_id')
 	{
@@ -176,7 +175,7 @@ class poll
 
   public function getPollTypes()
     {
-      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament', self::TYPE_COLUMN=>'Column') ;
+      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_TOURNEY=>'Tournament') ;
       return $arr ;
     }
 

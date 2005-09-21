@@ -7,7 +7,7 @@ try
 {
   $mode = $_REQUEST['mode'];
 
-  if (!util::isNull($_SESSION['user_id']))
+  if (util::isLoggedInAsPlayer())
     {
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
@@ -17,7 +17,7 @@ try
 	}
     }
 
-  elseif (!util::isNull($_SESSION['team_id']))
+  elseif (util::isLoggedInAsTeam())
     {
       $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
 
@@ -44,7 +44,7 @@ try
 	  $tm->update('password',$_POST['password']);
 	}
 
-      if (util::isNull($_SESSION['team_id']))
+      if (!util::isLoggedInAsTeam())
 	{
 	  if ($_POST['approved'] == "1")
 	    {
@@ -94,15 +94,22 @@ try
 	  $pw = "dumB3as5!";
 	}
 
-      $tm = new team(array('name'=>$_POST['name'],
-			   'name_abbr'=>$_POST['name_abbr'],
-			   'email'=>$_POST['email'],
-			   'irc_channel'=>$_POST['irc_channel'],
-			   'location_id'=>$_POST['location_id'],
-			   'password'=>$pw,
-			   'approved'=>$appr));
-	
-      $msg = "<br>New team created!<br>";
+      try
+	{
+	  $tm = new team(array('name'=>$_POST['name'],
+			       'name_abbr'=>$_POST['name_abbr'],
+			       'email'=>$_POST['email'],
+			       'irc_channel'=>$_POST['irc_channel'],
+			       'location_id'=>$_POST['location_id'],
+			       'password'=>$pw,
+			       'approved'=>$appr));
+	  
+	  $msg = "<br>New team created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error creating team!<br>" ;
+	}
     }
   
   echo $msg;

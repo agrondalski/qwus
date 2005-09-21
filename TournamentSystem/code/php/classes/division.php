@@ -152,6 +152,12 @@ class division
 	}
     }
 
+  public function addMatchSchedule($a)
+    {
+      $a['division_id'] = $this->division_id ;
+      $ms = new match_schedule($a) ;
+    }
+
   public function getTeams()
     {
       $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.division_id=%d", $this->division_id) ;

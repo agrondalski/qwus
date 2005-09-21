@@ -54,11 +54,18 @@ try
     }
   else
     {
-      $ms = new match_schedule(array('division_id'=>$_POST['division_id'],
-				     'name'=>$_POST['name'],
+      try
+	{
+	  $d = new division(array('division_id'=>$_POST['division_id'])) ;
+	  $d->addMatchSchedule(array('name'=>$_POST['name'],
 				     'deadline'=>$_POST['deadline']));
 
-      $msg = "<br>Created!<br>";
+	  $msg = "<br>Created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Errot creating match schedule!<br>";
+	}
     }
 
   echo $msg ;

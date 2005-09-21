@@ -23,7 +23,7 @@ try
 	  // General news
 	  else
 	    {
-	      $news  = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_ASC), array('limit'=>5)) ;
+	      $news  = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC), array('limit'=>5)) ;
 	      $count = news::getNewsCount() ;
 	    }
 	}

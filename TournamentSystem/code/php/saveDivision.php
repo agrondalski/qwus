@@ -48,12 +48,19 @@ try
 
   else
     {
-      $div = new division(array('tourney_id'=>$tid,
-				'name'=>$_POST['name'],
+      try
+	{
+	  $t->addDivision(array('name'=>$_POST['name'],
 				'num_games'=>$_POST['num_games'],
 				'playoff_spots'=>$_POST['playoff_spots'],
 				'elim_losses'=>$_POST['elim_losses']));
-      $msg = "<br>New division created!<br>";
+
+	  $msg = "<br>New division created!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Errot creating division!<br>";
+	}
     }
 
   echo $msg ;

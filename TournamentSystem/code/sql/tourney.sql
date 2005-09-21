@@ -202,7 +202,7 @@ ENGINE=INNODB ;
 create table poll( 
   poll_id     integer NOT NULL auto_increment, 
   topic       varchar(250),
-  poll_type   ENUM('Match', 'News', 'Tournament', 'Column') NOT NULL default 'MATCH', 
+  poll_type   ENUM('Match', 'News', 'Tournament') NOT NULL default 'MATCH', 
   id          integer  NOT NULL, 
   isCurrent   boolean  NOT NULL default FALSE,
 --

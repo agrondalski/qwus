@@ -182,6 +182,20 @@ class news
 	}
     }
 
+  public function addComment($a)
+    {
+      $a['id'] = $this->news_id ;
+      $a['comment_type'] = comment::TYPE_NEWS ;
+      $c = new comment($a) ;
+    }
+
+  public function addPoll($a)
+    {
+      $a['id'] = $this->news_id ;
+      $a['poll_type'] = comment::TYPE_NEWS ;
+      $p = new poll($a) ;
+    }
+
   public function getWriter()
     {
       if (isset($this->writer_id))

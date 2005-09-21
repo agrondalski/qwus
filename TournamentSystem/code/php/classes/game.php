@@ -132,6 +132,19 @@ class game
 	}
     }
 
+  public function addStat($a)
+    {
+      $a['game_id'] = $this->game_id ;
+      $s = new stats($a) ;
+    }
+
+  public function addFile($a)
+    {
+      $a['id'] = $this->match_id ;
+      $a['file_type'] = file::TYPE_GAME ;
+      $f = new file($a) ;
+    }
+
   public function getStats()
     {
       $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d", $this->game_id) ;

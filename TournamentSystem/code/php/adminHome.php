@@ -6,7 +6,7 @@ echo "<h2>Admin Home</h2>";
 echo "<b>Actions</b><br>";
 echo "<table border=1 cellpadding=2 cellspacing=0>";
 
-if (!util::isNull($_SESSION['user_id']))
+if (util::isLoggedInAsPlayer())
 {
   try
     {
@@ -53,7 +53,7 @@ if (!util::isNull($_SESSION['user_id']))
   catch(Exception $e){}
 }
 
-elseif (!util::isNull($_SESSION['team_id']))
+elseif (util::isLoggedInAsTeam())
 {
   try
     {

@@ -190,6 +190,26 @@ class tourney
 	}
     }
 
+  public function addDivision($a)
+    {
+      $a['tourney_id'] = $this->tourney_id ;
+      $d = new division($a) ;
+    }
+
+  public function addNews($a)
+    {
+      $a['id'] = $this->tourney_id ;
+      $a['news_type'] = news::TYPE_TOURNEY ;
+      $n = new news($a) ;
+    }
+
+  public function addPoll($a)
+    {
+      $a['id'] = $this->tourney_id ;
+      $a['poll_type'] = comment::TYPE_TOURNEY ;
+      $p = new poll($a) ;
+    }
+
   public static function getAllTourneys()
     {
       $sql_str = sprintf('select t.tourney_id from tourney t') ;

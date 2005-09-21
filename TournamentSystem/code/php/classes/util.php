@@ -252,6 +252,27 @@ class util
 
       return 'No' ;
     }
+
+  public static function isLoggedInAsPlayer()
+    {
+      if (!self::isNull($_SESSION['user_id']))
+	{
+	  return true ;
+	}
+
+      return false ;
+    }
+
+  public static function isLoggedInAsTeam()
+    {
+      if (!self::isNull($_SESSION['team_id']))
+	{
+	  return true ;
+	}
+
+      return false ;
+    }
+
 }
 
 ?>

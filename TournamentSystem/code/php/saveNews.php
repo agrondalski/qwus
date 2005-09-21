@@ -56,13 +56,24 @@ try
     {
       try
 	{
-	  $news = new news(array('writer_id'  => $_POST['writer_id'],
-				 'subject'    => $_POST['subject'],
-				 'news_date'  => date("Y-m-d"),
-				 'news_type'  => util::choose(($tid==null), news::TYPE_NEWS, news::TYPE_TOURNEY),
-				 'id'         => $tid,
-				 'text'       => $_POST['text']));
-	  print $tid ;	  
+	  if (util::isNull($tid))
+	    {
+	      $news = new news(array('writer_id'  => $_POST['writer_id'],
+				     'subject'    => $_POST['subject'],
+				     'news_date'  => date("Y-m-d"),
+				     'news_type'  => news::TYPE_NEWS,
+				     'id'         => $tid,
+				     'text'       => $_POST['text']));
+	    }
+	  else
+	    {
+	      $t->addNews(array('writer_id'  => $_POST['writer_id'],
+				'subject'    => $_POST['subject'],
+				'news_date'  => date("Y-m-d"),
+				'id'         => $tid,
+				'text'       => $_POST['text']));
+	    }
+
 	  $msg = "<br>New News Item created!<br>";
 	}
       catch (Exception $e)
