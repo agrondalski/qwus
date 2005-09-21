@@ -372,101 +372,20 @@ class player
 
   public function getCareerStats()
     {
-      $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=tm.team_id then g.team1_score else g.team2_score end), g.game_id
-                          from stats s, game g, match_table m, match_schedule ms, tourney_info ti, team tm, player_info pi
-                          where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id
-                            and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=ti.division_id
-                            and ti.team_id=tm.team_id and ti.team_id=pi.team_id and ti.tourney_id=pi.tourney_id and pi.player_id=%d
-                          order by m.match_id", $this->player_id, $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-
-      $arr = array() ;
-      $arr['player_id']   = $this->player_id ;
-      $arr['location_id'] = $this->location_id ;
-
-      $total_games   = 0 ;
-      $total_frags   = 0 ;
-      $total_matches = 0 ;
-      $matches_won   = 0 ;
-      $matches_lost  = 0 ;
-      $team_score    = 0 ;
-      $old_match_id  = 0 ;
-      $player_games  = 0 ;
-
-      while ($row = mysql_fetch_row($result))
-	{
-	  $total_games += 1 ;
-	  $total_frags += $row[0] ;
-	  $team_score += $row[3] ;
-
-	  //$g = new game(array('game_id'=>$row[4])) ;
-	  //$player_games += count($g->getPlayers()) ;
-
-	  if ($row[1] != $old_match_id)
-	    {
-	      $total_matches += 1 ;
-
-	      $old_match_id = $row[1] ;
-
-	      if ($row[2]==$team_id)
-		{
-		  $matches_won += 1 ;
-		}
-	      else
-		{
-		  $matches_lost += 1 ;
-		}
-	    }
-	}
-
-      $arr['matches_played'] = $total_matches ;
-      $arr['games_played']   = $total_games;
-      $arr['total_frags']    = $total_frags;
-      $arr['frags_per_game'] = round($total_frags/$total_games, 1) ;
-      $arr['matches_won']    = $matches_won ;
-      $arr['matches_lost']   = $matches_lost ;
-      //$arr['frag_diff']      = round(($total_frags)/($total_games)-($team_score/$player_games), 1) ;
-      mysql_free_result($result) ;
-
-
-      $sql_str = sprintf("select s.stat_name, s.value
-                          from stats s, game g, match_table m
-                          where s.player_id=%d and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true",
-			 $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-
-      while ($row = mysql_fetch_row($result))
-	{
-	  if (!isset($arr[$row[0]]))
-	    {
-	      $arr[$row[0]] = $row[1] ;
-	    }
-	  else
-	    {
-	      $arr[$row[0]] += $row[1] ;
-	    }
-	}
-      return $arr ;
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id)) ;
+      return $stats ;
     }
 
   public function getTourneyStats($tid)
     {
-      $tid = tourney::validateColumn($tid, 'tourney_id') ;
-      $t = new tourney(array('tourney_id'=>$tid)) ;
-
-      $stats = $t->getPlayerStats(array('player_id'=>$this->player_id)) ;
-      return $stats[$this->player_id] ;
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
+      return $stats ;
     }
 
   public static function getSortedCareerStats($a)
     {
-      $arr = array() ;
-      foreach(self::getAllPlayers() as $p)
-	{
-	  $arr[] = $p->getCareerStats() ;
-	}
-
-      return util::row_sort($arr, $a) ;
+      $stats = stats::getPlayerStats() ;
+      return util::row_sort($stats, $a) ;
     }
 
   public function getValue($col)

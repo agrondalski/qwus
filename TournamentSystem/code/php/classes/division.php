@@ -363,19 +363,13 @@ class division
 
   public function getSortedTeamStats($a)
     {
-      $t = new tourney(array('tourney_id'=>$this->tourney_id)) ;
-
-      $stats = $t->getTeamStats(array('division_id'=>$this->division_id)) ;
-
+      $stats = stats::getTeamStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
       return util::row_sort($stats, $a) ;
     }
 
   public function getSortedPlayerStats($a)
     {
-      $t = new tourney(array('tourney_id'=>$this->tourney_id)) ;
-
-      $stats = $t->getPlayerStats(array('division_id'=>$this->division_id)) ;
-
+      $stats = stats::getPlayerStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
       return util::row_sort($stats, $a) ;
     }
 
