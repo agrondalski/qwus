@@ -76,11 +76,11 @@ echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_i
 // User division or don't
 if ($division_id == "-1") 
 {
-	$arr = $t->getSortedPlayerInfo(array($sort,SORT_DESC,'frags_per_game', SORT_DESC));
+	$arr = $t->getSortedPlayerStats(array($sort,SORT_DESC,'frags_per_game', SORT_DESC));
 }
 else 
 {
-	$arr = $div->getSortedPlayerInfo(array($sort,SORT_DESC, 'frags_per_game', SORT_DESC));
+	$arr = $div->getSortedPlayerStats(array($sort,SORT_DESC, 'frags_per_game', SORT_DESC));
 }
 $count = 0;
 foreach ($arr as $player)

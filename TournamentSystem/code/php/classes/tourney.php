@@ -582,17 +582,154 @@ class tourney
       return util::row_sort($arr, $a) ;
     }
 
-  public function getSortedPlayerInfo($a)
+  public function getSortedPlayerStats($a)
     {
-      $tid = $this->tourney_id ;
+      $arr = $this->getPlayerStats() ;
+      return util::row_sort($arr, $a) ;
+    }
 
-      $arr = array() ;
-      foreach($this->getPlayers() as $p)
+  public function getPlayerStats($a)
+    {
+      $player_query = null ;
+      $division_query = null ;
+
+      if (is_array($a))
 	{
-	  $arr[] = $p->getTourneyInfo($tid) ;
+	  if (!util::isNull($a['player_id']))
+	    {
+	      $pid = player::validateColumn($a['player_id'], 'player_id') ;
+	      $player_query = ' and s.player_id=' . $pid ;
+	    }
+
+	  if (!util::isNull($a['division_id']))
+	    {
+	      $div = division::validateColumn($a['division_id'], 'division_id') ;
+	      $division_query = ' and d.division_id=' . $div ;
+	    }
 	}
 
-      return util::row_sort($arr, $a) ;
+
+      $sql_str = sprintf("select s.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name,
+                                  s.value, m.match_id, m.winning_team_id, m.team1_id, g.team1_score, g.team2_score,
+                                (select count(*) from stats s2 where s2.game_id=g.game_id and s2.stat_name='%s' and s2.team_id=s.team_id)
+                          from stats s, game g, match_table m, match_schedule ms, team tm, player p, division d
+                          where s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                            and m.schedule_id=ms.schedule_id and ms.division_id and ms.division_id = d.division_id and d.tourney_id=%d
+                            and s.player_id = p.player_id and s.team_id = tm.team_id %s %s
+                          order by s.player_id, m.match_id", util::SCORE, util::SCORE, $this->tourney_id, $player_query, $division_query) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      $old_player = -1 ;
+      $arr = array() ;
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  if ($row[0] != $old_player) 
+	    {
+	      if ($old_player!=-1)
+	      {
+		$arr[$pid]['matches_played'] = $total_matches ;
+		$arr[$pid]['games_played']   = $total_games;
+		$arr[$pid]['total_frags']    = $total_frags;
+		$arr[$pid]['frags_per_game'] = round($total_frags/$total_games, 1);
+		$arr[$pid]['matches_won']    = $matches_won ;
+		$arr[$pid]['matches_lost']   = $matches_lost ;
+		$arr[$pid]['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+	      }
+
+	      $pid = $row[0] ;
+	      $old_player = $pid ;
+
+	      $total_games   = 0 ;
+	      $total_frags   = 0 ;
+	      $total_matches = 0 ;
+	      $matches_won   = 0 ;
+	      $matches_lost  = 0 ;
+	      $team_score    = 0 ;
+	      $old_match_id  = 0 ;
+	      $game_avg = 0 ;
+
+	      $name = $row[1] ;
+	      $team_id = $row[2] ;
+	      $team_name = $row[3] ;
+	      $division_id = $row[4] ;
+	      $division_name = $row[5] ;
+
+	      $arr[$pid] = array() ;
+	      $arr[$pid]['player_id'] = $pid ;
+	      $arr[$pid]['name']      = $row[1] ;
+	      $arr[$pid]['location_id'] = 1 ;
+
+	      $arr[$pid]['team_id']       = $row[2] ;
+	      $arr[$pid]['team_name']     = $row[3] ;
+	      $arr[$pid]['division_id']   = $row[4] ;
+	      $arr[$pid]['division_name'] = $row[5] ;
+	    }
+
+
+	  $total_games += 1 ;
+	  $total_frags += $row[6] ;
+
+	  if ($team_id==$row[9])
+	    {
+	      $team_score = $row[10] ;
+	    }
+	  else
+	    {
+	      $team_score = $row[11] ;
+	    }
+
+	  $game_avg += $team_score/$row[12] ;
+
+	  if ($row[7] != $old_match_id)
+	    {
+	      $total_matches += 1 ;
+
+	      $old_match_id = $row[7] ;
+
+	      if ($row[8]==$team_id)
+		{
+		  $matches_won += 1 ;
+		}
+	      else
+		{
+		  $matches_lost += 1 ;
+		}
+	    }
+	}
+
+      $arr[$pid]['matches_played'] = $total_matches ;
+      $arr[$pid]['games_played']   = $total_games;
+      $arr[$pid]['total_frags']    = $total_frags;
+      $arr[$pid]['frags_per_game'] = round($total_frags/$total_games, 1);
+      $arr[$pid]['matches_won']    = $matches_won ;
+      $arr[$pid]['matches_lost']   = $matches_lost ;
+      $arr[$pid]['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("select s.player_id, s.stat_name, s.value
+                          from stats s, game g, match_table m, match_schedule ms, division d
+                          where s.stat_name != '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
+                            and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d %s %s",
+			 util::SCORE, $this->tourney_id, $player_query, $division_query) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+
+      while ($row = mysql_fetch_row($result))
+	{
+	  $pid = $row[0] ;
+
+	  if (!isset($arr[$pid][$row[1]]))
+	    {
+	      $arr[$pid][$row[1]] = $row[2] ;
+	    }
+	  else
+	    {
+	      $arr[$pid][$row[1]] += $row[2] ;
+	    }
+	}
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function getValue($col)

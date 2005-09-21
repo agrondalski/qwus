@@ -374,17 +374,13 @@ class division
       return util::row_sort($arr, $a) ;
     }
 
-  public function getSortedPlayerInfo($a)
+  public function getSortedPlayerStats($a)
     {
-      $tid = $this->tourney_id ;
+      $t = new tourney(array('tourney_id'=>$this->tourney_id)) ;
 
-      $arr = array() ;
-      foreach($this->getPlayers() as $p)
-	{
-	  $arr[] = $p->getTourneyInfo($tid) ;
-	}
+      $stats = $t->getPlayerStats(array('division_id'=>$this->division_id)) ;
 
-      return util::row_sort($arr, $a) ;
+      return util::row_sort($stats, $a) ;
     }
 
   public function removeSchedule()

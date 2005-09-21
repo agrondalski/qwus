@@ -42,7 +42,7 @@ if ($tlp != null) {
 } else {
 	echo $player->getValue('name'),"</a></td>\n";
 }
-$info = $player->getTourneyInfo($tid);
+$info = $player->getTourneyStats($tid);
 
 //$info['matches_played']
 //$info['games_played']  
