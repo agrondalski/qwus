@@ -592,6 +592,7 @@ class tourney
     {
       $player_query = null ;
       $division_query = null ;
+      $team_query = null ;
 
       if (is_array($a))
 	{
@@ -599,6 +600,12 @@ class tourney
 	    {
 	      $pid = player::validateColumn($a['player_id'], 'player_id') ;
 	      $player_query = ' and s.player_id=' . $pid ;
+	    }
+
+	  if (!util::isNull($a['team_id']))
+	    {
+	      $tm = team::validateColumn($a['team_id'], 'team_id') ;
+	      $team_query = ' and tm.team_id=' . $tm ;
 	    }
 
 	  if (!util::isNull($a['division_id']))
@@ -615,8 +622,8 @@ class tourney
                           from stats s, game g, match_table m, match_schedule ms, team tm, player p, division d
                           where s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
                             and m.schedule_id=ms.schedule_id and ms.division_id and ms.division_id = d.division_id and d.tourney_id=%d
-                            and s.player_id = p.player_id and s.team_id = tm.team_id %s %s
-                          order by s.player_id, m.match_id", util::SCORE, util::SCORE, $this->tourney_id, $player_query, $division_query) ;
+                            and s.player_id = p.player_id and s.team_id = tm.team_id %s %s %s
+                          order by s.player_id, m.match_id", util::SCORE, util::SCORE, $this->tourney_id, $player_query, $division_query, $team_query) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $old_player = -1 ;
@@ -709,10 +716,11 @@ class tourney
       mysql_free_result($result) ;
 
       $sql_str = sprintf("select s.player_id, s.stat_name, s.value
-                          from stats s, game g, match_table m, match_schedule ms, division d
+                          from stats s, game g, match_table m, match_schedule ms, division d, team tm
                           where s.stat_name != '%s' and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true
-                            and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d %s %s",
-			 util::SCORE, $this->tourney_id, $player_query, $division_query) ;
+                            and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d
+                          %s %s %s",
+			 util::SCORE, $this->tourney_id, $player_query, $division_query, $team_query) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       while ($row = mysql_fetch_row($result))

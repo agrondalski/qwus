@@ -614,13 +614,11 @@ class team
 
   public function getSortedPlayers($tid, $a)
       {
-	$arr = array() ;
-	foreach($this->getPlayers($tid) as $p)
-	  {
-	    $arr[] = $p->getTourneyInfo($tid) ;
-	  }
+	$t = new tourney(array('tourney_id'=>$tid)) ;
 
-      return util::row_sort($arr, $a) ;
+	$stats = $t->getPlayerStats(array('team_id'=>$this->team_id)) ;
+	
+	return util::row_sort($stats, $a) ;
     }
 
   public function getValue($col)
