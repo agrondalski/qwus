@@ -6,10 +6,11 @@
 # optimize
 # ctf msgs
 # have to check and double check score calculations
-# better team color support (calculate based on mode of players)
 # team stats
 # player minutes played
-# player line graph
+# player line graph legend (2 reds)
+# player line graph should check for not null team
+# pie chart with no frags == crash
 
 use Benchmark;
 use GD::Graph::lines;
@@ -87,9 +88,9 @@ sub bottomColor
 
 sub scoreArray
 {
-    my $self = shift;
-    if (@_) { @{ $self->{SCORE_GRAPH} } = @_ }
-    return @{ $self->{SCORE_GRAPH} };
+  my $self = shift;
+  if (@_) { @{ $self->{SCORE_GRAPH} } = @_ }
+  return @{ $self->{SCORE_GRAPH} };
 }
 
 sub padScoreArray
@@ -104,11 +105,7 @@ sub addScore
   if (@_)
   {
     my $scoreToAdd = shift;
-   # foreach $player ($self->players)
-   # {
-#	if ($playerToAdd eq $player) { return; }
- #    }
-      push(@{ $self->{SCORE_GRAPH} }, $scoreToAdd);
+    push(@{ $self->{SCORE_GRAPH} }, $scoreToAdd);
   }
 }
 
@@ -1196,7 +1193,7 @@ sub outputPlayerPieCharts
                  $player->lightningFrags()
                 );
     my @data = (\@weaponList, \@stats);
-    my $graph = GD::Graph::pie->new(400,300);
+    my $graph = GD::Graph::pie->new(300,175);
     $graph->set(title       => "Frags by " . $player->name
              
              
@@ -1243,39 +1240,36 @@ sub complementColor
   return 0;
 }
 
-sub calculateMode
-{
-  my @array = @_;
-  my @mode = undef;
-  foreach $element (@array)
-  {
-    $mode[$element]++;
-  }
-  my $i = 0; my $max = 0; my $maxLocation = 0;
-  foreach $element (@mode)
-  {
-#    if ($element > $max)
-#    {
-#      $max = $element;
-#      $maxLocation = $i;
-#    }
-    $i++;
-  }
-  return $array[$maxLocation];
-}
-
 sub calculateTeamColors
 {
   foreach $team (@teams)
   {
-      my @teamPlayers = $team->players;
-      my @colors = undef;
-      foreach $player (@teamPlayers)
+    my @teamPlayers = $team->players;
+    my @colors = [];
+    foreach $player (@teamPlayers)
+    {
+      $player = findPlayer($player);
+      push(@colors, $player->bottomColor);
+    }
+    @colors = reverse(sort(@colors));
+    $modeColor = 0; $modeCount = 0; $currentColor = 0; $currentCount = 0;
+    foreach $color (@colors)
+    {
+      if ($color == $currentColor)
       {
-	 $player = findPlayer($player);
-         push(@colors, $player->bottomColor);
-         print $player->bottomColor . " ";
+        $currentCount++;
+        if ($currentCount > $modeCount)
+        {
+          $modeColor = $currentColor;
+          $modeCount = $currentCount;
+        }
       }
-#      print calculateMode(\@colors) . "\n";
+      else
+      {
+        $currentCount = 0;
+        $currentColor = $color;
+      }
+    }
+    $team->color($modeColor);
   }
 }
