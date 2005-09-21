@@ -36,7 +36,7 @@ echo "</table><br>";
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
 //foreach ($tm->getPlayers($tid) as $player) 
-foreach ($tm->getSortedPlayers($tid, array('frags_per_game',SORT_DESC)) as $player)
+foreach ($tm->getSortedPlayerStats($tid, array('frags_per_game',SORT_DESC)) as $player)
 {
 	$loc = new location(array('location_id'=>$player['location_id']));
 	$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
@@ -52,7 +52,7 @@ foreach ($tm->getSortedPlayers($tid, array('frags_per_game',SORT_DESC)) as $play
 		} else {
 			echo $player['name'],"</a></td>\n";
 		}
-		//$info = $player->getTourneyInfo($tid);
+		//$info = $player->getTourneyStats($tid);
 	echo "\t<td>",$loc_name,"</td>\n";
 	echo "<td>",$player['games_played'],"</td>";
 	echo "<td>",$player['frags_per_game'],"</td>";

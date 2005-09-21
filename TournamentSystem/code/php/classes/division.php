@@ -361,17 +361,13 @@ class division
 	}
     }
 
-  public function getSortedTeamInfo($a)
+  public function getSortedTeamStats($a)
     {
-      $tid = $this->tourney_id ;
+      $t = new tourney(array('tourney_id'=>$this->tourney_id)) ;
 
-      $arr = array() ;
-      foreach($this->getTeams() as $t)
-	{
-	  $arr[] = $t->getTourneyInfo($tid) ;
-	}
+      $stats = $t->getTeamStats(array('division_id'=>$this->division_id)) ;
 
-      return util::row_sort($arr, $a) ;
+      return util::row_sort($stats, $a) ;
     }
 
   public function getSortedPlayerStats($a)

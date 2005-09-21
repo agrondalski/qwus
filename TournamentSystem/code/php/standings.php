@@ -28,7 +28,7 @@ foreach ($t->getDivisions() as $div)
 	echo "</tr>\n";
 	$rank = 0;
 	//foreach ($div->getTeams() as $tm)
-	foreach ($div->getSortedTeamInfo(array('points', SORT_DESC, 'maps_lost', SORT_ASC, 'frags_for', SORT_DESC)) as $tm)
+	foreach ($div->getSortedTeamStats(array('points', SORT_DESC, 'maps_lost', SORT_ASC, 'frags_for', SORT_DESC)) as $tm)
 	{
 		$rank += 1;		
 		$m20 = $tm['match_2-0'];

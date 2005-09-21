@@ -370,7 +370,7 @@ class player
 	}
     }
 
-  public function getCareerInfo()
+  public function getCareerStats()
     {
       $sql_str = sprintf("select s.value, m.match_id, m.winning_team_id, (case when m.team1_id=tm.team_id then g.team1_score else g.team2_score end), g.game_id
                           from stats s, game g, match_table m, match_schedule ms, tourney_info ti, team tm, player_info pi
@@ -458,12 +458,12 @@ class player
       return $stats[$this->player_id] ;
     }
 
-  public static function getSortedCareerInfo($a)
+  public static function getSortedCareerStats($a)
     {
       $arr = array() ;
       foreach(self::getAllPlayers() as $p)
 	{
-	  $arr[] = $p->getCareerInfo() ;
+	  $arr[] = $p->getCareerStats() ;
 	}
 
       return util::row_sort($arr, $a) ;
