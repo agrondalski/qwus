@@ -123,7 +123,7 @@ try
       include "docs/$page.php" ;
     }
   }
-catch(Exception $e) {print $e;}
+catch(Exception $e) {}
 ?>
 
 
