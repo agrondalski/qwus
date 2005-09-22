@@ -10,6 +10,7 @@ TO DO LIST:
   Fix stats without game data
   Have phpbb use phpbb db user
   New qwus db password
+  Remove State Locations ?
 
 *Future*:
   Career Player/Teams Stats
