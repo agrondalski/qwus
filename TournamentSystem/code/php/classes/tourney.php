@@ -282,14 +282,139 @@ class tourney
       return $arr ;
     }
 
-  public function getUnassignedTeams()
+  public function getUnassignedTeams($a)
     {
-      $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.tourney_id=%d and division_id is null", $this->tourney_id) ;
+      $sql_str = sprintf("select * from tourney_info ti where ti.tourney_id=%d and division_id is null", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getUnassignedPlayers($a)
+    {
+      $sql_str = sprintf("select * from player p where p.player_id not in(select player_id from player_info pi where pi.tourney_id=%d)", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getUnassignedAdmins($a)
+    {
+      $sql_str = sprintf("select * from player p where p.player_id not in(select player_id from tourney_admins ta where ta.tourney_id=%d)", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getUnassignedMaps($a)
+    {
+      $sql_str = sprintf("select * from maps m
+                           where m.game_type_id=%d and map_id not in (select tm.map_id from tourney_maps tm where tm.tourney_id=%d)", $this->game_type_id, $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+      print_r($arr) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -327,20 +452,6 @@ class tourney
       return $arr ;
     }
 
-  public function getGameTypeMaps()
-    {
-      $sql_str = sprintf("select m.map_id from maps m where m.game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new map(array('map_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
   public function getTourneyTypes()
     {
       $arr = array(self::TYPE_LEAGUE=>'League', self::TYPE_TOURNAMENT=>'Tournament', self::TYPE_LADDER=>'Ladder') ;
@@ -358,7 +469,7 @@ class tourney
       $sql_str = sprintf("select n.* from news n where n.news_type='Tournament' and n.id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
       while ($row=mysql_fetch_assoc($result))
 	{

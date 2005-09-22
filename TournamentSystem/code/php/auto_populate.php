@@ -168,7 +168,7 @@ function auto_populate($a)
     {
       $t = new tourney(array('tourney_id'=>$tour[$i])) ;
 
-      $mapsa = $t->getGameTypeMaps() ;
+      $mapsa = $t->getUnassignedMaps() ;
       foreach ($mapsa as $m)
 	{
 	  $maps[] = $m->getValue("map_id") ;

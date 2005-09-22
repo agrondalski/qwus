@@ -17,7 +17,7 @@ try
 
   echo "<br>";
   echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-  echo "<th>Map</th><th>Full Name</th>";
+  echo "<th>Map</th><th>Full Name</th><th>Action</th>";
 
   foreach ($t->getMaps() as $map)
     {
@@ -29,12 +29,13 @@ try
     }
 
   echo "</table>\n";
+  echo "<br" ;
 
   echo "<form action='?a=saveTourneyMap' method=post>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<select name='map_id'>";
 
-  foreach ($t->getGameTypeMaps() as $m)
+  foreach ($t->getUnassignedMaps(array('map_abbr', SORT_ASC, SORT_STRING)) as $m)
     {
       echo "<option value='" . $m->getValue('map_id') . "'>" . $m->getValue('map_abbr') . ":" . $m->getValue('map_name');
     }

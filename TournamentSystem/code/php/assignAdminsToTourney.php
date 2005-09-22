@@ -33,7 +33,7 @@ try
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<select name='player_id'>";
 
-  foreach (player::getAllPlayers() as $play)
+  foreach ($t->getUnassignedAdmins(array('name', SORT_ASC, SORT_STRING)) as $play)
     {
       echo "<option value='" . $play->getValue('player_id') . "'>" . $play->getValue('name');
     }

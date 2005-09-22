@@ -309,7 +309,7 @@ class player
       $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column'", $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      $sort = (!util::isNUll($a) && is_array($a)) ? true : false ;
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
       while ($row=mysql_fetch_assoc($result))
 	{

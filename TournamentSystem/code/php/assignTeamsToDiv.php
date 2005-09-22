@@ -80,7 +80,7 @@ try
 	echo "<input type='hidden' name='division_id' value='$division_id'>";
 	echo "<td><select name='team_id'>";
 
-	foreach ($t->getUnassignedTeams() as $tmp)
+	foreach ($t->getUnassignedTeams(array('name', SORT_ASC, SORT_STRING)) as $tmp)
 	  {
 	    echo "<option value='",$tmp->getValue('team_id'),"'>",$tmp->getValue('name');
 	  }

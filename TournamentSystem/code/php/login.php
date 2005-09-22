@@ -61,7 +61,7 @@ if ($displayLogin)
     }
   else
     {
-      if (!util::isNUll($_POST["username"]))
+      if (!util::isNull($_POST["username"]))
 	{
 	  try
 	    {
@@ -83,7 +83,7 @@ if ($displayLogin)
 	    }
 	}
 
-      if (!util::isNUll($_POST["team_id"]))
+      if (!util::isNull($_POST["team_id"]))
 	{
 	  try
 	    {

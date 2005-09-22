@@ -279,7 +279,7 @@ class division
 
       $num_teams = count($this->getTeams()) ;
 
-      if (util::isNUll($num_weeks) || $num_weeks==0 || $num_teams<2)
+      if (util::isNull($num_weeks) || $num_weeks==0 || $num_teams<2)
 	{
 	  return ;
 	}

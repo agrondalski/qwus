@@ -102,12 +102,9 @@ try
       echo "<input type='hidden' name='team_id' value='$team_id'>";
       echo "<td><select name='player_id'>";
 
-      foreach (player::getAllPlayers() as $tmp)
+      foreach ($t->getUnassignedPlayers(array('name', SORT_ASC, SORT_STRING)) as $tmp)
 	{
-	  if ($t->hasPlayer($tmp->getValue('player_id')))
-	    {
-	      echo "<option value='",$tmp->getValue('player_id'),"'>",$tmp->getValue('name');
-	    }
+	  echo "<option value='",$tmp->getValue('player_id'),"'>",$tmp->getValue('name');
 	}
 
       echo "</select></td></tr>";
