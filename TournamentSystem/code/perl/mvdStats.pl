@@ -22,6 +22,8 @@ sub new
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
   $self->{SCORE_GRAPH} = [];
+  $self->{MINUTES_PLAYED} = 0;
+  $self->{CURRENTLY_PLAYING} = 1;
   $self->{TOP_COLOR} = undef;
   $self->{BOTTOM_COLOR} = undef;
   $self->{ROCKET_FRAGS} = 0;    $self->{ROCKET_DEATHS} = 0;
@@ -67,6 +69,23 @@ sub team
   my $self = shift;
   if (@_) {$self->{TEAM} = shift }
   return $self->{TEAM};
+}
+
+sub minutesPlayed
+{
+  my $self = shift;
+  if (@_ && $self->{CURRENTLY_PLAYING})
+  {
+    $self->{MINUTES_PLAYED} = shift;
+  }
+  return $self->{MINUTES_PLAYED};
+}
+
+sub playing
+{
+  my $self = shift;
+  if (@_) { $self->{CURRENTLY_PLAYING} = shift }
+  return $self->{CURRENTLY_PLAYING};
 }
 
 sub topColor
@@ -858,6 +877,7 @@ print $string;
       foreach $player (@players)
       {
         $player->addScore($player->points);
+        $player->minutesPlayed($player->minutesPlayed + 1);
       }
     }
     elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/)
