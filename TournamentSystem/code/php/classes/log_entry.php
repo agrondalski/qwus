@@ -154,10 +154,16 @@ class log_entry
 	}
     }
 
-  public function getValue($col)
+  public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-      return htmlentities($this->$col) ;
+
+      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
+	{
+	  util::throwException('invalid quote_style value') ;
+	}
+
+      return htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)
@@ -166,15 +172,17 @@ class log_entry
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update log_table set %s=%d where log_id=%d", $col, $this->$col, $this->log_id) ;
+	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update log_table set %s='%s' where log_id=%d", $col, $this->$col, $this->log_id) ;
+	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       mysql_free_result($result) ;
+
+      $this->$col = $val ;
     }
 
   public function delete()

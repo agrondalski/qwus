@@ -66,7 +66,7 @@ try
 	  $sel = "selected";
 	}
 
-      echo "<option value='" . $gt->getValue('game_type_id') . "'" . $sel . ">" . $gt->getValue('name') . $state_name ;
+      echo "<option value='" . $gt->getValue('game_type_id') . "'" . $sel . ">" . $gt->getValue('name') ;
     }
 
   echo "</select></td>";
@@ -83,7 +83,7 @@ try
 	  $sel = "selected";
 	}
 
-      echo "<option value='" . $key . "'" . $sel . ">" . $value . $state_name ;
+      echo "<option value='" . $key . "'" . $sel . ">" . $value ;
     }
 
   echo "</select></td>";
@@ -100,7 +100,7 @@ try
 	  $sel = "selected";
 	}
 
-      echo "<option value='" . $key . "'" . $sel . ">" . $value . $state_name ;
+      echo "<option value='" . $key . "'" . $sel . ">" . $value ;
     }
 
   echo "</select></td>";

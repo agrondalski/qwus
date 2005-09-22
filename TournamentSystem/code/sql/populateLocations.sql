@@ -3,9 +3,10 @@
 -- United States
 
 INSERT INTO `location` 
-	( `location_id` , `country_name` , `state_name` , `logo_url` )
-VALUES ('', 'United States', '' , 'img/flags/us.gif');
+	( `location_id` , `country_name`, `logo_url` )
+VALUES ('', 'United States', 'img/flags/us.gif');
 
+/*
 INSERT INTO `location` 
 	( `location_id` , `country_name` , `state_name` , `logo_url` )
 VALUES ('', 'United States', 'Alaska' , 'img/flags/ak.gif');
@@ -209,8 +210,12 @@ VALUES ('', 'United States', 'Wyoming' , 'img/flags/wy.gif');
 INSERT INTO `location`
         ( `location_id` , `country_name` , `state_name` , `logo_url` )
 VALUES ('', 'United States', 'District of Columbia' , '');
+*/
 
 -- Canada
+INSERT INTO `location` 
+	( `location_id` , `country_name` , `logo_url` )
+VALUES ('', 'Canada', 'img/flags/can.gif');
 
 
 -- Other

@@ -19,7 +19,7 @@ try
   foreach (player::getAllPlayers() as $p)
     {
       $loc = new location(array('location_id'=>$p->getValue('location_id')));
-      $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+      $loc_name = $loc->getValue('country_name') ;
 
       echo "\t<tr>\n";
       echo "\t<td>",$p->getValue('name'),"</td>\n";

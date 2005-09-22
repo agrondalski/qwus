@@ -21,7 +21,7 @@ try
       foreach (team::getAllTeams() as $t)
 	{
 	  $loc = new location(array('location_id'=>$t->getValue('location_id')));
-	  $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+	  $loc_name = $loc->getValue('country_name') ;
 	  echo "\t<tr>\n";
 	  echo "\t<td>",$t->getValue('name'),"</td>\n";
 	  echo "\t<td>",$t->getValue('name_abbr'),"</td>\n";

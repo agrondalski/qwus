@@ -7,18 +7,18 @@ TO DO LIST:
   Report Page integration with mvd stats
   Ability to approve matches (admins)
   Rules Link
-  Remove State Locations
   Fix stats without game data
 
   Ability for teams login to manage players (add, edit)
   Only display/link to approved matches ?
-  Sortable team page
   Match/News Comments
   Polls
   List recent matches on DetailPlayer
+  Relevant sorts of dropdown boxes
 
   Stretch Logo / Resize Page
   Fix CSS
+  Team login button doesnt line up properly
 
   Have phpbb use phpbb db user
   New qwus db password
@@ -26,6 +26,7 @@ TO DO LIST:
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
+  Auto creation of playoff games/tournament style
 
 
 Ongoing

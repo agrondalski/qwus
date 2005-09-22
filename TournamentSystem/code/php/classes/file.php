@@ -158,18 +158,16 @@ class file
       return $arr ;
     }
 
-  public function getValue($col)
+  public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
 
-      if ($col!="text")
+      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
 	{
-	  return util::htmlstring($this->$col) ;
+	  util::throwException('invalid quote_style value') ;
 	}
-      else
-	{
-	  return $this->$col ;
-	}
+
+      return htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)
@@ -178,15 +176,17 @@ class file
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update file_table set %s=%d where file_id=%d", $col, $this->$col, $this->file_id) ;
+	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update file_table set %s='%s' where file_id=%d", $col, $this->$col, $this->file_id) ;
+	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       mysql_free_result($result) ;
+
+      $this->$col = $val ;
     }
 
   public function delete()

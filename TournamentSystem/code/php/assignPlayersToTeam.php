@@ -62,7 +62,7 @@ try
       foreach ($tm->getPlayers($tid) as $player)
 	{
 	  $loc = new location(array('location_id'=>$player->getValue('location_id')));
-	  $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+	  $loc_name = $loc->getValue('country_name') ;
 	  echo "\t<tr>\n";
 
 	  $tlp = $tm->getTeamLeader($tid);

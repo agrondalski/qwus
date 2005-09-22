@@ -28,7 +28,7 @@ $email=$tm->getValue('email');
 $irc_channel=$tm->getValue('irc_channel');
 $location_id=$tm->getValue('location_id');
 $loc = new location(array('location_id'=>$location_id));
-$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+$loc_name = $loc->getValue('country_name') ;
 $password=$tm->getValue('password');
 $approved=$tm->getValue('approved');
 
@@ -58,7 +58,7 @@ else
 foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_game', SORT_DESC)) as $player)
 {
 	$loc = new location(array('location_id'=>$player['location_id']));
-	$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+	$loc_name = $loc->getValue('country_name') ;
 	echo "\t<tr>\n<td nowrap>";
 	echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player['player_id'],"'>";
 		$tlp = $tm->getTeamLeader($tid);

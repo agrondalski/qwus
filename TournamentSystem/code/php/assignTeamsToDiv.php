@@ -59,7 +59,7 @@ try
       foreach ($div->getTeams() as $tm)
 	{
 	  $loc = new location(array('location_id'=>$tm->getValue('location_id')));
-	  $loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+	  $loc_name = $loc->getValue('country_name') ;
 	  echo "\t<tr>\n";
 	  echo "\t<td>",$tm->getValue('name'),"</td>\n";
 	  echo "\t<td>",$tm->getValue('email'),"</td>\n";

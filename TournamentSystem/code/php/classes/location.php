@@ -3,7 +3,6 @@ class location
 {
   private $location_id ;
   private $country_name ;
-  private $state_name ;
   private $logo_url ;
 
   function __construct($a)
@@ -27,9 +26,9 @@ class location
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into location(country_name, state_name, logo_url)" .
+      $sql_str = sprintf("insert into location(country_name, logo_url)" .
                          "values('%s', '%s', '%s')",
-			 $this->country_name, $this->state_name, $this->logo_url) ;
+			 $this->country_name, $this->logo_url) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->location_id = mysql_insert_id() ;
@@ -37,7 +36,7 @@ class location
 
   private function getLocationInfo()
     {
-      $sql_str = sprintf("select country_name, state_name, logo_url from location where location_id=%d", $this->location_id) ;
+      $sql_str = sprintf("select country_name, logo_url from location where location_id=%d", $this->location_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -48,8 +47,7 @@ class location
       $row = mysql_fetch_row($result) ;
 
       $this->country_name  = $row[0] ;
-      $this->state_name    = $row[1] ;
-      $this->logo_url      = $row[2] ; 
+      $this->logo_url      = $row[1] ; 
 
       mysql_free_result($result) ;
 
@@ -99,10 +97,12 @@ class location
 	  return util::mysql_real_escape_string($val) ;
 	}
 
+      /*
       elseif ($col == 'state_name')
 	{
 	  return util::mysql_real_escape_string($val) ;
 	}
+      */
 
       elseif ($col = 'logo_url')
 	{
@@ -131,7 +131,7 @@ class location
 
   public static function getCountryLocations()
     {
-      $sql_str = sprintf("select l.location_id from location l where l.state_name is null or l.state_name=''") ;
+      $sql_str = sprintf('select l.location_id from location l') ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
@@ -143,6 +143,7 @@ class location
       return $arr ;
     }
 
+  /*
   public static function getStateLocations()
     {
       $sql_str = sprintf("select l.location_id from location l where state_name is not null and l.state_name!=''") ;
@@ -156,6 +157,7 @@ class location
       mysql_free_result($result) ;
       return $arr ;
     }
+  */
 
   public function getTeams()
     {
@@ -185,10 +187,16 @@ class location
       return $arr ;
     }
 
-  public function getValue($col)
+  public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-      return htmlentities($this->$col) ;
+
+      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
+	{
+	  util::throwException('invalid quote_style value') ;
+	}
+
+      return htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)
@@ -197,15 +205,17 @@ class location
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update location set %s=%d where location_id=%d", $col, $this->$col, $this->location_id) ;
+	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update location set %s='%s' where location_id=%d", $col, $this->$col, $this->location_id) ;
+	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       mysql_free_result($result) ;
+
+      $this->$col = $val ;
     }
 
   public function delete()

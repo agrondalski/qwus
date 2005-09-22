@@ -70,7 +70,7 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
  
-  foreach (location::getStateLocations() as $l)
+  foreach (location::getCountryLocations() as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)
@@ -78,13 +78,7 @@ try
 	  $sel = "selected";
 	}
 
-      $state_name = $l->getValue('state_name') ;
-      if (!util::isNull($state_name))
-	{
-	  $state_name = ':' . $state_name ;
-	}
-
-      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
+      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') ;
     }
 
   echo "</select></td>";

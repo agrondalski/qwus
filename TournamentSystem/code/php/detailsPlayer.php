@@ -22,7 +22,7 @@ $team_id = $_REQUEST['team_id'];
 $player = $p;
 
 $loc = new location(array('location_id'=>$player->getValue('location_id')));
-$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+$loc_name = $loc->getValue('country_name') ;
 
 echo "Team: <a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$tm->getValue('team_id'),"'>";
 echo $tm->getValue('name'),"</a><p></p>";

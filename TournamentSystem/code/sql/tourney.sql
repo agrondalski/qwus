@@ -88,15 +88,14 @@ create table player(
   constraint player_unq1 unique(name))
 ENGINE=INNODB ;
 
--- Each country has an entry with a null state_name, used as default for a particular country
 create table location(
   location_id   integer      NOT NULL auto_increment,
   country_name  varchar(250) NOT NULL,
-  state_name    varchar(250),
+--  state_name    varchar(250),
   logo_url      varchar(250) NOT NULL,
 --
   constraint location_pk primary key(location_id),
-  constraint location_unq1 UNIQUE(country_name, state_name))
+  constraint location_unq1 UNIQUE(country_name))
 ENGINE=INNODB ;
 
 create table player_info(

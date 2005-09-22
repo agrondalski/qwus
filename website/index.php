@@ -200,6 +200,14 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
+				<TD><A href="?a=signupTeam">Register</A></TD>
+			</TR>
+
+                        <TR>
+                                <TD class="menuBreak"></TD>
+                        </TR>
+
+			<TR>
 				<TD><A href="?a=links">Links</A></TD>
 			</TR>
 

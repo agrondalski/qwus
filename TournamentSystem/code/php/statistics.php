@@ -94,7 +94,7 @@ foreach ($arr as $player)
 {
 	$count += 1;
 	//$loc = new location(array('location_id'=>$player['location_id']));
-	//$loc_name = $loc->getValue('country_name').":".$loc->getValue('state_name');
+	//$loc_name = $loc->getValue('country_name') ;
 	if ($count % 2 == 1) 
 	{
 	  $clr = "#CCCCCC";

@@ -93,13 +93,7 @@ try
 	  $sel = "selected";
 	}
 
-      $state_name = $l->getValue('state_name') ;
-      if (!util::isNull($state_name))
-	{
-	  $state_name = ':' . $state_name ;
-	}
-
-      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name') . $state_name ;
+      echo "<option value='" . $l->getValue('location_id') . "'" . $sel . ">" . $l->getValue('country_name')  ;
     }
 
   echo "</select></td>";

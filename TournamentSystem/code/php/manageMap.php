@@ -63,7 +63,7 @@ try
 	  $sel = "selected";
 	}
 
-      echo "<option value='" . $gt->getValue('game_type_id') . "'" . $sel . ">" . $gt->getValue('name') . $state_name ;
+      echo "<option value='" . $gt->getValue('game_type_id') . "'" . $sel . ">" . $gt->getValue('name') ;
     }
 
   echo "</select></td>";
