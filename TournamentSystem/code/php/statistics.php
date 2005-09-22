@@ -72,15 +72,22 @@ echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_i
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=total_frags'>Frags</a></th>";
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=matches_won'>Record with</a></th>";
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=frag_diff'>+/-</a></th></tr>";
-
-// User division or don't
-if ($division_id == "-1") 
+if ($sort == "name") 
 {
-	$arr = $t->getSortedPlayerStats(array($sort,SORT_DESC,'frags_per_game', SORT_DESC));
+	$sortOrder == SORT_ASC;
 }
 else 
 {
-	$arr = $div->getSortedPlayerStats(array($sort,SORT_DESC, 'frags_per_game', SORT_DESC));
+	$sortOrder = SORT_DESC;
+}
+// User division or don't
+if ($division_id == "-1") 
+{
+	$arr = $t->getSortedPlayerStats(array($sort, $sortOrder,'frags_per_game', SORT_DESC));
+}
+else 
+{
+	$arr = $div->getSortedPlayerStats(array($sort, $sortOrder, 'frags_per_game', SORT_DESC));
 }
 $count = 0;
 foreach ($arr as $player)
