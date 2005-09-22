@@ -1,16 +1,29 @@
 TO DO LIST:   
 ------------------------------------------------
+*Current*:
+  Register/Create Team Page (Optional ability to select tourney, but not needed)
+  Report Page integration with mvd stats
+  Ability for teams login to manage players (add, edit)
+  Ability to approve matches (admins)
+  Only display/link to approved matches ?
+  Sortable team page
+  Fix stats without game data
+  Have phpbb use phpbb db user
+  New qwus db password
+
+*Future*:
+  Career Player/Teams Stats
+  Weapon Stats
+
+
+Ongoing
+------------------------------------------------
+Maintain security/privilege checks for added files
+
 
 General to do/bugs/fixes
 ------------------------------------------------
-column option on news page
-security
-role check for each page
-cleanup login/logout for all pages
-are spaces okay for player names?
-login allowed for player with no password (bad)
-logout link isnt centered when page is stretched
-logout errors when not on tourneyHome page
+logout link isnt centered when page is stretched    <--- This still an issue ?
 non_sa cant add players with sa or update sa flag
 
 

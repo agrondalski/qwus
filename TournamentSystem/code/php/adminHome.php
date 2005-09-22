@@ -21,22 +21,22 @@ if (util::isLoggedInAsPlayer())
 	{
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageTourney'>Create Tourney</a></td>";
-	  echo "<td><a href='?a=listTourneys'>Manage Tourney</a></td>";
+	  echo "<td><a href='?a=listTourneys'>Manage Tourneys</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageNews'>Create News</a></td>";
 	  echo "<td><a href='?a=listNews'>Manage News</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
-	  echo "<td><a href='?a=manageTeam'>Create a Team</a></td>";
+	  echo "<td><a href='?a=manageTeam'>Create Team</a></td>";
 	  echo "<td><a href='?a=listTeams'>Manage Teams</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
-	  echo "<td><a href='?a=managePlayer'>Create a Player</a></td>";
+	  echo "<td><a href='?a=managePlayer'>Create Player</a></td>";
 	  echo "<td><a href='?a=listPlayers'>Manage Players</a></td>";
 	  echo "</tr>";
 	  echo "<tr>";
-	  echo "<td><a href='?a=manageMap'>Create a Map</a></td>";
+	  echo "<td><a href='?a=manageMap'>Create Map</a></td>";
 	  echo "<td><a href='?a=listMaps'>Manage Maps</a></td>";
 	  echo "</tr>";
 	}
@@ -45,7 +45,7 @@ if (util::isLoggedInAsPlayer())
 	{
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageColumn'>Create Column</a></td>";
-	  echo "<td><a href='?a=listColumn'>Manage Column</a></td>";
+	  echo "<td><a href='?a=listColumn'>Manage Columns</a></td>";
 	  echo "</tr>";
 	}
       

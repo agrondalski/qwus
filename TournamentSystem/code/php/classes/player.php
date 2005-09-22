@@ -386,19 +386,19 @@ class player
   public function getCareerStats()
     {
       $stats = stats::getPlayerStats(array('player_id'=>$this->player_id)) ;
-      return $stats ;
-    }
-
-  public function getTourneyStats($tid)
-    {
-      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
-      return $stats ;
+      return $stats[$this->player_id] ;
     }
 
   public static function getSortedCareerStats($a)
     {
       $stats = stats::getPlayerStats() ;
       return util::row_sort($stats, $a) ;
+    }
+
+  public function getTourneyStats($tid)
+    {
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
+      return $stats[$this->player_id] ;
     }
 
   public function getValue($col)
