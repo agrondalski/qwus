@@ -2,13 +2,10 @@
 
 # todo:
 # nice output for easy database entry
-# misc bs
 # optimize
 # ctf msgs
-# have to check and double check score calculations
-# team stats
+# team stats (end of mvd)
 # player minutes played
-# player line graph legend (2 reds)
 # player line graph should check for not null team
 # pie chart with no frags == crash
 
@@ -1097,17 +1094,19 @@ sub outputFooter
 
 sub outputPlayerScoreGraph
 {
-    my $x = 400; my $y = 300;
-    if (@_) { $x = shift; $y = shift; }
-   # my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
-    my @data = (\@graphTime);
-    foreach $player (@players)
-    { 
-       my @scoreArray = $player->scoreArray();
-       push(@data, \@scoreArray); 
-       push(@legendPlayers, $player->name);
+  my $x = 400; my $y = 300;
+  if (@_) { $x = shift; $y = shift; }
+  my @data = (\@graphTime);
+  foreach $player (@players)
+  { 
+ #   if ($player->team != undef)
+    {
+      my @scoreArray = $player->scoreArray();
+      push(@data, \@scoreArray); 
+      push(@legendPlayers, $player->name);
     }
-    my $graph = GD::Graph::lines->new($x,$y);
+  }
+  my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")\
 ",
               x_label => "time",
@@ -1115,12 +1114,14 @@ sub outputPlayerScoreGraph
               y_label => "score",
               line_width => 2
 	      );
-    $graph->set_legend(@legendPlayers);
-    my $image = $graph->plot(\@data) or die ("Died creating image");
-    open(OUT, ">Players_" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
-    binmode OUT;
-    print OUT $image->png();
-    close OUT;
+  my @colorArray = qw(red orange blue dgreen dyellow cyan marine purple);
+  $graph->set(dclrs => [@colorArray]);
+  $graph->set_legend(@legendPlayers);
+  my $image = $graph->plot(\@data) or die ("Died creating image");
+  open(OUT, ">Players_" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
+  binmode OUT;
+  print OUT $image->png();
+  close OUT;
 }
 
 sub outputTeamScoreGraph
