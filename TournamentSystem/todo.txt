@@ -1,0 +1,39 @@
+TO DO LIST:   
+------------------------------------------------
+*Current*:
+  Register/Create Team Page
+  Prevent automated signup
+
+  Report Page integration with mvd stats
+  Ability to approve matches (admins)
+  Rules Link
+  Remove State Locations
+  Fix stats without game data
+
+  Ability for teams login to manage players (add, edit)
+  Only display/link to approved matches ?
+  Sortable team page
+  Match/News Comments
+  Polls
+  List recent matches on DetailPlayer
+
+  Stretch Logo / Resize Page
+  Fix CSS
+
+  Have phpbb use phpbb db user
+  New qwus db password
+
+*Future*:
+  Career Player/Teams Stats
+  Weapon Stats
+
+
+Ongoing
+------------------------------------------------
+Maintain security/privilege checks for added files
+
+
+General to do/bugs/fixes
+------------------------------------------------
+logout link isnt centered when page is stretched    <--- This still an issue ?
+non_sa cant add players with sa or update sa flag
