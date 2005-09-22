@@ -32,7 +32,6 @@ try
 	}
       catch (Exception $e)
 	{
-	  print $e ;
 	  $msg = "<br>Error updating!<br>";
 	}
     }

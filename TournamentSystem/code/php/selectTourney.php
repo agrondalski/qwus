@@ -144,7 +144,7 @@ try
 	  echo "</table>\n";
 	}
 
-      print $msg ;
+      echo $msg ;
     }
 }
 catch (Exception $e) {}

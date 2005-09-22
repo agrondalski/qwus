@@ -364,7 +364,7 @@ try
 }
 catch(Exception $e)
 {
-  print $e;
+  echo $e;
 }
 $te = microtime(true) ;
 
@@ -395,8 +395,8 @@ try
 }
 catch (Exception $e)
 {
-  print $e;
+  echo $e;
 }
 
-print "<br>DONE in " . ($te-$ts) . " seconds<br>" ;
+echo "<br>DONE in " . ($te-$ts) . " seconds<br>" ;
 ?>

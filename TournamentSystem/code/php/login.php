@@ -110,30 +110,30 @@ if ($displayLogin)
 }
 else
 {
-  print '<table border=0 width=100% cellspacing=0 cellpadding=0>' ;
-  print '<tr>';
+  echo '<table border=0 width=100% cellspacing=0 cellpadding=0>' ;
+  echo '<tr>';
 
   if (!util::isNull($_SESSION['username']))
     {
-      print '<td colspan=2>Welcome, ' . $_SESSION['username'] . '</td></tr><tr>';
+      echo '<td colspan=2>Welcome, ' . $_SESSION['username'] . '</td></tr><tr>';
     }
   elseif (!util::isNull($_SESSION['teamname']))
     {
-      print '<td colspan=2>Welcome, ' . $_SESSION['teamname'] . '</td></tr><tr>';
+      echo '<td colspan=2>Welcome, ' . $_SESSION['teamname'] . '</td></tr><tr>';
     }
 
   if (!util::isNull($_SESSION['tourney_id']) || !util::isNull($_REQUEST['tourney_id']))
     {
-      print "<td align=left><a href='?a=adminHome'>Admin Home</a>&nbsp;<b>&gt;</b>";
-      print "&nbsp;<a href='?a=tourneyHome&amp;tourney_id=" . util::nvl($_SESSION['tourney_id'], $_REQUEST['tourney_id']) . "'>Tourney Home</a></td>";
+      echo "<td align=left><a href='?a=adminHome'>Admin Home</a>&nbsp;<b>&gt;</b>";
+      echo "&nbsp;<a href='?a=tourneyHome&amp;tourney_id=" . util::nvl($_SESSION['tourney_id'], $_REQUEST['tourney_id']) . "'>Tourney Home</a></td>";
     }
   else
     {
-      print "<td align=left><a href='?a=adminHome'>Admin Home</a></td>";
+      echo "<td align=left><a href='?a=adminHome'>Admin Home</a></td>";
     }
 
-  print '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td>' ;
-  print '</tr></table><hr>' ;
+  echo '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td>' ;
+  echo '</tr></table><hr>' ;
 
   $do = $_GET['action'] ;
 
