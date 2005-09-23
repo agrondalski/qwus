@@ -357,7 +357,7 @@ class stats
 
 	      $arr[$tmid] = array() ;
 	      $arr[$tmid]['team_id'] = $row[0] ;
-	      $arr[$tmid]['name'] = $row[1] ;
+	      $arr[$tmid]['name'] = htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$tmid]['location_id'] = $row[5] ;
 
 	      if (util::isNull($row[4]))
@@ -600,13 +600,13 @@ class stats
 
 	      $arr[$pid] = array() ;
 	      $arr[$pid]['player_id'] = $pid ;
-	      $arr[$pid]['name']      = $row[1] ;
+	      $arr[$pid]['name']      = htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$pid]['location_id'] = null ;
 
 	      $arr[$pid]['team_id']       = $row[2] ;
-	      $arr[$pid]['team_name']     = $row[3] ;
+	      $arr[$pid]['team_name']     = htmlentities($row[3], ENT_QUOTES) ;
 	      $arr[$pid]['division_id']   = $row[4] ;
-	      $arr[$pid]['division_name'] = $row[5] ;
+	      $arr[$pid]['division_name'] = htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$pid]['location_id']   = $row[13] ;
 	    }
 
