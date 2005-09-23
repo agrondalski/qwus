@@ -356,7 +356,7 @@ class team
   public function getCareerStats()
     {
       $stats = stats::getTeamStats(array('team_id'=>$this->team_id)) ;
-      return $stats['team_id'] ;
+      return $stats[$this->team_id] ;
     }
 
   public static function getSortedCareerStats($a)
