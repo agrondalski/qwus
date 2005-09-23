@@ -172,11 +172,11 @@ class log_entry
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update log_table set %s=%d where log_id=%d", $col, $this->$col, $this->log_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update log_table set %s='%s' where log_id=%d", $col, $this->$col, $this->log_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

@@ -161,11 +161,11 @@ class match_schedule
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update match_schedule set %s=%d where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update match_schedule set %s='%s' where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

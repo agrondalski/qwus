@@ -176,11 +176,11 @@ class file
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update file set %s=%d where file_id=%d", $col, $this->$col, $this->file_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update file set %s='%s' where file_id=%d", $col, $this->$col, $this->file_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

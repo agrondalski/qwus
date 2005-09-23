@@ -176,11 +176,11 @@ class map
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update division set %s=%d where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update maps set %s=%d where map_id=%d", $col, $this->$col, $this->map_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
+	  $sql_str = sprintf("update maps set %s='%s' where map_id=%d", $col, $this->$col, $this->map_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
