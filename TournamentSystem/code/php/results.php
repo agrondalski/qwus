@@ -26,14 +26,23 @@ foreach ($t->getDivisions() as $div)
 		$ms = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
 		echo "<tr>";
 		echo "<td>",$ms->getValue('name'),"</td>";
-		echo "<td><a href='?a=detailsMatch&amp;tourney_id=",$tid,"&amp;match_id=",$m->getValue('match_id'),"'>";
+
+		if ($m->getValue('approved'))
+		  {
+		    echo "<td><a href='?a=detailsMatch&amp;tourney_id=" . $tid. "&amp;match_id=" . $m->getValue('match_id') . "'>";
+		  }
+		else
+		  {
+		    echo "<td>&nbsp;" ;
+		  }
+
 		if ($wid == $m->getValue('team1_id'))
 		{
 			echo "<b>";
 			echo $t1->getValue('name');
 			echo "</b>";
 		}
-		else 
+		else
 		{
 			echo $t1->getValue('name');
 		}
@@ -50,27 +59,34 @@ foreach ($t->getDivisions() as $div)
 		{
 			echo $t2->getValue('name');
 		}
-		// Don't end row yet
-		$team1 = 0;
-		$team2 = 0;
-		foreach ($m->getGames() as $g)
-		{	
+
+		if ($m->getValue('approved'))
+		  {
+		    // Don't end row yet
+		    $team1 = 0;
+		    $team2 = 0;
+		    foreach ($m->getGames() as $g)
+		      {	
 			if ($g->getValue('team1_score') > $g->getValue('team2_score'))
-			{
-				$team1 += 1;				
-			}
+			  {
+			    $team1 += 1;				
+			  }
 			elseif ($g->getValue('team1_score') < $g->getValue('team2_score'))
-			{
-				$team2 += 1;				
-			}			
+			  {
+			    $team2 += 1;				
+			  }	
+		
 			//$map = new map(array('map_id'=>$g->getValue('map_id')));
 			//echo "<tr>";
 			//echo "<td>",$map->getValue('map_abbr'),"</td>";
 			//echo "<td>",$g->getValue('team1_score')," - ";
 			//echo $g->getValue('team2_score'),"</td>";
 			//echo "</tr>\n";
-		}
-		echo " (",$team1,"-",$team2,")</a>";
+		      }
+
+		    echo " (",$team1,"-",$team2,")</a>";
+		  }
+
 		echo "</td>";
 		echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
 	}

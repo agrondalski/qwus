@@ -7,10 +7,8 @@ TO DO LIST:
   Report Page integration with mvd stats
   Ability to approve matches (admins)
   Rules Link
-  Fix stats without game data
 
   Ability for teams login to manage players (add, edit)
-  Only display/link to approved matches ?
   Match/News Comments
   Polls
   List recent matches on DetailPlayer
