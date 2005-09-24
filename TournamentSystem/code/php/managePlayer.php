@@ -6,12 +6,12 @@ try
 {
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-  if (!$p->isSuperAdmin())
+  $mode = $_REQUEST['mode'];
+
+  if (!$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
     {
       util::throwException('not authorized') ;
     }
-
-  $mode = $_REQUEST['mode'];
 
   if ($mode == "edit")
     {
@@ -55,13 +55,10 @@ try
   echo "<tr>";
   echo "<td>S.A.:</td><td>";
 
-  if ($superadmin == "1")
+  $check =  util::choose(($superadmin == "1"), "checked", "") ;
+  if (!$p->isSuperAdmin())
     {
-      $check = "checked";
-    }
-  else
-    {
-      $check = "";
+      $check .= ' disabled' ;
     }
 
   echo "<input type='checkbox' name='superadmin' value='1' ",$check,"></td>";
@@ -70,7 +67,7 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
  
-  foreach (location::getCountryLocations() as $l)
+  foreach (location::getAllLocations(array('country_name', SORT_ASC)) as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)
@@ -92,18 +89,15 @@ try
     }
 
   echo "Password:</td><td>";
-  echo "<input type='text' name='password' value='' size='50'></td>";
+  echo "<input type='password' name='password' value='' size='50'></td>";
   echo "</tr>";
   echo "<tr>";
   echo "<td>Has column?:</td><td>";
 
-  if ($hascolumn == "1")
+  $check = util::choose(($hascolumn == "1"), "checked", "") ;
+  if (!$p->isSuperAdmin())
     {
-      $check = "checked";
-    }
-  else
-    {
-      $check = "";
+      $check .= ' disabled' ;
     }
 
   echo "<input type='checkbox' name='hascolumn' value='1' ",$check,"></td>";
@@ -115,6 +109,5 @@ try
 
   include 'listPlayers.php';
 }
-catch (Exception $e) {}
+catch (Exception $e) {print $e;}
 ?>
-

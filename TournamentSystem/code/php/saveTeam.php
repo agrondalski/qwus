@@ -87,24 +87,27 @@ try
 	  $appr = "0";
 	}
 
-      // Make sure this team has a password
-      $pw = $_POST['password'];
-      if ($pw == "")
-	{
-	  $pw = "dumB3as5!";
-	}
-
       try
 	{
-	  $tm = new team(array('name'=>$_POST['name'],
-			       'name_abbr'=>$_POST['name_abbr'],
-			       'email'=>$_POST['email'],
-			       'irc_channel'=>$_POST['irc_channel'],
-			       'location_id'=>$_POST['location_id'],
-			       'password'=>$pw,
-			       'approved'=>$appr));
-	  
-	  $msg = "<br>New team created!<br>";
+	  // Make sure this team has a password
+	  $pw = $_POST['password'];
+
+	  if (util::isNull($pw))
+	    {
+	      $msg = "<br>Error creating team! Password can not be null.<br>" ;
+	    }
+	  else
+	    {
+	      $tm = new team(array('name'=>$_POST['name'],
+				   'name_abbr'=>$_POST['name_abbr'],
+				   'email'=>$_POST['email'],
+				   'irc_channel'=>$_POST['irc_channel'],
+				   'location_id'=>$_POST['location_id'],
+				   'password'=>$pw,
+				   'approved'=>$appr));
+
+	      $msg = "<br>New team created!<br>";
+	    }	  
 	}
       catch (Exception $e)
 	{

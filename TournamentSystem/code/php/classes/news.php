@@ -284,14 +284,9 @@ class news
     {
       $this->validateColumnName($col) ;
 
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
       if ($col!="text")
 	{
-	  return htmlentities($this->$col, $quote_style) ;
+	  return util::htmlentities($this->$col, $quote_style) ;
 	}
       else
 	{

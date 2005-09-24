@@ -55,7 +55,7 @@ try
   echo "<td>Game Type:</td><td>";
   echo "<select name='game_type_id'>";
  
-  foreach (game_type::getAllGameTypes() as $gt)
+  foreach (game_type::getAllGameTypes(array('name', SORT_ASC)) as $gt)
     {
       $sel = "";
       if ($gt->getValue('game_type_id') == $gt_id)

@@ -26,7 +26,7 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
 
-  foreach (location::getCountryLocations() as $l)
+  foreach (location::getAllLocations(array('country_name', SORT_ASC)) as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)

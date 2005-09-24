@@ -58,7 +58,7 @@ try
   echo "<tr><td>Game Type:</td><td>";
   echo "<select name='game_type_id'>";
  
-  foreach (game_type::getAllGameTypes() as $gt)
+  foreach (game_type::getAllGameTypes(array('name', SORT_ASC)) as $gt)
     {
       $sel = "";
       if ($gt->getValue('game_type_id') == $gt_id)
@@ -75,7 +75,7 @@ try
   echo "<tr><td>Tournament Type:</td><td>";
   echo "<select name='tourney_type'>";
 
-  foreach(tourney::getTourneyTypes() as $key=>$value)
+  foreach(tourney::getTourneyTypes(array('name', SORT_ASC)) as $key=>$value)
     {
       $sel = "";
       if ($value == $tour_type)
@@ -92,7 +92,7 @@ try
   echo "<tr><td>Status:</td><td>";
   echo "<select name='status'>";
 
-  foreach(tourney::getStatusTypes() as $key=>$value)
+  foreach(tourney::getStatusTypes(array('name', SORT_ASC)) as $key=>$value)
     {
       $sel = "";
       if ($value == $status)

@@ -254,28 +254,68 @@ class tourney
       return $arr ;
     }
 
-  public function getDivisions()
+  public function getDivisions($a)
     {
-      $sql_str = sprintf("select d.division_id from division d where d.tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select * from division d where d.tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new division(array('division_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new division(array('division_id'=>$row['division_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new division(array('division_id'=>$row['division_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
       return $arr ;
     }
 
-  public function getTeams()
+  public function getTeams($a)
     {
-      $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select * from tourney_info ti where ti.tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new team(array('team_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -715,13 +755,7 @@ class tourney
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

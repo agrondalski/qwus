@@ -102,14 +102,34 @@ class game_type
       $m = new map($a) ;
     }
 
-  public static function getAllGameTypes()
+  public static function getAllGameTypes($a)
     {
-      $sql_str = sprintf('select gt.game_type_id from game_type gt') ;
+      $sql_str = sprintf('select * from game_type gt') ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new game_type(array('game_type_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new game_type(array('game_type_id'=>$row['game_type_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new game_type(array('game_type_id'=>$row['game_type_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -147,13 +167,7 @@ class game_type
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

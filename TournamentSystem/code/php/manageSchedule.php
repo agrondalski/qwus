@@ -34,7 +34,7 @@ try
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<td><select name='division_id'>";
 
-  foreach ($t->getDivisions() as $tmp)
+  foreach ($t->getDivisions(array('name', SORT_ASC)) as $tmp)
     {
       $sel = "";
       if ($tmp->getValue('division_id') == $division_id)
@@ -97,7 +97,7 @@ try
       echo "<tr><td><b>Team 1:</b></td>";
 
       $team_list = '' ;
-      foreach ($div->getTeams() as $tmp)
+      foreach ($div->getTeams(array('name', SORT_ASC)) as $tmp)
 	{
 	  $team_list .= "<option value='" . $tmp->getValue('team_id') . "'>" . $tmp->getValue('name') ;
 	}
@@ -115,7 +115,7 @@ try
       echo "<tr><td><b>Scheduled:</b></td>";
       echo "<td><select name='schedule_id'>";
 
-      foreach ($div->getMatchSchedule() as $tmp)
+      foreach ($div->getMatchSchedule(null, array('name', SORT_ASC)) as $tmp)
 	{
 	  echo "<option value='",$tmp->getValue('schedule_id'),"'>",$tmp->getValue('name'),":",$tmp->getValue('deadline');
 	}

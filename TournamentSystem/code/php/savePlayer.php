@@ -7,19 +7,18 @@ try
 {
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-  if (!$p->isSuperAdmin())
+  $mode = $_REQUEST['mode'];
+
+  if (!$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
     {
       util::throwException('not authorized') ;
     }
-
-  $mode = $_REQUEST['mode'];
 
   if ($mode=="edit")
     {
       $player_id = $_POST['player_id'];
       $p = new player(array('player_id'=>$player_id));
       $p->update('name',$_POST['name']);
-      $p->update('superAdmin',$_POST['superadmin']);
       $p->update('location_id',$_POST['location_id']);
 
       if ($_POST['password'] != "")
@@ -28,16 +27,14 @@ try
 	  $p->update('password',$_POST['password']);
 	}
 
-      if ($_POST['hascolumn'] == "1")
+      if ($p->isSuperAdmin())
 	{
-	  $hascolumn = "1";
-	}
-      else
-	{
-	  $hascolumn = "0";
+	  $hascolumn = util::choose(($_POST['hascolumn'] == "1"), 1, 0) ;
+	  $p->update('hasColumn', $hascolumn);
+
+	  $p->update('superAdmin',$_POST['superadmin']);
 	}
 
-      $p->update('hasColumn',$hascolumn);
  
       $msg = "<br>Player updated!<br>";
     }
@@ -90,5 +87,5 @@ try
   echo $msg;
   include 'listPlayers.php';
 }
-catch (Exception $e) {}
+catch (Exception $e) {print $e;}
 ?>

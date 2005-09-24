@@ -353,6 +353,31 @@ class team
       return null ;
     }
 
+  public function getRecentMatches($tid, $l)
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
+      $sql_str = sprintf("select m.match_id
+                          from match_table m, match_schedule ms, division d
+                          where (m.team1_id=%d or m.team2_id=%d) and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d
+                          order by m.match_date desc, m.match_id desc",
+			 $this->team_id, $this->team_id, $tid) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new match(array('match_id'=>$row[0])) ;
+	}
+
+      if (is_array($l) && is_integer($l['limit']))
+	{
+	  $arr = array_slice($arr, 0, $l['limit']) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getCareerStats()
     {
       $stats = stats::getTeamStats(array('team_id'=>$this->team_id)) ;
@@ -374,13 +399,7 @@ class team
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

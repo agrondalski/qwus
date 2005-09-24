@@ -246,13 +246,7 @@ class poll
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

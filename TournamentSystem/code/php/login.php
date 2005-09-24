@@ -24,17 +24,24 @@ if ($displayLogin)
 
       $teamlist = team::getAllTeams(array('name', SORT_ASC));
 
+      $maxlen = 0 ;
       foreach ($teamlist as $t)
 	{
-      	  echo "<option value='" . $t->getValue('team_id') . "'>" . $t->getValue('name') ;
+	  $team_name = $t->getValue('name') ;
+
+      	  echo "<option value='" . $t->getValue('team_id') . "'>" . $team_name ;
+	  if (strlen($team_name)>$maxlen)
+	    {
+	      $maxlen = strlen($team_name) ;
+	    }
 	}
 
       echo '  </select></TD>
             </TR>
             <TR>
                <TD><B>Password</B>:</TD>
-               <TD><INPUT TYPE="password" name="password"></TD>
-               <TD><INPUT TYPE="submit" value="Team Login"></TD>
+               <TD><INPUT TYPE="password" name="password" size=' . $maxlen . '></TD>
+               <TD><INPUT TYPE="submit" value="Team Login" class="button"></TD>
             </TR>
             </TABLE>
             </FORM>
@@ -46,12 +53,12 @@ if ($displayLogin)
             <table cellspacing="2" cellpadding="2">
             <TR>
               <TD><B>Username</B>:</TD>
-              <TD><INPUT TYPE="text" name="username"></TD>
+              <TD><INPUT TYPE="text" name="username" size=' . $maxlen . '></TD>
             </TR>
             <TR>
               <TD><B>Password</B>:</TD> 
-              <TD><INPUT TYPE="password" name="password"></TD>
-              <TD><INPUT TYPE="submit" value="Login"></TD>
+              <TD><INPUT TYPE="password" name="password" size=' . $maxlen . '></TD>
+              <TD><INPUT TYPE="submit" value="Admin Login" class="button"></TD>
             </TR>
             </TABLE>
             </FORM>

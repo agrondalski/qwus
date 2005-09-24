@@ -191,7 +191,7 @@ class division
 
   public function getMatches($team_id)
     {
-      if (util::isNull($team_id) || !is_numeric($team_id))
+      if (util::isNull($team_id))
 	{
 	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id", $this->division_id) ;
 	}
@@ -416,13 +416,7 @@ class division
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

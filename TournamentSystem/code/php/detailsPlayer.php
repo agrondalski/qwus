@@ -44,14 +44,6 @@ if ($tlp != null) {
 }
 $info = $player->getTourneyStats($tid);
 
-//$info['matches_played']
-//$info['games_played']  
-//$info['total_frags']   
-//$info['frags_per_game']
-//$info['matches_won']   
-//$info['matches_lost']  
-//$info['frag_diff']     
-
 echo "\t<td>",$loc_name,"</td>\n";
 echo "<td>",$info['games_played'],"</td>";
 echo "<td>",$info['frags_per_game'],"</td>";
@@ -59,8 +51,15 @@ echo "<td>",$info['total_frags'],"</td>";
 echo "<td>",$info['matches_won'],"-",$info['matches_lost'],"</td>";
 echo "<td nowrap>",$info['frag_diff'],"</td>";
 echo "</tr></table>";
-echo "<br><b>Recent Games:  (example)</b><br>";
-echo "33 frags in game vs. Team Bleh, (dm3:W:204-197)<br>";
-echo "41 frags in game vs. Team Bleh, (e1m2:L:104-153)<br>";
-echo "27 frags in game vs. Team Bleh, (dm2:W:185-131)<br>";
+
+echo "<br><b>Recent Games</b><br>";
+//echo "<table>" ;
+
+foreach($player->getRecentGameStats($tid, array('limit'=>5)) as $g)
+{
+  echo $g['frags'] . ' frags vs ' . $g['vs_team'] . ', (' . $g['map_abbr'] . ':' . $g['score'] . ')<br>' ;
+  //echo '<tr><td>' . $g['frags'] . ' frags vs ' . $g['vs_team'] . ', (' . $g['map_abbr'] . ':' . $g['score'] . ')</td></tr>' ;
+}
+
+//echo '</table>' ;
 ?>

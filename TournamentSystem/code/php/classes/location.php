@@ -115,49 +115,41 @@ class location
 	}
     }
 
-  public static function getAllLocations()
+  public static function getAllLocations($a)
     {
-      $sql_str = sprintf('select l.location_id from location l') ;
+      $sql_str = sprintf('select * from location l') ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new location(array('location_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new location(array('location_id'=>$row['location_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  print_r($arr) ;
+	  print_r($a) ;
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new location(array('location_id'=>$row['location_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
       return $arr ;
     }
-
-  public static function getCountryLocations()
-    {
-      $sql_str = sprintf('select l.location_id from location l') ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new location(array('location_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
-  /*
-  public static function getStateLocations()
-    {
-      $sql_str = sprintf("select l.location_id from location l where state_name is not null and l.state_name!=''") ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new location(array('location_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-  */
 
   public function getTeams()
     {
@@ -190,13 +182,7 @@ class location
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

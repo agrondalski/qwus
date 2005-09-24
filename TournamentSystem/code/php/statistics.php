@@ -45,7 +45,8 @@ echo "<tr><td><b>Pick a division:</b></td>";
 echo "<input type='hidden' name='tourney_id' value='$tid'>";
 echo "<td><select name='division_id'>";
 echo "<option value='-1' $alldivs>All divisions";
-foreach ($t->getDivisions() as $tmp) 
+
+foreach ($t->getDivisions(array('name', SORT_ASC)) as $tmp) 
 {
   $sel = "";
   if ($tmp->getValue('division_id') == $division_id) 

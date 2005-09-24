@@ -11,7 +11,7 @@ try
        
       foreach (tourney::getAllTourneys() as $t)
 	{
-	  if ($p->isSuperAdmin()) ;
+	  if ($p->isSuperAdmin())
 	    {
 	      if ($first_time)
 		{
@@ -37,11 +37,6 @@ try
     {
       $tm = new team(array('team_id'=>$_SESSION['team_id'])) ;
 
-      echo "<h2>Manage Team</h2>";
-      echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-      echo "<tr><td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=" . $_SESSION['team_id'] . "'> Manage Team</a></td></tr>" ;
-      echo "</table>" ;
-
       $mode = $_REQUEST['mode'];
       if ($mode=='delete')
 	{
@@ -52,7 +47,7 @@ try
 	      try
 		{
 		  $t->removeTeam($tm->getValue('team_id')) ;
-		  $msg = "<br>Your team has been removed from tourney!<br>";
+		  $msg = "<br>Your team has been removed from tournament!<br>";
 		}
 	      catch (Exception $e)
 		{
@@ -75,7 +70,7 @@ try
 	      try
 		{
 		  $t->addTeam($tm->getValue('team_id')) ;
-		  $msg = "<br>Your team has been added to the tourney!<br>";
+		  $msg = "<br>Your team has been added to the tournament!<br>";
 		}
 	      catch (Exception $e)
 		{
@@ -87,6 +82,8 @@ try
 	      $msg = "<br>Error!<br>";
 	    } 
 	}
+
+      echo $msg ;
 
       echo "<h2>Tourney Home</h2>";
       $first_time = true ;
@@ -143,8 +140,6 @@ try
 	{
 	  echo "</table>\n";
 	}
-
-      echo $msg ;
     }
 }
 catch (Exception $e) {}

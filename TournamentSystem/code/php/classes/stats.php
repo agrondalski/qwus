@@ -357,7 +357,7 @@ class stats
 
 	      $arr[$tmid] = array() ;
 	      $arr[$tmid]['team_id'] = $row[0] ;
-	      $arr[$tmid]['name'] = htmlentities($row[1], ENT_QUOTES) ;
+	      $arr[$tmid]['name'] = util::htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$tmid]['location_id'] = $row[5] ;
 
 	      if (util::isNull($row[4]))
@@ -600,13 +600,13 @@ class stats
 
 	      $arr[$pid] = array() ;
 	      $arr[$pid]['player_id'] = $pid ;
-	      $arr[$pid]['name']      = htmlentities($row[1], ENT_QUOTES) ;
+	      $arr[$pid]['name']      = util::htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$pid]['location_id'] = null ;
 
 	      $arr[$pid]['team_id']       = $row[2] ;
-	      $arr[$pid]['team_name']     = htmlentities($row[3], ENT_QUOTES) ;
+	      $arr[$pid]['team_name']     = util::htmlentities($row[3], ENT_QUOTES) ;
 	      $arr[$pid]['division_id']   = $row[4] ;
-	      $arr[$pid]['division_name'] = htmlentities($row[1], ENT_QUOTES) ;
+	      $arr[$pid]['division_name'] = util::htmlentities($row[1], ENT_QUOTES) ;
 	      $arr[$pid]['location_id']   = $row[13] ;
 	    }
 
@@ -716,13 +716,7 @@ class stats
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

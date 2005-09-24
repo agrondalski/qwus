@@ -285,6 +285,68 @@ class player
 	}
     }
 
+  public function getRecentGameStats($tid, $l)
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
+      $sql_str = sprintf("select s.value, s.team_id, mp.map_abbr, t.name, m.team1_id, g.team1_score, g.team2_score
+                          from stats s, game g, match_table m, match_schedule ms, division d, maps mp, team t
+                          where s.player_id=%d and s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id
+                            and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d and g.map_id=mp.map_id
+                            and (m.team1_id=t.team_id or m.team2_id=t.team_id) and t.team_id!=s.team_id
+                          order by m.match_date desc, m.match_id desc, g.game_id desc",
+			 $this->player_id, util::SCORE, $tid) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  if ($row[1]==$row[4])
+	    {
+	      $score = 'W:' ;
+	    }
+	  else
+	    {
+	      $score = 'L:' ;
+	    }
+
+	  if ($row[1]==$row[4])
+	    {
+	      if ($row[5]>$row[6])
+		{
+		  $score = 'W:' ;
+		}
+	      else
+		{
+		  $score = 'L:' ;
+		}
+	      $score .= $row[5] . '-' . $row[6] ;
+	    }
+
+	  else
+	    {
+	      if ($row[6]>$row[5])
+		{
+		  $score = 'W:' ;
+		}
+	      else
+		{
+		  $score = 'L:' ;
+		}
+	      $score .= $row[6] . '-' . $row[5] ;
+	    }
+
+	  $arr[] = array('frags'=>$row[0], 'map_abbr'=>$row[2], 'vs_team'=>$row[3], 'score'=>$score) ;
+	}
+
+      if (is_array($l) && is_integer($l['limit']))
+	{
+	  $arr = array_slice($arr, 0, $l['limit']) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getStats()
     {
       $sql_str = sprintf("select s.game_id from stats s where s.player_id=%d", $this->player_id) ;
@@ -404,13 +466,7 @@ class player
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-
-      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
-	{
-	  util::throwException('invalid quote_style value') ;
-	}
-
-      return htmlentities($this->$col, $quote_style) ;
+      return util::htmlentities($this->$col, $quote_style) ;
     }
 
   public function update($col, $val)

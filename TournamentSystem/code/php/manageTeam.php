@@ -85,7 +85,7 @@ try
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
 
-  foreach (location::getCountryLocations() as $l)
+  foreach (location::getAllLocations(array('country_name', SORT_ASC)) as $l)
     {
       $sel = "";
       if ($l->getValue('location_id') == $location_id)
@@ -107,7 +107,7 @@ try
     }
 
   echo "Password:</td><td>";
-  echo "<input type='text' name='password' value='' size='50'></td>";
+  echo "<input type='password' name='password' value='' size='50'></td>";
   echo "</tr>";
   echo "<tr>";
 

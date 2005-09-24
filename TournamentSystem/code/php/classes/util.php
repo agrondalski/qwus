@@ -16,7 +16,7 @@ class util
 
   public static function getLimit($a)
     {
-      $l = ltrim(rtrim($a['limit'])) ;
+      $l = trim($a['limit']) ;
 
       if (isset($l) && !empty($l))
 	{
@@ -94,7 +94,17 @@ class util
 
   public static function htmlstring($s)
     {
-      return htmlentities($s) ;
+      return self::htmlentities($s) ;
+    }
+
+  public static function htmlentities($s, $quote_style=ENT_QUOTES)
+    {
+      if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
+	{
+	  util::throwException('invalid quote_style value') ;
+	}
+
+      return htmlentities($s, $quote_style) ;
     }
 
   public static function curdate()
@@ -271,6 +281,73 @@ class util
 	}
 
       return false ;
+    }
+
+
+  public static function generateRandomStr($len)
+    {
+      if (!is_integer($len))
+	{
+	  return null ;
+	}
+
+      $str = '' ;
+      for ($i=0; $i<$len; $i++)
+	{
+	  $str .= self::generateRandomChar() ;
+	}
+
+      return $str ;
+    }
+
+
+  public static function generateRandomChar()
+    {
+      $rand = mt_rand(1, 5) ;
+
+      switch ($rand)
+	{
+	case 1:
+	  $val = mt_rand(48, 57) ;
+	  break ;
+
+	case 2:
+	case 3:
+	  $val = mt_rand(65, 90) ;
+	  break ;
+
+	case 4:
+	case 5:
+	  $val = mt_rand(97, 122) ;
+	  break ;
+	}
+
+      return chr($val) ;
+    }
+
+  public static function createTextImage($str)
+    {
+      if (!is_string($str))
+	{
+	  return ;
+	}
+
+      $img = imagecreate(200, 50) ;
+
+      /*
+      $black = imagecolorallocate ($img, 0, 0, 0);
+      $white = imagecolorallocate ($img, 255, 255, 255);
+
+      imagefill($img, 0, 0, $black) ;
+      $width = 0 ;
+      for ($i=0; $i<strlen($str); $i++)
+	{
+	  $width += 20 ;
+	  imagechar($img, mt_rand(3, 5), $width, mt_rand(15, 20), $str[$i], $white) ;
+	}
+
+      imagepng($img) ;
+      */
     }
 
 }

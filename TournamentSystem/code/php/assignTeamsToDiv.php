@@ -35,7 +35,7 @@ try
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<td><select name='division_id'>";
 
-  foreach ($t->getDivisions() as $tmp)
+  foreach ($t->getDivisions(array('name', SORT_ASC)) as $tmp)
     {
       $sel = "";
       if ($tmp->getValue('division_id') == $division_id)

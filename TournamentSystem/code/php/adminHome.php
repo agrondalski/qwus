@@ -2,15 +2,16 @@
 
 require_once 'login.php'; 
 
-echo "<h2>Admin Home</h2>";
-echo "<b>Actions</b><br>";
-echo "<table border=1 cellpadding=2 cellspacing=0>";
-
-if (util::isLoggedInAsPlayer())
+try
 {
-  try
+  if (util::isLoggedInAsPlayer())
     {
       $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+
+      echo "<h2>Admin Home</h2>";
+      echo "<b>Actions</b><br>";
+      echo "<table border=1 cellpadding=2 cellspacing=0>";
+      echo "<tr><td><a href='?a=managePlayer&amp;mode=edit&amp;player_id=" . $_SESSION['user_id'] . "'> Manage</a></td><td>&nbsp;</td></tr>" ;
 
       echo "<tr>";
       echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";
@@ -47,21 +48,23 @@ if (util::isLoggedInAsPlayer())
 	  echo "<td><a href='?a=manageColumn'>Create Column</a></td>";
 	  echo "<td><a href='?a=listColumn'>Manage Columns</a></td>";
 	  echo "</tr>";
-	}
-      
-    }
-  catch(Exception $e){}
-}
+	}      
 
-elseif (util::isLoggedInAsTeam())
-{
-  try
+      echo "</table>" ;
+    }
+
+  elseif (util::isLoggedInAsTeam())
     {
       $t = new team(array('team_id'=>$_SESSION['team_id'])) ;
-      header("location: ?a=selectTourney") ;
-    }
-  catch(Exception $e) {}
-}
 
-echo "</table>";
+      echo "<h2>Admin Home</h2>";
+      echo "<b>Actions</b><br>";
+      echo "<table border=1 cellpadding=2 cellspacing=0>\n";
+      echo "<tr><td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=" . $_SESSION['team_id'] . "'> Manage Team</a></td>" ;
+      echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";
+      echo "</tr></table>" ;
+    }
+}
+catch(Exception $e) {}
+
 ?>
