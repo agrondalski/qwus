@@ -39,9 +39,9 @@ img {border: none;}
 .bottom a {color: #FFF; font-weight: bold; text-decoration: underline;}
 .bottom td {height: 30px; background: #FF0000; padding: 0px 10px 0px 10px; vertical-align: middle; color: #FFF; font-weight: bold;}
 
-.content {width: 392px; padding: 8px 5px 8px 10px; color: #222222;}
+.content {width: 572px; padding: 8px 5px 8px 10px; color: #222222;}
 
-.logo {width: 500px; height: 250px; background: url(../img/logo.jpg) #FFFFFF no-repeat center;}
+.logo {width: 680px; height: 250px; background: url(../img/logo.jpg) #FFFFFF no-repeat center;}
 .gray {font-weight: bold; color: gray;}
 
 .menu {width: 95px;}
@@ -54,7 +54,7 @@ img {border: none;}
 .q {height: 290px; width: 180px; background: url(../img/q.jpg) #EEE;}
 
 .tbl_h100 {height: 100%;}
-.tbl_main {height: 100%; border: 1px solid #DADADA; background: #FFFFFF; width: 518px;}
+.tbl_main {height: 100%; border: 1px solid #DADADA; background: #FFFFFF; width: 698px;}
 
 .servers td {padding: 2px 5px 2px 5px;}
 
