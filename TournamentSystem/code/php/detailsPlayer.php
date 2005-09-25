@@ -35,7 +35,7 @@ echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"
 $tlp = $tm->getTeamLeader($tid);
 if ($tlp != null) {
 	if ($tlp->getValue('player_id') == $player->getValue('player_id')) {
-		echo "<font color=red>",$player->getValue('name'),"</font></a></td>\n";
+		echo "<b>",$player->getValue('name'),"</b></a></td>\n";
 	} else {
 		echo $player->getValue('name'),"</a></td>\n";
 	}
