@@ -11,7 +11,7 @@ try
       echo "<h2>Admin Home</h2>";
       echo "<b>Actions</b><br>";
       echo "<table border=1 cellpadding=2 cellspacing=0>";
-      echo "<tr><td><a href='?a=managePlayer&amp;mode=edit&amp;player_id=" . $_SESSION['user_id'] . "'> Manage</a></td><td>&nbsp;</td></tr>" ;
+      echo "<tr><td><a href='?a=managePlayer&amp;mode=edit&amp;player_id=" . $_SESSION['user_id'] . "'> Manage " . $_SESSION['username'] . "</a></td><td>&nbsp;</td></tr>" ;
 
       echo "<tr>";
       echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";

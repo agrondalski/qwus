@@ -16,15 +16,23 @@ foreach ($t->getDivisions() as $div)
 {
 	echo "<b>",$div->getValue('name'),"</b><br>";
 	echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-	echo "<tr><th>Week</th><th>Result</th><th>Match Date</th></tr>";
+	echo "<tr bgcolor='#999999'><th>Week</th><th>Result</th><th>Match Date</th></tr>";
 	foreach ($div->getMatches() as $m)
 	{
 		$wid = $m->getValue('winning_team_id');
-
+		$cnt += 1;
+		if ($cnt % 2 == 1) 
+		{
+			$clr = "#CCCCCC";
+		}
+		else
+		{
+			$clr = "#C0C0C0";
+		}
 		$t1 = new team(array('team_id'=>$m->getValue('team1_id')));
 		$t2 = new team(array('team_id'=>$m->getValue('team2_id')));
 		$ms = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
-		echo "<tr>";
+		echo "<tr bgcolor='$clr'>";
 		echo "<td>",$ms->getValue('name'),"</td>";
 
 		if ($m->getValue('approved'))

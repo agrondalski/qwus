@@ -21,7 +21,7 @@ try
     }
   catch(Exception $e) {}
 
-  if (util::isNull($t) && !$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
+  if (util::isNull($tm) && !$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
     {
       util::throwException('not authorized') ;
     }
@@ -30,6 +30,7 @@ try
   $division_id = $_REQUEST['division_id'];
   $match_id = $_REQUEST['match_id'];
   $winning_team_id = $_REQUEST['winning_team_id'];
+  $approved = $_REQUEST['approved'];
   $filename = $_REQUEST['filename'];
 
   $t = new tourney(array('tourney_id'=>$tid));
@@ -143,10 +144,45 @@ try
       if (util::isLoggedInAsTeam())
       {
       	$dis = "disabled";
+      	// Check if match is approved to disable dropdown + button
+      	$m = new match(array('match_id'=>$match_id));
+		if ($m->getValue('approved') == "1")
+		{
+		  $disableMatchChange = "disabled";
+		}
+		else
+		{
+		  $disableMatchChange = "";
+		}
       }
       else
       {
       	$dis = "";
+      }
+      
+      if ($approved == "1")
+      {
+      	$checked = "checked";
+      }
+      else 
+      {
+        if ($winning_team_id == "") 
+        {
+          // First time here, so check the db
+          $m = new match(array('match_id'=>$match_id));
+          if ($m->getValue('approved') == "1")
+          {
+          	$checked = "checked";
+          }
+          else
+          {
+            $checked = "";
+          }
+        }
+        else
+        {
+      	  $checked = "";
+      	}
       }
       echo "<h2>Match Details</h2>";
       echo "<form action='?a=reportMatch' method=post>";
@@ -155,7 +191,7 @@ try
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<td><select name='winning_team_id'>";
+      echo "<td><select name='winning_team_id' $disableMatchChange>";
       // $m is the match object
       $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
       $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
@@ -164,8 +200,8 @@ try
       echo "<option value='",$t2->getValue('team_id'),"'>",$t2->getValue('name'),"";
       echo "</select></td></tr>";
       echo "<tr><td><b>Match Approved?</b></td>";
-      echo "<td><input type='checkbox' name='approved' value='1' $dis></td></tr>";
-      echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button'>";
+      echo "<td><input type='checkbox' name='approved' value='1' $dis $checked></td></tr>";
+      echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button' $disableMatchChange>";
       echo "<br></td></tr>";
       echo "</table></form>";
     }
@@ -173,20 +209,42 @@ try
   // *** PART 4
   if ($winning_team_id != "") 
     {
+      // Try to save the match
+      $m = new match(array('match_id'=>$match_id));
+      $m->update('winning_team_id',$winning_team_id);
+	  if (util::isLoggedInAsTeam())
+	  {
+	  }
+	  else
+	  {
+	    if ($_REQUEST['approved'] == "1")
+		{
+		  $m->update('approved',"1");
+        }
+        else
+        {
+          $m->update('approved',"0");
+        }
+	  }	 
       echo "<hr>";
       echo "<h2>Add Game Data</h2>";
-      echo "<form action='?a=reportMatch' method=post>";
+      
+      // Post to mvdStats.pl page
+      echo "<form action='mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Add game MVD:</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
-      echo "<input type='hidden' name='match_id' value='$division_id'>";
+      echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
+      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<td><input type='file' name='filename'></td>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
       echo "</form>";
+      
+      // Post to reportGames
       echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
-      echo "<form action='?a=reportMatch' method=post>";
+      echo "<form action='?a=manageGame' method=post>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$division_id'>";
