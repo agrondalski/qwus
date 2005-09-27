@@ -327,27 +327,24 @@ class util
 
   public static function createTextImage($str)
     {
-      if (!is_string($str))
-	{
-	  return ;
-	}
+      header("Content-type: image/png");
+      $img = imagecreate(150, 50);
 
-      $img = imagecreate(200, 50) ;
-
-      /*
       $black = imagecolorallocate ($img, 0, 0, 0);
       $white = imagecolorallocate ($img, 255, 255, 255);
+      
+      imagefill($img, 0, 0, $white) ;
 
-      imagefill($img, 0, 0, $black) ;
       $width = 0 ;
+      imagelayereffect($img, 3) ;
       for ($i=0; $i<strlen($str); $i++)
 	{
 	  $width += 20 ;
-	  imagechar($img, mt_rand(3, 5), $width, mt_rand(15, 20), $str[$i], $white) ;
+	  imagechar($img, mt_rand(5, 5), $width, mt_rand(15, 20), $str[$i], $black) ;
 	}
 
       imagepng($img) ;
-      */
+      imagedestroy($img) ;
     }
 
 }

@@ -1,4 +1,5 @@
 <?php
+session_start() ;
 require 'includes.php';
 
 try
@@ -42,13 +43,20 @@ try
   echo "<tr>";
   echo "<td nowrap>";
   echo "Password:</td><td>";
-  echo "<input type='text' name='password' value='' size='50'></td>";
+  echo "<input type='password' name='password' value='' size='50'></td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td nowrap>";
+  echo "Image Password:</td><td>";
+  echo "<input type='password' name='image_password' value='' size='50'></td>";
   echo "</tr>";
   echo "<tr><td>&nbsp;</td><td><input type='submit' value='Submit' name='B1' class='button'>";
   echo "&nbsp;<input type='reset' value='Reset' name='B2' class='button'></td></tr></table>";
   echo "</p></font>";
   echo "</form>" ;
 
+  $_SESSION['validate_pw'] = util::generateRandomStr(7);
+  echo "<center><img src='php/signupPassword.php' width=300 height=100></center>" ;
 }
 catch (Exception $e) {}
 ?>
