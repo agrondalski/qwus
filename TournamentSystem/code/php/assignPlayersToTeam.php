@@ -5,18 +5,22 @@ require_once 'login.php' ;
 
 try
 {
-
   $tid = $_REQUEST['tourney_id'];
-
-  $t = new tourney(array('tourney_id'=>$tid)) ;
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
-
-  if (!$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
-    {
+  $t = new tourney(array('tourney_id'=>$tid));
+  
+  try
+  {
+    $p = new player(array('player_id'=>$_SESSION['user_id']));
+  }
+  catch(Exception $e) {}
+  
+  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
+  {
       util::throwException('not authorized') ;
-    }
-
+  }
+  
   $team_id = $_REQUEST['team_id'];
+  
   try
     {
       $tm = new team(array('team_id'=>$team_id));
@@ -25,6 +29,16 @@ try
     {
       $tm = "";
     }
+    if (util::isLoggedInAsTeam())
+    {
+    	$tm = new team(array('team_id'=>$_SESSION['team_id']));
+    	$team_id = $_SESSION['team_id'];
+    	$dis = "disabled"; 
+    }
+    else
+    {
+    	$dis = "";
+    }
 
   echo "<br>";
   // Printing results in HTML
@@ -32,7 +46,7 @@ try
   echo "<table border=0 cellpadding=2 cellspacing=0>";
   echo "<tr><td><b>Pick a team:</b></td>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
-  echo "<td><select name='team_id'>";
+  echo "<td><select name='team_id' $dis>";
 
   foreach ($t->getTeams(array('name', SORT_ASC)) as $tmp)
     {
@@ -70,7 +84,7 @@ try
 	    {
 	      if ($tlp->getValue('player_id') == $player->getValue('player_id'))
 		{
-		  echo "\t<td><font color=red>",$player->getValue('name'),"</font></td>\n";
+		  echo "\t<td><b>",$player->getValue('name'),"</b></td>\n";
 		}
 	      else
 		{
@@ -92,7 +106,6 @@ try
 	}
 
       echo "</tr></table>";
-      echo "<p><font color=red>Red = team leader</font></p>";
 	
       // Show players
       echo "<form action='?a=saveTeamPlayer' method=post>";

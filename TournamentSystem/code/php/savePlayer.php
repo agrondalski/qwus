@@ -5,16 +5,20 @@ require_once 'login.php' ;
 
 try
 {
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+  try
+  {
+      $p = new player(array('player_id'=>$_SESSION['user_id']));
+  }
+  catch(Exception $e) {}
 
   $mode = $_REQUEST['mode'];
 
-  if (!$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
+  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
     {
       util::throwException('not authorized') ;
     }
 
-  if ($mode=="edit")
+  if ($mode=="edit" && !util::isLoggedInAsTeam())
     {
       $player_id = $_POST['player_id'];
       $p = new player(array('player_id'=>$player_id));
@@ -39,7 +43,7 @@ try
       $msg = "<br>Player updated!<br>";
     }
 
-  elseif ($mode=="delete")
+  elseif ($mode=="delete" && !util::isLoggedInAsTeam())
     {
       $player_id = $_REQUEST['player_id'];
       $p = new player(array('player_id'=>$player_id));
@@ -85,7 +89,11 @@ try
     }
 
   echo $msg;
-  include 'listPlayers.php';
+  echo "<p><a href='?a=managePlayer'>Create Player</a><p>";
+  
+  if (!util::isLoggedInAsTeam()) {
+    include 'listPlayers.php';
+  }
 }
 catch (Exception $e) {print $e;}
 ?>

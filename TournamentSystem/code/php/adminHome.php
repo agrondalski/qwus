@@ -60,8 +60,9 @@ try
       echo "<h2>Admin Home</h2>";
       echo "<b>Actions</b><br>";
       echo "<table border=1 cellpadding=2 cellspacing=0>\n";
-      echo "<tr><td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=" . $_SESSION['team_id'] . "'> Manage Team</a></td>" ;
-      echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";
+      echo "<tr><td><a href='?a=selectTourney'>Select Tourney</a></td><td>&nbsp;</td></tr>" ;
+      echo "<tr><td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=" . $_SESSION['team_id'] . "'> Manage Team</a></td>";
+      echo "<td><a href='?a=managePlayer'>Create Player</a></td></tr>";
       echo "</tr></table>" ;
     }
 }

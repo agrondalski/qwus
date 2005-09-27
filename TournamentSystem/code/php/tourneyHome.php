@@ -72,7 +72,7 @@ try
 	      echo "<td><a href='?a=reportMatch&tourney_id=$tid&division_id=$division_id'>Report Match</a></td>";
 	    }
 
-	  echo "<td> do : add player</td>" ;
+      echo "<td><a href='?a=assignPlayersToTeam&tourney_id=$tid&team_id=",$tm->getValue('team_id'),"'>Assign Players to Team</a></td>";
 	  echo "</tr>";
 	  echo "</table>";
 	}

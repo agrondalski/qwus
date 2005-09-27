@@ -4,11 +4,15 @@ require_once 'login.php' ;
 
 try
 {
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+  try
+  {
+      $p = new player(array('player_id'=>$_SESSION['user_id']));
+  }
+  catch(Exception $e) {}
 
   $mode = $_REQUEST['mode'];
 
-  if (!$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
+  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && ($_SESSION[user_id] != $_REQUEST['player_id'] || $mode!='edit'))
     {
       util::throwException('not authorized') ;
     }
@@ -52,17 +56,20 @@ try
   echo "<td>Name:</td><td>";
   echo "<input type='text' name='name' maxlength='50' value='",$name,"' size='50'></td>";
   echo "</tr>";
-  echo "<tr>";
-  echo "<td>S.A.:</td><td>";
+  if (!util::isLoggedInAsTeam()) 
+  {
+	  echo "<tr>";
+	  echo "<td>S.A.:</td><td>";
 
-  $check =  util::choose(($superadmin == "1"), "checked", "") ;
-  if (!$p->isSuperAdmin())
-    {
-      $check .= ' disabled' ;
-    }
+	  $check =  util::choose(($superadmin == "1"), "checked", "") ;
+	  if (!$p->isSuperAdmin())
+		{
+		  $check .= ' disabled' ;
+		}
 
-  echo "<input type='checkbox' name='superadmin' value='1' ",$check,"></td>";
-  echo "</tr>";
+	  echo "<input type='checkbox' name='superadmin' value='1' ",$check,"></td>";
+	  echo "</tr>";
+  }
   echo "<tr>";
   echo "<td>Location:</td><td>";
   echo "<select name='location_id'>";
@@ -87,27 +94,31 @@ try
     {
       echo "New ";
     }
+  if (!util::isLoggedInAsTeam()) 
+  {
+	  echo "Password:</td><td>";
+	  echo "<input type='password' name='password' value='' size='50'></td>";
+	  echo "</tr>";
+	  echo "<tr>";
+	  echo "<td>Has column?:</td><td>";
 
-  echo "Password:</td><td>";
-  echo "<input type='password' name='password' value='' size='50'></td>";
-  echo "</tr>";
-  echo "<tr>";
-  echo "<td>Has column?:</td><td>";
+	  $check = util::choose(($hascolumn == "1"), "checked", "") ;
+	  if (!$p->isSuperAdmin())
+		{
+		  $check .= ' disabled' ;
+		}
 
-  $check = util::choose(($hascolumn == "1"), "checked", "") ;
-  if (!$p->isSuperAdmin())
-    {
-      $check .= ' disabled' ;
-    }
-
-  echo "<input type='checkbox' name='hascolumn' value='1' ",$check,"></td>";
-  echo "</tr>";
+	  echo "<input type='checkbox' name='hascolumn' value='1' ",$check,"></td>";
+	  echo "</tr>";
+  }
   echo "<tr><td>&nbsp;</td><td><input type='submit' value='Submit' name='B1' class='button'>";
   echo "&nbsp;<input type='reset' value='Reset' name='B2' class='button'></td></tr></table>";
   echo "</p></font>";
   echo "</form>" ;
-
-  include 'listPlayers.php';
+  if (!util::isLoggedInAsTeam()) 
+  {
+    include 'listPlayers.php';
+  }
 }
 catch (Exception $e) {print $e;}
 ?>

@@ -11,9 +11,13 @@ try
   $player_id = util::nvl($_POST['player_id'], $_REQUEST['player_id']) ;
 
   $t = new tourney(array('tourney_id'=>$tid)) ;
-  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
-
-  if (!$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
+  try
+  {
+    $p = new player(array('player_id'=>$_SESSION['user_id']));
+  }
+  catch(Exception $e) {}
+  
+  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
     {
       util::throwException('not authorized') ;
     }
