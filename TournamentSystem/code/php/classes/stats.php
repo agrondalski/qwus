@@ -606,7 +606,7 @@ class stats
 	      $arr[$pid]['team_id']       = $row[2] ;
 	      $arr[$pid]['team_name']     = util::htmlentities($row[3], ENT_QUOTES) ;
 	      $arr[$pid]['division_id']   = $row[4] ;
-	      $arr[$pid]['division_name'] = util::htmlentities($row[1], ENT_QUOTES) ;
+	      $arr[$pid]['division_name'] = util::htmlentities($row[5], ENT_QUOTES) ;
 	      $arr[$pid]['location_id']   = $row[13] ;
 	    }
 
