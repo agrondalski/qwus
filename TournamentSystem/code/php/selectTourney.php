@@ -11,7 +11,7 @@ try
        
       foreach (tourney::getAllTourneys() as $t)
 	{
-	  if ($p->isSuperAdmin())
+	  if ($p->isSuperAdmin() || $p->isTourneyAdmin($t->getValue('tourney_id')))
 	    {
 	      if ($first_time)
 		{

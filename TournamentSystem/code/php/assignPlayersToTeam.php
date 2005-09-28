@@ -14,7 +14,7 @@ try
   }
   catch(Exception $e) {}
   
-  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && $p->isTourneyAdmin($t->getValue('tourney_id')))
+  if (!util::isLoggedInAsTeam() && !$p->isSuperAdmin() && !$p->isTourneyAdmin($t->getValue('tourney_id')))
   {
       util::throwException('not authorized') ;
   }

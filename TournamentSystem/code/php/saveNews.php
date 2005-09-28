@@ -13,7 +13,7 @@ try
 
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-  if (!$p->isSuperAdmin() && $t!=null && $p->isTourneyAdmin($t->getValue('tourney_id')))
+  if (!$p->isSuperAdmin() && !util::isNull($t) && !$p->isTourneyAdmin($t->getValue('tourney_id')))
     {
       util::throwException('not authorized') ;
     }
