@@ -149,6 +149,16 @@ catch(Exception $e) {}
 			<TR>
 				<TD class="menuBreak"></TD>
 			</TR>
+
+			<TR>
+				<TD class="menuBreak"></TD>
+			</TR>
+
+                        <TR>
+			        <TD><a href="?a=home&amp;tourney_id=1">NA NQR 2</a></TD>
+			</TR>
+
+
 			<TR>
 				<TD><A href="?a=servers">Servers</A></TD>
 			</TR>
@@ -157,14 +167,6 @@ catch(Exception $e) {}
 			</TR>
 			<TR>
 				<TD><A href="?a=downloads">Downloads</A></TD>
-			</TR>
-
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-
-                        <TR>
-			        <TD><a href="?a=home&amp;tourney_id=2">NA NQR 2</a></TD>
 			</TR>
 
                         <TR>
@@ -192,7 +194,7 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
-				<TD><A href="?a=adminHome">Login</A></TD>
+				<TD><A href="?a=links">Links</A></TD>
 			</TR>
 
                         <TR>
@@ -208,7 +210,7 @@ catch(Exception $e) {}
                         </TR>
 
 			<TR>
-				<TD><A href="?a=links">Links</A></TD>
+				<TD><A href="?a=adminHome">Login</A></TD>
 			</TR>
 
 			</TABLE>
