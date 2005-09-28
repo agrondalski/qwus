@@ -219,3 +219,6 @@ VALUES ('', 'Canada', 'img/flags/can.gif');
 
 
 -- Other
+INSERT INTO `location` 
+	( `location_id` , `country_name` , `logo_url` )
+VALUES ('', 'Other', 'img/flags/other.gif');
