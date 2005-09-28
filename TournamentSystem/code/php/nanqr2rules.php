@@ -31,7 +31,7 @@ This is dependent on sign up. Whether or not we get enough teams for divisions e
 <br>
 
 <br>
-Fuhquake version .31 675 and EZquake version 1144 the only clients allowed at this time. You must use -ruleset smackdown, and -norjscripts in your QW command line. You must be able to pass f_modified, f_version, and f_ruleset.
+Fuhquake version .31 675 and EZquake version 1144 are the only clients allowed at this time. You must use -ruleset smackdown, and -norjscripts in your QW command line. You must be able to pass f_modified, f_version, and f_ruleset.
 <br>
 <br>
 <b>5. MATCH SETTINGS</b>
@@ -70,7 +70,7 @@ Maps for this tournament are DM2, DM3, E1M2, HIPARK, CMT3, CMT4, GRIM
 <br>
 
 <br>
-Each regular season match is best of 3. Each team pick one map each. Third map is chosen by each team tossing 2 maps from the pool of 7 the remaining 5 maps. The map that is not tossed is played.
+Each regular season match is best of 3. Each team pick one map each. Third map is chosen by each team tossing 2 maps (alternate tossing a map until 1 is left) from the pool of 7 the remaining 5 maps. The map that is not tossed is played.
 <br>
 
 <br>
@@ -106,5 +106,5 @@ No cheating of any kind will be tolerated. RJ scripts, aimbots, wallhacks, etc a
 <br>
 
 <br>
-You can message dread on irc.quakenet.org #american or #ilikebreasts.  Other site admins are ultimo, do7hedew and skeLman.  They can be reached for technical/site questions.
+You can message dread on irc.quakenet.org #american.  Other site admins are ultimo, do7hedew and skeLman.  They can be reached for technical/site questions.
 <br>
