@@ -1,9 +1,6 @@
 TO DO LIST:   
 ------------------------------------------------
 *Current*:
-  Register/Create Team Page
-  Prevent automated signup
-
   Report Page integration with mvd stats
   Ability to approve matches (admins)
   Rules Link
