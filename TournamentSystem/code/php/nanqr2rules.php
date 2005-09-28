@@ -1,6 +1,6 @@
 <?php
 include 'userLinks.php';
-print "<br>" ;
+echo "<br>" ;
 ?>
 
 <b>1. INTRODUCTION</b>

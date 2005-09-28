@@ -120,5 +120,5 @@ try
     include 'listPlayers.php';
   }
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>
