@@ -5,7 +5,7 @@ require_once 'login.php' ;
 
 try
 {
-  $tid = $_REQUEST['tourney_id'];
+  $tid = util::nvl($_POST['tourney_id'], $_REQUEST['tourney_id']) ;
 
   $t = new tourney(array('tourney_id'=>$tid));
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
