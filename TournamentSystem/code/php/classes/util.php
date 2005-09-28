@@ -328,6 +328,7 @@ class util
   public static function createTextImage($str)
     {
       header("Content-type: image/png");
+      header('Cache-control: no-cache, no-store');
       $img = imagecreate(150, 50);
 
       $black = imagecolorallocate ($img, 0, 0, 0);
@@ -340,7 +341,7 @@ class util
       for ($i=0; $i<strlen($str); $i++)
 	{
 	  $width += 20 ;
-	  imagechar($img, mt_rand(5, 5), $width, mt_rand(15, 20), $str[$i], $black) ;
+	  imagechar($img, mt_rand(2, 5), $width, mt_rand(15, 20), $str[$i], $black) ;
 	}
 
       imagepng($img) ;

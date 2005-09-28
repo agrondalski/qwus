@@ -13,16 +13,16 @@ try
       // Make sure this team has a password
       $pw = $_POST['password'];
 
-      if ($_POST['image_password'] != $_SESSION['validate_pw'])
-	{
-	  $msg = "<br>Error creating team.  Image password does not match.<br>" ;
-	}
-      
-      elseif (util::isNull($pw))
+      if (util::isNull($pw))
 	{
 	  $msg = "<br>Error creating team! Password can not be null.<br>" ;
 	}
 
+      elseif ($_POST['image_password'] != $_SESSION['validate_pw'])
+	{
+	  $msg = "<br>Error creating team.  Image password does not match. If you use the back button, you must reload the page to generate a new image.<br>" ;
+	}
+      
       else
 	{
 	  $tm = new team(array('name'=>$_POST['name'],
