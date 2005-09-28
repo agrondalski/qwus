@@ -5,7 +5,7 @@ require_once 'login.php' ;
 
 try
 {
-  $tid = $_POST['tourney_id'];
+  $tid = $_REQUEST['tourney_id'];
 
   $t = new tourney(array('tourney_id'=>$tid));
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
@@ -66,5 +66,5 @@ try
   echo $msg ;
   include 'listDivisions.php';
 }
-catch (Exception $e) {}
+catch (Exception $e) {print $e;}
 ?>
