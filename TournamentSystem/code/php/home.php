@@ -94,7 +94,7 @@ for ($i=0; $i<count($news); $i++)
 
 	if ($morenews && !$column && $printed != $count)
 	{
-		echo '<IMG src="img/hr.gif" alt="" width="370" height="22">';
+		echo '<IMG src="img/hr.gif" alt="" width="570" height="22">';
 	}	
 }
 
