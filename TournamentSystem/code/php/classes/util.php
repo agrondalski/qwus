@@ -303,6 +303,11 @@ class util
 
   public static function generateRandomChar()
     {
+      $chars = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',  'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',  'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+
+      return $chars[mt_rand(1,35)] ;
+
+      /*
       $rand = mt_rand(1, 5) ;
 
       switch ($rand)
@@ -323,6 +328,7 @@ class util
 	}
 
       return chr($val) ;
+      */
     }
 
   public static function createTextImage($str)
