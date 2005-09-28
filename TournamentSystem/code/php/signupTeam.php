@@ -12,8 +12,8 @@ try
   echo "<input type='text' name='name' maxlength='50' value='' size='50'></td>";
   echo "</tr>";
   echo "<tr>";
-  echo "<td>Team Abbreviation:<br>(lowercase)</td><td>";
-  echo "<input type='text' name='name_abbr' maxlength='50' value='' size='50'></td>";
+  echo "<td>Team Abbreviation:<br>(must match team in qw)</td><td>";
+  echo "<input type='text' name='name_abbr' maxlength='4' value='' size='6'></td>";
   echo "</tr>";
   echo "<tr>";
   echo "<td>Team Email:</td><td>";

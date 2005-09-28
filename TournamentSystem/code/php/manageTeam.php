@@ -71,7 +71,7 @@ try
   echo "</tr>";
   echo "<tr>";
   echo "<td>Abbr:</td><td>";
-  echo "<input type='text' name='name_abbr' maxlength='50' value='",$name_abbr,"' size='50'></td>";
+  echo "<input type='text' name='name_abbr' maxlength='4' value='",$name_abbr,"' size='6'></td>";
   echo "</tr>";
   echo "<tr>";
   echo "<td>Email:</td><td>";

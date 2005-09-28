@@ -15,12 +15,12 @@ try
 
       if (util::isNull($pw))
 	{
-	  $msg = "<br>Error creating team! Password can not be null.<br>" ;
+	  $msg = "<b>Error creating team!</b><p>Password can not be null.<br>" ;
 	}
 
       elseif ($_POST['image_password'] != $_SESSION['validate_pw'])
 	{
-	  $msg = "<br>Error creating team.  Image password does not match. If you use the back button, you must reload the page to generate a new image.<br>" ;
+	  $msg = "<b>Error creating team.</b><p>Image password does not match. If you use the back button, you must reload the page to generate a new image.<br>" ;
 	}
       
       else
@@ -33,12 +33,14 @@ try
 			       'password'=>$pw,
 			       'approved'=>0));
 
-	  $msg = "<br><b>New team created!</b><p>You can login with your team once your team is approved by an admin.  You should receive an email.";
+	  $msg = "<b>New team created!</b><p>You can login with your team once you receive an email that your team was approved by an admin.";
+	  $msg .= "&nbsp;&nbsp;Once logged in you should be able to sign up for tournaments, create players, and assign players to your team.";
+	  $msg .= "&nbsp;&nbsp;Thank you for registering!";
 	}
     }
   catch (Exception $e)
     {
-      $msg = "<br>Error creating team!<br>" ;
+      $msg = "<b>Error creating team!</b><br>" ;
     }
   
   echo $msg;
