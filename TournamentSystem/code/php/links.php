@@ -18,7 +18,7 @@
 <TR>
 	<TD>
                <A href="http://ezquake.sourceforge.net" TARGET="_blank">ezQuake</A><BR>
-               <A href="http://ftewq.sourceforge.net" TARGET="_blank">FTE</A><BR>
+               <A href="http://fteqw.sourceforge.net" TARGET="_blank">FTE</A><BR>
 		<A href="http://www.fuhquake.net" TARGET="_blank">FuhQuake</A><BR>
 		<A href="http://zquake.frag.ru" TARGET="_blank">zQuake</A><BR>		
 	</TD>
