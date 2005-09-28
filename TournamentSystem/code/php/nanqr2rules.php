@@ -31,11 +31,8 @@ This is dependent on sign up. Whether or not we get enough teams for divisions e
 <br>
 
 <br>
-Fuhquake version .31 675 and EZquake the only clients allowed at this time. You must use -ruleset smackdown, and -norjscripts in your QW command line. You must be able to pass f_modified, f_version, and f_ruleset.
+Fuhquake version .31 675 and EZquake version 1144 the only clients allowed at this time. You must use -ruleset smackdown, and -norjscripts in your QW command line. You must be able to pass f_modified, f_version, and f_ruleset.
 <br>
-
-<br>
-Win32 Binaries Linux Binaries Security Module
 <br>
 <b>5. MATCH SETTINGS</b>
 <br>

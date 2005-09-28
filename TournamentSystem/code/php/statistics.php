@@ -1,4 +1,3 @@
-
 <?php
 try
 {
@@ -6,8 +5,6 @@ require 'includes.php';
 $tid = $_REQUEST['tourney_id'];
 $division_id = $_REQUEST['division_id'];
 $sort = $_REQUEST['sort'];
-
-$t = new tourney(array('tourney_id'=>$tid));
 
 try
 {
@@ -28,10 +25,9 @@ if ($sort == "")
 
 include 'userLinks.php';
 echo "<br>";
-
-// Results section
-
 echo "<h2>Statistics</h2>";
+
+$t = new tourney(array('tourney_id'=>$tid));
 
 if ($division_id == "")
 {

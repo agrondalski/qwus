@@ -1,17 +1,14 @@
-
 <?php
 
 require 'includes.php';
 $tid = $_REQUEST['tourney_id'];
 
-$t = new tourney(array('tourney_id'=>$tid));
-
 include 'userLinks.php';
 echo "<br>";
-
-// Results section
-
 echo "<h2>Results</h2>";
+
+$t = new tourney(array('tourney_id'=>$tid));
+
 foreach ($t->getDivisions() as $div) 
 {
 	echo "<b>",$div->getValue('name'),"</b><br>";
