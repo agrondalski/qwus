@@ -1,15 +1,14 @@
 TO DO LIST:   
 ------------------------------------------------
 *Current*:
+  Report Match Page (player stats)
   Report Page integration with mvd stats
-  Ability to approve matches (admins)
   Rules Link
 
-  Ability for teams login to manage players (add, edit)
   Match/News Comments
   Polls
 
-  Stretch Logo / Resize Page
+  Resize Page (so it looks fine in 1024x, 1280x, etc.)
   Fix CSS
 
   Have phpbb use phpbb db user
@@ -25,8 +24,3 @@ Ongoing
 ------------------------------------------------
 Maintain security/privilege checks for added files
 
-
-General to do/bugs/fixes
-------------------------------------------------
-logout link isnt centered when page is stretched    <--- This still an issue ?
-non_sa cant add players with sa or update sa flag
