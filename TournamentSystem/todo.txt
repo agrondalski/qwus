@@ -3,7 +3,6 @@ TO DO LIST:
 *Current*:
   Report Match Page (player stats)
   Report Page integration with mvd stats
-  Rules Link
 
   Match/News Comments
   Polls
