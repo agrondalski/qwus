@@ -130,89 +130,75 @@ catch(Exception $e) {}
 			</TD>
 			<TD class="menu">
 			<TABLE cellspacing="0" cellpadding="0">
-			<TR>
-				<TD><A href="?a=home">Home</A></TD>
-			</TR>
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-			<TR>
-				<TD><A href="?a=newsarchive">Archive</A></TD>
-			</TR>
-                        <TR>
-                                <TD class="menuBreak"></TD>
-                        </TR>
-
-                        <TR>
-                                <TD><A href="http://www.quakeworld.us/forum">Forum</A></TD>
-                        </TR>
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-
-                        <TR>
-			        <TD><a href="?a=home&amp;tourney_id=1">NA NQR 2</a></TD>
-			</TR>
-
-
-			<TR>
-				<TD><A href="?a=servers">Servers</A></TD>
-			</TR>
-			<TR>
-				<TD class="menuBreak"></TD>
-			</TR>
-			<TR>
-				<TD><A href="?a=downloads">Downloads</A></TD>
-			</TR>
-
-                        <TR>
-                                <TD class="menuBreak"></TD>
-                        </TR>
-
-                        <TR>
-			        <TD><a href="#" onclick="hideShowColumnMenu(); return false;">Columns</a></TD>
-			</TR>
-
-                        <?php
-			$columns = player::getPlayersWithColumns() ;
-
-                         for ($i=0; $i<count($columns); $i++)
-                         {
-			   $w = $columns[$i] ;
-			   print '<TR id="column' . $i. '" class=submenu>
-			                 <TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . substr($w->getValue("name"), 0, 11) . '</a></TD>
-                                 </TR>' ;
-			 }
-                         ?>
-
-                        <TR>
-                                <TD class="menuBreak"></TD>
-                        </TR>
-
-			<TR>
-				<TD><A href="?a=links">Links</A></TD>
-			</TR>
-
-                        <TR>
-                                <TD class="menuBreak"></TD>
-                        </TR>
-
-			<TR>
-				<TD><A href="?a=signupTeam">Register</A></TD>
-			</TR>
-
-                        <TR>
-                                <TD class="menuBreak"></TD>
-                        </TR>
-
-			<TR>
-				<TD><A href="?a=adminHome">Login</A></TD>
-			</TR>
-
+			
+				<TR>
+					<TD class="menuBreak"></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=home">Home</A></TD>
+				</TR>
+			
+				<TR>
+					<TD><a href="#" onclick="hideShowColumnMenu(); return false;">Columns</a></TD>
+				</TR>
+			
+				<?php
+				$columns = player::getPlayersWithColumns() ;
+			
+				for ($i=0; $i<count($columns); $i++)
+				{
+					$w = $columns[$i] ;
+					print '<TR id="column' . $i. '" class=submenu>
+					<TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . substr($w->getValue("name"), 0, 11) . '</a></TD>
+					</TR>';
+				}
+				?>
+				
+				<TR>
+					<TD><A href="http://www.quakeworld.us/forum">Forum</A></TD>
+				</TR>
+				
+				<TR>
+					<TD class="menuBreak"></TD>
+				</TR>
+				
+				<TR>
+					<TD><a href="?a=home&amp;tourney_id=1">NA NQR 2</a></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=signupTeam">Register</A></TD>
+				</TR>
+			
+				<TR>
+					<TD><A href="?a=adminHome">Login</A></TD>
+				</TR>
+				
+				<TR>
+					<TD class="menuBreak"></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=servers">Servers</A></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=downloads">Downloads</A></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=links">Links</A></TD>
+				</TR>
+				
+				<TR>
+					<TD><A href="?a=newsarchive">News Archive</A></TD>
+				</TR>
+			
+				<TR>
+					<TD class="menuBreak"></TD>
+				</TR>
+			
 			</TABLE>
 			</TD>
 		</TR>

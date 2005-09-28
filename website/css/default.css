@@ -49,7 +49,7 @@ img {border: none;}
 .menu a:HOVER {background: #0055BB; color: #FFF;}
 .menu table, .bottom table, .news table, .news, .newsarchive, .newsarchive table, .servers {width: 100%;}
 .menu td {text-align: left;}
-.menuBreak {height: 1px; background: #EEE; width: 100px;}
+.menuBreak {height: 1px; background: #CCC; width: 100px;}
 
 .q {height: 290px; width: 180px; background: url(../img/q.jpg) #EEE;}
 
