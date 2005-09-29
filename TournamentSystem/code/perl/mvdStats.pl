@@ -7,7 +7,7 @@
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 # player line graph should check for not null team
-# pie chart with no frags == crash
+
 
 use Benchmark;
 use GD::Graph::lines;
@@ -373,6 +373,18 @@ sub frags
     $self->rocketFrags() + $self->lightningFrags() +
     $self->dischargeFrags() + $self->squishFrags() +
     $self->teleFrags()
+  );
+}
+
+sub graphedFrags
+{
+  my $self = shift;
+  return
+  ( 
+    $self->shotgunFrags() + $self->ssgFrags() +
+    $self->nailgunFrags() + $self->sngFrags() +
+    $self->rocketFrags()  + $self->grenadeFrags() +
+    $self->lightningFrags()
   );
 }
  
@@ -1222,7 +1234,8 @@ sub outputPlayerPieCharts
 {
   @weaponList = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
   foreach $player (@players)
-  {
+  { 
+   if ($player->graphedFrags < 1) { next; }
     my @stats = ($player->shotgunFrags(),
                  $player->ssgFrags(),
                  $player->nailgunFrags(),
