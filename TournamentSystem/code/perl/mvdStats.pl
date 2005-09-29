@@ -540,6 +540,11 @@ if ($mvd =~ /(.*)\.gz$/)
   my $shell = `gzip -d $mvd`;
   $mvd = $1;
 }
+if ($mvd !~ /(.*)\.mvd$/)
+{
+  print "$mvd is not a mvd?\n";
+  exit();
+}
 
 my $tempMvd = $mvd . ".tmp";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
@@ -551,6 +556,10 @@ foreach $string (@strings)
   if (length($string) < 8)
   { 
     1;
+  }
+  elsif ($string =~ /^\[SPEC\](.*)/)
+  {
+    next;
   }
   elsif ($string =~ /^(.*) rides (.*)'s rocket/)
   {
