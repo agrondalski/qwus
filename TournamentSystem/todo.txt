@@ -22,4 +22,16 @@ TO DO LIST:
 Ongoing
 ------------------------------------------------
 Maintain security/privilege checks for added files
+Bug #1: Tourney Stats: sorting by name does not work correctly. 
+Bug #2: Difficult to tell 0 from O in image during team registration? 
 
+
+
+
+
+
+
+
+FIXED
+------------------------------------------------
+Bug #3: Main page resizes slightly if it contains news items
