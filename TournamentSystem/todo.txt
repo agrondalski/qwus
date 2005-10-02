@@ -4,13 +4,13 @@ TO DO LIST:
   Report Match Page (player stats)
   Report Page integration with mvd stats
 
-  Match/News Comments
+  Match/News/Column Comments
   Polls
+  Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
 
   Resize Page (so it looks fine in 1024x, 1280x, etc.)
   Fix CSS
 
-  Have phpbb use phpbb db user
   New qwus db password
 
 *Future*:
@@ -23,7 +23,7 @@ Ongoing
 ------------------------------------------------
 Maintain security/privilege checks for added files
 Bug #1: Tourney Stats: sorting by name does not work correctly. 
-Bug #2: Difficult to tell 0 from O in image during team registration? 
+Bug #2: Remove O from image password? People won't know there are not zeroes. 
 
 
 
