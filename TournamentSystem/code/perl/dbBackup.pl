@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-@databases = ("dew", "qwus", "phpbb");
+@databases = ("qwus", "phpbb");
 $user = "export_user";
 $pw = "export";
 
