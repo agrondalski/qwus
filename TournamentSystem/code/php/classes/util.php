@@ -109,7 +109,7 @@ class util
 
   public static function strtolower($s)
     {
-      if (!is_string($str))
+      if (!is_string($s))
 	{
 	  return $s ;
 	}
