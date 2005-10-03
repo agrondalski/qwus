@@ -22,16 +22,11 @@ TO DO LIST:
 Ongoing
 ------------------------------------------------
 Maintain security/privilege checks for added files
-Bug #1: Tourney Stats: sorting by name does not work correctly. 
-Bug #2: Remove O from image password? People won't know there are not zeroes. 
-
-
-
-
-
 
 
 
 FIXED
 ------------------------------------------------
+Bug #1: Tourney Stats: sorting by name does not work correctly. 
+Bug #2: Remove O from image password? People won't know there are not zeroes. 
 Bug #3: Main page resizes slightly if it contains news items

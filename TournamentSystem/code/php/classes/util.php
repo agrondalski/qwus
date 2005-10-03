@@ -107,6 +107,16 @@ class util
       return htmlentities($s, $quote_style) ;
     }
 
+  public static function strtolower($s)
+    {
+      if (!is_string($str))
+	{
+	  return $s ;
+	}
+
+      return strtolower($s) ;
+    }
+
   public static function curdate()
     {
       return date('Y-m-d', time()) ;
@@ -215,7 +225,7 @@ class util
 	  $i=0 ; 
 	  foreach($str_idxs as $idx) 
 	    { 
-	      $s[$i++][$key] = $row[$sort_a[$idx]] ; 
+	      $s[$i++][$key] = self::strtolower($row[$sort_a[$idx]]) ; 
 	    } 
 	} 
   

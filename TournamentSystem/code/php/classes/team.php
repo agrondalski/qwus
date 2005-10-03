@@ -199,6 +199,40 @@ class team
       return $arr ;
     }
 
+  public static function getAllApprovedTeams($a)
+    {
+      $sql_str = sprintf('select t.* from team t where approved=true') ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function passwordMatches($pass)
     {
       if (md5($pass)==$this->password && !util::isNull($pass) && $this->approved)

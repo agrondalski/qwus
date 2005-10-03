@@ -69,9 +69,9 @@ echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_i
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=total_frags'>Frags</a></th>";
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=matches_won'>Record with</a></th>";
 echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=frag_diff'>+/-</a></th></tr>";
-if ($sort == "name") 
+if ($sort == "name" || $sort==team_name) 
 {
-	$sortOrder == SORT_ASC;
+	$sortOrder = SORT_ASC;
 }
 else 
 {

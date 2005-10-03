@@ -22,7 +22,7 @@ if ($displayLogin)
               <TD><B>Team</B>:</TD>
               <TD><select name="team_id">' ;
 
-      $teamlist = team::getAllTeams(array('name', SORT_ASC));
+      $teamlist = team::getAllApprovedTeams(array('name', SORT_ASC));
 
       $maxlen = 0 ;
       foreach ($teamlist as $t)
