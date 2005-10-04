@@ -31,7 +31,7 @@ try
   $match_id = $_REQUEST['match_id'];
   $winning_team_id = $_REQUEST['winning_team_id'];
   $approved = $_REQUEST['approved'];
-  $filename = $_REQUEST['filename'];
+  $fileform = $_REQUEST['fileform'];
 
   $t = new tourney(array('tourney_id'=>$tid));
 
@@ -230,7 +230,8 @@ try
       echo "<h2>Add Game Data</h2>";
       
       // Post to mvdStats.pl page
-      echo "<form action='./perl/mvdStats.pl' method=post>";
+      echo "<form action='?a=reportMatch' enctype='multipart/form-data' method=post>";
+      //echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Add game MVD:</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
@@ -238,6 +239,8 @@ try
       echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
+      echo "<input type='hidden' name='MAX_FILE_SIZE' value='9000000'/>";
+      echo "<input type='hidden' name='fileform' value='1'>";
       echo "<td><input type='file' name='filename'></td>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
       echo "</form>";
@@ -253,11 +256,25 @@ try
       echo "<td><input type='submit' value='Okay' name='B1' class='button'></td></tr>";
       echo "</table></form>";
     }
-
   // *** PART 5
-  if ($filename != "") 
+  if ($_FILES['filename']['size'] != 0) 
     {
-      echo "<b>$filename</b> was uploaded!<br>";
+		$uploaddir = '/home/quake/dm';
+		$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+		if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
+		   echo "File ". $_FILES['filename']['name'] ." uploaded successfully.\n";
+		   //echo "Displaying contents\n";
+		   //readfile($_FILES['filename']['tmp_name']);
+		} else {
+		   echo "Possible file upload attack: ";
+		   echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
+		}
+
+		if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile)) {
+		   echo "File is valid, and was successfully uploaded.\n";
+		} else {
+		   echo "MOVE Failed - Possible file upload attack!\n";
+		}
     }
 
   //try
