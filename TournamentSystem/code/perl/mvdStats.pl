@@ -8,8 +8,8 @@
 # player minutes played ( * left the game)
 # player line graph should check for not null team
 
-
 use Benchmark;
+use CGI qw/:standard/;
 use GD::Graph::lines;
 use GD::Graph::pie;
 use GD::Graph::colour;
@@ -540,13 +540,16 @@ package main;
 $start = new Benchmark;
 $teamOneScore = 0;
 $teamTwoScore = 0;
+my $cgi = new CGI;
+#my $file = $cgi->param('filename');
 
-if (@ARGV == 0) 
-{ 
-  print "Usage ./mvdStats.pl [MVD]\n";
-  exit(); 
-}
-my $mvd = $ARGV[0];
+print "Content-type: text/html\n\n";
+my $referer = $ENV{"HTTP_REFERER"};
+if ($referer != /reportMatch$/) { exit; }
+
+my $mvd = "/tmp/hipark.mvd";
+
+
 if ($mvd =~ /(.*)\.gz$/)
 {
   my $shell = `gzip -d $mvd`;

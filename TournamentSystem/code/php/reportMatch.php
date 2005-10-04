@@ -230,7 +230,7 @@ try
       echo "<h2>Add Game Data</h2>";
       
       // Post to mvdStats.pl page
-      echo "<form action='mvdStats.pl' method=post>";
+      echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Add game MVD:</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
