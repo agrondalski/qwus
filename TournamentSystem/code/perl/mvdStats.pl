@@ -1213,7 +1213,7 @@ sub outputForm
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
 
-   matchupTeams();
+   teamMatchup();
 
    foreach $team (@teams)
    {
