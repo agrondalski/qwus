@@ -565,17 +565,15 @@ print "Content-type: text/html\n\n";
 my $referer = $ENV{"HTTP_REFERER"};
 if ($referer != /reportMatch/) { exit; }
 
-#$mvd = "/tmp/hipark.mvd";
-
-
 if ($mvd =~ /(.*)\.gz$/)
 {
-  my $shell = `gzip -d $mvd`;
+  my $shell = `gzip -d "$mvd"`;
   $mvd = $1;
 }
 if ($mvd !~ /(.*)\.mvd$/)
 {
-  print "$mvd is not a mvd?\n";
+  $mvd = "";
+  outputForm();
   exit();
 }
 
@@ -984,7 +982,7 @@ for (my $i = 0; $i <= $time; $i++)
     $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
   }
 }  
-$shell = `rm "$tempMvd"`;
+$shell = `rm -f "$tempMvd"`;
 
 calculateTeamColors();
 
@@ -1127,12 +1125,10 @@ sub teamMatchup
 {
   my $teamOneFound = 0;
   my $teamTwoFound = 0; 
-  my $teamCount = 0;
 
   # first lets try to find perfect matches (minus case sensitivity)
   foreach $team (@teams)
   {
-    $teamCount++;
     my $name = $team->name;
     #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
     if ($teamOneAbbr =~ /^$name$/i && $name =~ /^$teamOneAbbr$/i)
@@ -1178,7 +1174,7 @@ sub teamMatchup
   if ($teamOneFound + $teamTwoFound == 2) { return; } #awesome!
   
   #print "total teams: $teamCount\n";  
-  if ($teamOneFound + $teamTwoFound == 1 && $teamCount == 2) 
+  if ($teamOneFound + $teamTwoFound == 1 && @teams == 2) 
   # well we got 1 of 2 so we can assume the unknown is #2
   {
     my $lastTeam = undef;
@@ -1226,27 +1222,35 @@ sub outputForm
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
 
-   teamMatchup();
-
-   my $teamNumber = 1;
-   foreach $team (@teams)
+   if (@teams > 1)
    {
-     my $a = $team->name; 
-     my $b = $team->approved; 
-     my $c = $team->points; 
-     my $d = $team->minutesPlayed; 
-     my $e = $team->minutesWithLead;
-     print "\t<input type='hidden' name='team" . 
-           $teamNumber . "' value='$a:$b:$c:$d:$e'>\n";
-     $teamNumber++;
-   }
-   
-   my $imagePath = outputTeamScoreGraph(200, 150);
-   print "\t<input type='hidden' name='team_score_graph_small' value='$imagePath'>\n";
-   
-   $imagePath = outputTeamScoreGraph(800, 600);
-   print "\t<input type='hidden' name='team_score_graph_large' value='$imagePath'>\n";
+     teamMatchup();
 
+     my $teamNumber = 1;
+     foreach $team (@teams)
+     {
+       my $a = $team->name; 
+       my $b = $team->approved; 
+       my $c = $team->points; 
+       my $d = $team->minutesPlayed; 
+       my $e = $team->minutesWithLead;
+       print "\t<input type='hidden' name='team" . 
+           $teamNumber . "' value='$a:$b:$c:$d:$e'>\n";
+       $teamNumber++;
+     }
+   
+     my $imagePath = outputTeamScoreGraph(200, 150);
+     print "\t<input type='hidden' name='team_score_graph_small' " . 
+                                   "value='$imagePath'>\n";
+   
+     $imagePath = outputTeamScoreGraph(800, 600);
+     print "\t<input type='hidden' name='team_score_graph_large' " . 
+                                   "value='$imagePath'>\n";
+
+     $imagePath = outputPlayerScoreGraph(800, 600);
+     print "\t<input type='hidden' name='player_score_graph' " . 
+                                   "value='$imagePath'>\n";  
+   }
 
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"
@@ -1313,11 +1317,14 @@ sub outputPlayerScoreGraph
   my @colorArray = qw(red orange blue dgreen dyellow cyan marine purple);
   $graph->set(dclrs => [@colorArray]);
   $graph->set_legend(@legendPlayers);
-  my $image = $graph->plot(\@data) or die ("Died creating image");
-  open(OUT, ">Players_" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
+  my $image = $graph->plot(\@data); # or die ("Died creating image");
+  my $imagePath = $tempDir . $teamOneName . "_" . $teamTwoName . "_" . $map . "_" . "players_" . $x . "x" . $y . ".png";
+  $imagePath =~ s/\s//g;
+  open(OUT, ">$imagePath");
   binmode OUT;
   print OUT $image->png();
   close OUT;
+  return $imagePath
 }
 
 sub outputTeamScoreGraph
@@ -1370,6 +1377,7 @@ sub outputTeamScoreGraph
   }
   my $image = $graph->plot(\@data); # or die ("Died creating image");
   my $imagePath = $tempDir . $teamOneName . "_" . $teamTwoName . "_" . $map . "_" . $x . "x" . $y . ".png";
+  $imagePath =~ s/\s//g;
   open(OUT, ">$imagePath");
   binmode OUT;
   print OUT $image->png();
@@ -1398,11 +1406,14 @@ sub outputPlayerPieCharts
              
 		) or warn $graph->error;
  
-    my $image = $graph->plot(\@data) or die $graph->error;
-    open(OUT, ">" . $player->name . ".png");
+    my $image = $graph->plot(\@data); #or die $graph->error;
+    my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
+    $imagePath =~ s/\s//g;
+    open(OUT, ">$imagePath");
     binmode OUT;
     print OUT $image->png();
-    close OUT;    
+    close OUT;
+    return $imagePath;    
   }
 }
 
