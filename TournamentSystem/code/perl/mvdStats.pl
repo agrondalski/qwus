@@ -449,6 +449,7 @@ sub new
   my $class = shift;
   my $self = {};
   $self->{NAME} = undef;
+  $self->{NAME_APPROVED} = 0;
   $self->{PLAYERS} = [];
   $self->{COLOR} = undef;
   $self->{MINUTES_PLAYED} = 0;
@@ -462,6 +463,13 @@ sub name
   my $self = shift;
   if (@_) { $self->{NAME} = shift }
   return $self->{NAME};
+}
+
+sub approved
+{
+  my $self = shift;
+  if (@_) { $self->{NAME_APPROVED} = shift }
+  return $self->{NAME_APPROVED};
 }
 
 sub color
@@ -548,10 +556,13 @@ my $match_id = $cgi->param('match_id');
 my $winning_team_id = $cgi->param('winning_team_id');
 my $approved = $cgi->param('approved');
 my $mvd = $cgi->param('filename');
+my $teamOneAbbr = $cgi->param('team1');
+my $teamTwoAbbr = $cgi->param('team2');
+
 
 print "Content-type: text/html\n\n";
 my $referer = $ENV{"HTTP_REFERER"};
-if ($referer != /reportMatch$/) { exit; }
+if ($referer != /reportMatch/) { exit; }
 
 #$mvd = "/tmp/hipark.mvd";
 
@@ -1106,23 +1117,112 @@ sub findTeam
   return $newTeam;
 }
 
+# oh dear ..
+sub teamMatchup
+{
+  my $teamOneFound = 0;
+  my $teamTwoFound = 0; 
+
+  # first lets try to find perfect matches (minus case sensitivity)
+  foreach $team (@teams)
+  {
+    my $name = $team->name;
+    if ($teamOneAbbr =~ /^$name$/i && $name =~ /^$teamOneAbbr$/i)
+    {
+      $team->approved(1);
+      $teamOneFound = 1;
+    }
+    elsif ($teamTwoAbbr =~ /^name$/i && $name =~ /^$teamTwoAbbr$/i)
+    {
+      $team->approved(1);
+      $teamTwoFound = 1;
+    }
+  }  
+
+  # now for the non perfect matches
+  foreach $team (@teams)
+  {
+    if ($team->approved() == 0)
+    {
+      if ($teamOneFound == 0)
+      {
+        my $name = $team->name;
+        if ($teamOneAbbr =~ /$name/i || $name =~ /$teamOneAbbr/i)
+        {
+          $team->approved(1);
+          $team->name($teamOneAbbr);
+          $teamOneFound = 1;
+        }
+      }
+      if ($teamTwoFound == 0)
+      {
+        if ($teamTwoAbbr =~ /$name/i || $name =~ /$teamTwoAbbr/i)
+        {
+          $team->approved(1);
+          $team->name($teamTwoAbbr);
+          $teamTwoFound = 1;
+        }
+      }
+    }
+  }
+  if ($teamOneFound + $teamTwoFound == 2) { return; } #awesome!
+  
+  if ($teamOneFound + $teamTwoFound == 1 && $teams == 2) 
+  # well we got 1 of 2 so we can assume the unknown is #2
+  {
+    foreach $team (@teams)
+    {
+      if ($team->approved == 0) { last; }
+    }
+    if ($team->approved == 0) # should always be true here, but who knows
+    {
+      if ($teamOneFound == 0)
+      {
+	$team->name($teamOneAbbr);
+        $team->approved(1);
+        $teamOneFound = 1;
+      }
+      else
+      {
+	$team->name($teamTwoAbbr);
+        $team->approved(1);
+        $teamTwoFound = 1; 
+      }
+    }
+  }
+  else #DOH !!
+  {
+    print "Team Matching attempt failed horribly..\n";
+    print "Abbrs: $teamOneAbbr, $teamTwoAbbr\n";
+    print "Teams:";
+    foreach $team (@teams)
+    {
+      print " " . $team->name; 
+    }
+    print "\n";
+  }
+}
+
 sub outputForm
 {
    print "<form action='../?a=skelsCoolFile' method=post>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
    print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
-   print "\t<input type='hidden' name='winning_team_id' value='$winning_team__id'>\n";
+   print "\t<input type='hidden' name='winning_team_id' value='$winning_team_id'>\n";
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
 
+   matchupTeams();
+
    foreach $team (@teams)
    {
-     $a = $team->name; 
-     $b = $team->points; 
-     $c = $team->minutesPlayed; 
-     $d = $team->minutesWithLead;
-     print "\t<input type='hidden' name='team' value='$a, $b, $c, $d'>\n";
+     my $a = $team->name; 
+     my $b = $team->approved; 
+     my $c = $team->points; 
+     my $d = $team->minutesPlayed; 
+     my $e = $team->minutesWithLead;
+     print "\t<input type='hidden' name='team' value='$a:$b:$c:$d:$e'>\n";
    }
    
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
