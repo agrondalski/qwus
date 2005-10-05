@@ -540,14 +540,20 @@ package main;
 $start = new Benchmark;
 $teamOneScore = 0;
 $teamTwoScore = 0;
+
 my $cgi = new CGI;
-#my $file = $cgi->param('filename');
+my $tourney_id = $cgi->param('tourney_id');
+my $division_id = $cgi->param('division_id');
+my $match_id = $cgi->param('match_id');
+my $winning_team_id = $cgi->param('winning_team_id');
+my $approved = $cgi->param('approved');
+my $mvd = $cgi->param('filename');
 
 print "Content-type: text/html\n\n";
 my $referer = $ENV{"HTTP_REFERER"};
 if ($referer != /reportMatch$/) { exit; }
 
-my $mvd = "/tmp/hipark.mvd";
+#$mvd = "/tmp/hipark.mvd";
 
 
 if ($mvd =~ /(.*)\.gz$/)
@@ -969,15 +975,17 @@ for (my $i = 0; $i <= $time; $i++)
 $shell = `rm "$tempMvd"`;
 
 calculateTeamColors();
-outputHeader();
+#outputHeader();
 #outputHTML();
-outputTeamHTML();
-#outputForm();
-outputTeamScoreGraph(200,150);
-outputTeamScoreGraph(800,600);
-outputPlayerScoreGraph(800,600);
-outputPlayerPieCharts();
-outputFooter();
+#outputTeamHTML();
+outputForm();
+
+#outputTeamScoreGraph(200,150);
+#outputTeamScoreGraph(800,600);
+#outputPlayerScoreGraph(800,600);
+#outputPlayerPieCharts();
+
+#outputFooter();
 
 $end = new Benchmark;
 $diff = Benchmark::timediff($end, $start);
@@ -1100,34 +1108,46 @@ sub findTeam
 
 sub outputForm
 {
-  print "<HTML>\n";
-  print "<HEAD></HEAD>\n";
-  print "<BODY>\n";
-  print "Match Report for $mvd\n";
-  print "<TABLE border=0 cellpadding=2 cellspacing=0>\n";
-  foreach $team (@teams)
-  {
-    print "\t<TR>\n";
-    print "\t\t<TD>" . $team->name . "</TD>\n";
-    print "\t</TR>\n";
-    my @teamPlayers = $team->players;
-    foreach $player (@teamPlayers)
-    {
-      $player = findPlayer($player);
-      print "\t<TR>\n";
-      print "\t\t<TD></TD>\n";
-      print "\t\t<TD>" . $player->name . "</TD>\n";
-      print "\t\t<TD>" . $player->points . "</TD>\n";
-      print "\t</TR>\n";
-    }    
-    print "\t<TR>\n";
-    print "\t\t<TD></TD><TD></TD><TD>" . $team->points . "</TD>\n";
-    print "\t</TR>\n";
-  }
-#  print "<input type='hidden' name
-  print "</TABLE>\n";
-  print "</BODY>\n";
-  print "</HTML>\n";
+   print "<form action='../?a=skelsCoolFile' method=post>\n";
+   print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
+   print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
+   print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
+   print "\t<input type='hidden' name='winning_team_id' value='$winning_team__id'>\n";
+   print "\t<input type='hidden' name='filename' value='$mvd'>\n";
+   print "\t<input type='hidden' name='map' value='$map'>\n";
+
+   foreach $team (@teams)
+   {
+     $a = $team->name; 
+     $b = $team->points; 
+     $c = $team->minutesPlayed; 
+     $d = $team->minutesWithLead;
+     print "\t<input type='hidden' name='team' value='$a, $b, $c, $d'>\n";
+   }
+   
+   print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
+   print "</form>"
+ 
+#  foreach $team (@teams)
+#  {
+#    print "\t<TR>\n";
+#    print "\t\t<TD>" . $team->name . "</TD>\n";
+#    print "\t</TR>\n";
+#    my @teamPlayers = $team->players;
+#    foreach $player (@teamPlayers)
+#    {
+#      $player = findPlayer($player);
+#      print "\t<TR>\n";
+#      print "\t\t<TD></TD>\n";
+#      print "\t\t<TD>" . $player->name . "</TD>\n";
+#      print "\t\t<TD>" . $player->points . "</TD>\n";
+#      print "\t</TR>\n";
+#    }    
+#    print "\t<TR>\n";
+#    print "\t\t<TD></TD><TD></TD><TD>" . $team->points . "</TD>\n";
+#    print "\t</TR>\n";
+#  }
+
 }
 
 sub outputHeader
