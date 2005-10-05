@@ -22,6 +22,7 @@ try
       try
 	{
 	  $tour->update('name', $_POST['tourney_name']);
+	  $tour->update('rules', $_POST['rules']);
 	  $tour->update('tourney_type', $_POST['tourney_type']);
 	  $tour->update('game_type_id', $_POST['game_type_id']);
 	  $tour->update('status', $_POST['status']);
@@ -32,6 +33,7 @@ try
 	}
       catch (Exception $e)
 	{
+	  print $e;
 	  $msg = "<br>Error updating!<br>";
 	}
     }
@@ -58,6 +60,7 @@ try
 	{
 	  $tour = new tourney(array('name'         => $_POST['tourney_name'],
 				    'game_type_id' => $_POST['game_type_id'],
+				    'rules'        => $_POST['rules'],
 				    'tourney_type' => $_POST['tourney_type'],
 				    'status'       => $_POST['status'],
 				    'team_size'    => $_POST['team_size'],

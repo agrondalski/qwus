@@ -10,6 +10,7 @@ create table tourney(
   tourney_id         integer       NOT NULL auto_increment,
   game_type_id       integer       NOT NULL,
   name               varchar(250)  NOT NULL,
+  rules              MEDIUMTEXT,
   tourney_type       ENUM ('Tournament', 'League', 'Ladder') NOT NULL default 'LEAGUE',
   status             ENUM ('Signups', 'Regular Season', 'Playoffs', 'Complete') NOT NULL default 'Signups',
   team_size          integer       NOT NULL,

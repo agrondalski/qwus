@@ -4,6 +4,7 @@ class tourney
   private $tourney_id ;
   private $game_type_id ;
   private $name ;
+  private $rules ;
   private $tourney_type ;
   private $status ;
   private $team_size ;
@@ -39,9 +40,9 @@ class tourney
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into tourney(game_type_id, name, tourney_type, status, team_size, timelimit)" .
+      $sql_str = sprintf("insert into tourney(game_type_id, name, rules, tourney_type, status, team_size, timelimit)" .
                          "values(%d, '%s', '%s', '%s', %d, %d)",
-			 $this->game_type_id, $this->name, $this->tourney_type, $this->status, $this->team_size, $this->timelimit) ;
+			 $this->game_type_id, $this->name, $this->rules, $this->tourney_type, $this->status, $this->team_size, $this->timelimit) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->tourney_id = mysql_insert_id() ;
@@ -51,7 +52,7 @@ class tourney
 
   private function getTourneyInfo()
     {
-      $sql_str = sprintf("select game_type_id, name, tourney_type, status, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select game_type_id, name, rules, tourney_type, status, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -63,10 +64,11 @@ class tourney
 
       $this->game_type_id  = $row[0] ;
       $this->name          = $row[1] ;
-      $this->tourney_type  = $row[2] ;
-      $this->status        = $row[3] ;
-      $this->team_size     = $row[4] ; 
-      $this->timelimit     = $row[5] ;
+      $this->rules         = $row[2] ;
+      $this->tourney_type  = $row[3] ;
+      $this->status        = $row[4] ;
+      $this->team_size     = $row[5] ; 
+      $this->timelimit     = $row[6] ;
 
       mysql_free_result($result) ;
 
@@ -131,6 +133,11 @@ class tourney
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
+	  return util::mysql_real_escape_string($val) ;
+	}
+
+      elseif ($col == 'rules')
+	{
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -755,7 +762,15 @@ class tourney
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-      return util::htmlentities($this->$col, $quote_style) ;
+
+      if ($col!="rules")
+	{
+	  return util::htmlentities($this->$col, $quote_style) ;
+	}
+      else
+	{
+	  return $this->$col ;
+	}
     }
 
   public function update($col, $val)
