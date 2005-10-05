@@ -1122,31 +1122,36 @@ sub teamMatchup
 {
   my $teamOneFound = 0;
   my $teamTwoFound = 0; 
+  my $teamCount = 0;
 
   # first lets try to find perfect matches (minus case sensitivity)
   foreach $team (@teams)
   {
+    $teamCount++;
     my $name = $team->name;
+    #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
     if ($teamOneAbbr =~ /^$name$/i && $name =~ /^$teamOneAbbr$/i)
     {
       $team->approved(1);
       $teamOneFound = 1;
     }
-    elsif ($teamTwoAbbr =~ /^name$/i && $name =~ /^$teamTwoAbbr$/i)
+    elsif ($teamTwoAbbr =~ /^$name$/i && $name =~ /^$teamTwoAbbr$/i)
     {
       $team->approved(1);
       $teamTwoFound = 1;
     }
   }  
 
+  #print "$teamOneFound\t$teamTwoFound\n";
+  
   # now for the non perfect matches
   foreach $team (@teams)
   {
+    my $name = $team->name;
     if ($team->approved() == 0)
     {
       if ($teamOneFound == 0)
       {
-        my $name = $team->name;
         if ($teamOneAbbr =~ /$name/i || $name =~ /$teamOneAbbr/i)
         {
           $team->approved(1);
@@ -1167,39 +1172,42 @@ sub teamMatchup
   }
   if ($teamOneFound + $teamTwoFound == 2) { return; } #awesome!
   
-  if ($teamOneFound + $teamTwoFound == 1 && $teams == 2) 
+  #print "total teams: $teamCount\n";  
+  if ($teamOneFound + $teamTwoFound == 1 && $teamCount == 2) 
   # well we got 1 of 2 so we can assume the unknown is #2
   {
+    my $lastTeam = undef;
     foreach $team (@teams)
     {
+      $lastTeam = $team;
       if ($team->approved == 0) { last; }
     }
-    if ($team->approved == 0) # should always be true here, but who knows
+    if ($lastTeam->approved == 0) # should always be true here, but who knows
     {
       if ($teamOneFound == 0)
       {
-	$team->name($teamOneAbbr);
-        $team->approved(1);
+	$lastTeam->name($teamOneAbbr);
+        $lastTeam->approved(1);
         $teamOneFound = 1;
       }
       else
       {
-	$team->name($teamTwoAbbr);
-        $team->approved(1);
+	$lastTeam->name($teamTwoAbbr);
+        $lastTeam->approved(1);
         $teamTwoFound = 1; 
       }
     }
   }
   else #DOH !!
   {
-    print "Team Matching attempt failed horribly..\n";
-    print "Abbrs: $teamOneAbbr, $teamTwoAbbr\n";
-    print "Teams:";
-    foreach $team (@teams)
-    {
-      print " " . $team->name; 
-    }
-    print "\n";
+   # print "Team Matching attempt failed horribly..\n";
+   # print "Abbrs: $teamOneAbbr, $teamTwoAbbr\n";
+   # print "Teams:";
+   # foreach $team (@teams)
+   # {
+   #   print " " . $team->name; 
+   # }
+   # print "\n";
   }
 }
 
@@ -1215,6 +1223,7 @@ sub outputForm
 
    teamMatchup();
 
+   my $teamNumber = 1;
    foreach $team (@teams)
    {
      my $a = $team->name; 
@@ -1222,7 +1231,9 @@ sub outputForm
      my $c = $team->points; 
      my $d = $team->minutesPlayed; 
      my $e = $team->minutesWithLead;
-     print "\t<input type='hidden' name='team' value='$a:$b:$c:$d:$e'>\n";
+     print "\t<input type='hidden' name='team" . 
+           $teamNumber . "' value='$a:$b:$c:$d:$e'>\n";
+     $teamNumber++;
    }
    
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
