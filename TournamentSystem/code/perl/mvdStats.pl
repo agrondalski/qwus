@@ -1324,7 +1324,7 @@ sub outputPlayerScoreGraph
   binmode OUT;
   print OUT $image->png();
   close OUT;
-  return $imagePath
+  return $imagePath;
 }
 
 sub outputTeamScoreGraph
