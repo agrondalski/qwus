@@ -91,5 +91,20 @@ echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></t\
 r>";
 echo "</table></form>";
 
+echo "<form action='./perl/mvdStats.pl' method=post>";
+echo "<table border=0 cellpadding=4 cellspacing=0>";
+echo "<tr><td><b>Test 7 (aero1.mvd.gz) (must manually gzip again after test)</b></td>";
+echo "<input type='hidden' name='tourney_id' value='1'>";
+echo "<input type='hidden' name='division_id' value='1'>";
+echo "<input type='hidden' name='match_id' value='13'>";
+echo "<input type='hidden' name='winning_team_id' value='8'>";
+echo "<input type='hidden' name='approved' value='1'>";
+echo "<input type='hidden' name='filename' value ='/tmp/uploads/aero1.mvd.gz'>";
+echo "<input type='hidden' name='team1' value=' the'>";
+echo "<input type='hidden' name='team2' value='last'>";
+echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></t\
+r>";
+echo "</table></form>";
+
 
 ?>

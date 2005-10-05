@@ -548,6 +548,7 @@ package main;
 $start = new Benchmark;
 $teamOneScore = 0;
 $teamTwoScore = 0;
+$tempDir = "/tmp/";
 
 my $cgi = new CGI;
 my $tourney_id = $cgi->param('tourney_id');
@@ -986,13 +987,17 @@ for (my $i = 0; $i <= $time; $i++)
 $shell = `rm "$tempMvd"`;
 
 calculateTeamColors();
+
 #outputHeader();
 #outputHTML();
 #outputTeamHTML();
+
 outputForm();
 
 #outputTeamScoreGraph(200,150);
 #outputTeamScoreGraph(800,600);
+
+
 #outputPlayerScoreGraph(800,600);
 #outputPlayerPieCharts();
 
@@ -1236,6 +1241,13 @@ sub outputForm
      $teamNumber++;
    }
    
+   my $imagePath = outputTeamScoreGraph(200, 150);
+   print "\t<input type='hidden' name='team_score_graph_small' value='$imagePath'>\n";
+   
+   $imagePath = outputTeamScoreGraph(800, 600);
+   print "\t<input type='hidden' name='team_score_graph_large' value='$imagePath'>\n";
+
+
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"
  
@@ -1356,12 +1368,13 @@ sub outputTeamScoreGraph
     }
     $graph->set(show_values => \@pointData);
   }
-  my $image = $graph->plot(\@data) or die ("Died creating image");
-  open(OUT, ">" . $teamOneName . "_" . $teamTwoName . "_" . $map . "_". $x . "x" . $y . ".png");
+  my $image = $graph->plot(\@data); # or die ("Died creating image");
+  my $imagePath = $tempDir . $teamOneName . "_" . $teamTwoName . "_" . $map . "_" . $x . "x" . $y . ".png";
+  open(OUT, ">$imagePath");
   binmode OUT;
   print OUT $image->png();
   close OUT;
- 
+  return $imagePath;
 }
 
 sub outputPlayerPieCharts
