@@ -246,19 +246,39 @@ class team
     }
     
   public function getPlayers($tid)
-      {
-	$tid = tourney::validateColumn($tid, 'tourney_id') ;
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-        $sql_str = sprintf("select pi.player_id from player_info pi where pi.tourney_id=%d and pi.team_id=%d", $tid, $this->team_id) ;
-        $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $sql_str = sprintf("select * from player_info pi where pi.tourney_id=%d and pi.team_id=%d", $tid, $this->team_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
   
-        while ($row=mysql_fetch_row($result))
-  	{
-  	  $arr[] = new player(array('player_id'=>$row[0])) ;
-  	}
-  
-        mysql_free_result($result) ;
-        return $arr ;
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+	
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+	  
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new player(array('player_id'=>$row['player_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
     }
 
   public function addPlayer($tid, $pid, $itl)
@@ -428,6 +448,12 @@ class team
     {
       $stats = stats::getPlayerStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
       return util::row_sort($stats, $a) ;
+    }
+
+  public function getTeamMapStats($tid, $a)
+    {
+      $stats = stats::getTeamMapStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
+      return $stats ;
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)

@@ -56,7 +56,7 @@ else
 }
 
 //foreach ($tm->getPlayers($tid) as $player) 
-foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_game', SORT_DESC)) as $player)
+foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_game', SORT_DESC, 'name', SORT_ASC)) as $player)
 {
   $loc = new location(array('location_id'=>$player['location_id']));
   $loc_name = $loc->getValue('country_name') ;
