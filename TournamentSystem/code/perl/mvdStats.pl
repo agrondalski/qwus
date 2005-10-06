@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # todo:
-# nice output for easy database entry
 # optimize
 # ctf msgs
 # team stats (end of mvd)
@@ -21,6 +20,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
+  $self->{APPROVED} = undef;
   $self->{SCORE_GRAPH} = [];
   $self->{MINUTES_PLAYED} = 0;
   $self->{CURRENTLY_PLAYING} = 1;
@@ -69,6 +69,13 @@ sub team
   my $self = shift;
   if (@_) {$self->{TEAM} = shift }
   return $self->{TEAM};
+}
+
+sub approved
+{
+  my $self = shift;
+  if (@_) {$self->{APPROVED} = shift }
+  return $self->{APPROVED};
 }
 
 sub minutesPlayed
@@ -559,7 +566,8 @@ my $approved = $cgi->param('approved');
 my $mvd = $cgi->param('filename');
 my $teamOneAbbr = $cgi->param('team1');
 my $teamTwoAbbr = $cgi->param('team2');
-
+my $teamOnePlayers = $cgi->param('team1players');
+my $teamTwoPlayers = $cgi->param('team2players');
 
 print "Content-type: text/html\n\n";
 my $referer = $ENV{"HTTP_REFERER"};
@@ -1102,7 +1110,7 @@ sub findPlayerNoCreate
   my $playerName = shift;
   foreach $player (@players)
   {
-      if ($player->name() eq $playerName) { return $player }
+    if ($player->name() eq $playerName) { return $player }
   }
   return null;
 }
@@ -1120,7 +1128,47 @@ sub findTeam
   return $newTeam;
 }
 
-# oh dear ..
+sub findTeamNoCreate
+{
+  my $teamName = shift;
+  foreach $team (@teams)
+  {
+    if ($team->name eq $teamName) { return $team }
+  }
+  return null;
+}
+
+sub playerMatchup
+{
+  @teamOnePlayers = split(':', $teamOnePlayers);
+  @teamTwoPlayers = split(':', $teamTwoPlayers);
+
+  foreach $name (@teamOnePlayers)
+  {
+    print "$name\n";
+  }
+
+  foreach $team (@teams)
+  {
+    my @teamPlayers = $team->players;
+    foreach $player (@teamPlayers)
+    {
+      $player = findPlayerNoCreate($player);
+      
+    }
+  }
+
+ # my $team = findTeamNoCreate($teamOneAbbr);
+ # if ($team != null)
+ # {
+ #   my @teamPlayers = $team->players;
+ #   foreach $player (@teamPlayers)
+ #   {
+ #   }
+ # }
+  
+}
+
 sub teamMatchup
 {
   my $teamOneFound = 0;
@@ -1251,6 +1299,8 @@ sub outputForm
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
+
+   playerMatchup();
 
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"
