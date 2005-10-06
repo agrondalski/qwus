@@ -13,6 +13,9 @@ TO DO LIST:
 
   New qwus db password
 
+  manage news page should sort so new news is at top?
+  tournaments need to provide link to its news archive
+
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
