@@ -450,11 +450,13 @@ class team
       return util::row_sort($stats, $a) ;
     }
 
+  /*
   public function getTeamMapStats($tid, $a)
     {
       $stats = stats::getTeamMapStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
       return $stats ;
     }
+  */
 
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
