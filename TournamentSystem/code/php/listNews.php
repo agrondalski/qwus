@@ -22,11 +22,11 @@ try
 
   if (!util::isNull($tid))
     {
-      $allNews = $t->getNews() ;
+      $allNews = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
     }
   else
     {
-      $allNews = news::getNews() ;
+      $allNews = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
     }
 
   echo "<table border=1 cellpadding=2 cellspacing=0>\n";
