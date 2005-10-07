@@ -33,7 +33,8 @@ try
       echo "\t</tr>\n";
     }
   echo "</table>\n";
-  echo "<p><a href='?a=manageDivision&amp;tourney_id=$tid'>Create Division</a>";
+  echo "<p><a href='?a=manageDivision&amp;tourney_id=$tid'>Create Division</a>&nbsp;-&nbsp;";
+  echo "<a href='?a=assignTeamsToDiv&tourney_id=$tid'>Assign Teams to Division</a>";
 }
 catch (Exception $e) {}
 ?>

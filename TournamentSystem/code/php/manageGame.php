@@ -32,7 +32,7 @@ try
   }
   
   $mode = $_REQUEST['mode'];
-
+  $game_id = "";
   if ($mode == "edit")
   {
       $game_id = $_REQUEST['game_id'];
