@@ -15,6 +15,8 @@ TO DO LIST:
 
   tournaments need to provide link to its news archive
 
+  script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
+
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
