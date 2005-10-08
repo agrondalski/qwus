@@ -6,8 +6,8 @@
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 # player line graph should check for not null team
+# teammate squish
 
-use Benchmark;
 use CGI qw/:standard/;
 use GD::Graph::lines;
 use GD::Graph::pie;
@@ -42,7 +42,6 @@ sub new
   $self->{SQUISH_FRAGS} = 0;    $self->{SQUISH_DEATHS} = 0;
   $self->{SQUISH_BORES} = 0;
   $self->{MISC_BORES} = 0;
- #  $self->{SATAN_FRAGS} = 0;
   $self->{ROCKET_BORES} = 0;
   $self->{GRENADE_BORES} = 0;
   $self->{DISCHARGE_BORES} = 0;
@@ -456,7 +455,7 @@ sub new
   my $class = shift;
   my $self = {};
   $self->{NAME} = undef;
-  $self->{NAME_APPROVED} = 0;
+  $self->{APPROVED} = 0;
   $self->{PLAYERS} = [];
   $self->{COLOR} = undef;
   $self->{MINUTES_PLAYED} = 0;
@@ -475,8 +474,8 @@ sub name
 sub approved
 {
   my $self = shift;
-  if (@_) { $self->{NAME_APPROVED} = shift }
-  return $self->{NAME_APPROVED};
+  if (@_) { $self->{APPROVED} = shift }
+  return $self->{APPROVED};
 }
 
 sub color
@@ -552,7 +551,6 @@ sub points
 }
 
 package main;
-$start = new Benchmark;
 $teamOneScore = 0;
 $teamTwoScore = 0;
 $tempDir = "/tmp/";
@@ -697,12 +695,12 @@ foreach $string (@strings)
     $fraggee = findPlayer($oldString);
     $fraggee->rocketBores($fraggee->rocketBores() + 1);
   }
-  elsif ($string =~ /^(.*) discovers blast radius/)
-  {
-print $string;
-    $fraggee = findPlayer($1);
-    $fraggee->rocketBores($fraggee->rocketBores() + 1);
-  }
+  #elsif ($string =~ /^(.*) discovers blast radius/)
+  #{
+  #  print $string;
+  #  $fraggee = findPlayer($1);
+  #  $fraggee->rocketBores($fraggee->rocketBores() + 1);
+  #}
   elsif ($string =~ /^ tries to put the pin back in/)
   {
     chomp($oldString);
@@ -727,12 +725,12 @@ print $string;
     $fraggee = findPlayer($oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
-  elsif ($string =~ /^(.*) electrocutes himself/)
-  {
-print $string;
-    $fraggee = findPlayer($1);
-    $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
-  }
+  #elsif ($string =~ /^(.*) electrocutes himself/)
+  #{
+  #  print $string;
+  #  $fraggee = findPlayer($1);
+  #  $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+  #}
   elsif ($string =~ /^(.*) accepts (.*)'s discharge/)
   {
     $fraggee = findPlayer($1);
@@ -849,12 +847,10 @@ print $string;
     $fragger = findPlayer($2);
     $fragger->teleFrags($fragger->teleFrags() + 1);
   }
-  elsif ($string =~ /satan/i)
-  {
-    print $string;
-  }
-# todo: satan, ctf, fall frags
-
+  #elsif ($string =~ /satan/i) # doesn't change score?
+  #{
+  #  print $string;
+  #}
   elsif ($string =~ /^(.*) loses another friend/) 
   {
     $fragger = findPlayer($1);
@@ -903,7 +899,6 @@ print $string;
         my $bottomColor = $';
         while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
         $bottomColor =~ s/\s+$//;
-# should calculate this later based on players mode color
         $team->color($bottomColor);
         $player->bottomColor($bottomColor);
       }
@@ -991,104 +986,9 @@ for (my $i = 0; $i <= $time; $i++)
   }
 }  
 $shell = `rm -f "$tempMvd"`;
-
 calculateTeamColors();
-
-#outputHeader();
-#outputHTML();
-#outputTeamHTML();
-
 outputForm();
-
-#outputTeamScoreGraph(200,150);
-#outputTeamScoreGraph(800,600);
-
-
-#outputPlayerScoreGraph(800,600);
 #outputPlayerPieCharts();
-
-#outputFooter();
-
-$end = new Benchmark;
-$diff = Benchmark::timediff($end, $start);
-print "\n\nBenchmark: " . Benchmark::timestr($diff, 'all') . "\n"; 
-
-sub outputTeamHTML
-{
-  print "Map:\t" . $map . "\n";
-  foreach $team (@teams)
-  {
-    my @teamPlayers = $team->players;
- #   print $team->name . "(" . $team->color . ")" . " :\t" . $team->points . "\n";
-     print $team->name . "(" . $team->points . ")\n";
-    print "minutes played: " . $team->minutesPlayed . "\tminutes with lead: " . $team->minutesWithLead . "\n";
-
-     foreach $player (@teamPlayers)
-    {
-      $player = findPlayer($player);
-      print "\t\t" . $player->name . "\t" . $player->points . "\t" . $player->fragStreak . "\n";
-    }  
-  }
-  foreach $player (@players)
-  {
-    if ($player->team eq undef)
-    {
-	print "unknown team:\t\t" .  $player->name . "\t" . $player->points . "\n";
-    }
-  }
-}
-
-sub outputHTML
-{
-  print "<TABLE>\n";
-  print "\t<TR>\n" .
-        "\t\t<TD>Name</TD>\n" .
-        "\t\t<TD>Team</TD>\n" .
-        "\t\t<TD>Frags</TD>\n" . 
-        "\t\t<TD>Deaths</TD\n" .
-        "\t\t<TD>SG</TD>\n" .
-        "\t\t<TD>SSG</TD>\n" .
-        "\t\t<TD>NG</TD>\n" .
-        "\t\t<TD>SNG</TD>\n" .
-        "\t\t<TD>GL</TD>\n" .
-        "\t\t<TD>RL</TD>\n" .
-        "\t\t<TD>LG</TD>\n" .
-        "\t\t<TD>TK</TD>\n" .  
-        "\t\t<TD>eff</TD>\n" .
-        "\t\t<TD>lava</TD>\n" .
-        "\t\t<TD>tele</TD>\n" .
-        "\t\t<TD>self</TD>\n" .
-        "\t\t<TD>bore rl</TD>\n" .
-        "\t\t<TD>bore lg</TD>\n" .
-        "\t\t<TD>bore m</TD>\n" .
-        "\t</TR>\n";
-  foreach $player (@players)
-  {
-     print "\t<TR>\n" . 
-      "\t\t<TD>" . $player->name . "</TD>\n" .
-      "\t\t<TD>" . $player->team . "</TD>\n" .
-      "\t\t<TD>" . $player->frags . "</TD>\n" . 
-      "\t\t<TD>" . $player->deaths . "</TD>\n" .
-      "\t\t<TD>" . $player->shotgunFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->ssgFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->nailgunFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->sngFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->grenadeFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->rocketFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->lightningFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->teamKills . "</TD>\n" .
-      "\t\t<TD>" . $player->eff . "</TD>\n" .
-      "\t\t<TD>" . $player->lavaDeaths . "</TD>\n" .
-      "\t\t<TD>" . $player->teleFrags . "</TD>\n" .
-      "\t\t<TD>" . $player->selfKills . "</TD>\n" .
-      "\t\t<TD>" . $player->rocketBores . "</TD>\n" . 
-      "\t\t<TD>" . $player->dischargeBores . "</TD>\n" . 
-      "\t\t<TD>" . $player->miscBores . "</TD>\n" .
-      "\t</TR>\n";
-  }
-  print "</TABLE>\n";
-}
-
 
 # Searches player array for the name passed in
 # Returns player object if found or new player object if not
@@ -1247,17 +1147,7 @@ sub teamMatchup
       }
     }
   }
-  else #DOH !!
-  {
-   # print "Team Matching attempt failed horribly..\n";
-   # print "Abbrs: $teamOneAbbr, $teamTwoAbbr\n";
-   # print "Teams:";
-   # foreach $team (@teams)
-   # {
-   #   print " " . $team->name; 
-   # }
-   # print "\n";
-  }
+  #else #DOH !! {}
 }
 
 sub outputForm
@@ -1305,41 +1195,6 @@ sub outputForm
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"
  
-#  foreach $team (@teams)
-#  {
-#    print "\t<TR>\n";
-#    print "\t\t<TD>" . $team->name . "</TD>\n";
-#    print "\t</TR>\n";
-#    my @teamPlayers = $team->players;
-#    foreach $player (@teamPlayers)
-#    {
-#      $player = findPlayer($player);
-#      print "\t<TR>\n";
-#      print "\t\t<TD></TD>\n";
-#      print "\t\t<TD>" . $player->name . "</TD>\n";
-#      print "\t\t<TD>" . $player->points . "</TD>\n";
-#      print "\t</TR>\n";
-#    }    
-#    print "\t<TR>\n";
-#    print "\t\t<TD></TD><TD></TD><TD>" . $team->points . "</TD>\n";
-#    print "\t</TR>\n";
-#  }
-
-}
-
-sub outputHeader
-{
-  print "<HTML>\n";
-  print "<HEAD>\n";
-  print "\t<TITLE>QuakeWorld.US MVD Analyzer</TITLE>\n";
-  print "</HEAD\n";
-  print "<BODY>\n";
-}
-
-sub outputFooter
-{
-  print "</BODY>\n";
-  print "</HTML>\n";
 }
 
 sub outputPlayerScoreGraph
