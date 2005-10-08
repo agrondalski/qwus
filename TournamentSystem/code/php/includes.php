@@ -19,6 +19,7 @@ require_once 'classes/news.php' ;
 require_once 'classes/player.php' ;
 require_once 'classes/poll.php' ;
 require_once 'classes/stats.php' ;
+require_once 'classes/stats_team.php' ;
 require_once 'classes/team.php' ;
 require_once 'classes/tourney.php' ;
 require_once 'classes/util.php' ;

@@ -434,13 +434,13 @@ class team
 
   public function getCareerStats()
     {
-      $stats = stats::getTeamStats(array('team_id'=>$this->team_id)) ;
+      $stats = stats_team::getTeamStats(array('team_id'=>$this->team_id)) ;
       return $stats[$this->team_id] ;
     }
 
   public static function getSortedCareerStats($a)
     {
-      $stats = stats::getTeamStats() ;
+      $stats = stats_team::getTeamStats() ;
       return util::row_sort($stats, $a) ;
     }
 
@@ -449,14 +449,6 @@ class team
       $stats = stats::getPlayerStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
       return util::row_sort($stats, $a) ;
     }
-
-  /*
-  public function getTeamMapStats($tid, $a)
-    {
-      $stats = stats::getTeamMapStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
-      return $stats ;
-    }
-  */
 
   public function getValue($col, $quote_style=ENT_QUOTES)
     {

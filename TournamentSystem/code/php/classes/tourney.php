@@ -41,7 +41,7 @@ class tourney
 	}
 
       $sql_str = sprintf("insert into tourney(game_type_id, name, rules, tourney_type, status, team_size, timelimit)" .
-                         "values(%d, '%s', '%s', '%s', %d, %d)",
+                         "values(%d, '%s', '%s', '%s', '%s', %d, %d)",
 			 $this->game_type_id, $this->name, $this->rules, $this->tourney_type, $this->status, $this->team_size, $this->timelimit) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
@@ -599,6 +599,9 @@ class tourney
       $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
+      $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d", $this->tourney_id, $id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
       mysql_free_result($result) ;
     }
 
@@ -749,7 +752,7 @@ class tourney
 
   public function getSortedTeamStats($a)
     {
-      $arr = stats::getTeamStats(array('tourney_id'=>$this->tourney_id)) ;
+      $arr = stats_team::getTeamStats(array('tourney_id'=>$this->tourney_id)) ;
       return util::row_sort($arr, $a) ;
     }
 

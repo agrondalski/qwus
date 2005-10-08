@@ -392,7 +392,7 @@ class division
 
   public function getSortedTeamStats($a)
     {
-      $stats = stats::getTeamStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
+      $stats = stats_team::getTeamStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
       return util::row_sort($stats, $a) ;
     }
 

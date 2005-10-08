@@ -164,6 +164,17 @@ ENGINE=INNODB ;
 --create index stats_idx1 on stats(game_id) ;
 --create index stats_idx2 on stats(stat_name) ;
 
+create table stats_team(
+  team_id    integer       NOT NULL,
+  game_id    integer       NOT NULL,
+  stat_name  varchar(250)  NOT NULL,
+  value      integer       NOT NULL,
+--
+  constraint stats_team_pk primary key(team_id, game_id, stat_name))
+ENGINE=INNODB ;
+--create index stats_team_idx1 on stats_team(game_id) ;
+--create index stats_team_idx2 on stats_team(stat_name) ;
+
 create table comments(
   comment_id    integer       NOT NULL auto_increment,
   comment_type  ENUM('Match', 'News', 'Column') NOT NULL default 'NEWS', 
@@ -277,6 +288,9 @@ alter table maps add constraint maps_fk1 foreign key(game_type_id) references ga
 alter table stats add constraint stats_fk1 foreign key(player_id) references player(player_id) ;
 alter table stats add constraint stats_fk2 foreign key(game_id)   references game(game_id) ;
 alter table stats add constraint stats_fk3 foreign key(team_id)   references team(team_id) ;
+
+alter table stats_team add constraint stats_team_fk1 foreign key(team_id)   references team(team_id) ;
+alter table stats_team add constraint stats_team_fk2 foreign key(game_id)   references game(game_id) ;
 
 --alter table comments add constraint comments_fk2 foreign key(match_id)  references match_table(match_id) ;
 
