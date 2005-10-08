@@ -311,13 +311,13 @@ try
 		echo "<input type='hidden' name='team1players' value='";
 		  foreach ($t1->getPlayers($tid) as $player)
 			{
-	          echo $player->getValue('name').":";
+	          echo $player->getValue('name')."\\\\";
 		    }
 		echo "'>";
 		echo "<input type='hidden' name='team2players' value='";
 		  foreach ($t2->getPlayers($tid) as $player)
 			{
-	          echo $player->getValue('name').":";
+	          echo $player->getValue('name')."\\\\";
 		    }
 		echo "'>";
 		echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";

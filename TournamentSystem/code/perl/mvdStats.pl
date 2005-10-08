@@ -20,7 +20,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
-  $self->{APPROVED} = undef;
+  $self->{APPROVED} = 0;
   $self->{SCORE_GRAPH} = [];
   $self->{MINUTES_PLAYED} = 0;
   $self->{CURRENTLY_PLAYING} = 1;
@@ -447,6 +447,52 @@ sub fragStreak
 {
   my $self = shift;
   return $self->{MAX_FRAG_STREAK};
+}
+
+sub outputStats
+{
+  my $self = shift;
+  print $self->name . "\\\\";
+  print $self->approved . "\\\\";
+  print $self->axFrags . "\\\\";
+  print $self->axDeaths . "\\\\";
+  print $self->shotgunFrags . "\\\\";
+  print $self->shotgunDeaths . "\\\\";
+  print $self->ssgFrags . "\\\\";
+  print $self->ssgDeaths . "\\\\";
+  print $self->nailgunFrags . "\\\\";
+  print $self->nailgunDeaths . "\\\\";
+  print $self->sngFrags . "\\\\";
+  print $self->sngDeaths . "\\\\";
+  print $self->grenadeFrags . "\\\\";
+  print $self->grenadeDeaths . "\\\\";
+  print $self->rocketFrags . "\\\\";
+  print $self->rocketDeaths . "\\\\";
+  print $self->lightningFrags . "\\\\";
+  print $self->lightningDeaths . "\\\\";
+  print $self->teleFrags . "\\\\";
+  print $self->teleDeaths . "\\\\";
+  print $self->dischargeFrags . "\\\\";
+  print $self->dischargeDeaths . "\\\\";
+  print $self->dischargeBores . "\\\\";
+  print $self->squishFrags . "\\\\";
+  print $self->squishDeaths . "\\\\";
+  print $self->squishBores . "\\\\";
+  print $self->lavaBores . "\\\\";
+  print $self->slimeBores . "\\\\";
+  print $self->waterBores . "\\\\";
+  print $self->fallBores . "\\\\";
+  print $self->miscBores . "\\\\";
+  print $self->grenadeBores . "\\\\";
+  print $self->rocketBores . "\\\\";
+  print $self->selfKills . "\\\\";
+  print $self->teamKills . "\\\\";
+  print $self->frags . "\\\\";
+  print $self->deaths . "\\\\";
+  print $self->rank . "\\\\";
+  print $self->eff . "\\\\";
+  print $self->points . "\\\\";
+  print $self->fragStreak . "\\\\";
 }
 
 package Team;
@@ -1040,21 +1086,15 @@ sub findTeamNoCreate
 
 sub playerMatchup
 {
-  @teamOnePlayers = split(':', $teamOnePlayers);
-  @teamTwoPlayers = split(':', $teamTwoPlayers);
-
-  foreach $name (@teamOnePlayers)
-  {
-    print "$name\n";
-  }
+  @teamOnePlayers = split('\\\\', $teamOnePlayers);
+  @teamTwoPlayers = split('\\\\', $teamTwoPlayers);
 
   foreach $team (@teams)
   {
     my @teamPlayers = $team->players;
     foreach $player (@teamPlayers)
     {
-      $player = findPlayerNoCreate($player);
-      
+      $player = findPlayerNoCreate($player);      
     }
   }
 
@@ -1173,7 +1213,7 @@ sub outputForm
        my $d = $team->minutesPlayed; 
        my $e = $team->minutesWithLead;
        print "\t<input type='hidden' name='team" . 
-           $teamNumber . "' value='$a:$b:$c:$d:$e'>\n";
+           $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";
        $teamNumber++;
      }
    
@@ -1190,7 +1230,30 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
+   print "\t<input type='hidden' name='playerFields' value='40'>\n";
+
    playerMatchup();
+
+   my $t = findTeamNoCreate($teamOneAbbr);
+   my @tPlayers = $t->players;      
+   print "\t<input type='hidden' name='team1players' value='";
+   foreach $player (@tPlayers)
+   {
+      $player = findPlayer($player);
+      $player->outputStats();
+   }
+   print "'>\n";
+
+   my $t = findTeamNoCreate($teamTwoAbbr);
+   my @tPlayers = $t->players;
+   print "\t<input type='hidden' name='team2players' value='";
+   foreach $player (@tPlayers)
+   {
+       $player = findPlayer($player);
+       $player->outputStats();
+   }
+   print "'>\n";
+
 
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"

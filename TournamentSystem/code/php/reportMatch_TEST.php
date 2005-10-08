@@ -139,8 +139,8 @@ echo "<input type='hidden' name='approved' value='1'>";
 echo "<input type='hidden' name='filename' value ='/tmp/uploads/hipark.mvd'>";
 echo "<input type='hidden' name='team1' value='pink'>";
 echo "<input type='hidden' name='team2' value='red'>";
-echo "<input type='hidden' name='team1players' value='fred:bob:bill:papi'>";
-echo "<input type='hidden' name='team2players' value='bog:gay:fag:drako'>";
+echo "<input type='hidden' name='team1players' value='fred\\bob\\bill\\papi'>";
+echo "<input type='hidden' name='team2players' value='bog\\gay\\fag\\drako\\'>";
 echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></t\r>";
 echo "</table></form>";
 
