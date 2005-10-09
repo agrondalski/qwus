@@ -413,7 +413,7 @@ class team
 
       $sql_str = sprintf("select m.match_id
                           from match_table m, match_schedule ms, division d
-                          where (m.team1_id=%d or m.team2_id=%d) and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d
+                          where (m.team1_id=%d or m.team2_id=%d) and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d
                           order by m.match_date desc, m.match_id desc",
 			 $this->team_id, $this->team_id, $tid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());

@@ -33,11 +33,6 @@ try
 	{
 	  $news = array(new news(array('news_id'=>$_GET["news_id"]))) ;
 
-	  if (!util::isNull($_REQUEST['comment_text']))
-	    {
-	      $news[0]->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
-	    }
-
 	  if (isset($_GET["tourney_id"]))
 	    {  
 	      $tid  = '&amp;tourney_id=' . $_GET['tourney_id'] ;
@@ -59,12 +54,6 @@ try
       else
 	{
 	  $news = array(new news(array('news_id'=>$_GET["news_id"]))) ;
-
-	  if (!util::isNull($_REQUEST['comment_text']))
-	    {
-	      $news[0]->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
-	    }
-
 	}
     }
 }

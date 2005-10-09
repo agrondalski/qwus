@@ -62,6 +62,9 @@ foreach ($m->getGames() as $g)
 	{
 		$team2 += 1;				
 	}	
+
+	$files = $g->getFiles() ;
+
 	$t1out = "<a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t1->getValue('team_id')."'>".$t1->getValue('name')."</a>";
 	$t2out = "<a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t2->getValue('team_id')."'>".$t2->getValue('name')."</a>";
 	$map = new map(array('map_id'=>$g->getValue('map_id')));
@@ -72,10 +75,39 @@ foreach ($m->getGames() as $g)
 	$gameout .= "<tr><td align=center>".$g->getValue('team1_score')."</td>";
 	$gameout .= "<td align=center>".$g->getValue('team2_score')."</td></tr>";
 	$gameout .= "</table>";
-	$gameout .= "<img src='". 'SS column no longer exists' ."'><p>";
-	$gameout .= "[score over time graph img]<p>";
-	$gameout .= "[detailed stats link]<p>";
-	$gameout .= "<a href='". 'demo columns no longer exists' ."'>demo url</a><br>";
+
+	$file = null ;
+	if (array_key_exists(util::SCREENSHOT, $files))
+	{
+	  $file = $files[util::SCREENSHOT]->getValue('url') ;
+	}
+	$gameout .= "<img src='" . $file . "'><p>";
+
+	if (array_key_exists(util::TEAM_SCORE_GRAPH_SMALL, $files))
+	{
+	  $file = $files[util::TEAM_SCORE_GRAPH_SMALL]->getValue('url') ;
+	}
+	$gameout .= "<img src='" . $file . "'><p>";
+
+	/*
+	if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
+	{
+	  $file = $files[util::PLAYER_SCORE_GRAPH]->getValue('url') ;
+	}
+	$gameout .= "<img src='" . $file . "'><p>";
+	*/
+
+	//$gameout .= "[detailed stats link]<p>";
+
+	$gameout .= "<a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;game_id=" . $g->getValue('game_id') . "'>Game Details</a><p>";
+
+	if (array_key_exists(util::MVD_DEMO, $files))
+	{
+	  $file = $files[util::MVD_DEMO]->getValue('url') ;
+	}
+	$gameout .= "<a href='". $file ."'>Demo</a><p>";
+
+
 	$gameout .= "</td></tr></table>\n";
 }
 echo " (",$team1,"-",$team2,")";
@@ -83,7 +115,8 @@ echo "</td>";
 echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
 echo "</table><br>\n";
 echo $gameout;
-echo "<p>Comments...(name, ip)<br>";
-echo "(text, date, time)";
-echo "<p><a href='#'>Add Comment</a>";
+
+print "<br>" ;
+
+include 'listComments.php' ;
 ?>

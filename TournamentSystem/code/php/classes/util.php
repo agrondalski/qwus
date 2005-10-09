@@ -7,12 +7,23 @@ class util
   const FOUND    = 1 ;
   const NOTFOUND = 0 ;
 
-  const SCORE = 'SCORE' ;
+  const SCORE = 'Score' ;
 
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;
   const DEFAULT_INT  = -1 ;
   const DEFAULT_STR  = null ;
+
+  const SLASH          = '/' ;
+  const ROOT_DIR       = '/usr/quake/demos/tourney' ;
+  const HTML_ROOT_DIR  = 'http://www.quakeworld.us/tourney' ;
+
+  const SCREENSHOT              = 'SCREENSHOT' ;
+  const MVD_DEMO                = 'MVD_DEMO' ;
+  const TEAM_SCORE_GRAPH_SMALL  = 'TEAM_SCORE_GRAPH_SMALL' ;
+  const TEAM_SCORE_GRAPH_LARGE  = 'TEAM_SCORE_GRAPH_LARGE' ;
+  const PLAYER_SCORE_GRAPH      = 'PLAYER_SCORE_GRAPH' ;
+
 
   public static function getLimit($a)
     {
@@ -285,6 +296,38 @@ class util
 
       return 'No' ;
     }
+
+  public static function findBestMatch($a, $s)
+    {
+      if (!is_array($a) || !is_string($s))
+	{
+	  return null ;
+	}
+
+      $idx_match = -1 ;
+      $min = -1 ;
+
+      foreach($a as $k=>$e)
+	{
+
+	  $lev = levenshtein($e, $s) ;
+
+	  if ($lev == 0)
+	    {
+	      $idx_match = $k ;
+	      break ;
+	    }
+
+	  if ($lev < $min || $min==-1)
+	    {
+	      $idx_match = $k ;
+	      $min = $lev ;
+	    }
+	}
+
+      return $idx_match ;
+    }
+
 
   public static function isLoggedInAsPlayer()
     {

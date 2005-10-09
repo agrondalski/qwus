@@ -253,7 +253,7 @@ function auto_populate($a)
 
 		  $v5 = 'http://' . generate_string(25) ;
 		  $v6 = 'http://' . generate_string(25) ;
-		  $g = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4, 'screenshot_url'=>$v5, 'demo_url'=>$v6)) ;
+		  $g = new game(array('match_id'=>$v1, 'map_id'=>$v2, 'team1_score'=>$v3, 'team2_score'=>$v4)) ;
 
 		  for ($k=0; $k<2; $k++)
 		    {

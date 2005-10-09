@@ -172,9 +172,15 @@ class game
       return $arr ;
     }
 
+  public function addTeamStat($a)
+    {
+      $a['game_id'] = $this->game_id ;
+      $s = new stats_team($a) ;
+    }
+
   public function addFile($a)
     {
-      $a['id'] = $this->match_id ;
+      $a['id'] = $this->game_id ;
       $a['file_type'] = file::TYPE_GAME ;
       $f = new file($a) ;
     }
@@ -183,12 +189,12 @@ class game
     {
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
 
-      $sql_str = sprintf("select f.file_id from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
+      $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s'", $this->game_id, $ftype) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = new file(array('file_id'=>$row[0])) ;
+	  $arr[$row[1]] = new file(array('file_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;

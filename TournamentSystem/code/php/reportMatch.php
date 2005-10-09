@@ -33,6 +33,8 @@ try
   $approved = $_REQUEST['approved'];
   $fileform = $_REQUEST['fileform'];
 
+  $winning_team = new team(array('team_id'=>$winning_team_id)) ;
+
   $t = new tourney(array('tourney_id'=>$tid));
 
   try 
@@ -238,6 +240,7 @@ try
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
+      echo "<input type='hidden' name='winning_team_abbr' value='" . $winning_team->getValue('name_abbr') . "'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
       echo "<input type='hidden' name='fileform' value='1'>";
@@ -252,6 +255,7 @@ try
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$division_id'>";
       echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
+      echo "<input type='hidden' name='winning_team_abbr' value='" . $winning_team->getValue('name_abbr') . "'>";
       echo "<tr><td nowrap colspan=2><b>Manually add a game:</b></td>";
       echo "<td><input type='submit' value='Okay' name='B1' class='button'></td></tr>";
       echo "</table></form>";
@@ -291,7 +295,7 @@ try
 		
 		$m = new match(array('match_id'=>$match_id));
 		$t1 = new team(array('team_id'=>$m->getValue('team1_id')));
-        $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+		$t2 = new team(array('team_id'=>$m->getValue('team2_id')));
 		echo "<hr>";
 		echo "<h2>Process your Demo</h2>";
 
@@ -304,6 +308,7 @@ try
 		echo "<input type='hidden' name='division_id' value='$division_id'>";
 		echo "<input type='hidden' name='match_id' value='$match_id'>";
 		echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
+		echo "<input type='hidden' name='winning_team_abbr' value='" . $winning_team->getValue('name_abbr') . "'>";
 		echo "<input type='hidden' name='approved' value='$approved'>";
 		echo "<input type='hidden' name='filename' value ='$uploadfile'>";
 		echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";

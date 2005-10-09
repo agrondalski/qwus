@@ -10,11 +10,23 @@ try
   if (!util::isNull($news_id))
     {
       $news = new news(array('news_id'=>$news_id)) ;
+
+      if (!util::isNull($_REQUEST['comment_text']))
+	{
+	  $news->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
+	}
+
       $comments = $news->getComments() ;
     }
   else
     {
       $match = new match(array('match_id'=>$match_id)) ;
+
+      if (!util::isNull($_REQUEST['comment_text']))
+	{
+	  $m->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
+	}
+
       $comments = $match->getComments() ;
     }
 
@@ -49,4 +61,4 @@ try
   echo "</form>" ;
   echo "<small>(Abuse of comments can get you banned!)</small>";
 }
-catch (Exception $e){print $e;}
+catch (Exception $e) {}
