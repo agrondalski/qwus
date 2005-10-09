@@ -22,7 +22,7 @@ try
 
   foreach($comments as $c)
     {
-      echo '<b>' . $c->getValue('name') . '</b>&nbsp;&nbsp;<i>'  . $c->getValue('comment_date') . '&nbsp;&nbsp;' . substr($c->getValue('comment_time'), 0, 5) . '</i>' ;
+      echo '<b>' . $c->getValue('name') . '</b>&nbsp;&nbsp;<SMALL>'  . $c->getValue('comment_date') . '&nbsp;&nbsp;' . substr($c->getValue('comment_time'), 0, 5) . '</SMALL>' ;
       //echo '(' . $c->getValue('player_ip') . ')' ;
       echo '<br>' ;
       echo "<p>" . $c->getValue('comment_text') . "</p>" ;
