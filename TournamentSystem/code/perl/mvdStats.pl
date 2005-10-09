@@ -1281,29 +1281,31 @@ sub outputForm
 
    print "\t<input type='hidden' name='playerFields' value='40'>\n";
 
-   #playerMatchup();
-   Player::outputStatsHeader();   
-
-   my $t = findTeamNoCreate($teamOneAbbr);
-   my @tPlayers = $t->players;      
-   print "\t<input type='hidden' name='team1players' value='";
-   foreach $player (@tPlayers)
+   if (@players > 0)
    {
-      $player = findPlayer($player);
-      $player->outputStats();
-   }
-   print "'>\n";
+     #playerMatchup();
+     Player::outputStatsHeader();   
 
-   my $t = findTeamNoCreate($teamTwoAbbr);
-   my @tPlayers = $t->players;
-   print "\t<input type='hidden' name='team2players' value='";
-   foreach $player (@tPlayers)
-   {
-       $player = findPlayer($player);
-       $player->outputStats();
-   }
-   print "'>\n";
+     my $t = findTeamNoCreate($teamOneAbbr);
+     my @tPlayers = $t->players;      
+     print "\t<input type='hidden' name='team1players' value='";
+     foreach $player (@tPlayers)
+     {
+        $player = findPlayer($player);
+        $player->outputStats();
+     }
+     print "'>\n";
 
+     my $t = findTeamNoCreate($teamTwoAbbr);
+     my @tPlayers = $t->players;
+     print "\t<input type='hidden' name='team2players' value='";
+     foreach $player (@tPlayers)
+     {
+         $player = findPlayer($player);
+         $player->outputStats();
+     }
+     print "'>\n";
+   }
 
    print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
    print "</form>"
