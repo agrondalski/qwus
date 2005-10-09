@@ -482,6 +482,7 @@ sub outputStatsHeader
   print "SlimeBores\\\\";
   print "WaterBores\\\\";
   print "FallBores\\\\"; 
+  print "MiscBores\\\\";
   print "GrenadeBores\\\\";
   print "RocketBores\\\\";
   print "SelfKills\\\\";
@@ -538,7 +539,7 @@ sub outputStats
   print $self->rank . "\\\\";
   print $self->eff . "\\\\";
   print $self->points . "\\\\";
-  print $self->fragStreak . "\\\\";
+  print $self->fragStreak;
 }
 
 package Team;
@@ -652,6 +653,7 @@ my $tourney_id = $cgi->param('tourney_id');
 my $division_id = $cgi->param('division_id');
 my $match_id = $cgi->param('match_id');
 my $winning_team_id = $cgi->param('winning_team_id');
+my $winningTeamAbbr = $cgi->param('winning_team_abbr');
 my $approved = $cgi->param('approved');
 my $mvd = $cgi->param('filename');
 my $teamOneAbbr = $cgi->param('team1');
@@ -660,6 +662,7 @@ my $teamOnePlayers = $cgi->param('team1players');
 my $teamTwoPlayers = $cgi->param('team2players');
 
 print "Content-type: text/html\n\n";
+print "$teamOneAbbr $teamTwoAbbr $winningTeamAbbr\n";
 my $referer = $ENV{"HTTP_REFERER"};
 if ($referer != /reportMatch/) { exit; }
 
@@ -1233,7 +1236,31 @@ sub teamMatchup
       }
     }
   }
-  #else #DOH !! {}
+  else # we give up, just set team with most points to winningTeamAbbr 
+  {
+    my $teamC = 0;
+    foreach $team (@teams)
+    {
+       if ($teamC == 0)
+       {
+	 $teamC++;
+	 $winningTeam = $team;
+       }
+       elsif ($team->points > $winningTeam->points)
+       {
+	 $winningTeam = $team;
+       }
+    }
+    print "$winningTeamAbbr\n";
+    $winningTeam->name($winningTeamAbbr);
+    my $losingTeamAbbr = undef;
+    if ($winningTeamAbbr eq $teamOneAbbr) { $losingTeamAbbr = $teamTwoAbbr }
+    else { $losingTeamAbbr = $teamOneAbbr } 
+    foreach $team (@teams)
+    {
+       if ($team->name ne $winningTeamAbbr) { $team->name($losingTeamAbbr) }
+    }
+  }
 }
 
 sub outputForm
@@ -1251,7 +1278,7 @@ sub outputForm
      teamMatchup();
 
      print "\t<input type='hidden' name='teamStats' value='";
-     print "Name\\\\Matched\\\\Scores\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
+     print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
 
      my $teamNumber = 1;
      foreach $team (@teams)
@@ -1279,7 +1306,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='40'>\n";
+   print "\t<input type='hidden' name='playerFields' value='41'>\n";
 
    if (@players > 0)
    {
