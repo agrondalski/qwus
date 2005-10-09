@@ -449,6 +449,52 @@ sub fragStreak
   return $self->{MAX_FRAG_STREAK};
 }
 
+sub outputStatsHeader
+{
+  print "\t<input type='hidden' name='playerStats' value='";
+  print "Name\\\\";
+  print "Matched\\\\";
+  print "AxFrags\\\\";
+  print "AxDeaths\\\\";
+  print "ShotgunFrags\\\\";
+  print "ShotgunDeaths\\\\";
+  print "SuperShotgunFrags\\\\";
+  print "SuperShotgunDeaths\\\\";
+  print "NailgunFrags\\\\";
+  print "NailgunDeaths\\\\";
+  print "SuperNailgunFrags\\\\";
+  print "SuperNailgunDeaths\\\\";
+  print "GrenadeLauncherFrags\\\\";
+  print "GrenadeLauncherDeaths\\\\";
+  print "RocketLauncherFrags\\\\";
+  print "RocketLauncherDeaths\\\\";
+  print "LightningGunFrags\\\\";
+  print "LightningGunDeaths\\\\";
+  print "TeleFrags\\\\";
+  print "TeleDeaths\\\\";
+  print "DischargeFrags\\\\";
+  print "DischargeDeaths\\\\";
+  print "DischargeBores\\\\";
+  print "SquishFrags\\\\";
+  print "SquishDeaths\\\\";
+  print "SquishBores\\\\";
+  print "LavaBores\\\\";
+  print "SlimeBores\\\\";
+  print "WaterBores\\\\";
+  print "FallBores\\\\"; 
+  print "GrenadeBores\\\\";
+  print "RocketBores\\\\";
+  print "SelfKills\\\\";
+  print "TeamKills\\\\"; 
+  print "TotalFrags\\\\";
+  print "TotalDeaths\\\\";
+  print "Rank\\\\";
+  print "Efficiency\\\\";
+  print "Score\\\\";
+  print "FragStreak";
+  print "'>\n";
+}
+
 sub outputStats
 {
   my $self = shift;
@@ -1204,6 +1250,9 @@ sub outputForm
    {
      teamMatchup();
 
+     print "\t<input type='hidden' name='teamStats' value='";
+     print "Name\\\\Matched\\\\Scores\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
+
      my $teamNumber = 1;
      foreach $team (@teams)
      {
@@ -1232,7 +1281,8 @@ sub outputForm
 
    print "\t<input type='hidden' name='playerFields' value='40'>\n";
 
-   playerMatchup();
+   #playerMatchup();
+   Player::outputStatsHeader();   
 
    my $t = findTeamNoCreate($teamOneAbbr);
    my @tPlayers = $t->players;      
