@@ -1238,7 +1238,7 @@ sub teamMatchup
 
 sub outputForm
 {
-   print "<form action='../?a=skelsCoolFile' method=post>\n";
+   print "<form action='../?a=statCreation' method=post>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
    print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
