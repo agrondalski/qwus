@@ -133,6 +133,8 @@ if (!util::isNull($_REQUEST['news_id']))
 
 $c = ($count==0) ? 0 : 1 ;
 
+$bottom = null ;
+
 if (!$column)
 {
   // General News

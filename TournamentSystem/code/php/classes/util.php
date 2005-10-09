@@ -75,7 +75,7 @@ class util
       self::throwException($m, 'SQL') ;
     }
 
-  public static function throwException($m, $exc_type)
+  public static function throwException($m, $exc_type=null)
     {
       if (!self::isNull($exc_type))
 	{
@@ -101,7 +101,7 @@ class util
     {
       if ($quote_style!=ENT_COMPAT && $quote_style!=ENT_QUOTES && $quote_style!=ENT_NOQUOTES)
 	{
-	  util::throwException('invalid quote_style value') ;
+	  self::throwException('invalid quote_style value') ;
 	}
 
       return htmlentities($s, $quote_style) ;
