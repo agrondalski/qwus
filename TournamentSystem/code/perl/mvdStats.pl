@@ -492,7 +492,8 @@ sub outputStatsHeader
   print "Rank\\\\";
   print "Efficiency\\\\";
   print "Score\\\\";
-  print "FragStreak";
+  print "FragStreak\\\\";
+  print "PieChart";
   print "'>\n";
 }
 
@@ -539,7 +540,7 @@ sub outputStats
   print $self->rank . "\\\\";
   print $self->eff . "\\\\";
   print $self->points . "\\\\";
-  print $self->fragStreak;
+  print $self->fragStreak . "\\\\";
 }
 
 package Team;
@@ -1082,7 +1083,6 @@ for (my $i = 0; $i <= $time; $i++)
 $shell = `rm -f "$tempMvd"`;
 calculateTeamColors();
 outputForm();
-#outputPlayerPieCharts();
 
 # Searches player array for the name passed in
 # Returns player object if found or new player object if not
@@ -1305,11 +1305,12 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='41'>\n";
+   print "\t<input type='hidden' name='playerFields' value='42'>\n";
 
    if (@players > 0)
    {
      #playerMatchup();
+     outputPlayerPieCharts();
      Player::outputStatsHeader();   
 
      my $t = findTeamNoCreate($teamOneAbbr);
@@ -1322,6 +1323,9 @@ sub outputForm
 	$currentC++;
         $player = findPlayer($player);
         $player->outputStats();
+        my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
+	$imagePath =~ s/\s//g;
+        print $imagePath;
         if ($currentC < $playerC) { print "\\\\"; }
      }
      print "'>\n";
@@ -1336,6 +1340,9 @@ sub outputForm
          $currentC++;
          $player = findPlayer($player);
          $player->outputStats();
+	 my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
+	 $imagePath =~ s/\s//g;
+         print $imagePath;
          if ($currentC < $playerC) { print "\\\\"; }
      }
      print "'>\n";
@@ -1466,8 +1473,7 @@ sub outputPlayerPieCharts
     open(OUT, ">$imagePath");
     binmode OUT;
     print OUT $image->png();
-    close OUT;
-    return $imagePath;    
+    close OUT;    
   }
 }
 
