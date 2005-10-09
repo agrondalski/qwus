@@ -178,11 +178,6 @@ class match
 	  return ;
 	}
 
-      /*
-      if ( !array_key_exists('playerFields', $a) ||
-	  !array_key_exists('PlayerStats', $a) || !array_key_exists('team1players', $a) || !array_key_exists('team2players', $a))
-      */
-
       if (!array_key_exists('winning_team_id', $a) || !array_key_exists('filename', $a) || !array_key_exists('map', $a) || !array_key_exists('teamStats', $a) ||
 	  !array_key_exists('team1', $a) || !array_key_exists('team2', $a) || !array_key_exists('team_score_graph_small', $a) ||
 	  !array_key_exists('team_score_graph_large', $a) || !array_key_exists('player_score_graph', $a) || !array_key_exists('playerFields', $a) ||
@@ -190,6 +185,12 @@ class match
 	{
 	  util::throwException('not enough info to process stats') ;
 	}
+
+      if (!is_uploaded_file($a['filename']))
+	{
+	  util::throwException('uploaded file does not exist') ;	  
+	}
+
 
       if (util::isNull($a['map']))
 	{
@@ -235,11 +236,11 @@ class match
 	    uitil::throwException('unable to match teams') ;
 	  }
 
-      $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE . 's'], 'team2_score'=>$team2_stats[util::SCORE . 's'])) ;
+      $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
 
       foreach($team1_stats as $k=>$ts)
 	{
-	  if ($k!=util::SCORE . 's' && $k!='Name' && $k!='Matched')
+	  if ($k!=util::SCORE && $k!='Name' && $k!='Matched')
 	    {
 	      $g->addTeamStat(array('team_id'=>$this->team1_id, 'stat_name'=>$k,  'value'=>$ts)) ;
 	    }
@@ -247,9 +248,96 @@ class match
 
       foreach($team2_stats as $k=>$ts)
 	{
-	  if ($k!=util::SCORE . 's' && $k!='Name' && $k!='Matched')
+	  if ($k!=util::SCORE && $k!='Name' && $k!='Matched')
 	    {
-	      $g->addTeamStat(array('team_id'=>$this->team2_id, 'stat_name'=>$k,  'value'=>$ts)) ;
+	      $g->addTeamStat(array('team_id'=>$this->team2_id, 'stat_name'=>$k, 'value'=>$ts)) ;
+	    }
+	}
+
+      $team1_players = $team1->getPlayers($t->getValue('tourney_id')) ;
+      foreach($team1_players as $p)
+	{
+	  $team1_names[$p->getValue('player_id')] = $p->getValue('name') ;
+	}
+
+      $team2_players = $team2->getPlayers($t->getValue('tourney_id')) ;
+      foreach($team2_players as $p)
+	{
+	  $team2_names[$p->getValue('player_id')] = $p->getValue('name') ;
+	}
+
+      if (is_numeric($a['playerFields']))
+	{
+	  $field_count = $a['playerFields'] ;
+	}
+      else
+	{
+	  util::throwException('invalid data') ;
+	}
+
+      $team1_stats_all = explode('\\\\', $a['team1players']) ;
+      $team2_stats_all = explode('\\\\', $a['team2players']) ;
+      $player_stats    = explode('\\\\', $a['PlayerStats']) ;
+
+      if (fmod(count($team1_stats_all), $field_count)!=0 || fmod(count($team1_stats_all), $field_count)!=0)
+	{
+	  util::throwException('invalid data') ;
+	}	  
+
+      $team1_stats = array() ;
+      $team2_stats = array() ;
+
+      for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $player_id = util::findBestMatch($team1_names, $team1_stats_all[$cnt]) ;
+	      unset($team1_names[$player_id]) ;
+
+	      $team1_stats[$player_id] = array() ;
+	      $team1_stats[$player_id][$curheader] = $team1_stats_all[$cnt] ;
+	    }
+
+	  $team1_stats[$player_id][$curheader] = $team1_stats_all[$cnt] ;
+	}
+
+      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $player_id = util::findBestMatch($team2_names, $team2_stats_all[$cnt]) ;
+	      unset($team2_names[$player_id]) ;
+
+	      $team2_stats[$player_id] = array() ;
+	      $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
+	    }
+
+	  $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
+	}
+
+      foreach($team1_stats as $k1=>$p)
+	{
+	  foreach($p as $k2=>$s)
+	    {
+	      if ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
+		{
+		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$s)) ;
+		}
+	    }
+	}
+
+      foreach($team2_stats as $k1=>$p)
+	{
+	  foreach($p as $k2=>$s)
+	    {
+	      if ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
+		{
+		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$s)) ;
+		}
 	    }
 	}
 

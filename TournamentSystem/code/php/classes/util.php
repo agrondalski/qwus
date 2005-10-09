@@ -309,7 +309,6 @@ class util
 
       foreach($a as $k=>$e)
 	{
-
 	  $lev = levenshtein($e, $s) ;
 
 	  if ($lev == 0)

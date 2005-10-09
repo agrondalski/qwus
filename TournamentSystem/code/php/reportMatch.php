@@ -199,11 +199,11 @@ try
 
       if ($winning_team_id==$t1->getValue('team_id'))
 	{
-	  $winning_team_abbr = $t1->getValue('team_abbr') ;
+	  $winning_team_abbr = $t1->getValue('name_abbr') ;
 	}
       else
 	{
-	  $winning_team_abbr = $t2->getValue('team_abbr') ;
+	  $winning_team_abbr = $t2->getValue('name_abbr') ;
 	}
 
       $s  = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
@@ -303,11 +303,11 @@ try
 
       if ($winning_team_id==$t1->getValue('team_id'))
 	{
-	  $winning_team_abbr = $t1->getValue('team_abbr') ;
+	  $winning_team_abbr = $t1->getValue('name_abbr') ;
 	}
       else
 	{
-	  $winning_team_abbr = $t2->getValue('team_abbr') ;
+	  $winning_team_abbr = $t2->getValue('name_abbr') ;
 	}
 
       echo "<hr>";

@@ -28,5 +28,5 @@ try
   echo "Game was added, click this link to add another game.";
   echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id'>Report Match Page</a>";
 }
-catch (Exception $e) {}
+catch (Exception $e) {print 'Unable to Add Game'; throw $e;}
 ?>
