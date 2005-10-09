@@ -18,15 +18,18 @@ try
       $comments = $match->getComments() ;
     }
 
-  echo "<h2>Comments</h2>";
+  
 
+  echo "<table width=100% border=0>";
+  echo "<tr><td colspan=2><b>Comments:</b><br></td></tr>";
   foreach($comments as $c)
     {
-      echo '<b>' . $c->getValue('name') . '</b>&nbsp;&nbsp;<SMALL>'  . $c->getValue('comment_date') . '&nbsp;&nbsp;' . substr($c->getValue('comment_time'), 0, 5) . '</SMALL>' ;
+      echo '<tr><td align=left width=33%><b>' . $c->getValue('name') . '</b>&nbsp;&nbsp;</td><td align=right width=67%><SMALL>'  . $c->getValue('comment_date') . '&nbsp;&nbsp;' . substr($c->getValue('comment_time'), 0, 5) . '</SMALL></td></tr>' ;
       //echo '(' . $c->getValue('player_ip') . ')' ;
-      echo '<br>' ;
-      echo "<p>" . $c->getValue('comment_text') . "</p>" ;
+      echo "<tr bgcolor='#DDDDDD'><td colspan=2>" . $c->getValue('comment_text') . "<br>&nbsp;</td></tr>" ;
+      echo "<tr hieght='50'><td colspan=2></td></tr>" ;
     }
+  echo "</table>";
 
   
   echo '<IMG src="img/hr.gif" alt="" width="550" height="22">';
@@ -34,16 +37,16 @@ try
   echo "<form action='?" . $_SERVER['QUERY_STRING'] . "' method=post>";
   echo "<table>" ;
 
-  echo "<tr><td>name</td></tr>" ;
+  echo "<tr><td><b>Name:</b></td></tr>" ;
   echo "<tr><td><input type='text' name='name'></td></tr>";
 
-  echo "<tr><td>Comment</td></tr>" ;
+  echo "<tr><td><b>Comment:</b></td></tr>" ;
   echo "<tr><td><textarea name='comment_text' cols='60' rows='5'>$text</textarea></td></tr>";
 
   echo "<tr><td><input type='submit' value='Submit' name='B1' class='button'>";
-  echo "&nbsp;<input type='reset' value='Reset' name='B2' class='button'></td></tr>";
-
+  echo "</td></tr>";
   echo "</table>" ;
   echo "</form>" ;
+  echo "<small>(Abuse of comments can get you banned!)</small>";
 }
 catch (Exception $e){print $e;}
