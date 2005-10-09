@@ -662,7 +662,6 @@ my $teamOnePlayers = $cgi->param('team1players');
 my $teamTwoPlayers = $cgi->param('team2players');
 
 print "Content-type: text/html\n\n";
-print "$teamOneAbbr $teamTwoAbbr $winningTeamAbbr\n";
 my $referer = $ENV{"HTTP_REFERER"};
 if ($referer != /reportMatch/) { exit; }
 
@@ -1259,6 +1258,7 @@ sub teamMatchup
     foreach $team (@teams)
     {
        if ($team->name ne $winningTeamAbbr) { $team->name($losingTeamAbbr) }
+       $team->approved(1);
     }
   }
 }
