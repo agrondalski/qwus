@@ -451,7 +451,7 @@ sub fragStreak
 
 sub outputStatsHeader
 {
-  print "\t<input type='hidden' name='playerStats' value='";
+  print "\t<input type='hidden' name='PlayerStats' value='";
   print "Name\\\\";
   print "Matched\\\\";
   print "AxFrags\\\\";
