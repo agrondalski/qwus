@@ -1264,7 +1264,7 @@ sub teamMatchup
 
 sub outputForm
 {
-   print "<form action='../?a=statCreation' method=post>\n";
+   print "<form action='../?a=statCreation' method=post name='stats'>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
    print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
@@ -1348,9 +1348,11 @@ sub outputForm
      print "'>\n";
    }
 
-   print "\t<input type='submit' value='Submit' name='B1' class='button'>\n";
-   print "</form>"
- 
+   print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
+   print "</form>\n";
+   print "<script>\n";
+   print "document.stats.submit();\n";
+   print "</script>\n";
 }
 
 sub outputPlayerScoreGraph
@@ -1467,7 +1469,7 @@ sub outputPlayerPieCharts
              
 		) or warn $graph->error;
  
-    my $image = $graph->plot(\@data); #or die $graph->error;
+    my $image = $graph->plot(\@data); # or warn $graph->error;
     my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
     $imagePath =~ s/\s//g;
     open(OUT, ">$imagePath");
