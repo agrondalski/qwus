@@ -230,6 +230,11 @@ class match
 	  $team2_stats[$h] = $team2_stats2[$cnt] ;
 	}
 
+      if ($team1_stats['Matched']==0 || $team2_stats['Matched']==0)
+	  {
+	    uitil::throwException('unable to match teams') ;
+	  }
+
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE . 's'], 'team2_score'=>$team2_stats[util::SCORE . 's'])) ;
 
       foreach($team1_stats as $k=>$ts)
