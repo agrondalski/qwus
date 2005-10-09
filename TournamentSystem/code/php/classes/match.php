@@ -186,11 +186,10 @@ class match
 	  util::throwException('not enough info to process stats') ;
 	}
 
-      if (!is_uploaded_file($a['filename']))
+      if (!is_file($a['filename']))
 	{
 	  util::throwException('uploaded file does not exist') ;	  
 	}
-
 
       if (util::isNull($a['map']))
 	{
@@ -198,6 +197,8 @@ class match
 	}
 
       $t = $this->getTourney() ;
+      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') ;
+      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') ;
 
       // Find the map match
       $maps = $t->getMaps() ;
@@ -219,16 +220,16 @@ class match
       $team2 = $teams[1] ;
 
       $team_stat_header = explode('\\\\', $a['teamStats']) ;
-      $team1_stats2 = explode('\\\\', $a['team1']) ;
-      $team2_stats2 = explode('\\\\', $a['team2']) ;
+      $team1_stats_arr = explode('\\\\', $a['team1']) ;
+      $team2_stats_arr = explode('\\\\', $a['team2']) ;
       $teams = array($team1_stats[0], $team2_stats[0]) ;
 
       for($cnt=0; $cnt<count($team_stat_header); $cnt++)
 	{
 	  $h = $team_stat_header[$cnt] ;
 
-	  $team1_stats[$h] = $team1_stats2[$cnt] ;
-	  $team2_stats[$h] = $team2_stats2[$cnt] ;
+	  $team1_stats[$h] = $team1_stats_arr[$cnt] ;
+	  $team2_stats[$h] = $team2_stats_arr[$cnt] ;
 	}
 
       if ($team1_stats['Matched']==0 || $team2_stats['Matched']==0)
@@ -323,7 +324,22 @@ class match
 	{
 	  foreach($p as $k2=>$s)
 	    {
-	      if ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
+	      if ($k2 == 'PieChart')
+		{
+		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $team1_stats[$k1]['Name'] . '_' .
+		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
+
+		  $pinfo = pathinfo($s) ;
+		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
+
+		  $piechart = util::PIECHART . '_' . $team1_stats[$k1]['Name'] . '_' . $k1 ;
+		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
+		    {
+		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
+		    }
+		}
+
+	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
@@ -342,9 +358,6 @@ class match
 	}
 
       // Move the files to their permanent home
-      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') ;
-      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') ;
-
       if (!is_dir($dest_root_dir))
 	{
 	  if (!mkdir($dest_root_dir))

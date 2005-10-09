@@ -23,7 +23,7 @@ class util
   const TEAM_SCORE_GRAPH_SMALL  = 'TEAM_SCORE_GRAPH_SMALL' ;
   const TEAM_SCORE_GRAPH_LARGE  = 'TEAM_SCORE_GRAPH_LARGE' ;
   const PLAYER_SCORE_GRAPH      = 'PLAYER_SCORE_GRAPH' ;
-
+  const PIECHART                = 'PIECHART' ;
 
   public static function getLimit($a)
     {
