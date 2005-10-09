@@ -1,6 +1,6 @@
 <TABLE cellspacing="0" cellpadding="0" class="newsarchive">
 <?php
-require 'php/includes.php' ;
+require_once 'includes.php' ;
 
 $months = Array('','January','February','March','April','May','June','July','August','September','October','November','December');
 
@@ -13,22 +13,25 @@ try
   if (isset($_GET['tourney_id']))
     {
       $t    = new tourney(array('tourney_id'=>$_GET["tourney_id"])) ;
-      $news = $t->getNews(array('news_date', SORT_DESC)) ;
+      $news = $t->getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
       $info = '&amp;tourney_id=' . $_GET['tourney_id'] ;
+
+      include 'userLinks.php';
+      echo "<br>" ;
     }
 
   // Column archive
   elseif (isset($_GET['column']))
     {
       $p    = new player(array('name'=>$_GET['column'])) ;
-      $news = $p->getNewsColumns(array('news_date', SORT_DESC)) ;
+      $news = $p->getNewsColumns(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
       $info = '&amp;column=' . $_GET['column'] ;
     }
 
   // General archive
   else
     {
-      $news = news::getNews(array('news_date', SORT_DESC)) ;
+      $news = news::getNews(array('news_date', SORT_DESC, 'news_id', SORT_DESC)) ;
     }
 }
 catch (Exception $e)
@@ -69,7 +72,7 @@ for ($i=0; $i<count($news); $i++)
       echo '<TR><TD><B>' . $month . '</B></TD></TR>';
     }
 
-  echo '<TR><TD><TABLE cellspacing="0" cellpadding="1"><TR><TD class="file_txt"></TD><TD><A href="?a=home&amp;id=' . $news[$i]->getValue("news_id") . $info . '">' . $news[$i]->getValue("subject") . '</A><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD></TR></TABLE></TD></TR>';
+  echo '<TR><TD><TABLE cellspacing="0" cellpadding="1"><TR><TD class="file_txt"></TD><TD><A href="?a=home&amp;news_id=' . $news[$i]->getValue("news_id") . $info . '">' . $news[$i]->getValue("subject") . '</A><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD></TR></TABLE></TD></TR>';
 }
 
 echo '</TABLE></TD></TR>';

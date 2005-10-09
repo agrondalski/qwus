@@ -153,6 +153,19 @@ class util
       return false ;
     }
 
+  public static function isValidIP($ip)
+    {
+      if (isset($ip) && !empty($ip))
+	{
+	  if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip))
+	    {
+	      return true ;
+	    }
+	}
+
+      return false ;
+    }
+
   public static function random_integer($val)
     {
       srand() ;

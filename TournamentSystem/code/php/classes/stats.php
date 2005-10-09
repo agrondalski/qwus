@@ -238,10 +238,10 @@ class stats
 		$arr[$pid]['matches_played'] = $total_matches ;
 		$arr[$pid]['games_played']   = $total_games;
 		$arr[$pid]['total_frags']    = $total_frags;
-		$arr[$pid]['frags_per_game'] = round($total_frags/$total_games, 1);
+		$arr[$pid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 		$arr[$pid]['matches_won']    = $matches_won ;
 		$arr[$pid]['matches_lost']   = $matches_lost ;
-		$arr[$pid]['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+		$arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	      }
 
 	      $pid = $row[0] ;
@@ -287,7 +287,7 @@ class stats
 	      $team_score = $row[11] ;
 	    }
 
-	  $game_avg += $team_score/$row[12] ;
+	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
 	  
 	  if ($row[7] != $old_match_id)
 	    {
@@ -311,10 +311,10 @@ class stats
 	  $arr[$pid]['matches_played'] = $total_matches ;
 	  $arr[$pid]['games_played']   = $total_games;
 	  $arr[$pid]['total_frags']    = $total_frags;
-	  $arr[$pid]['frags_per_game'] = round($total_frags/$total_games, 1);
+	  $arr[$pid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 	  $arr[$pid]['matches_won']    = $matches_won ;
 	  $arr[$pid]['matches_lost']   = $matches_lost ;
-	  $arr[$pid]['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+	  $arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	}
 
       mysql_free_result($result) ;
@@ -456,10 +456,10 @@ class stats
 	      {
 		$arr[$pid . '-' . $mid]['games_played']   = $total_games;
 		$arr[$pid . '-' . $mid]['total_frags']    = $total_frags;
-		$arr[$pid . '-' . $mid]['frags_per_game'] = round($total_frags/$total_games, 1);
+		$arr[$pid . '-' . $mid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 		$arr[$pid . '-' . $mid]['games_won']      = $games_won ;
 		$arr[$pid . '-' . $mid]['games_lost']     = $games_lost ;
-		$arr[$pid . '-' . $mid]['frag_diff']      = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+		$arr[$pid . '-' . $mid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	      }
 
 	      $pid = $row[0] ;
@@ -502,7 +502,7 @@ class stats
 	      $team_score = $row[11] ;
 	    }
 
-	  $game_avg += $team_score/$row[12] ;
+	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
 
 	  if ($row[2]==$row[8])
 	    {
@@ -518,10 +518,10 @@ class stats
 	{
 	  $arr[$pid . '-' . $mid]['games_played']   = $total_games;
 	  $arr[$pid . '-' . $mid]['total_frags']    = $total_frags;
-	  $arr[$pid . '-' . $mid]['frags_per_game'] = round($total_frags/$total_games, 1);
+	  $arr[$pid . '-' . $mid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 	  $arr[$pid . '-' . $mid]['games_won']    = $games_won ;
 	  $arr[$pid . '-' . $mid]['games_lost']   = $games_lost ;
-	  $arr[$pid . '-' . $mid]['frag_diff']    = round(($total_frags)/($total_games)-($game_avg/$total_games), 1) ;
+	  $arr[$pid . '-' . $mid]['frag_diff']    = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1). 0) ;
 	}
 
       mysql_free_result($result) ;

@@ -329,7 +329,7 @@ class stats_team
 		$arr[$tmid]['num_games'] = $num_games ;		
 		$arr[$tmid]['max_score'] = $max_score ;
 		$arr[$tmid]['min_score'] = $min_score ;
-		$arr[$tmid]['avg_score'] = $frags_for / $num_games ;
+		$arr[$tmid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
 		$arr[$tmid]['frags_for'] = $frags_for ;
 		$arr[$tmid]['frags_against'] = $frags_against ;
 		$arr[$tmid]['maps_won']  = $maps_won ;
@@ -451,7 +451,7 @@ class stats_team
       $arr[$tmid]['num_games'] = $num_games ;		
       $arr[$tmid]['max_score'] = $max_score ;
       $arr[$tmid]['min_score'] = $min_score ;
-      $arr[$tmid]['avg_score'] = $frags_for / $num_games ;
+      $arr[$tmid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
       $arr[$tmid]['frags_for'] = $frags_for ;
       $arr[$tmid]['frags_against'] = $frags_against ;
       $arr[$tmid]['maps_won']  = $maps_won ;
@@ -632,7 +632,7 @@ class stats_team
 		$arr[$tmid . '-' . $mid]['num_games'] = $num_games ;		
 		$arr[$tmid . '-' . $mid]['max_score'] = $max_score ;
 		$arr[$tmid . '-' . $mid]['min_score'] = $min_score ;
-		$arr[$tmid . '-' . $mid]['avg_score'] = $frags_for / $num_games ;
+		$arr[$tmid . '-' . $mid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
 		$arr[$tmid . '-' . $mid]['frags_for'] = $frags_for ;
 		$arr[$tmid . '-' . $mid]['frags_against'] = $frags_against ;
 		$arr[$tmid . '-' . $mid]['maps_won']  = $maps_won ;
@@ -721,7 +721,7 @@ class stats_team
 	  $arr[$tmid . '-' . $mid]['num_games'] = $num_games ;		
 	  $arr[$tmid . '-' . $mid]['max_score'] = $max_score ;
 	  $arr[$tmid . '-' . $mid]['min_score'] = $min_score ;
-	  $arr[$tmid . '-' . $mid]['avg_score'] = $frags_for / $num_games ;
+	  $arr[$tmid . '-' . $mid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
 	  $arr[$tmid . '-' . $mid]['frags_for'] = $frags_for ;
 	  $arr[$tmid . '-' . $mid]['frags_against'] = $frags_against ;
 	  $arr[$tmid . '-' . $mid]['maps_won']  = $maps_won ;

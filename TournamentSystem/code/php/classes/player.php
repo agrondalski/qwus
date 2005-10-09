@@ -200,13 +200,6 @@ class player
       $n = new news($a) ;
     }
 
-  public function addColumnComment($a)
-    {
-      $a['id'] = $this->player_id ;
-      $a['comment_type'] = comment::TYPE_COLUMN ;
-      $c = new comment($a) ;
-    }
-
   public static function getPlayersWithColumns()
     {
       $sql_str = sprintf('select p.player_id from player p where hasColumn=1') ;

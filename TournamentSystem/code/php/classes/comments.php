@@ -13,6 +13,7 @@ class comment
   const TYPE_MATCH = 0 ;
   const TYPE_NEWS =  1 ;
   const TYPE_COLUMN = 2 ;
+  const TYPE_COMMENTARY = 3 ;
 
   function __construct($a)
     {
@@ -83,7 +84,7 @@ class comment
 
   public static function validateColumn($val, $col, $cons=false)
     {
-      $comment_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column') ;
+      $comment_type_enum = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column', self::TYPE_COMMENTARY=>'Commentary') ;
 
       if ($col == 'comment_id')
 	{
@@ -145,7 +146,17 @@ class comment
 
       elseif ($col == 'player_ip')
 	{
-	  return util::nvl(util::mysql_real_escape_string($val), $_SERVER['REMOTE_ADDR']) ;
+	  if (util::isNull($val))
+	    {
+	      $val = $_SERVER['REMOTE_ADDR'] ;
+	    }
+
+	  if (!util::isValidIP($val))
+	    {
+	      util::throwException('invalid IP specified for ' . $col) ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
 	}
 
       elseif ($col == 'comment_text')
@@ -162,7 +173,7 @@ class comment
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = util::curdate() ;
 	    }
 
 	  if (!util::isValidDate($val))
@@ -177,7 +188,7 @@ class comment
 	{
 	  if (util::isNull($val))
 	    {
-	      util::throwException($col . ' cannot be null') ;
+	      $val = util::curtime() ;
 	    }
 
 	  if (!util::isValidTime($val))
@@ -196,7 +207,7 @@ class comment
 
   public function getCommentTypes()
     {
-      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column') ;
+      $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column', self::TYPE_COMMENTARY=>'Commentary') ;
       return $arr ;
     }
 

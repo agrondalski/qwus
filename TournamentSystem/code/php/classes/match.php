@@ -179,7 +179,7 @@ class match
 
   public function addComment($a)
     {
-      $a['match_id'] = $this->match_id ;
+      $a['id'] = $this->match_id ;
       $a['comment_type'] = comment::TYPE_MATCH ;
       $c = new comment($a) ;
     }

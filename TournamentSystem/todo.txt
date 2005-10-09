@@ -4,7 +4,6 @@ TO DO LIST:
   Report Match Page (player stats)
   Report Page integration with mvd stats
 
-  Match/News/Column Comments
   Polls
   Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
 
@@ -18,8 +17,6 @@ TO DO LIST:
   script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
  
   when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
-
-  many divide by zero warnings\errors in stats.php
 
 *Future*:
   Career Player/Teams Stats
@@ -39,6 +36,8 @@ Bug #1: Tourney Stats: sorting by name does not work correctly.
 Bug #2: Remove O from image password? People won't know there are not zeroes. 
 Bug #3: Main page resizes slightly if it contains news items
 
-  manage news page should sort so new news is at top?
-  not sure what the players on the team pages are being sorted by now, but if no games have been played it should be sorted by player name by default
-  same goes for standings..
+Match/News/Column Comments
+
+manage news page should sort so new news is at top?
+not sure what the players on the team pages are being sorted by now, but if no games have been played it should be sorted by player name by default same goes for standings..
+many divide by zero warnings\errors in stats.php

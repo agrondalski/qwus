@@ -190,11 +190,21 @@ catch(Exception $e) {}
 				<TR>
 					<TD><A href="?a=links">Links</A></TD>
 				</TR>
-				
+
+<?php
+if (!util::isNull($_REQUEST['tourney_id']))
+{
+  $l = '&tourney_id=' . $_REQUEST['tourney_id'] ;
+}
+elseif (!util::isNull($_REQUEST['column']))
+{
+  $l = '&column=' . $_REQUEST['column'] ;
+}
+echo '			      
 				<TR>
-					<TD><A href="?a=newsarchive">News Archive</A></TD>
-				</TR>
-			
+					<TD><A href="?a=newsarchive' . $l. '">Archive</A></TD>
+				</TR>' ;
+?>			
 				<TR>
 					<TD class="menuBreak"></TD>
 				</TR>

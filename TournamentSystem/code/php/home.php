@@ -1,8 +1,8 @@
 <?php
 
-require 'php/includes.php' ;
+require_once 'includes.php' ;
 
-$morenews = (empty($_GET["id"])) ? true : false ;
+$morenews = (empty($_GET["news_id"])) ? true : false ;
 $column   = (empty($_GET["column"])) ? false: true ;
 $printed = 0;
 
@@ -31,7 +31,12 @@ try
       // Archive item
       else
 	{
-	  $news = array(new news(array('news_id'=>$_GET["id"]))) ;
+	  $news = array(new news(array('news_id'=>$_GET["news_id"]))) ;
+
+	  if (!util::isNull($_REQUEST['comment_text']))
+	    {
+	      $news[0]->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
+	    }
 
 	  if (isset($_GET["tourney_id"]))
 	    {  
@@ -53,7 +58,13 @@ try
 	}
       else
 	{
-	  $news = array(new news(array('news_id'=>$_GET["id"]))) ;
+	  $news = array(new news(array('news_id'=>$_GET["news_id"]))) ;
+
+	  if (!util::isNull($_REQUEST['comment_text']))
+	    {
+	      $news[0]->addComment(array('name'=>$_REQUEST['name'], 'comment_text'=>$_REQUEST['comment_text'])) ;
+	    }
+
 	}
     }
 }
@@ -77,25 +88,47 @@ for ($i=0; $i<count($news); $i++)
   echo '
 	<TABLE cellspacing="0" cellpadding="0" class="news">
 	<TR>
-		<TD>
-		<TABLE cellspacing="0" cellpadding="0">
-		<TR>
-			<TD><B>' . $news[$i]->getValue("subject") . '</B></TD>
-			<TD align="right"><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD>
-		</TR>
-		</TABLE>
-		</TD>
+              <TD><B>' . $news[$i]->getValue("subject") . '</B></TD>
+	      <TD align="right"><SMALL>' . $news[$i]->getValue("news_date") . '</SMALL></TD>
 	</TR>
 	<TR>
-                <TD>' . $news[$i]->getValue("text") . '<P>Written by:&nbsp;' . $writer . '</P></TD>
-	</TR>
-	</TABLE>';
-	$printed++;
+              <TD colspan=2>' . $news[$i]->getValue("text") . '</TD>
+        </TR>
+        <TR>
+              <TD>&nbsp;</TD>
+       </TR>
+        <TR>
+            <TD>Written by:&nbsp;' . $writer . '</TD>' ;
 
-	if ($morenews && !$column && $printed != $count)
+  if (util::isNull($_REQUEST['news_id']))
+    {
+      if (!util::isNull($_GET["tourney_id"]))
 	{
-		echo '<IMG src="img/hr.gif" alt="" width="550" height="22">';
-	}	
+	  $l = '&tourney_id=' . $_GET["tourney_id"] ;
+	}
+      elseif (!util::isNull($_GET["column"]))
+	{
+	  $l = '&column=' . $_GET["column"] ;
+	}
+
+      echo '<TD align="right"><a href=?a=home&amp;news_id=' . $news[$i]->getValue('news_id') . $l . '>' . $news[$i]->getCommentCount() . ' Comments</a></TD>' ;
+    }
+
+  echo '</TR>
+        </TABLE>';
+
+  $printed++;
+
+  if ($morenews && !$column && $printed != $count)
+    {
+      echo '<IMG src="img/hr.gif" alt="" width="550" height="22">';
+    }	
+}
+
+if (!util::isNull($_REQUEST['news_id']))
+{
+  echo '<IMG src="img/hr.gif" alt="" width="550" height="22">';
+  require 'listComments.php' ;
 }
 
 $c = ($count==0) ? 0 : 1 ;
@@ -111,7 +144,7 @@ if (!$column)
   // Archive News
   else
     {
-      $bottom = '<P><A href="?a=newsarchive' . $tid . '">back to news archive</A></P>' ;
+      //$bottom = '<P><A href="?a=newsarchive' . $tid . '">back to news archive</A></P>' ;
     }
 }
 else 
@@ -119,7 +152,7 @@ else
   // Column
   if ($printed>0)
     {
-      $bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
+      //$bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
     }
   else
     {

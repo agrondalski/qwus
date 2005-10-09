@@ -95,6 +95,4 @@ foreach ($t->getDivisions() as $div)
 	echo "</table><br>\n";
 	
 }
-
-
 ?>

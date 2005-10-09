@@ -182,13 +182,6 @@ class news
 	}
     }
 
-  public function addComment($a)
-    {
-      $a['id'] = $this->news_id ;
-      $a['comment_type'] = comment::TYPE_NEWS ;
-      $c = new comment($a) ;
-    }
-
   public function addPoll($a)
     {
       $a['id'] = $this->news_id ;
@@ -266,18 +259,55 @@ class news
       return $arr ;
     }
 
+  public function ac()
+    {
+
+    }
+
+  public function addComment($a)
+    {
+      if ($this->news_type == self::TYPE_NEWS)
+	{
+	  $a['comment_type'] = comment::TYPE_NEWS ;
+	}
+      elseif ($this->news_type == self::TYPE_COLUMN)
+	{
+	  $a['comment_type'] = comment::TYPE_COLUMN ;
+	}
+
+      $a['id'] = $this->news_id ;
+      $c = new comment($a) ;
+    }
+
   public function getComments()
     {
-      $sql_str = sprintf("select n.news_id from news n where n.comment_type='NEWS' and n.id=%d order by comment_date, comment_time", $this->match_id) ;
+      $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = new mews(array('news_id'=>$row[0])) ;
+	  $arr[] = new comment(array('comment_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;
       return $arr ;
+    }
+
+  public function getCommentCount()
+    {
+      $sql_str = sprintf("select count(*) from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return $row[0] ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return 0 ;
+	}
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)
