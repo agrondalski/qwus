@@ -137,8 +137,6 @@ create table game(
   map_id          integer NOT NULL,
   team1_score     integer NOT NULL,
   team2_score     integer NOT NULL,
-  screenshot_url  varchar(250),
-  demo_url        varchar(250),
 --
   constraint game_pk primary key(game_id))
 ENGINE=INNODB ;
@@ -244,7 +242,7 @@ create table file_table(
   url        varchar(250)  NOT NULL,
 --
   constraint file_table_pk primary key(file_id),
-  constraint file_table_unq1 unique(file_type, file_desc, id))
+  constraint file_table_unq1 unique(id, file_type, file_desc))
 ENGINE=INNODB ;
 
 -- Add RIC constraints
