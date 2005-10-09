@@ -17,11 +17,13 @@ $g = new game(array('game_id'=>$game_id));
 $map = $g->getMap() ;
 $files = $g->getFiles() ;
 
+$gameout .= "<a href='?a=detailsMatch&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "'>Game Details</a><p>";
+
 if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 {
   $file = $files[util::TEAM_SCORE_GRAPH_LARGE]->getValue('url') ;
 }
-$gameout .= "<img src='" . $file . "'><p>";
+$gameout .= "<img src='" . $file . "'>";
 
 $teams = $m->getTeams() ;
 
@@ -29,7 +31,7 @@ foreach($teams as $t)
 {
   $players = $g->getTeamPlayers($t->getValue('team_id')) ;
 
-  $gameout .= "<h2>" . $t->getValue('name') . "</h2>" ;
+  $gameout .= "<br><h2>" . $t->getValue('name') . "</h2>" ;
 
   foreach($players as $p)
     {
