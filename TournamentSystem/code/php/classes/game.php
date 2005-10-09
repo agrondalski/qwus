@@ -132,10 +132,10 @@ class game
 	}
     }
 
-  public function addStats($a)
+  public function addStat($a)
     {
-      
-
+      $a['game_id'] = $this->game_id ;
+      $s = new stats($a) ;
     }
 
   public function getStats($a)
