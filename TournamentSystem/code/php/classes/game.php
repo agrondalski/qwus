@@ -147,12 +147,12 @@ class game
 
   public function getStats()
     {
-      $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d", $this->game_id) ;
+      $sql_str = sprintf("select s.player_id, s.stat_name from stats s where s.game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = new stats(array('player_id'=>$row[0], 'game_id'=>$this->game_id)) ;
+	  $arr[] = new stats(array('player_id'=>$row[0], 'game_id'=>$this->game_id, 'stat_name'=>$row[1])) ;
 	}
 
       mysql_free_result($result) ;

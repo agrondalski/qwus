@@ -14,15 +14,6 @@ class stats_team
 	  $this->game_id   = $this->validateColumn($a['game_id'], 'game_id') ;
 	  $this->stat_name = $this->validateColumn($a['stat_name'], 'stat_name') ;
 	  
-	  if ($this->getPlayerInfo()==util::NOTFOUND)
-	    {
-	      util::throwException("No player exists with specified id");
-	    }
-	  else
-	    {
-	      return ;
-	    }
-
 	  if ($this->getStatsInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No stats exists with specified id");

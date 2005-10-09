@@ -15,15 +15,6 @@ class stats
 	  $this->game_id   = $this->validateColumn($a['game_id'], 'game_id') ;
 	  $this->stat_name = $this->validateColumn($a['stat_name'], 'stat_name') ;
 	  
-	  if ($this->getPlayerInfo()==util::NOTFOUND)
-	    {
-	      util::throwException("No player exists with specified id");
-	    }
-	  else
-	    {
-	      return ;
-	    }
-
 	  if ($this->getStatsInfo()==util::NOTFOUND)
 	    {
 	      util::throwException("No stats exists with specified id");
@@ -58,8 +49,8 @@ class stats
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->value    = $row[0] ; 
       $this->team_id  = $row[0] ; 
+      $this->value    = $row[1] ; 
 
       mysql_free_result($result) ;
 
