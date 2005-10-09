@@ -132,17 +132,10 @@ class game
 	}
     }
 
-  public function addStat($a)
+  public function addStats($a)
     {
-      $a['game_id'] = $this->game_id ;
-      $s = new stats($a) ;
-    }
+      
 
-  public function addFile($a)
-    {
-      $a['id'] = $this->match_id ;
-      $a['file_type'] = file::TYPE_GAME ;
-      $f = new file($a) ;
     }
 
   public function getStats($a)
@@ -177,6 +170,13 @@ class game
 
       mysql_free_result($result) ;
       return $arr ;
+    }
+
+  public function addFile($a)
+    {
+      $a['id'] = $this->match_id ;
+      $a['file_type'] = file::TYPE_GAME ;
+      $f = new file($a) ;
     }
 
   public function getFiles()
