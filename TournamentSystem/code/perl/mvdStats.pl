@@ -1250,7 +1250,6 @@ sub teamMatchup
 	 $winningTeam = $team;
        }
     }
-    print "$winningTeamAbbr\n";
     $winningTeam->name($winningTeamAbbr);
     my $losingTeamAbbr = undef;
     if ($winningTeamAbbr eq $teamOneAbbr) { $losingTeamAbbr = $teamTwoAbbr }
