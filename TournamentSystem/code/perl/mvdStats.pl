@@ -1315,20 +1315,28 @@ sub outputForm
      my $t = findTeamNoCreate($teamOneAbbr);
      my @tPlayers = $t->players;      
      print "\t<input type='hidden' name='team1players' value='";
+     my $playerC = @tPlayers;
+     my $currentC = 0;
      foreach $player (@tPlayers)
      {
+	$currentC++;
         $player = findPlayer($player);
         $player->outputStats();
+        if ($currentC < $playerC) { print "\\\\"; }
      }
      print "'>\n";
 
      my $t = findTeamNoCreate($teamTwoAbbr);
      my @tPlayers = $t->players;
      print "\t<input type='hidden' name='team2players' value='";
+     $currentC = 0;
+     $playerC = @tPlayers;
      foreach $player (@tPlayers)
      {
+         $currentC++;
          $player = findPlayer($player);
          $player->outputStats();
+         if ($currentC < $playerC) { print "\\\\"; }
      }
      print "'>\n";
    }
