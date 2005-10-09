@@ -326,16 +326,22 @@ class match
 	    {
 	      if ($k2 == 'PieChart')
 		{
-		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $team1_stats[$k1]['Name'] . '_' .
+		  $p = new player(array('player_id'=>$k1)) ;
+
+		  $prefix = $team2->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
 		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
 
 		  $pinfo = pathinfo($s) ;
 		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
 
-		  $piechart = util::PIECHART . '_' . $team1_stats[$k1]['Name'] . '_' . $k1 ;
+		  $piechart = util::PIECHART . '_' . $p->getValue('player_id') . '_' . $map->getValue('map_abbr') . '_' . $g->getValue('game_id') ;
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
 		    {
 		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
+		    }
+		  else
+		    {
+		      print $dest_root_dir . util::SLASH . $new_file_name ;
 		    }
 		}
 
@@ -350,7 +356,28 @@ class match
 	{
 	  foreach($p as $k2=>$s)
 	    {
-	      if ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
+	      if ($k2 == 'PieChart')
+		{
+		  $p = new player(array('player_id'=>$k1)) ;
+
+		  $prefix = $team2->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
+		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
+
+		  $pinfo = pathinfo($s) ;
+		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
+
+		  $piechart = util::PIECHART . '_' . $p->getValue('player_id') . '_' . $map->getValue('map_abbr') . '_' . $g->getValue('game_id') ;
+		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
+		    {
+		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
+		    }
+		  else
+		    {
+		      print $dest_root_dir . util::SLASH . $new_file_name ;
+		    }
+		}
+
+	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}

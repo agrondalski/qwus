@@ -139,7 +139,6 @@ try
   // *** PART 3
   if ($match_id != "") 
     {
-    
       if (util::isLoggedInAsTeam())
       {
       	$dis = "disabled";
@@ -223,7 +222,7 @@ try
       // Try to save the match
       $m = new match(array('match_id'=>$match_id));
       $m->update('winning_team_id',$winning_team_id);
-      
+
       if (!util::isLoggedInAsTeam())
 	{
 	  if ($_REQUEST['approved'] == "1")
