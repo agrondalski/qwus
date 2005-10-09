@@ -104,11 +104,11 @@ for ($i=0; $i<count($news); $i++)
     {
       if (!util::isNull($_GET["tourney_id"]))
 	{
-	  $l = '&tourney_id=' . $_GET["tourney_id"] ;
+	  $l = '&amp;tourney_id=' . $_GET["tourney_id"] ;
 	}
       elseif (!util::isNull($_GET["column"]))
 	{
-	  $l = '&column=' . $_GET["column"] ;
+	  $l = '&amp;column=' . $_GET["column"] ;
 	}
 
       echo '<TD align="right"><SMALL><a href=?a=home&amp;news_id=' . $news[$i]->getValue('news_id') . $l . '>' . $news[$i]->getCommentCount() . ' Comments</a></SMALL></TD>' ;

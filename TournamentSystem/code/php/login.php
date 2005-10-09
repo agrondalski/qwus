@@ -139,7 +139,7 @@ else
       echo "<td align=left><a href='?a=adminHome'>Admin Home</a></td>";
     }
 
-  echo '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&action=logout">Logout</a></td>' ;
+  echo '<td align=right><a href="?' . $_SERVER['QUERY_STRING'] . '&amp;action=logout">Logout</a></td>' ;
   echo '</tr></table><hr>' ;
 
   $do = $_GET['action'] ;
