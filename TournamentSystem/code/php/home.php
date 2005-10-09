@@ -111,7 +111,7 @@ for ($i=0; $i<count($news); $i++)
 	  $l = '&column=' . $_GET["column"] ;
 	}
 
-      echo '<TD align="right"><a href=?a=home&amp;news_id=' . $news[$i]->getValue('news_id') . $l . '>' . $news[$i]->getCommentCount() . ' Comments</a></TD>' ;
+      echo '<TD align="right"><SMALL><a href=?a=home&amp;news_id=' . $news[$i]->getValue('news_id') . $l . '>' . $news[$i]->getCommentCount() . ' Comments</a></SMALL></TD>' ;
     }
 
   echo '</TR>
