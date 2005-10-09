@@ -145,7 +145,7 @@ class game
       $f = new file($a) ;
     }
 
-  public function getStats()
+  public function getStats($a)
     {
       $sql_str = sprintf("select s.* from stats s where s.game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
