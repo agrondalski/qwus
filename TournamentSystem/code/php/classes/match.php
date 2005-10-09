@@ -200,7 +200,7 @@ class match
       $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') ;
       $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') ;
 
-      // Find the map match
+      // Find the map
       $maps = $t->getMaps() ;
       foreach($maps as $m)
 	{
@@ -328,7 +328,7 @@ class match
 		{
 		  $p = new player(array('player_id'=>$k1)) ;
 
-		  $prefix = $team2->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
+		  $prefix = $team1->getValue('name_abbr') . '_' . $team1->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
 		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
 
 		  $pinfo = pathinfo($s) ;

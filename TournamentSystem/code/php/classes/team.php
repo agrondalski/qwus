@@ -124,12 +124,10 @@ class team
 
       elseif ($col == 'location_id')
 	{
-	  /*
  	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
 	    }
-	  */
 
 	  if (!util::isNull($val) && !is_numeric($val))
 	    {
