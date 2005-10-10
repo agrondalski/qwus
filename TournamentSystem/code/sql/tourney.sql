@@ -179,7 +179,7 @@ create table comments(
   id            integer       NOT NULL,
   name          varchar(250)  NOT NULL,
   player_ip     varchar(250)  NOT NULL,
-  comment_text  MEDIUMTEXT    NOT NULL,
+  comment_text  TEXT          NOT NULL,
   comment_date  date          NOT NULL,
   comment_time  time          NOT NULL,
 --
@@ -191,7 +191,7 @@ create table news(
   writer_id     integer     NOT NULL,
   news_type     ENUM('News', 'Tournament', 'Column') NOT NULL default 'NEWS', 
   id            integer,
-  subject       text        NOT NULL,
+  subject       TEXT        NOT NULL,
   news_date     date        NOT NULL,
   text          MEDIUMTEXT  NOT NULL,
 --
