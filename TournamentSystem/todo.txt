@@ -17,6 +17,9 @@ TO DO LIST:
   improved gameDetails.php page
   map stats
 
+  screenshot upload
+  schedule/statistics page should be able to limit by division, week
+
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
