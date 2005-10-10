@@ -309,7 +309,7 @@ class util
 
       foreach($a as $k=>$e)
 	{
-	  $lev = levenshtein($e, $s) ;
+	  $lev = levenshtein(strtolower($e), strtolower($s)) ;
 
 	  if ($lev == 0)
 	    {
