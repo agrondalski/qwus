@@ -20,6 +20,8 @@ TO DO LIST:
   screenshot upload
   schedule/statistics page should be able to limit by division, week
 
+  comments link in news is not valid html
+
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
