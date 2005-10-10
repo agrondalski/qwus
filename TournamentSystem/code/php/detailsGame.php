@@ -11,6 +11,11 @@ $t = new tourney(array('tourney_id'=>$tid));
 $match_id = $_REQUEST['match_id'];
 $m = new match(array('match_id'=>$match_id));
 
+if (!$m->getValue('approved'))
+{
+  util::throwException('Match has not been approved yet') ;
+}
+
 $game_id = $_REQUEST['game_id'];
 $g = new game(array('game_id'=>$game_id));
 

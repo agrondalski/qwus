@@ -11,6 +11,11 @@ $t = new tourney(array('tourney_id'=>$tid));
 $match_id = $_REQUEST['match_id'];
 $m = new match(array('match_id'=>$match_id));
 
+if (!$m->getValue('approved'))
+{
+  util::throwException('Match has not been approved yet') ;
+}
+
 echo "<table border=1 cellpadding=2 cellspacing=0>\n";
 echo "<tr><th>Week</th><th>Result</th><th>Match Date</th></tr>";
 $wid = $m->getValue('winning_team_id');
