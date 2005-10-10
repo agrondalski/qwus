@@ -3,6 +3,11 @@
 DB_FROM=$1 ;
 DB_TO=$2 ;
 
+if [ $DB_TO='qwus' ] ; then
+    echo 'qwus cannot be source db' ;
+    exit ;
+fi;
+
 stty -echo
 echo -n 'password: ' ;
 read pw ;
