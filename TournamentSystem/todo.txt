@@ -10,13 +10,11 @@ TO DO LIST:
   Resize Page (so it looks fine in 1024x, 1280x, etc.)
   Fix CSS
 
-  New qwus db password
-
   script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
  
   when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
 
-  gameDetails.php page
+  improved gameDetails.php page
   map stats
 
 *Future*:
