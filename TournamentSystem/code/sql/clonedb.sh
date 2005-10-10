@@ -3,8 +3,8 @@
 DB_FROM=$1 ;
 DB_TO=$2 ;
 
-if [ $DB_TO='qwus' ] ; then
-    echo 'qwus cannot be source db' ;
+if [ $DB_TO == 'qwus' ]; then
+    echo 'qwus cannot be target db' ;
     exit ;
 fi;
 
