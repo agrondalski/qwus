@@ -339,10 +339,6 @@ class match
 		    {
 		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
 		    }
-		  else
-		    {
-		      print $dest_root_dir . util::SLASH . $new_file_name ;
-		    }
 		}
 
 	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
@@ -370,10 +366,6 @@ class match
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
 		    {
 		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
-		    }
-		  else
-		    {
-		      print $dest_root_dir . util::SLASH . $new_file_name ;
 		    }
 		}
 
