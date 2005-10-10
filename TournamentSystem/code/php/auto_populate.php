@@ -277,7 +277,7 @@ function auto_populate($a)
 			  do
 			    {
 			      $p = $players[generate_integer(count($players))] ;
-			    } while (stats::hasStatsEntry($p->getValue('player_id'), $g->getValue('game_id'), 'SCORE')) ;
+			    } while (stats::hasStatsEntry($p->getValue('player_id'), $g->getValue('game_id'), util::SCORE)) ;
 
 			  if ($l==($c2-1))
 			    {

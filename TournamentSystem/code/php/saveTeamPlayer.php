@@ -63,7 +63,7 @@ try
 	{
 	  try
 	    {
-	      $tm->addPlayer($tid, $player_id, $itl);
+	      $tm->addPlayer($tid, $player_id, $itl, $p->isSuperAdmin());
 	      $msg = "<br>Player added!<br>";
 	    }
 	  catch (Exception $e)
