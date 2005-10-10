@@ -17,7 +17,7 @@ $g = new game(array('game_id'=>$game_id));
 $map = $g->getMap() ;
 $files = $g->getFiles() ;
 
-$gameout .= "<a href='?a=detailsMatch&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "'>Game Details</a><p>";
+$gameout .= "<a href='?a=detailsMatch&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "'>Match Details</a><p>";
 
 if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 {
