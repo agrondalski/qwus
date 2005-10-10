@@ -173,6 +173,12 @@ class match
 
   public function addGame($a)
     {
+      $a['match_id'] = $this->match_id ;
+      $m = new game($a) ;
+    }
+
+  public function addGameWithStats($a)
+    {
       if (!is_array($a))
 	{
 	  return ;
@@ -208,7 +214,8 @@ class match
 	}
 
       $idx = util::findBestMatch($maps_abbr, $a['map']) ;
-      $map = $maps[$idx] ;
+
+      $map = new map(array('map_id'=>$idx)) ;
 
       if ($a['winning_team_id'] = $team1_id || $a['winning_team_id'] = $team2_id)
 	{
@@ -234,7 +241,7 @@ class match
 
       if ($team1_stats['Matched']==0 || $team2_stats['Matched']==0)
 	  {
-	    uitil::throwException('unable to match teams') ;
+	    util::throwException('unable to match teams') ;
 	  }
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
@@ -334,10 +341,14 @@ class match
 		  $pinfo = pathinfo($s) ;
 		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
 
-		  $piechart = util::PIECHART . '_' . $p->getValue('player_id') . '_' . $map->getValue('map_abbr') . '_' . $g->getValue('game_id') ;
+		  $piechart = $p->getPieChartIdx($g->getValue('game_id')) ;
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
 		    {
 		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
+		    }
+		  else
+		    {
+		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
 
@@ -362,10 +373,14 @@ class match
 		  $pinfo = pathinfo($s) ;
 		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
 
-		  $piechart = util::PIECHART . '_' . $p->getValue('player_id') . '_' . $map->getValue('map_abbr') . '_' . $g->getValue('game_id') ;
+		  $piechart = $p->getPieChartIdx($g->getValue('game_id')) ;
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
 		    {
 		      $g->addFile(array(file_desc=>$piechart, url=>$html_root_dir . util::SLASH . $new_file_name)) ;
+		    }
+		  else
+		    {
+		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
 

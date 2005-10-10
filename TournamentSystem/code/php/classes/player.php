@@ -415,8 +415,6 @@ class player
 	{
 	  return null ;
 	}
-
-
     }
 
   public function getDivision($tid)
@@ -452,8 +450,20 @@ class player
 
   public function getTourneyStats($tid)
     {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
       $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
       return $stats[$this->player_id] ;
+    }
+
+  public function getPieChartIdx($game_id)
+    {
+      $game_id = game::validateColumn($game_id, 'game_id') ;
+
+      $g = new game(array('game_id'=>$game_id)) ;
+      $map = $g->getMap() ;
+
+      return util::PIECHART . '_' . $this->player_id . '_' . $map->getValue('map_abbr') . '_' . $game_id ;
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)

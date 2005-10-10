@@ -42,7 +42,7 @@ foreach($teams as $t)
     {
       $gameout .= "<h3>" . $p->getValue('name') . "</h3>" ;
 
-      $piechart = util::PIECHART . '_' . $p->getValue('player_id') . '_' . $map->getValue('map_abbr') . '_' . $game_id ;
+      $piechart = $p->getPieChartIdx($game_id) ;
 
       $file = null ;
       if (array_key_exists($piechart, $files))

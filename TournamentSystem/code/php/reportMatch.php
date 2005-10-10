@@ -264,7 +264,7 @@ try
       echo "<form action='?a=manageGame' method=post>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
-      echo "<input type='hidden' name='match_id' value='$division_id'>";
+      echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
       echo "<input type='hidden' name='winning_team_abbr' value='$winning_team_abbr'>";
       echo "<tr><td nowrap colspan=2><b>Manually add a game:</b></td>";
