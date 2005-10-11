@@ -48,7 +48,7 @@ echo "\t<td>",$loc_name,"</td>\n";
 echo "<td>",$info['games_played'],"</td>";
 echo "<td>",$info['frags_per_game'],"</td>";
 echo "<td>",$info['total_frags'],"</td>";
-echo "<td>",$info['matches_won'],"-",$info['matches_lost'],"</td>";
+echo "<td>",$info['games_won'],"-",$info['games_lost'],"</td>";
 echo "<td nowrap>",$info['frag_diff'],"</td>";
 echo "</tr></table>";
 
