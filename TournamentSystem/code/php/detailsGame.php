@@ -30,13 +30,19 @@ if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 }
 $gameout .= "<img src='" . $file . "'>";
 
+if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
+{
+  $file = $files[util::PLAYER_SCORE_GRAPH]->getValue('url') ;
+}
+$gameout .= "<img src='" . $file . "'>";
+
 $teams = $m->getTeams() ;
 
 foreach($teams as $t)
 {
   $players = $g->getTeamPlayers($t->getValue('team_id')) ;
 
-  $gameout .= "<br><h2>" . $t->getValue('name') . "</h2>" ;
+  $gameout .= "<br><h2><a href='?a=detailsTeam&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "'>" . $t->getValue('name') . "</a></h2>";
 
   foreach($players as $p)
     {
