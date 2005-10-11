@@ -198,10 +198,10 @@ class stats
       if (!$career)
 	{
 	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
-                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_score, p.location_id
+                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_players, p.location_id
                               from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id,
-                                           (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_score
+                                           (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
                                     where s.stat_name='%s' %s %s and s.game_id=g.game_id and g.match_id=m.match_id
                                       and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join player p using (player_id),
@@ -240,6 +240,8 @@ class stats
 		$arr[$pid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 		$arr[$pid]['matches_won']    = $matches_won ;
 		$arr[$pid]['matches_lost']   = $matches_lost ;
+		$arr[$pid]['games_won']      = $games_won ;
+		$arr[$pid]['games_lost']     = $games_lost ;
 		$arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	      }
 
@@ -251,6 +253,8 @@ class stats
 	      $total_matches = 0 ;
 	      $matches_won   = 0 ;
 	      $matches_lost  = 0 ;
+	      $games_won     = 0 ;
+	      $games_lost    = 0 ;
 	      $team_score    = 0 ;
 	      $old_match_id  = 0 ;
 	      $game_avg = 0 ;
@@ -287,6 +291,29 @@ class stats
 	    }
 
 	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
+
+	  if ($row[2]==$row[9])
+	    {
+	      if ($row[10]>$row[11])
+		{
+		  $games_won++ ;
+		}
+	      else
+		{
+		  $games_lost++ ;
+		}
+	    }
+	  else
+	    {
+	      if ($row[10]<$row[11])
+		{
+		  $games_won++ ;
+		}
+	      else
+		{
+		  $games_lost++ ;
+		}
+	    }
 	  
 	  if ($row[7] != $old_match_id)
 	    {
@@ -313,6 +340,8 @@ class stats
 	  $arr[$pid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
 	  $arr[$pid]['matches_won']    = $matches_won ;
 	  $arr[$pid]['matches_lost']   = $matches_lost ;
+	  $arr[$pid]['games_won']      = $games_won ;
+	  $arr[$pid]['games_lost']     = $games_lost ;
 	  $arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	}
 
@@ -422,10 +451,10 @@ class stats
       if (!$career)
 	{
 	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
-                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_score, p.location_id, s.map_id, s.map_name
+                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.teamplayers, p.location_id, s.map_id, s.map_name
                               from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id, mp.map_id, mp.map_name
-                                           (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_score
+                                           (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, maps mp
                                     where s.stat_name='%s' %s %s and s.game_id=g.game_id %s and g.map_id=mp.map_id and g.match_id=m.match_id
                                      and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s, player p,
@@ -512,13 +541,27 @@ class stats
 
 	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
 
-	  if ($row[2]==$row[8])
+	  if ($row[2]==$row[9])
 	    {
-	      $games_won += 1 ;
+	      if ($row[10]>$row[11])
+		{
+		  $games_won++ ;
+		}
+	      else
+		{
+		  $games_lost++ ;
+		}
 	    }
 	  else
 	    {
-	      $games_lost += 1 ;
+	      if ($row[10]<$row[11])
+		{
+		  $games_won++ ;
+		}
+	      else
+		{
+		  $games_lost++ ;
+		}
 	    }
 	}
 
