@@ -356,7 +356,6 @@ class stats
                                   and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s",
 			       util::SCORE, $player_query_s, $team_query_s, $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti) ;
 
-	    print $sql_str ;
 	}
       else
 	{
