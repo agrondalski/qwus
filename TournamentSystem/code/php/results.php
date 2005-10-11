@@ -41,7 +41,7 @@ foreach ($t->getDivisions() as $div)
 		    echo "<td>&nbsp;" ;
 		  }
 
-		if ($wid == $m->getValue('team1_id'))
+		if ($wid == $m->getValue('team1_id') && $m->getValue('approved'))
 		{
 			echo "<b>";
 			echo $t1->getValue('name');
@@ -54,7 +54,7 @@ foreach ($t->getDivisions() as $div)
 		
 		echo "&nbsp;vs&nbsp;";
 		
-		if ($wid == $m->getValue('team2_id'))
+		if ($wid == $m->getValue('team2_id') && $m->getValue('approved'))
 		{
 			echo "<b>";
 			echo $t2->getValue('name');

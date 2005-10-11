@@ -40,7 +40,8 @@ foreach($teams as $t)
 
   foreach($players as $p)
     {
-      $gameout .= "<h3>" . $p->getValue('name') . "</h3>" ;
+      $gameout .= "<h3><a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "&amp;player_id=" . $p->getValue('player_id') . "'>" ;
+      $gameout .= $p->getValue('name'). "</a></h3>";
 
       $piechart = $p->getPieChartIdx($game_id) ;
 
