@@ -276,7 +276,12 @@ class news
 	}
 
       $a['id'] = $this->news_id ;
-      $c = new comment($a) ;
+
+      try
+	{
+	  $c = new comment($a) ;
+	}
+      catch (Exception $e) {}
     }
 
   public function getComments()

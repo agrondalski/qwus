@@ -30,8 +30,6 @@ try
       $comments = $match->getComments() ;
     }
 
-  
-
   echo "<table width=100% border=0>";
   echo "<tr><td colspan=2><b>Comments:</b><br></td></tr>";
   foreach($comments as $c)
@@ -62,3 +60,4 @@ try
   echo "<small>(Abuse of comments can get you banned!)</small>";
 }
 catch (Exception $e) {}
+?>

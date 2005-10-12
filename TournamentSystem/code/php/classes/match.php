@@ -220,6 +220,8 @@ class match
 	  $this->update('winning_team_id', $a['winning_team_id']) ;
 	}
 
+      $this->update('match_date', util::curdate()) ;
+
       // mvd tmp fix start
       $t1 = $a['team1'] ;
       $t2 = $a['team2'] ;
@@ -251,8 +253,8 @@ class match
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
 
-      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $g->getValue('game_id') ;
-      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $g->getValue('game_id') ;
+      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id ;
+      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id ;
 
       // Create the required directories
       if (!is_dir(util::ROOT_DIR . util::SLASH . $t->getValue('name')))
@@ -484,7 +486,12 @@ class match
     {
       $a['id'] = $this->match_id ;
       $a['comment_type'] = comment::TYPE_MATCH ;
-      $c = new comment($a) ;
+
+      try
+	{
+	  $c = new comment($a) ;
+	}
+      catch (Exception $e) {}
     }
 
   public function addPoll($a)

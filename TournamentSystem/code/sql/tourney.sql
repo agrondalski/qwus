@@ -178,7 +178,7 @@ create table comments(
   comment_type  ENUM('Match', 'News', 'Column') NOT NULL default 'NEWS', 
   id            integer       NOT NULL,
   name          varchar(250)  NOT NULL,
-  player_ip     varchar(250)  NOT NULL,
+  comment_ip    varchar(250)  NOT NULL,
   comment_text  TEXT          NOT NULL,
   comment_date  date          NOT NULL,
   comment_time  time          NOT NULL,

@@ -5,7 +5,7 @@ class comment
   private $comment_type ;
   private $id ;
   private $name ;
-  private $player_ip ;
+  private $comment_ip ;
   private $comment_text ;
   private $comment_date ;
   private $comment_time ;
@@ -36,9 +36,14 @@ class comment
 	  $this->$key = $this->validateColumn($a[$key], $key, true) ;
 	}
 
-      $sql_str = sprintf("insert into comments(name, comment_type, player_ip, id, comment_text, comment_date, comment_time)" .
+      if ($this->getLastCommentTimeByID($this->id, $this->comment_type)<300 || $this->getLastCommentTime()<30)
+	{
+	  util::throwException("No spamming comments");
+	}
+
+      $sql_str = sprintf("insert into comments(name, comment_type, comment_ip, id, comment_text, comment_date, comment_time)" .
                          "values('%s', '%s', '%s', %s, '%s', '%s', '%s')",
-			 $this->name, $this->comment_type, $this->player_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
+			 $this->name, $this->comment_type, $this->comment_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->comment_id = mysql_insert_id() ;
@@ -46,7 +51,7 @@ class comment
 
   private function getCommentInfo()
     {
-      $sql_str = sprintf("select name, comment_type, id, player_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
+      $sql_str = sprintf("select name, comment_type, id, comment_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -59,7 +64,7 @@ class comment
       $this->name          = $row[0] ;
       $this->comment_type  = $row[1] ; 
       $this->id            = $row[2] ;
-      $this->player_ip     = $row[3] ;
+      $this->comment_ip     = $row[3] ;
       $this->comment_text  = $row[4] ; 
       $this->comment_date  = $row[5] ; 
       $this->comment_time  = $row[6] ;
@@ -144,7 +149,7 @@ class comment
 	  return util::mysql_real_escape_string($val) ;
 	}
 
-      elseif ($col == 'player_ip')
+      elseif ($col == 'comment_ip')
 	{
 	  if (util::isNull($val))
 	    {
@@ -164,6 +169,11 @@ class comment
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (strlen($val)>2500)
+	    {
+	      util::throwException($col . ' is too long') ;
 	    }
 
 	  return util::mysql_real_escape_string($val) ;
@@ -209,6 +219,45 @@ class comment
     {
       $arr = array(self::TYPE_MATCH=>'Match', self::TYPE_NEWS=>'News', self::TYPE_COLUMN=>'Column', self::TYPE_COMMENTARY=>'Commentary') ;
       return $arr ;
+    }
+
+  private function getLastCommentTime()
+    {
+      $sql_str = sprintf("select min(time_to_sec(timediff(concat(curdate(), ' ', curtime()), concat(comment_date, ' ', comment_time)))) from comments where comment_ip='%s'", $_SERVER['REMOTE_ADDR']) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return util::nvl($row[0], 1000000000) ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return 0 ;
+	}
+    }
+
+  private function getLastCommentTimeByID($cid, $ctype)
+    {
+      $cid   = $this->validateColumn($cid, 'id') ;
+      //$ctype = $this->validateColumn($ctype, 'comment_type') ;
+
+      $sql_str = sprintf("select min(time_to_sec(timediff(concat(comment_date, ' ', comment_time), concat(curdate(), ' ', curtime())))) from comments
+                          where id=%d and comment_type='%s' and comment_ip='%s'",
+			 $cid, $ctype, $_SERVER['REMOTE_ADDR']) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      
+      if ($row = mysql_fetch_row($result))
+	{
+	  mysql_free_result($result) ;
+	  return util::nvl($row[0], 1000000000) ;
+	}
+      else
+	{
+	  mysql_free_result($result) ;
+	  return 0 ;
+	}
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)
