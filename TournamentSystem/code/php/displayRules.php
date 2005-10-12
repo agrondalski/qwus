@@ -8,5 +8,5 @@ echo "<h2>Rules</h2>";
 $tid = $_REQUEST['tourney_id'];
 $t = new tourney(array('tourney_id'=>$tid));
 
-print $t->getValue('rules') ;
+echo $t->getValue('rules') ;
 ?>

@@ -297,6 +297,68 @@ class util
       return 'No' ;
     }
 
+  public static function getStringMatchScore ($s1, $s2) 
+    { 
+      if (!is_string($s1) || !is_string($s2))
+	{
+	  return null ;
+	}
+
+      return levenshtein($s1, $s2) ;
+    }
+
+  public static function playerMatch($a1, $a2)
+    {
+      if (!is_array($a1) || !is_array($a2) || count($a1)>count($a2))
+	{
+	  return null ;
+	}
+
+      $matx = array() ;
+      foreach($a1 as $k1=>$e1)
+	{
+	  foreach($a2 as $k2=>$e2)
+	    {
+	      $matx[$e1][$e2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2)) ;
+	    }
+	}
+
+      $results = array() ;
+
+      while (count($matx)>0)
+	{
+	  $min = -1 ;
+
+	  foreach($matx as $k1=>$e1)
+	    {
+	      foreach($e1 as $k2=>$e2)
+		{
+		  if ($matx[$k1][$k2] < $min || $min==-1)
+		    {
+		      $min = $matx[$k1][$k2] ;
+		      $idx1 = $k1 ;
+		      $idx2 = $k2 ;
+
+		      if ($min==0)
+			{
+			  break ;
+			}
+		    }
+		}
+	    }
+
+	  $results[$idx1] = $idx2 ;
+
+	  unset($matx[$idx1]) ;
+	  foreach($matx as $k1=>$e1)
+	    {
+	      unset($matx[$k1][$idx2]) ;
+	    }
+	}
+
+      return $results ;
+    }
+
   public static function findBestMatch($a, $s)
     {
       if (!is_array($a) || !is_string($s))
@@ -419,6 +481,37 @@ class util
       imagedestroy($img) ;
     }
 
-}
+  public static function delete_files($target, $exceptions)
+    {
+      $sourcedir = opendir($target);
 
+      while(false !== ($filename = readdir($sourcedir)))
+	{
+	  if(!in_array($filename, $exceptions))
+	    {
+	      if(is_dir($target."/".$filename))
+		{
+		  // recurse subdirectory; call of function recursive
+		  util::delete_files($target."/".$filename, $exceptions);
+		}
+	      else if(is_file($target."/".$filename))
+		{
+		  // unlink file
+		  unlink($target."/".$filename);
+		}
+	    }
+	}
+
+      closedir($sourcedir);
+
+      if(rmdir($target))
+	{
+	  return true;
+	}
+      else
+	{
+	  return false;
+	}
+    }
+}
 ?>

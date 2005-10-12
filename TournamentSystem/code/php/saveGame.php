@@ -50,7 +50,7 @@ try
       $g = new game(array('game_id'=>$game_id));
       try
 	{
-	  $g->delete();
+	  $g->deleteAll();
 	  $msg = "<br>Game deleted!<br>";
 	}
       catch (Exception $e)
@@ -71,7 +71,7 @@ try
 	}
       catch (Exception $e)
 	{
-	  $msg = "<br>Error creating!<br>"; print $e;
+	  $msg = "<br>Error creating!<br>";
 	}
     }
   echo $msg ;

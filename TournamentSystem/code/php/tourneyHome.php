@@ -21,7 +21,10 @@ try
       echo "<table border=1 cellpadding=2 cellspacing=0>";
       echo "<tr>";
       echo "<td><a href='?a=selectTourney'>Select a Tourney</a></td>";
-      echo "<td><font color=red>",$t->getValue('name'),"</font></td>";
+
+      echo "<td><a href='?a=manageTourney&mode=edit&tourney_id=$tid'>Manage Tourney</a></td>" ;
+      //echo "<td><font color=red>",$t->getValue('name'),"</font></td>";
+
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=manageDivision&tourney_id=$tid'>Create Division</a></td>";

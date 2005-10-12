@@ -138,38 +138,20 @@ class game
       $s = new stats($a) ;
     }
 
-  public function getStats($a)
+  public function getPlayerStats($a)
     {
-      $sql_str = sprintf("select s.* from stats s where s.game_id=%d", $this->game_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $d = $this->getDivision() ;
+      $stats = stats::getPlayerStats(array('game_id'=>$this->game_id, 'division_id'=>$d->getValue('division_id'))) ;
 
-      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+      return util::row_sort($stats, $a) ;
+    }
 
-      while ($row=mysql_fetch_assoc($result))
-	{
-	  if ($sort)
-	    {
-	      $arr[] = $row ;
-	    }
-	  else
-	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
-	    }
-	}
+  public function getTeamStats($a)
+    {
+      $d = $this->getDivision() ;
+      $stats = stats_team::getTeamStats(array('game_id'=>$this->game_id, 'division_id'=>$d->getValue('division_id'))) ;
 
-      if ($sort)
-	{
-	  $sorted_arr = util::row_sort($arr, $a) ;
-
-	  $arr = array() ;
-	  foreach($sorted_arr as $row)
-	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
-	    }
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
+      return util::row_sort($stats, $a) ;
     }
 
   public function addTeamStat($a)
@@ -227,6 +209,23 @@ class game
       return new map(array('map_id'=>$this->map_id)) ;
     }
 
+  public function getTourney()
+    {
+      $m  = $this->getMatch() ;
+      $ms = $m->getMatchSchedule() ;
+      $d  = $ms->getDivision() ;
+
+      return $d->getTourney() ;
+    }
+
+  public function getDivision()
+    {
+      $m  = $this->getMatch() ;
+      $ms = $m->getMatchSchedule() ;
+
+      return $ms->getDivision() ;
+    }
+
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
@@ -254,6 +253,28 @@ class game
 
   public function delete()
     {
+      $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
+    }
+
+  public function deleteAll()
+    {
+      $t = $this->getTourney() ;
+      util::delete_files(util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $this->game_id) ;
+
+      $sql_str = sprintf("delete from stats where game_id=%d", $this->game_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("delete from stats_team where game_id=%d", $this->game_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
+
+      $sql_str = sprintf("delete from file_table where id=%d", $this->game_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      mysql_free_result($result) ;
+
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
       mysql_free_result($result) ;

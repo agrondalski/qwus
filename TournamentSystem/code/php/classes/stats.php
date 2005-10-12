@@ -148,6 +148,8 @@ class stats
     {
       $player_query_p     = null ;
       $player_query_s     = null ;
+      $game_query_g       = null ;
+      $game_query_s       = null ;
       $team_query_tm      = null ;
       $team_query_s       = null ;
       $division_query_ti  = null ;
@@ -165,6 +167,14 @@ class stats
 
 	      $player_query_p = ' and p.player_id=' . $pid ;
 	      $player_query_s = ' and s.player_id=' . $pid ;
+	    }
+
+	  if (!util::isNull($a['game_id']))
+	    {
+	      $gid = game::validateColumn($a['game_id'], 'game_id') ;
+
+	      $game_query_g = ' and g.game_id=' . $gid . ' and s.value is not null';
+	      $game_query_s = ' and s.value is not null';
 	    }
 
 	  if (!util::isNull($a['team_id']))
@@ -203,12 +213,13 @@ class stats
                                            g.team1_score, g.team2_score, g.game_id, s.team_id,
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
-                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id and g.match_id=m.match_id
+                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id
                                       and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join player p using (player_id),
                                    player_info pi, tourney_info ti, team tm, division d
-                              where p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s
+                              where p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
                               order by p.player_id, s.match_id",
-			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p) ;
+			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d,
+			     $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
 	}
       else
 	{
@@ -351,10 +362,11 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%s' %s %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
+                                where s.stat_name!='%s' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
                                   and ms.division_id=d.division_id %s %s and d.tourney_id=pi.tourney_id and s.player_id=pi.player_id and s.team_id=tm.team_id
-                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s",
-			       util::SCORE, $player_query_s, $team_query_s, $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti) ;
+                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
+			       util::SCORE, $player_query_s, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d,
+			       $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
 
 	}
       else
@@ -393,6 +405,8 @@ class stats
   public static function getPlayerMapStats($a)
     {
       $map_query_g        = null ;
+      $game_query_g       = null ;
+      $game_query_s       = null ;
       $player_query_p     = null ;
       $player_query_s     = null ;
       $team_query_tm      = null ;
@@ -419,6 +433,14 @@ class stats
 
 	      $player_query_p = ' and p.player_id=' . $pid ;
 	      $player_query_s = ' and s.player_id=' . $pid ;
+	    }
+
+	  if (!util::isNull($a['game_id']))
+	    {
+	      $gid = game::validateColumn($a['game_id'], 'game_id') ;
+
+	      $game_query_g = ' and g.game_id=' . $gid  . ' and s.value is not null' ;
+	      $game_query_s = ' and s.value is not null';
 	    }
 
 	  if (!util::isNull($a['team_id']))
@@ -457,13 +479,14 @@ class stats
                                            g.team1_score, g.team2_score, g.game_id, s.team_id, mp.map_id, mp.map_name
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, maps mp
-                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id %s and g.map_id=mp.map_id and g.match_id=m.match_id
+                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id %s %s and g.map_id=mp.map_id and g.match_id=m.match_id
                                      and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s, player p,
                                    player_info pi, tourney_info ti, team tm, division d
                               where s.player_id=p.player_id and p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and
-                                    pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s
+                                    pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
                               order by p.player_id, s.map_id",
-			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $map_query_g, $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p) ;
+			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g,
+			     $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
 	}
       else
 	{
@@ -583,10 +606,10 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%s' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
+                                where s.stat_name!='%s' %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
                                   and ms.division_id=d.division_id and d.tourney_id=pi.tourney_id and s.player_id=pi.player_id and s.team_id=tm.team_id
-                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s",
-			       util::SCORE, $player_query_s, $map_query_g, $team_query_tm, $tourney_query_pi, $division_query_ti) ;
+                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
+			       util::SCORE, $player_query_s, $game_query_g, $map_query_g, $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
 	}
       else
 	{

@@ -111,7 +111,7 @@ echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
 echo "</table><br>\n";
 echo $gameout;
 
-print "<br>" ;
+echo "<br>" ;
 
 include 'listComments.php' ;
 ?>

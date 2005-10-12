@@ -6,19 +6,22 @@ try
 {
   $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
 
-  if (!$p->isSuperAdmin())
+  $mode = $_REQUEST['mode'];
+
+  if ($mode=='edit')
+    {
+      $tourney_id = $_REQUEST['tourney_id'];
+      $tour       = new tourney(array('tourney_id'=>$tourney_id)) ;
+    }
+
+  if (!$p->isSuperAdmin() && ($mode!='edit' || !$p->isTourneyAdmin($tour->getValue('tourney_id'))))
     {
       util::throwException('not authorized') ;
     }
 
-  $mode = $_REQUEST['mode'];
-
   if ($mode == "edit")
     {
       echo "<b><p>Modify a Tournament:</b></p>";
-
-      $tourney_id = $_REQUEST['tourney_id'];
-      $tour       = new tourney(array('tourney_id'=>$tourney_id)) ;
 
       $t_name    = $tour->getValue('name');
       $rules     = $tour->getValue('rules');
@@ -128,7 +131,10 @@ try
   echo "</p></font>";
   echo "</form>" ;
 
-  include 'listTourneys.php';
+  if ($p->isSuperAdmin())
+  {
+    include 'listTourneys.php';
+  }
 }
 catch (Exception $e) {}
 ?>

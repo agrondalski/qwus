@@ -203,8 +203,6 @@ class match
 	}
 
       $t = $this->getTourney() ;
-      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') ;
-      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') ;
 
       // Find the map
       $maps = $t->getMaps() ;
@@ -221,6 +219,13 @@ class match
 	{
 	  $this->update('winning_team_id', $a['winning_team_id']) ;
 	}
+
+      // mvd tmp fix start
+      $t1 = $a['team1'] ;
+      $t2 = $a['team2'] ;
+      $a['team1'] = $t2 ;
+      $a['team2'] = $t1 ;
+      // mvd tmp fix end
 
       $teams = $this->getTeams() ;
       $team1 = $teams[0] ;
@@ -245,6 +250,26 @@ class match
 	  }
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
+
+      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $g->getValue('game_id') ;
+      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $g->getValue('game_id') ;
+
+      // Create the required directories
+      if (!is_dir(util::ROOT_DIR . util::SLASH . $t->getValue('name')))
+	{	
+	  if (!mkdir(util::ROOT_DIR . util::SLASH . $t->getValue('name')))
+	    {
+	      util::throwException('unable to create required directory') ;
+	    }
+	}
+
+      if (!is_dir($dest_root_dir))
+	{
+	  if (!mkdir($dest_root_dir))
+	    {
+	      util::throwException('unable to create required directory') ;
+	    }
+	}
 
       foreach($team1_stats as $k=>$ts)
 	{
@@ -292,8 +317,9 @@ class match
 	  util::throwException('invalid data') ;
 	}	  
 
+      // Team 1 Player Stats
       $team1_stats = array() ;
-      $team2_stats = array() ;
+      $team1_game_players = array() ;
 
       for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
 	{
@@ -301,30 +327,27 @@ class match
 
 	  if ($curheader==$player_stats[0])
 	    {
-	      $player_id = util::findBestMatch($team1_names, $team1_stats_all[$cnt]) ;
-	      unset($team1_names[$player_id]) ;
+	      $team1_game_players[] = $team1_stats_all[$cnt] ;
+	    }
+	}
+
+      $team1_player_match = util::playerMatch($team1_game_players, $team1_names) ;
+      $team1_names = array_flip($team1_names) ;
+
+      for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $player_name = $team1_player_match[$team1_stats_all[$cnt]] ;
+	      $player_id = $team1_names[$player_name] ;
 
 	      $team1_stats[$player_id] = array() ;
 	      $team1_stats[$player_id][$curheader] = $team1_stats_all[$cnt] ;
 	    }
 
 	  $team1_stats[$player_id][$curheader] = $team1_stats_all[$cnt] ;
-	}
-
-      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
-	{
-	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
-
-	  if ($curheader==$player_stats[0])
-	    {
-	      $player_id = util::findBestMatch($team2_names, $team2_stats_all[$cnt]) ;
-	      unset($team2_names[$player_id]) ;
-
-	      $team2_stats[$player_id] = array() ;
-	      $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
-	    }
-
-	  $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
 	}
 
       foreach($team1_stats as $k1=>$p)
@@ -335,7 +358,7 @@ class match
 		{
 		  $p = new player(array('player_id'=>$k1)) ;
 
-		  $prefix = $team1->getValue('name_abbr') . '_' . $team1->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
+		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
 		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
 
 		  $pinfo = pathinfo($s) ;
@@ -359,6 +382,39 @@ class match
 	    }
 	}
 
+      // Team 2 Player Stats
+      $team2_stats = array() ;
+      $team2_game_players = array() ;
+
+      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $team2_game_players[] = $team2_stats_all[$cnt] ;
+	    }
+	}
+
+      $team2_player_match = util::playerMatch($team2_game_players, $team2_names) ;
+      $team2_names = array_flip($team2_names) ;
+
+      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $player_name = $team2_player_match[$team2_stats_all[$cnt]] ;
+	      $player_id = $team2_names[$player_name] ;
+
+	      $team2_stats[$player_id] = array() ;
+	      $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
+	    }
+
+	  $team2_stats[$player_id][$curheader] = $team2_stats_all[$cnt] ;
+	}
+
       foreach($team2_stats as $k1=>$p)
 	{
 	  foreach($p as $k2=>$s)
@@ -367,7 +423,7 @@ class match
 		{
 		  $p = new player(array('player_id'=>$k1)) ;
 
-		  $prefix = $team2->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
+		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
 		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
 
 		  $pinfo = pathinfo($s) ;
@@ -392,14 +448,6 @@ class match
 	}
 
       // Move the files to their permanent home
-      if (!is_dir($dest_root_dir))
-	{
-	  if (!mkdir($dest_root_dir))
-	    {
-	      util::throwException('unable to create required directory') ;
-	    }
-	}
-
       $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
 
       $pinfo = pathinfo($a['filename']) ;
@@ -451,20 +499,6 @@ class match
       $a['id'] = $this->match_id ;
       $a['file_type'] = file::TYPE_MATCH ;
       $f = new file($a) ;
-    }
-
-  public static function getAllMatches()
-    {
-      $sql_str = sprintf('select mt.match_id from match_table mt') ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new match(array('match_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
     }
 
   public function getComments()
@@ -534,6 +568,11 @@ class match
   public function getWinningTeam()
     {
       return new team(array('team_id'=>$this->winning_team_id)) ;
+    }
+
+  public function getMatchSchedule()
+    {
+      return new match_schedule(array('schedule_id'=>$this->schedule_id)) ;
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)

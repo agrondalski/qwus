@@ -137,6 +137,11 @@ class match_schedule
 	}
     }
 
+  public function getDivision()
+    {
+      return new division(array('division_id'=>$this->division_id)) ;
+    }
+
   public function addMatch($a)
     {
       $a['schedule_id'] = $this->schedule_id ;

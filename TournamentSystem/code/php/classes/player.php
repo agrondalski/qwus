@@ -456,6 +456,14 @@ class player
       return $stats[$this->player_id] ;
     }
 
+  public function getGameStats($gid)
+    {
+      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
+      return $stats[$this->player_id] ;
+    }
+
   public function getPieChartIdx($game_id)
     {
       $game_id = game::validateColumn($game_id, 'game_id') ;
