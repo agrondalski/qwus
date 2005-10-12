@@ -454,7 +454,6 @@ class match
 
       $pinfo = pathinfo($a['filename']) ;
       $new_demo_name = $prefix . '_demo.' . $pinfo['extension'] ;
-      //if (move_uploaded_file($a['filename'], $dest_root_dir . util::SLASH . $new_demo_name))
       if (rename($a['filename'], $dest_root_dir . util::SLASH . $new_demo_name))      
 	{
 	  $g->addFile(array('file_desc'=>util::MVD_DEMO, 'url'=>$html_root_dir . util::SLASH . $new_demo_name)) ;

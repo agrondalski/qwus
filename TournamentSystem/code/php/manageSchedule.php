@@ -55,18 +55,22 @@ try
       echo "<table border=1 cellpadding=2 cellspacing=0>\n";
       echo "<th>Matchup</th><th>Week</th><th>Deadline</th><th>Actions</th>";
 
-      foreach ($div->getMatches() as $m)
+      foreach ($div->getMatchSchedule(array('name', SORT_ASC)) as $ms)
 	{
-	  $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
-	  $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
-	  $s  = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
-	  echo "\t<tr>\n";
-	  echo "\t<td>",$t1->getValue('name')," vs. ";
-	  echo "",$t2->getValue('name'),"</td>\n";
-	  echo "\t<td>",$s->getValue('name'),"</td>\n";
-	  echo "\t<td>",$s->getValue('deadline'),"</td>\n";
-	  echo "<td><a href='?a=saveSchedule&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=",$division_id,"&amp;match_id=",$m->getValue('match_id'),"'>";
-	  echo "Delete</a></td>";
+	  foreach($ms->getMatches() as $m)
+	    {
+	      $teams = $m->getTeams() ;
+	      $t1 = $teams[0] ;
+	      $t2 = $teams[1] ;
+
+	      echo "\t<tr>\n";
+	      echo "\t<td>". $t1->getValue('name') . " vs. ";
+	      echo "" . $t2->getValue('name') . "</td>\n";
+	      echo "\t<td>" . $ms->getValue('name') . "</td>\n";
+	      echo "\t<td>" . $ms->getValue('deadline') . "</td>\n";
+	      echo "<td><a href='?a=saveSchedule&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=" . $division_id . "&amp;match_id=" . $m->getValue('match_id') . "'>";
+	      echo "Delete</a></td>";
+	    }
 	}
 
       echo "</tr></table>";
@@ -115,9 +119,9 @@ try
       echo "<tr><td><b>Scheduled:</b></td>";
       echo "<td><select name='schedule_id'>";
 
-      foreach ($div->getMatchSchedule(null, array('name', SORT_ASC)) as $tmp)
+      foreach ($div->getMatchSchedule(array('name', SORT_ASC)) as $tmp)
 	{
-	  echo "<option value='",$tmp->getValue('schedule_id'),"'>",$tmp->getValue('name'),":",$tmp->getValue('deadline');
+	  echo "<option value='" . $tmp->getValue('schedule_id') . "'>" . $tmp->getValue('name') . ":" . $tmp->getValue('deadline');
 	}
 
       echo "</select><br>";

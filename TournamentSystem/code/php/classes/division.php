@@ -193,13 +193,13 @@ class division
     {
       if (util::isNull($team_id))
 	{
-	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id", $this->division_id) ;
+	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms where ms.division_id=%d and ms.schedule_id=m.schedule_id", $this->division_id) ;
 	}
       else
 	{
 	  $team_id = team::validateColumn($team_id, 'team_id') ;
-	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms
-                              where ms.division_id=%d and ms.schedule_id=mt.schedule_id and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
+	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms
+                              where ms.division_id=%d and ms.schedule_id=m.schedule_id and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
 	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
@@ -216,13 +216,13 @@ class division
     {
       if (util::isNull($team_id) || !is_numeric($team_id))
 	{
-	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms where ms.division_id=%d and ms.schedule_id=mt.schedule_id and mt.approved=true", $this->division_id) ;
+	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.approved=true", $this->division_id) ;
 	}
       else
 	{
 	  $team_id = team::validateColumn($team_id, 'team_id') ;
-	  $sql_str = sprintf("select mt.match_id from match_table mt, match_schedule ms
-                              where ms.division_id=%d and ms.schedule_id=mt.schedule_id and mt.approved=true and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
+	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms
+                              where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.approved=true and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
 	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
@@ -235,14 +235,34 @@ class division
       return $arr ;
     }
 
-  public function getMatchSchedule()
+  public function getMatchSchedule($a)
     {
-      $sql_str = sprintf("select ms.schedule_id from match_schedule ms where ms.division_id=%d", $this->division_id) ;
+      $sql_str = sprintf("select * from match_schedule ms where ms.division_id=%d", $this->division_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new match_schedule(array('schedule_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new match_schedule(array('schedule_id'=>$row['schedule_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new match_schedule(array('schedule_id'=>$row['schedule_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;

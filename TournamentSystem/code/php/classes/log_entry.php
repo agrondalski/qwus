@@ -115,7 +115,17 @@ class log_entry
 
       elseif ($col == 'logged_ip')
 	{
-	  return util::nvl(util::mysql_real_escape_string($val), '0.0.0.0') ;
+	  if (util::isNull($val))
+	    {
+	      $val = $_SERVER['REMOTE_ADDR'] ;
+	    }
+
+	  if (!util::isValidIP($val))
+	    {
+	      util::throwException('invalid IP specified for ' . $col) ;
+	    }
+
+	  return util::mysql_real_escape_string($val) ;
 	}
 
       elseif ($col == 'log_date')

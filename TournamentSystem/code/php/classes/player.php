@@ -278,11 +278,11 @@ class player
 	}
     }
 
-  public function getRecentGameStats($tid, $l)
+  public function getRecentGames($tid, $l)
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-      $sql_str = sprintf("select s.value, s.team_id, mp.map_abbr, t.name, m.team1_id, g.team1_score, g.team2_score
+      $sql_str = sprintf("select g.game_id, s.value, s.team_id, mp.map_abbr, t.name, m.team1_id, g.team1_score, g.team2_score
                           from stats s, game g, match_table m, match_schedule ms, division d, maps mp, team t
                           where s.player_id=%d and s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id
                             and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d and g.map_id=mp.map_id
@@ -293,42 +293,7 @@ class player
 
       while ($row=mysql_fetch_row($result))
 	{
-	  if ($row[1]==$row[4])
-	    {
-	      $score = 'W:' ;
-	    }
-	  else
-	    {
-	      $score = 'L:' ;
-	    }
-
-	  if ($row[1]==$row[4])
-	    {
-	      if ($row[5]>$row[6])
-		{
-		  $score = 'W:' ;
-		}
-	      else
-		{
-		  $score = 'L:' ;
-		}
-	      $score .= $row[5] . '-' . $row[6] ;
-	    }
-
-	  else
-	    {
-	      if ($row[6]>$row[5])
-		{
-		  $score = 'W:' ;
-		}
-	      else
-		{
-		  $score = 'L:' ;
-		}
-	      $score .= $row[6] . '-' . $row[5] ;
-	    }
-
-	  $arr[] = array('frags'=>$row[0], 'map_abbr'=>$row[2], 'vs_team'=>$row[3], 'score'=>$score) ;
+	  $arr[] = new game(array('game_id'=>$row[0])) ;
 	}
 
       if (is_array($l) && is_integer($l['limit']))
@@ -458,9 +423,12 @@ class player
 
   public function getGameStats($gid)
     {
-      $tid = tourney::validateColumn($tid, 'tourney_id') ;
+      $gid = game::validateColumn($gid, 'game_id') ;
 
-      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
+      $g = new game(array('game_id'=>$gid)) ;
+      $t = $g->getTourney() ;
+
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'game_id'=>$gid, 'tourney_id'=>$t->getValue('tourney_id'))) ;
       return $stats[$this->player_id] ;
     }
 

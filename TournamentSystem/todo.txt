@@ -15,6 +15,7 @@ TO DO LIST:
   when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
 
   improved gameDetails.php page
+  prettier detailsPlayer & detailsTeam pages
   map stats
 
   screenshot upload

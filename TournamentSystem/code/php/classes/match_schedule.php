@@ -142,6 +142,20 @@ class match_schedule
       return new division(array('division_id'=>$this->division_id)) ;
     }
 
+  public function getMatches()
+    {
+      $sql_str = sprintf("select m.match_id from match_table m where schedule_id=%d", $this->schedule_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      while ($row=mysql_fetch_row($result))
+	{
+	  $arr[] = new match(array('match_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function addMatch($a)
     {
       $a['schedule_id'] = $this->schedule_id ;

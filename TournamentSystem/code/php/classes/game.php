@@ -261,7 +261,7 @@ class game
   public function deleteAll()
     {
       $t = $this->getTourney() ;
-      util::delete_files(util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'game_' . $this->game_id) ;
+      util::delete_files(util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id) ;
 
       $sql_str = sprintf("delete from stats where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      

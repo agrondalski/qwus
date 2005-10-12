@@ -6,7 +6,6 @@ require_once 'login.php';
 try
 {
   $tid = $_REQUEST['tourney_id'];
-
   $t = new tourney(array('tourney_id'=>$tid));
 
   try

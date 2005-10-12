@@ -199,21 +199,21 @@ create table news(
 ENGINE=INNODB ;
 
 create table log_table(
-  log_id      bigint NOT NULL auto_increment,
-  type        varchar(250),
-  str         varchar(250),
-  logged_ip   varchar(250),
-  log_date    date,
-  log_time    time,
+  log_id      bigint       NOT NULL auto_increment,
+  type        varchar(250) NOT NULL,
+  str         varchar(250) NOT NULL,
+  logged_ip   varchar(250) NOT NULL,
+  log_date    date         NOT NULL,
+  log_time    time         NOT NULL,
   constraint log_table_pk primary key(log_id))
 ENGINE=INNODB ;
 
 create table poll( 
-  poll_id     integer NOT NULL auto_increment, 
-  topic       varchar(250),
+  poll_id     integer       NOT NULL auto_increment, 
+  topic       varchar(250)  NOT NULL,
   poll_type   ENUM('Match', 'News', 'Tournament') NOT NULL default 'MATCH', 
-  id          integer  NOT NULL, 
-  isCurrent   boolean  NOT NULL default FALSE,
+  id          integer       NOT NULL, 
+  isCurrent   boolean       NOT NULL default FALSE,
 --
   constraint poll_pk primary key(poll_id))
 ENGINE=INNODB ;

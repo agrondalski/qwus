@@ -1,23 +1,28 @@
 <?php
 
-require 'includes.php';
+require_once 'includes.php';
+include 'userLinks.php';
+echo "<br>";
+
 $tid = $_REQUEST['tourney_id'];
 $team_id = $_REQUEST['team_id'];
 $sort = $_REQUEST['sort'];
 $t = new tourney(array('tourney_id'=>$tid));
-try {
-	$tm = new team(array('team_id'=>$team_id));
-} catch (Exception $e) {
-    $tm = "";
+
+try
+{
+  $tm = new team(array('team_id'=>$team_id));
+}
+catch (Exception $e)
+{
+  $tm = "";
 }
 
 if ($sort == "")
 {
-	$sort = 'frags_per_game';
+  $sort = 'frags_per_game';
 }
 
-include 'userLinks.php';
-echo "<br>";
 
 // Gather team info
 $team_id = $_REQUEST['team_id'];
@@ -37,6 +42,7 @@ echo "<tr><td><b>Team</b></td><td>",$name," (",$name_abbr,")</td></tr>\n";
 echo "<tr><td><b>Email</b></td><td><a href='mailto:",$email,"'>",$email,"</a></td></tr>\n";
 echo "<tr><td><b>IRC</b></td><td>",$irc_channel,"</td></tr>\n";
 echo "</table><br>";
+
 // List players in this team
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=name'>Name</a></th>";
@@ -48,11 +54,11 @@ echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;s
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=frag_diff'>+/-</a></th>";
 if ($sort == "name") 
 {
-	$sortOrder = SORT_ASC;
+  $sortOrder = SORT_ASC;
 }
 else 
 {
-	$sortOrder = SORT_DESC;
+  $sortOrder = SORT_DESC;
 }
 
 //foreach ($tm->getPlayers($tid) as $player) 
@@ -91,18 +97,37 @@ foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_gam
 echo "</tr></table>";
 echo "<p>Bold = team leader</b></p>";
 
-echo "<b>Recent Matches</b>" ;
-echo "<table>" ;
-foreach ($tm->getRecentMatches($tid, array('limit'=>5)) as $m)
+echo "<b>Tourney Schedule</b><br>" ;
+echo "<table border=1 cellpadding=2 cellspacing=0>\n";
+echo "<tr bgcolor='#999999'><th>Week</th><th>Result</th><th>Match Date</th></tr>";
+foreach ($tm->getMatches($tid) as $m)
 {
   $wid = $m->getValue('winning_team_id');
-
+  $cnt += 1;
+  if ($cnt % 2 == 1) 
+    {
+      $clr = "#CCCCCC";
+    }
+  else
+    {
+      $clr = "#C0C0C0";
+    }
   $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
   $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+  $ms = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
+  echo "<tr bgcolor='$clr'>";
+  echo "<td>",$ms->getValue('name'),"</td>";
 
-  echo "<td><a href='?a=detailsMatch&amp;tourney_id=" . $tid. "&amp;match_id=" . $m->getValue('match_id') . "'>";
+  if ($m->getValue('approved'))
+    {
+      echo "<td><a href='?a=detailsMatch&amp;tourney_id=" . $tid. "&amp;match_id=" . $m->getValue('match_id') . "'>";
+    }
+  else
+    {
+      echo "<td>&nbsp;" ;
+    }
 
-  if ($wid == $m->getValue('team1_id'))
+  if ($wid == $m->getValue('team1_id') && $m->getValue('approved'))
     {
       echo "<b>";
       echo $t1->getValue('name');
@@ -114,8 +139,8 @@ foreach ($tm->getRecentMatches($tid, array('limit'=>5)) as $m)
     }
 		
   echo "&nbsp;vs&nbsp;";
-		
-  if ($wid == $m->getValue('team2_id'))
+  
+  if ($wid == $m->getValue('team2_id') && $m->getValue('approved'))
     {
       echo "<b>";
       echo $t2->getValue('name');
@@ -125,7 +150,7 @@ foreach ($tm->getRecentMatches($tid, array('limit'=>5)) as $m)
     {
       echo $t2->getValue('name');
     }
-
+  
   if ($m->getValue('approved'))
     {
       // Don't end row yet
@@ -141,13 +166,22 @@ foreach ($tm->getRecentMatches($tid, array('limit'=>5)) as $m)
 	    {
 	      $team2 += 1;				
 	    }	
+	  
+	  //$map = new map(array('map_id'=>$g->getValue('map_id')));
+	  //echo "<tr>";
+	  //echo "<td>",$map->getValue('map_abbr'),"</td>";
+	  //echo "<td>",$g->getValue('team1_score')," - ";
+	  //echo $g->getValue('team2_score'),"</td>";
+	  //echo "</tr>\n";
 	}
 
       echo " (",$team1,"-",$team2,")</a>";
     }
-
-  echo "</td><tr>";
+  
+  echo "</td>";
+  echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
 }
-echo "</table>" ;
 
+echo "</table>" ;
+echo "<br>" ;
 ?>
