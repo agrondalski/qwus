@@ -1295,7 +1295,7 @@ sub outputForm
        print "\t<input type='hidden' name='team" . 
            $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";
        my @tPlayers = $team->players;
-       print "\t<input type='hidden' name='team'" . $teamNumber . "players' value='";
+       print "\t<input type='hidden' name='team" . $teamNumber . "players' value='";
        my $playerC = @tPlayers;
        my $currentC = 0;
        foreach $player (@tPlayers)
