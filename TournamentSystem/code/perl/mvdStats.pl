@@ -1237,6 +1237,8 @@ sub teamMatchup
   }
   else # we give up, just set team with most points to winningTeamAbbr 
   {
+# zz need winning team for GAME not match.
+    print "no match\n";
     my $teamC = 0;
     foreach $team (@teams)
     {
@@ -1350,9 +1352,9 @@ sub outputForm
 
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-   print "<script>\n";
-   print "document.stats.submit();\n";
-   print "</script>\n";
+#   print "<script>\n";
+#   print "document.stats.submit();\n";
+#   print "</script>\n";
 }
 
 sub outputPlayerScoreGraph
