@@ -171,7 +171,7 @@ class comment
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
-	  if (strlen($val)>2500)
+	  if (strlen($val)>5000)
 	    {
 	      util::throwException($col . ' is too long') ;
 	    }
