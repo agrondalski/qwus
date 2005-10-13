@@ -253,22 +253,15 @@ class match
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
 
-      $dest_root_dir = util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id ;
-      $html_root_dir = util::HTML_ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id ;
+      $dest_root_dir = $t->getTourneyRoot() . util::SLASH . $g->getFileDirectory() ;
+      $html_root_dir = $t->getTourneyRootHtml() . util::SLASH . $g->getFileDirectory() ;
 
-      // Create the required directories
-      if (!is_dir(util::ROOT_DIR . util::SLASH . $t->getValue('name')))
-	{	
-	  if (!mkdir(util::ROOT_DIR . util::SLASH . $t->getValue('name')))
-	    {
-	      util::throwException('unable to create required directory') ;
-	    }
-	}
-
+      // Create the required directory
       if (!is_dir($dest_root_dir))
 	{
-	  if (!mkdir($dest_root_dir))
+	  if (!util::mkdir($dest_root_dir))
 	    {
+	      $g->deleteAll() ;
 	      util::throwException('unable to create required directory') ;
 	    }
 	}
@@ -579,6 +572,11 @@ class match
   public function getMatchSchedule()
     {
       return new match_schedule(array('schedule_id'=>$this->schedule_id)) ;
+    }
+
+  public function getFileDirectory()
+    {
+      return 'match_' . $this->match_id ;
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)

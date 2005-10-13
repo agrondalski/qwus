@@ -481,6 +481,36 @@ class util
       imagedestroy($img) ;
     }
 
+  public static function mkdir($target)
+    {
+      if (!is_string($target))
+	{
+	  return false ;
+	}
+
+      do
+	{
+	  $dir = $target;
+
+	  while (!mkdir($dir, 0755))
+	    {
+	      $dir = dirname($dir);
+	  
+	      if ($dir == '/' || is_dir($dir))
+		break;
+	    }
+	} while ($dir != $target) ;
+
+      if (is_dir($target))
+	{
+	  return true ;
+	}
+      else
+	{
+	  return false ;
+	}
+    }
+
   public static function delete_files($target, $exceptions)
     {
       $sourcedir = opendir($target);
@@ -492,7 +522,10 @@ class util
 	      if(is_dir($target."/".$filename))
 		{
 		  // recurse subdirectory; call of function recursive
-		  util::delete_files($target."/".$filename, $exceptions);
+		  if ($filename!='.' && $filename!='..')
+		    {
+		      util::delete_files($target."/".$filename, $exceptions);
+		    }
 		}
 	      else if(is_file($target."/".$filename))
 		{

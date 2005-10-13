@@ -226,6 +226,11 @@ class game
       return $ms->getDivision() ;
     }
 
+  public function getFileDirectory()
+    {
+      return 'match_' . $this->match_id . util::SLASH . 'game_' . $this->game_id ;
+    }
+
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
@@ -260,8 +265,27 @@ class game
 
   public function deleteAll()
     {
-      $t = $this->getTourney() ;
-      util::delete_files(util::ROOT_DIR . util::SLASH . $t->getValue('name') . util::SLASH . 'match_' . $this->match_id) ;
+      $m = $this->getMatch() ;
+      $t = $m->getTourney() ;
+      util::delete_files($t->getTourneyRoot() . util::SLASH . $this->getFileDirectory()) ;
+
+      $found = false ;
+      $dir = $t->getTourneyRoot() . util::SLASH . $m->getFileDirectory() ;
+      if (is_dir($dir))
+	{
+	  foreach(scandir($dir) as $f)
+	    {
+	      if ($f!='.' && $f!='..')
+		{
+		  $found = true ;
+		}
+	    }
+
+	  if (!$found)
+	    {
+	      rmdir($dir) ;
+	    }
+	}
 
       $sql_str = sprintf("delete from stats where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      

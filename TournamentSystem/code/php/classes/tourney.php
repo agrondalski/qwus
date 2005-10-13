@@ -511,6 +511,16 @@ class tourney
       return $arr ;
     }
 
+  public function getTourneyRoot()
+    {
+      return util::ROOT_DIR . util::SLASH . $this->name ;
+    }
+
+  public function getTourneyRootHtml()
+    {
+      return util::HTML_ROOT_DIR . util::SLASH . $this->name ;
+    }
+
   public function getNews($a, $l)
     {
       $sql_str = sprintf("select n.* from news n where n.news_type='Tournament' and n.id=%d", $this->tourney_id) ;
