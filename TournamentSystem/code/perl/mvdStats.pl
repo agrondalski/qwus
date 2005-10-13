@@ -1274,9 +1274,12 @@ sub outputForm
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
 
-   if (@teams > 1)
+   if (@teams > 1 && @players > 0)
    {
+     outputPlayerPieCharts();
+
      teamMatchup();
+     
 
      print "\t<input type='hidden' name='teamStats' value='";
      print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
@@ -1291,6 +1294,21 @@ sub outputForm
        my $e = $team->minutesWithLead;
        print "\t<input type='hidden' name='team" . 
            $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";
+       my @tPlayers = $team->players;
+       print "\t<input type='hidden' name='team'" . $teamNumber . "players' value='";
+       my $playerC = @tPlayers;
+       my $currentC = 0;
+       foreach $player (@tPlayers)
+       {
+ 	  $currentC++;
+	  $player = findPlayer($player);
+	  $player->outputStats();
+	  my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
+	  $imagePath =~ s/\s//g;
+	  print $imagePath;
+	  if ($currentC < $playerC) { print "\\\\"; }
+       }
+       print "'>\n";
        $teamNumber++;
      }
    
@@ -1308,12 +1326,13 @@ sub outputForm
    }
 
    print "\t<input type='hidden' name='playerFields' value='42'>\n";
+   Player::outputStatsHeader();
 
-   if (@players > 0)
+   if (@players > 50) 
    {
      #playerMatchup();
-     outputPlayerPieCharts();
-     Player::outputStatsHeader();   
+     #outputPlayerPieCharts();
+     #Player::outputStatsHeader();   
 
      my $t = findTeamNoCreate($teamOneAbbr);
      my @tPlayers = $t->players;      
