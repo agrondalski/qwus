@@ -27,6 +27,7 @@ try
 
   if (!util::isNull($tm))
     {
+      echo '<br>Matches currently have to be reported by an admin.' ;
       util::throwException('not authorized') ;
     }
 
