@@ -215,7 +215,7 @@ class match
 
       $map = new map(array('map_id'=>$idx)) ;
 
-      if ($a['winning_team_id'] = $team1_id || $a['winning_team_id'] = $team2_id)
+      if ($a['winning_team_id'] == $team1_id || $a['winning_team_id'] == $team2_id)
 	{
 	  $this->update('winning_team_id', $a['winning_team_id']) ;
 	}
