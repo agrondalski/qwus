@@ -222,12 +222,13 @@ class match
 
       $this->update('match_date', util::curdate()) ;
 
-      // mvd tmp fix start
+      /* //mvd tmp fix start
       $t1 = $a['team1'] ;
       $t2 = $a['team2'] ;
       $a['team1'] = $t2 ;
       $a['team2'] = $t1 ;
       // mvd tmp fix end
+      */
 
       $teams = $this->getTeams() ;
       $team1 = $teams[0] ;

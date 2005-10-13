@@ -10,6 +10,14 @@ try
   $winning_team_id =$_REQUEST['winning_team_id'];
 
   $m = new match(array('match_id'=>$match_id));
+  if ($m->getValue('approved'))
+    {
+      $approved = 1 ;
+    }
+  else
+    {
+      $approved = 0 ;
+    }
   
   try
     {
@@ -35,7 +43,7 @@ try
       echo 'Unable to Add Game<br>';
     }
   
-  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;winning_team_id=$winning_team_id'>Report Match Page</a>";
+  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;winning_team_id=$winning_team_id&amp;approved=$approved'>Report Match Page</a>";
 }
 catch (Exception $e) {}
 
