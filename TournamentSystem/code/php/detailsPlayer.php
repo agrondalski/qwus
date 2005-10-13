@@ -76,7 +76,7 @@ foreach($player->getRecentGames($tid, array('limit'=>10)) as $g)
       $tm_score = $g->getValue('team1_score') ;
 
       $o_team = $t2 ;
-      $oscore = $g->getValue('team2_score') ;
+      $o_score = $g->getValue('team2_score') ;
     }
   else
     {
