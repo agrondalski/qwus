@@ -356,5 +356,5 @@ try
   //}
   //catch(Exception $e){}
 }
-catch (Exception $e) {print $e;}
+catch (Exception $e) {}
 ?>
