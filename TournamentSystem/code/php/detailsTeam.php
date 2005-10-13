@@ -38,13 +38,14 @@ $password=$tm->getValue('password');
 $approved=$tm->getValue('approved');
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
-echo "<tr><td><b>Team</b></td><td>",$name," (",$name_abbr,")</td></tr>\n";
-echo "<tr><td><b>Email</b></td><td><a href='mailto:",$email,"'>",$email,"</a></td></tr>\n";
-echo "<tr><td><b>IRC</b></td><td>",$irc_channel,"</td></tr>\n";
+echo "<tr bgcolor='#CCCCCC'><td><b>Team</b></td><td>",$name," (",$name_abbr,")</td></tr>\n";
+echo "<tr bgcolor='#C0C0C0'><td><b>Email</b></td><td><a href='mailto:",$email,"'>",$email,"</a></td></tr>\n";
+echo "<tr bgcolor='#CCCCCC'><td><b>IRC</b></td><td>",$irc_channel,"</td></tr>\n";
 echo "</table><br>";
 
 // List players in this team
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
+echo "<tr bgcolor='#999999'>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=name'>Name</a></th>";
 echo "<th>Location</th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=games_played'>GP</a></th>";
@@ -61,12 +62,21 @@ else
   $sortOrder = SORT_DESC;
 }
 
-//foreach ($tm->getPlayers($tid) as $player) 
+$count=0;
 foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_game', SORT_DESC, 'name', SORT_ASC)) as $player)
 {
+  if (++$count % 2 == 1) 
+    {
+      $clr = "#CCCCCC";
+    }
+  else
+    {
+      $clr = "#C0C0C0";
+    }
+
   $loc = new location(array('location_id'=>$player['location_id']));
   $loc_name = $loc->getValue('country_name') ;
-  echo "\t<tr>\n<td nowrap>";
+  echo "\t<tr bgcolor='$clr'>\n<td nowrap>";
   echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player['player_id'],"'>";
   $tlp = $tm->getTeamLeader($tid);
 

@@ -29,10 +29,11 @@ echo "Team: <a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$tm->g
 echo $tm->getValue('name'),"</a><p></p>";
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
+echo "<tr bgcolor='#999999'>";
 echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
 
 // List player info
-echo "\t<tr>\n<td>";
+echo "<tr bgcolor='#CCCCCC'><td>";
 echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$team_id,"&amp;player_id=",$player->getValue('player_id'),"'>";
 $tlp = $tm->getTeamLeader($tid);
 
