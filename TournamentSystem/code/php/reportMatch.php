@@ -344,7 +344,8 @@ try
 	  echo $player->getValue('name')."\\\\";
 	}
       echo "'>";
-      echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
+      echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
+      echo "<td>Please be patient, this process could take up to 30 seconds.</td></tr>
       echo "</table></form>";
     }
 		
