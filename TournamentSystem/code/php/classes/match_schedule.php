@@ -142,9 +142,17 @@ class match_schedule
       return new division(array('division_id'=>$this->division_id)) ;
     }
 
-  public function getMatches()
+  public function getMatches($team_id)
     {
-      $sql_str = sprintf("select m.match_id from match_table m where schedule_id=%d", $this->schedule_id) ;
+      if (util::isNull($team_id))
+	{
+	  $sql_str = sprintf("select m.match_id from match_table m where schedule_id=%d", $this->schedule_id) ;
+	}
+      else
+	{
+	  $team_id = team::validateColumn($team_id, 'team_id') ;
+	  $sql_str = sprintf("select m.match_id from match_table m where m.schedule_id=%d and (team1_id=%d or team2_id=%d)", $this->schedule_id, $team_id, $team_id) ;
+	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))

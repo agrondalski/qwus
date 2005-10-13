@@ -4,9 +4,10 @@ require_once 'login.php';
 
 try
 {
-  $tid = $_REQUEST['tourney_id'];
-  $division_id = $_REQUEST['division_id'];
-  $match_id = $_REQUEST['match_id'];
+  $tid             = $_REQUEST['tourney_id'];
+  $division_id     = $_REQUEST['division_id'];
+  $match_id        = $_REQUEST['match_id'];
+  $winning_team_id =$_REQUEST['winning_team_id'];
 
   $m = new match(array('match_id'=>$match_id));
   
@@ -26,7 +27,8 @@ try
   
   echo "<b>Success!</b><br><br>";
   echo "Game was added, click this link to add another game.";
-  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id'>Report Match Page</a>";
 }
 catch (Exception $e) {echo 'Unable to Add Game';}
+
+echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;winning_team_id=$winning_team_id'>Report Match Page</a>";
 ?>

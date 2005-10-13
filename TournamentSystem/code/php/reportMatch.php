@@ -44,7 +44,7 @@ try
     } 
   catch (Exception $e) 
     {
-      $div = "";
+      $div = null;
     }
 
   try 
@@ -53,7 +53,7 @@ try
     } 
   catch (Exception $e) 
     {
-      $m = "";
+      $m = null;
     }
   
   echo "<br>";
@@ -66,7 +66,7 @@ try
   echo "<table border=0 cellpadding=2 cellspacing=0>";
   echo "<tr><td><b>Pick a division:</b></td>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
-  if ($div != "") 
+  if (!util::isNull($div))
     {
       $dis = "disabled";
     }
@@ -75,7 +75,7 @@ try
 
   foreach ($t->getDivisions() as $tmp) 
     {
-      $sel = "";
+      $sel = null;
       if ($tmp->getValue('division_id') == $division_id) 
 	{
 	  $sel = "selected";
@@ -89,12 +89,12 @@ try
   echo "<br></td></tr>";
   echo "</table></form>";
 
-  $dis = "";
+  $dis = null;
 
   // *** PART 2
-  if ($div != "") 
+  if (!util::isNull($div))
     {
-      if ($match_id != "") 
+      if (!util::isNull($match_id))
 	{
 	  $dis = "disabled";
 	}
@@ -106,28 +106,31 @@ try
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<td><select name='match_id' $dis>";
 
-      if (!util::isNull($tm))
+      foreach($div->getMatchSchedule(array('name', SORT_ASC)) as $ms)
 	{
-	  $matches = $div->getMatches($tm->getValue('team_id')) ;
-	}
-      else
-	{
-	  $matches = $div->getMatches() ;
-	}
-
-      foreach ($matches as $tmp) 
-	{
-	  $t1 = new team(array('team_id'=>$tmp->getValue('team1_id')));
-	  $t2 = new team(array('team_id'=>$tmp->getValue('team2_id')));
-	  $s  = new match_schedule(array('schedule_id'=>$tmp->getValue('schedule_id')));
-	  $sel = "";
-
-	  if ($tmp->getValue('match_id') == $match_id) 
+	  if (!util::isNull($tm))
 	    {
-	      $sel = "selected";
+	      $matches = $ms->getMatches($tm->getValue('team_id')) ;
+	    }
+	  else
+	    {
+	      $matches = $ms->getMatches() ;
 	    }
 
-	  echo "<option value='",$tmp->getValue('match_id'),"' ",$sel,">",$t1->getValue('name')," vs ",$t2->getValue('name')," (",$s->getValue('name'),")";
+	  foreach ($matches as $tmp)
+	    {
+	      $teams = $tmp->getTeams() ;
+	      $t1 = $teams[0] ;
+	      $t2 = $teams[1] ;
+	      $sel = null;
+	  
+	      if ($tmp->getValue('match_id') == $match_id) 
+		{
+		  $sel = "selected";
+		}
+
+	      echo "<option value='" . $tmp->getValue('match_id') . "' " . $sel . ">" . $t1->getValue('name') . " vs " . $t2->getValue('name') . " (" . $ms->getValue('name') . ")";
+	    }	  
 	}
 
       echo "</select></td></tr>";
@@ -137,55 +140,46 @@ try
     }
 
   echo "<hr>";
-
-  $dis = "";
+  $dis = null;
 
   // *** PART 3
-  if ($match_id != "") 
+  if (!util::isNull($match_id))
     {
       if (util::isLoggedInAsTeam())
-      {
-      	$dis = "disabled";
-      	// Check if match is approved to disable dropdown + button
-      	$m = new match(array('match_id'=>$match_id));
-	if ($m->getValue('approved') == "1")
-	  {
-	    $disableMatchChange = "disabled";
-	  }
-	else
-	  {
-	    $disableMatchChange = "";
-	  }
-      }
+	{
+	  // Check if match is approved to disable dropdown + button
+	  $dis = "disabled";
+	  $m = new match(array('match_id'=>$match_id));
+	}
       else
-      {
-      	$dis = "";
-      }
+	{
+	  $dis = null;
+	}
       
       if ($approved == "1")
-      {
-      	$checked = "checked";
-      }
+	{
+	  $checked = "checked";
+	}
       else 
-      {
-        if ($winning_team_id == "") 
-        {
-          // First time here, so check the db
-          $m = new match(array('match_id'=>$match_id));
-          if ($m->getValue('approved') == "1")
-          {
-          	$checked = "checked";
-          }
-          else
-          {
-            $checked = "";
-          }
-        }
-        else
-        {
-      	  $checked = "";
-      	}
-      }
+	{
+	  // First time here, so check the db
+	  if (util::isNull($winning_team_id))
+	    {
+	      $m = new match(array('match_id'=>$match_id));
+	      if ($m->getValue('approved') == "1")
+		{
+		  $checked = "checked";
+		}
+	      else
+		{
+		  $checked = null;
+		}
+	    }
+	  else
+	    {
+	      $checked = null;
+	    }
+	}
 
       echo "<h2>Match Details</h2>";
       echo "<form action='?a=reportMatch' method=post>";
@@ -194,38 +188,43 @@ try
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<td><select name='winning_team_id' $disableMatchChange>";
 
       // $m is the match object
-      $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
-      $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+      $teams = $m->getTeams() ;
+      $t1 = $teams[0] ;
+      $t2 = $teams[1] ;
 
       if ($winning_team_id==$t1->getValue('team_id'))
 	{
 	  $winning_team_abbr = $t1->getValue('name_abbr') ;
+	  $team1_sel = "selected disabled" ;
+	  $disableMatchChange = "disabled" ;
 	}
-      else
+      elseif ($winning_team_id==$t2->getValue('team_id'))
 	{
 	  $winning_team_abbr = $t2->getValue('name_abbr') ;
+	  $team2_sel = "selected disabled" ;
+	  $disableMatchChange = "disabled" ;
 	}
 
-      $s  = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
-      echo "<option value='",$t1->getValue('team_id'),"'>",$t1->getValue('name'),"";
-      echo "<option value='",$t2->getValue('team_id'),"'>",$t2->getValue('name'),"";
+      echo "<td><select name='winning_team_id' $disableMatchChange>";
+
+      echo "<option value='" . $t1->getValue('team_id') . "'" . $team1_sel . ">" . $t1->getValue('name') ;
+      echo "<option value='" . $t2->getValue('team_id') . "'" . $team2_sel . ">" . $t2->getValue('name') ;
       echo "</select></td></tr>";
       echo "<tr><td><b>Match Approved?</b></td>";
-      echo "<td><input type='checkbox' name='approved' value='1' $dis $checked></td></tr>";
+      echo "<td><input type='checkbox' name='approved' value='1' $dis $checked $disableMatchChange></td></tr>";
       echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button' $disableMatchChange>";
       echo "<br></td></tr>";
       echo "</table></form>";
     }
 
   // *** PART 4
-  if ($winning_team_id != "") 
+  if (!util::isNull($winning_team_id))
     {
       // Try to save the match
       $m = new match(array('match_id'=>$match_id));
-      $m->update('winning_team_id',$winning_team_id);
+      $m->update('winning_team_id', $winning_team_id);
 
       if (!util::isLoggedInAsTeam())
 	{
@@ -357,5 +356,5 @@ try
   //}
   //catch(Exception $e){}
 }
-catch (Exception $e) {}
+catch (Exception $e) {print $e;}
 ?>
