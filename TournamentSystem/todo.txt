@@ -20,6 +20,8 @@ TO DO LIST:
   screenshot upload
   schedule/statistics page should be able to limit by division, week
 
+  schedule page remove games that have already been played ? would improve readability especially later in the season?
+
 *Future*:
   Career Player/Teams Stats
   Weapon Stats
