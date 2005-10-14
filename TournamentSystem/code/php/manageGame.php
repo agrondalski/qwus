@@ -12,8 +12,8 @@ try
   $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
   $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
   $ms = new match_schedule(array('schedule_id'=>$m->getValue('schedule_id')));
-  echo "<b>Match Info:</b> ",$t1->getValue('name')," vs ",$t2->getValue('name');
-  echo " (",$ms->getValue('name')," ",$ms->getValue('deadline'),")<br>";
+  echo "<b>Match Info:</b> <a href='?a=detailsMatch&amp;tourney_id=$tid&amp;match_id=$match_id'>",$t1->getValue('name')," vs ",$t2->getValue('name');
+  echo " (",$ms->getValue('name')," ",$ms->getValue('deadline'),")</a><br>";
   
   try
   {
@@ -64,7 +64,7 @@ try
   if ($mode == "edit")
   {
   		echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
-  		echo "<b>Game Screenshot:</b>&nbsp;<b>(320x200 gif, png, jpg please)</b><br><input type='file' name='filename'><p>";
+  		echo "<b>Screenshot:</b>&nbsp;<b>(320x200 gif, png, jpg please)</b><br><input type='file' name='filename'><p>";
       echo "<input type='hidden' name='game_id' value='$game_id'>";
       echo "<input type='hidden' name='mode' value='edit'>";
   }
@@ -105,14 +105,14 @@ try
 		$game_id = $_REQUEST['game_id'];
 		$g = new game(array('game_id'=>$game_id));
 		// screenshot
-		echo "<br><b>Screenshot:</b>";
+		echo "<br><b>Current Screenshot:</b>";
 		echo "<table border=1 cellpadding=2 cellspacing=0>";
 		echo "<tr><th>URL</th><th>View</th></tr>";
 		$files = $g->getFiles();
 		if ($files != "") 
 		{
-			echo "<tr><td>",$files[util::SCREENSHOT],"</td><td>";
-			echo "<a target=_blank href='",$files[util::SCREENSHOT],"'>View</a></td></tr>";
+			echo "<tr><td>",$files[util::SCREENSHOT]->getValue('url'),"</td><td>";
+			echo "<a target=_blank href='",$files[util::SCREENSHOT]->getValue('url'),"'>View</a></td></tr>";
 		}	
 		echo "</table>";		
 		

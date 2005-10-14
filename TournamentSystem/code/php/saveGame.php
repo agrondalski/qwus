@@ -3,6 +3,45 @@
 require 'includes.php';
 require_once 'login.php' ;
 
+/**
+* Resize an image and keep the proportions
+* @author Allison Beckwith <allison@planetargon.com>
+* @param string $filename
+* @param integer $max_width
+* @param integer $max_height
+* @return image
+*/
+function resizeImage($filename, $max_width, $max_height)
+{
+
+   list($orig_width, $orig_height) = getimagesize($filename);
+
+   $width = $orig_width;
+   $height = $orig_height;
+
+   # taller
+   if ($height > $max_height) {
+       $width = ($max_height / $height) * $width;
+       $height = $max_height;
+   }
+
+   # wider
+   if ($width > $max_width) {
+       $height = ($max_width / $width) * $height;
+       $width = $max_width;
+   }
+	echo "a";
+   $image_p = imagecreatetruecolor($width, $height);
+	echo "b";
+   $image = imagecreatefromjpeg($filename);
+	echo "c";
+   imagecopyresampled($image_p, $image, 0, 0, 0, 0, 
+                                     $width, $height, $orig_width, $orig_height);
+
+   return $image_p;
+}
+
+
 try
 {
   $tid = $_REQUEST['tourney_id'];
@@ -68,6 +107,15 @@ try
 					{
 						echo "Moving the file Failed!<br>\n";			
 					}
+					
+					//resize to 320x200
+					//echo "1";
+					//$pic = resizeImage($uploadfile, 320, 200);
+					//echo "1";
+					//@imagejpeg($pic, $uploadfile);
+					
+					
+					
 					try 
 					{
 					  $g->addScreenshot($uploadfile);
