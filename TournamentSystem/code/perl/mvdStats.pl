@@ -995,11 +995,15 @@ foreach $string (@strings)
         }
         else
         {
-	   my $t = findTeamNoCreate($team);
-           if ($t != null)
+	   $team = findTeamNoCreate($team);
+           if ($team != null)
            {
-	      $t->addPlayer($name);
-              $player->team($t);
+	      $team->addPlayer($name);
+              $player->team($team);
+           }
+           else
+           {
+	      next;
            }
         }
       }
