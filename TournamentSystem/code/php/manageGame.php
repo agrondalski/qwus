@@ -4,6 +4,7 @@ require_once 'login.php' ;
 
 try
 {
+
   $tid = $_REQUEST['tourney_id'];
   $match_id = $_REQUEST['match_id'];
   $t = new tourney(array('tourney_id'=>$tid));
@@ -52,12 +53,18 @@ try
       $screenshot_url="";
       $demo_url="";
   } 
+  
+  
+  // FORM
 
-  echo "<form action='?a=saveGame' method=post>";
+  echo "<form action='?a=saveGame' enctype='multipart/form-data' method=post>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
   echo "<input type='hidden' name='match_id' value='$match_id'>";
+	
   if ($mode == "edit")
   {
+  		echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
+  		echo "<b>Game Screenshot:</b>&nbsp;<b>(320x200 gif, png, jpg please)</b><br><input type='file' name='filename'><p>";
       echo "<input type='hidden' name='game_id' value='$game_id'>";
       echo "<input type='hidden' name='mode' value='edit'>";
   }
@@ -92,12 +99,26 @@ try
   echo "</p></font>";
 
   echo "</form>" ;
-  
+    
   if ($mode == "edit")
 	{
-		echo "<br><b>Stats from current game:</b>";
 		$game_id = $_REQUEST['game_id'];
 		$g = new game(array('game_id'=>$game_id));
+		// screenshot
+		echo "<br><b>Screenshot:</b>";
+		echo "<table border=1 cellpadding=2 cellspacing=0>";
+		echo "<tr><th>URL</th><th>View</th></tr>";
+		$files = $g->getFiles();
+		if ($files != "") 
+		{
+			echo "<tr><td>",$files[util::SCREENSHOT],"</td><td>";
+			echo "<a target=_blank href='",$files[util::SCREENSHOT],"'>View</a></td></tr>";
+		}	
+		echo "</table>";		
+		
+		
+		// stats
+		echo "<br><b>Stats from current game:</b>";
 		echo "<table border=1 cellpadding=2 cellspacing=0>";
 		echo "<tr><th>Team</th><th>Player</th><th>Stat</th><th>Value</th></tr>";
 		foreach ($g->getStats(array('team_id', SORT_DESC, 'value', SORT_DESC)) as $s) 

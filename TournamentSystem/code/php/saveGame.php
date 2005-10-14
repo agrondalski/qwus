@@ -41,38 +41,74 @@ try
       $g->update('map_id',$_POST['map_id']);
       $g->update('team1_score',$_POST['team1_score']);
       $g->update('team2_score',$_POST['team2_score']);
+      
+      if ($_FILES['filename']['size'] != 0) 
+	      {
+					$uploaddir = '/usr/quake/demos/tourney/';
+					$uploadfile = $uploaddir . basename($_FILES['filename']['name']);
+
+					if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
+						echo "File ". $_FILES['filename']['name'] ." uploaded.<br>\n";
+					} else {
+						echo "File Error on upload: ";
+						echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
+					}
+
+					if(!preg_match('/\\.(jpg|png|gif)$/i', $_FILES['filename']['name']))
+					{
+						echo("You cannot upload this type of file.  It must be a <b>png, jpg, or gif</b> file.");
+						exit();
+					}
+
+					if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
+					{
+						echo "File was successfully moved for processing.<br>\n";
+					} 
+					else 
+					{
+						echo "Moving the file Failed!<br>\n";			
+					}
+					try 
+					{
+						//$g->addScreenshot($uploadfile);
+					}
+					catch (Exception $e) 
+					{
+						print $e;
+						echo "Problem adding screenshot to game!<br>";
+					}
+			}
       $msg = "<br>Game updated!<br>";
     }
-
   elseif ($mode=="delete")
     {
       $game_id = $_REQUEST['game_id'];
       $g = new game(array('game_id'=>$game_id));
       try
-	{
-	  $g->deleteAll();
-	  $msg = "<br>Game deleted!<br>";
-	}
-      catch (Exception $e)
-	{
-	  $msg = "<br>Error deleting!<br>";
-	}
+			{
+				$g->deleteAll();
+				$msg = "<br>Game deleted!<br>";
+			}
+			catch (Exception $e)
+			{
+				$msg = "<br>Error deleting!<br>";
+			}
     }
 
   else
     {
       try
-	{
-	  $m->addGame(array('map_id'=>$_POST['map_id'],
-			    'team1_score'=>$_POST['team1_score'],
-			    'team2_score'=>$_POST['team2_score']));
-	  
-	  $msg = "<br>New game added!<br>";
-	}
-      catch (Exception $e)
-	{
-	  $msg = "<br>Error creating!<br>";
-	}
+			{
+				$m->addGame(array('map_id'=>$_POST['map_id'],
+							'team1_score'=>$_POST['team1_score'],
+							'team2_score'=>$_POST['team2_score']));
+
+				$msg = "<br>New game added!<br>";
+			}
+			catch (Exception $e)
+			{
+				$msg = "<br>Error creating!<br>";
+			}
     }
   echo $msg ;
   include 'listGames.php';
