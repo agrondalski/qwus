@@ -1420,7 +1420,8 @@ sub outputPlayerPieCharts
                 );
     my @data = (\@weaponList, \@stats);
     my $graph = GD::Graph::pie->new(250,175);
-    $graph->set(title       => "Frags by " . $player->name             
+    $graph->set(title       => "Frags by " . $player->name . " (" 
+     . $player->frags . ")"            
 		) or warn $graph->error;
  
     my $image = $graph->plot(\@data); # or warn $graph->error;
