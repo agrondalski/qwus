@@ -1012,7 +1012,7 @@ foreach $string (@strings)
         my $bottomColor = $';
         while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
         $bottomColor =~ s/\s+$//;
-        $team->color($bottomColor);
+ #       $team->color($bottomColor);
         $player->bottomColor($bottomColor);
       }
       if ($string =~ m/\\topcolor\\/)
