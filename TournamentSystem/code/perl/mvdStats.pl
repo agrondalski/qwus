@@ -1292,11 +1292,11 @@ sub outputForm
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
    
-     $imagePath = outputTeamScoreGraph(590, 480);
+     $imagePath = outputTeamScoreGraph(575, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
-     $imagePath = outputPlayerScoreGraph(590, 480);
+     $imagePath = outputPlayerScoreGraph(575, 480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
@@ -1419,10 +1419,8 @@ sub outputPlayerPieCharts
                  $player->lightningFrags()
                 );
     my @data = (\@weaponList, \@stats);
-    my $graph = GD::Graph::pie->new(300,175);
-    $graph->set(title       => "Frags by " . $player->name
-             
-             
+    my $graph = GD::Graph::pie->new(250,175);
+    $graph->set(title       => "Frags by " . $player->name             
 		) or warn $graph->error;
  
     my $image = $graph->plot(\@data); # or warn $graph->error;
