@@ -307,7 +307,7 @@ class util
       return levenshtein($s1, $s2) ;
     }
 
-  public static function playerMatch($a1, $a2)
+  public static function stringMatch($a1, $a2)
     {
       if (!is_array($a1) || !is_array($a2) || count($a1)>count($a2))
 	{

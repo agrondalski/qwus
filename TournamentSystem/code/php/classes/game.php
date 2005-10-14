@@ -167,6 +167,11 @@ class game
       $f = new file($a) ;
     }
 
+  public function addScreenshot($loc)
+    {
+
+    }
+
   public function getFiles()
     {
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;

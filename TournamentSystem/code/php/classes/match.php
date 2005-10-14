@@ -222,14 +222,6 @@ class match
 
       $this->update('match_date', util::curdate()) ;
 
-      /* //mvd tmp fix start
-      $t1 = $a['team1'] ;
-      $t2 = $a['team2'] ;
-      $a['team1'] = $t2 ;
-      $a['team2'] = $t1 ;
-      // mvd tmp fix end
-      */
-
       $teams = $this->getTeams() ;
       $team1 = $teams[0] ;
       $team2 = $teams[1] ;
@@ -237,7 +229,6 @@ class match
       $team_stat_header = explode('\\\\', $a['teamStats']) ;
       $team1_stats_arr = explode('\\\\', $a['team1']) ;
       $team2_stats_arr = explode('\\\\', $a['team2']) ;
-      $teams = array($team1_stats[0], $team2_stats[0]) ;
 
       for($cnt=0; $cnt<count($team_stat_header); $cnt++)
 	{
@@ -247,10 +238,32 @@ class match
 	  $team2_stats[$h] = $team2_stats_arr[$cnt] ;
 	}
 
-      if ($team1_stats['Matched']==0 || $team2_stats['Matched']==0)
-	  {
-	    util::throwException('unable to match teams') ;
-	  }
+      $teamMatch = util::stringMatch(array($team1_stats['Name'], $team2_stats['Name']),
+				     array($team1->getValue('name_abbr'), $team2->getValue('name_abbr'))) ;
+
+      // If needed swap the teams
+      if ($teamMatch[$team1->getValue('name_abbr')]==$team2_stats['Name'])
+	{
+	  $t1 = $a['team1'] ;
+	  $t2 = $a['team2'] ;
+	  $a['team1'] = $t2 ;
+	  $a['team2'] = $t1 ;
+
+	  $t1 = $a['team1players'] ;
+	  $t2 = $a['team2players'] ;
+	  $a['team1players'] = $t2 ;
+	  $a['team2players'] = $t1 ;
+
+	  $t1 = $team1_stats_arr ;
+	  $t2 = $team2_stats_arr ;
+	  $team1_stats_arr = $t2 ;
+	  $team2_stats_arr = $t1 ;
+
+	  $t1 = $team1_stats ;
+	  $t2 = $team2_stats ;
+	  $team1_stats = $t2 ;
+	  $team2_stats = $t1 ;
+	}
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
 
@@ -327,7 +340,7 @@ class match
 	    }
 	}
 
-      $team1_player_match = util::playerMatch($team1_game_players, $team1_names) ;
+      $team1_player_match = util::stringMatch($team1_game_players, $team1_names) ;
       $team1_names = array_flip($team1_names) ;
 
       for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
@@ -392,7 +405,7 @@ class match
 	    }
 	}
 
-      $team2_player_match = util::playerMatch($team2_game_players, $team2_names) ;
+      $team2_player_match = util::stringMatch($team2_game_players, $team2_names) ;
       $team2_names = array_flip($team2_names) ;
 
       for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
