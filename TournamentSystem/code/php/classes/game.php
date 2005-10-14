@@ -225,6 +225,8 @@ class game
 	  return null ;
 	}
 
+      $this->deleteScreenshot() ;
+
       $map   = $this->getMap() ;
       $m     = $this->getMatch() ;
       $t     = $m->getTourney() ;
