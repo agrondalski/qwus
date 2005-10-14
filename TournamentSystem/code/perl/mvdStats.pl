@@ -1312,63 +1312,22 @@ sub outputForm
        $teamNumber++;
      }
    
-     my $imagePath = outputTeamScoreGraph(200, 150);
+     my $imagePath = outputTeamScoreGraph(320, 200);
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
    
-     $imagePath = outputTeamScoreGraph(800, 600);
+     $imagePath = outputTeamScoreGraph(640, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
-     $imagePath = outputPlayerScoreGraph(800, 600);
+     $imagePath = outputPlayerScoreGraph(640, 480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
 
    print "\t<input type='hidden' name='playerFields' value='42'>\n";
    Player::outputStatsHeader();
-
-   if (@players > 50) 
-   {
-     #playerMatchup();
-     #outputPlayerPieCharts();
-     #Player::outputStatsHeader();   
-
-     my $t = findTeamNoCreate($teamOneAbbr);
-     my @tPlayers = $t->players;      
-     print "\t<input type='hidden' name='team1players' value='";
-     my $playerC = @tPlayers;
-     my $currentC = 0;
-     foreach $player (@tPlayers)
-     {
-	$currentC++;
-        $player = findPlayer($player);
-        $player->outputStats();
-        my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
-	$imagePath =~ s/\s//g;
-        print $imagePath;
-        if ($currentC < $playerC) { print "\\\\"; }
-     }
-     print "'>\n";
-
-     my $t = findTeamNoCreate($teamTwoAbbr);
-     my @tPlayers = $t->players;
-     print "\t<input type='hidden' name='team2players' value='";
-     $currentC = 0;
-     $playerC = @tPlayers;
-     foreach $player (@tPlayers)
-     {
-         $currentC++;
-         $player = findPlayer($player);
-         $player->outputStats();
-	 my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
-	 $imagePath =~ s/\s//g;
-         print $imagePath;
-         if ($currentC < $playerC) { print "\\\\"; }
-     }
-     print "'>\n";
-   }
-
+  
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
 #   print "<script>\n";
