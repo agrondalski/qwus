@@ -1,12 +1,10 @@
 #!/usr/bin/perl
 
 # todo:
-# optimize
 # ctf msgs
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 # player line graph should check for not null team
-# teammate squish
 
 use CGI qw/:standard/;
 use GD::Graph::lines;
@@ -986,9 +984,13 @@ foreach $string (@strings)
       $name =~ s/\s+$//;
       $team =~ s/\s+$//;
       $player = findPlayer($name);
-      $player->team($team);
-      $team = findTeam($team);
-      $team->addPlayer($name);
+      # should prevent player rejoining game on different team
+      if ($player->team == undef)
+      {
+        $player->team($team);
+        $team = findTeam($team);
+        $team->addPlayer($name);
+      }
       if ($string =~ m/\\bottomcolor\\/)
       {
         my $bottomColor = $';
