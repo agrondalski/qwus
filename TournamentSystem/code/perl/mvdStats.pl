@@ -1406,10 +1406,17 @@ sub outputTeamScoreGraph
 
 sub outputPlayerPieCharts
 {
-  @weaponList = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
+#  @weaponList = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
   foreach $player (@players)
   { 
    if ($player->graphedFrags < 1) { next; }
+    my @weaponList = ("SG\n" . $player->shotgunFrags(),
+                      "SSG\n" . $player->ssgFrags(),
+                      "NG\n" . $player->nailgunFrags(),
+                      "SNG\n" . $player->sngFrags(),
+                      "GL\n" . $player->grenadeFrags(),
+                      "RL\n" . $player->rocketFrags(),
+                      "LG\n" . $player->lightningFrags());
     my @stats = ($player->shotgunFrags(),
                  $player->ssgFrags(),
                  $player->nailgunFrags(),
