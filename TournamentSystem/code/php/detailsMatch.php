@@ -73,7 +73,7 @@ foreach ($m->getGames() as $g)
   $t2out = "<a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t2->getValue('team_id')."'>".$t2->getValue('name')."</a>";
   $map = new map(array('map_id'=>$g->getValue('map_id')));
 
-  $gameout .= "<tr><td align=center>".$map->getValue('map_abbr')."<br>";
+  $gameout .= "<tr><td align=center><b>".$map->getValue('map_name')."&nbsp;(".$map->getValue('map_abbr').")</b><br>";
   $gameout .= "<table border=0 cellspacing=4 cellpadding=0 width=75%>";
   $gameout .= "<tr><td align=center>".$t1out."</td>";
   $gameout .= "<td align=center>".$t2out."</td></tr>";
