@@ -70,7 +70,7 @@ try
 					}
 					try 
 					{
-						//$g->addScreenshot($uploadfile);
+					  $g->addScreenshot($uploadfile);
 					}
 					catch (Exception $e) 
 					{

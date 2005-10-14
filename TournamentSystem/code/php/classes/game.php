@@ -208,8 +208,9 @@ class game
 	  return null ;
 	}
 
-      $map = $this->getMap() ;
-      $m = $this->getMatch() ;
+      $map   = $this->getMap() ;
+      $m     = $this->getMatch() ;
+      $t     = $m->getTourney() ;
       $teams = $m->getTeams() ;
       $team1 = $teams[0] ;
       $team2 = $teams[1] ;
