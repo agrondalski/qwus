@@ -985,7 +985,7 @@ foreach $string (@strings)
       $team =~ s/\s+$//;
       $player = findPlayer($name);
       # should prevent player rejoining game on different team
-      if ($player->team eq undef)
+      if ($player->team == undef)
       {
         if (@teams < 2)
         {
