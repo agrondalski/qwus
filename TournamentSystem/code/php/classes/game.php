@@ -201,6 +201,23 @@ class game
       $f = new file($a) ;
     }
 
+  public function getScreenshot($fileloc)
+    {
+      $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
+
+      $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s' and f.file_desc='%s'",
+			 $this->game_id, $ftype, util::SCREENSHOT) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row=mysql_fetch_row($result))
+	{
+	  $arr = new file(array('file_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function addScreenshot($fileloc)
     {
       if (util::isNull($fileloc) || !is_string($fileloc))
@@ -242,6 +259,24 @@ class game
 
       mysql_free_result($result) ;
       return $arr ;
+    }
+
+  public function deleteScreenshot()
+    {
+      $ss = $this->getScreenshot() ;
+
+      if (util::isNull($ss))
+	{
+	  return ;
+	}
+
+      $t  = $this->getTourney() ;
+
+      $dest_root_dir = $t->getTourneyRoot() . util::SLASH . $this->getFileDirectory() ;
+      $html_root_dir = $t->getTourneyRootHtml() . util::SLASH . $this->getFileDirectory() ;
+
+      util::delete_files(str_replace($html_root_dir, $dest_root_dir, $ss->getValue('url'))) ;
+      $ss->delete() ;
     }
 
   public function getTeamPlayers($team_id)
