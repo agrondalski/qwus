@@ -985,11 +985,23 @@ foreach $string (@strings)
       $team =~ s/\s+$//;
       $player = findPlayer($name);
       # should prevent player rejoining game on different team
-      if ($player->team == undef)
+      if ($player->team eq undef)
       {
-        $player->team($team);
-        $team = findTeam($team);
-        $team->addPlayer($name);
+        if (@teams < 2)
+        {
+	  $team = findTeam($team);
+          $team->addPlayer($name);
+          $player->team($team);
+        }
+        else
+        {
+	   my $t = findTeamNoCreate($team);
+           if ($t != null)
+           {
+	      $t->addPlayer($name);
+              $player->team($t);
+           }
+        }
       }
       if ($string =~ m/\\bottomcolor\\/)
       {
