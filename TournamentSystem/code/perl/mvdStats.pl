@@ -840,9 +840,9 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) squished a teammate/)
   {
-print $string;
-    $fragger = findPlayer($1);
-    $fragger->teamKills($fragger->teamKills() + 1);
+# doesnt effect score?
+#    $fragger = findPlayer($1);
+#    $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) squishes (.*)/)
   {
@@ -1132,31 +1132,6 @@ sub findTeamNoCreate
   return null;
 }
 
-sub playerMatchup
-{
-  @teamOnePlayers = split('\\\\', $teamOnePlayers);
-  @teamTwoPlayers = split('\\\\', $teamTwoPlayers);
-
-  foreach $team (@teams)
-  {
-    my @teamPlayers = $team->players;
-    foreach $player (@teamPlayers)
-    {
-      $player = findPlayerNoCreate($player);      
-    }
-  }
-
- # my $team = findTeamNoCreate($teamOneAbbr);
- # if ($team != null)
- # {
- #   my @teamPlayers = $team->players;
- #   foreach $player (@teamPlayers)
- #   {
- #   }
- # }
-  
-}
-
 sub teamMatchup
 {
   my $teamOneFound = 0;
@@ -1254,7 +1229,6 @@ sub outputForm
    if (@teams > 1 && @players > 0)
    {
      outputPlayerPieCharts();
-
      teamMatchup();
      
      print "\t<input type='hidden' name='teamStats' value='";
@@ -1382,12 +1356,12 @@ sub outputTeamScoreGraph
       push(@{$pointData[0]}, $i);
       if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
       { 
-        push(@{$pointData[1]}, $graphTeamOneScore[$i] - $graphTeamTwoScore[$i]);
+        push(@{$pointData[1]}, $graphTeamOneScore[$i]-$graphTeamTwoScore[$i]);
         push(@{$pointData[2]}, undef);
       }
       else
       {
-        push(@{$pointData[2]}, $graphTeamTwoScore[$i] - $graphTeamOneScore[$i]);
+        push(@{$pointData[2]}, $graphTeamTwoScore[$i]-$graphTeamOneScore[$i]);
         push(@{$pointData[1]}, undef);
       }
     }
@@ -1405,7 +1379,6 @@ sub outputTeamScoreGraph
 
 sub outputPlayerPieCharts
 {
-#  @weaponList = ("SG", "SSG", "NG", "SNG", "GL", "RL", "LG");
   foreach $player (@players)
   { 
    if ($player->graphedFrags < 1) { next; }
