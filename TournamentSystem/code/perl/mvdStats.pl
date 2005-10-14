@@ -1422,7 +1422,7 @@ sub outputPlayerPieCharts
     my $graph = GD::Graph::pie->new(250,175);
     $graph->set(title       => "Frags by " . $player->name . " (" 
      . $player->frags . ")") or warn $graph->error;
-    my @colorArray = qw(red orange blue dgreen dyellow cyan marine purple);
+    my @colorArray = qw(lred orange purple dgreen dyellow cyan marine);
     $graph->set(dclrs => [@colorArray]);
  
     my $image = $graph->plot(\@data); # or warn $graph->error;
