@@ -1292,11 +1292,11 @@ sub outputForm
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
    
-     $imagePath = outputTeamScoreGraph(575, 480);
+     $imagePath = outputTeamScoreGraph(550, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
-     $imagePath = outputPlayerScoreGraph(575, 480);
+     $imagePath = outputPlayerScoreGraph(550, 480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
