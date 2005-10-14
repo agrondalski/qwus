@@ -1280,7 +1280,6 @@ sub outputForm
 
      teamMatchup();
      
-
      print "\t<input type='hidden' name='teamStats' value='";
      print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
 
@@ -1316,11 +1315,11 @@ sub outputForm
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
    
-     $imagePath = outputTeamScoreGraph(640, 480);
+     $imagePath = outputTeamScoreGraph(590, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
-     $imagePath = outputPlayerScoreGraph(640, 480);
+     $imagePath = outputPlayerScoreGraph(590, 480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
