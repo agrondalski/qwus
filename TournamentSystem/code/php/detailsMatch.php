@@ -75,9 +75,9 @@ foreach ($m->getGames() as $g)
 
   $gameout .= "<tr><td align=center><b>".$map->getValue('map_name')."&nbsp;(".$map->getValue('map_abbr').")</b><br>";
   $gameout .= "<table border=0 cellspacing=4 cellpadding=0 width=75%>";
-  $gameout .= "<tr><td align=center>".$t1out."</td>";
+  $gameout .= "<tr><td align=center width=50%>".$t1out."</td>";
   $gameout .= "<td align=center>".$t2out."</td></tr>";
-  $gameout .= "<tr><td align=center>".$g->getValue('team1_score')."</td>";
+  $gameout .= "<tr><td align=center width=50%>".$g->getValue('team1_score')."</td>";
   $gameout .= "<td align=center>".$g->getValue('team2_score')."</td></tr>";
   $gameout .= "</table>";
 	
