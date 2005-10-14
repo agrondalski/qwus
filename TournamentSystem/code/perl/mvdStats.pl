@@ -1409,13 +1409,13 @@ sub outputPlayerPieCharts
   foreach $player (@players)
   { 
    if ($player->graphedFrags < 1) { next; }
-    my @weaponList = ("SG - " . $player->shotgunFrags(),
-                      "SSG - " . $player->ssgFrags(),
-                      "NG - " . $player->nailgunFrags(),
-                      "SNG - " . $player->sngFrags(),
-                      "GL - " . $player->grenadeFrags(),
-                      "RL - " . $player->rocketFrags(),
-                      "LG - " . $player->lightningFrags());
+    my @weaponList = ("SG " . $player->shotgunFrags(),
+                      "SSG " . $player->ssgFrags(),
+                      "NG " . $player->nailgunFrags(),
+                      "SNG " . $player->sngFrags(),
+                      "GL " . $player->grenadeFrags(),
+                      "RL " . $player->rocketFrags(),
+                      "LG " . $player->lightningFrags());
     my @stats = ($player->shotgunFrags(),
                  $player->ssgFrags(),
                  $player->nailgunFrags(),
@@ -1426,8 +1426,10 @@ sub outputPlayerPieCharts
                 );
     my @data = (\@weaponList, \@stats);
     my $graph = GD::Graph::pie->new(250,175);
-    $graph->set(title       => "Frags by " . $player->name . " (" 
-     . $player->frags . ")") or warn $graph->error;
+    $graph->set(title => "Frags by " . $player->name . " (" . $player->frags 
+                         . ")",
+                suppress_angle => 3
+    ) or warn $graph->error;
     my @colorArray = qw(lred orange purple dgreen dyellow cyan marine);
     $graph->set(dclrs => [@colorArray]);
  
