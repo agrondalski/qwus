@@ -201,9 +201,30 @@ class game
       $f = new file($a) ;
     }
 
-  public function addScreenshot($loc)
+  public function addScreenshot($fileloc)
     {
+      if (util::isNull($fileloc) || !is_string($fileloc))
+	{
+	  return null ;
+	}
 
+      $map = $this->getMap() ;
+      $m = $this->getMatch() ;
+      $teams = $m->getTeams() ;
+      $team1 = $teams[0] ;
+      $team2 = $teams[1] ;
+
+      $dest_root_dir = $t->getTourneyRoot() . util::SLASH . $this->getFileDirectory() ;
+      $html_root_dir = $t->getTourneyRootHtml() . util::SLASH . $this->getFileDirectory() ;
+
+      $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $this->game_id ;
+
+      $pinfo = pathinfo($fileloc) ;
+      $new_ss_name = $prefix . '_ss.' . $pinfo['extension'] ;
+      if (rename($fileloc, $dest_root_dir . util::SLASH . $new_ss_name))      
+	{
+	  $this->addFile(array('file_desc'=>util::SCREENSHOT, 'url'=>$html_root_dir . util::SLASH . $new_ss_name)) ;
+	}
     }
 
   public function getFiles()
