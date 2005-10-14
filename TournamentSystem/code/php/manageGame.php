@@ -108,11 +108,11 @@ try
 		echo "<br><b>Current Screenshot:</b>";
 		echo "<table border=1 cellpadding=2 cellspacing=0>";
 		echo "<tr><th>URL</th><th>View</th></tr>";
-		$files = $g->getFiles();
-		if ($files != "") 
+		$ss = $g->getScreenshot();
+		if (!util::isNull($ss)) 
 		{
-			echo "<tr><td>",$files[util::SCREENSHOT]->getValue('url'),"</td><td>";
-			echo "<a target=_blank href='",$files[util::SCREENSHOT]->getValue('url'),"'>View</a></td></tr>";
+			echo "<tr><td>",$ss->getValue('url'),"</td><td>";
+			echo "<a target=_blank href='",$ss->getValue('url'),"'>View</a></td></tr>";
 		}	
 		echo "</table>";		
 		
