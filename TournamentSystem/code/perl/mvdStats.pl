@@ -1235,32 +1235,9 @@ sub teamMatchup
       }
     }
   }
-  else # we give up, just set team with most points to winningTeamAbbr 
+  else #Doh 
   {
-# zz need winning team for GAME not match.
-    print "no match\n";
-    my $teamC = 0;
-    foreach $team (@teams)
-    {
-       if ($teamC == 0)
-       {
-	 $teamC++;
-	 $winningTeam = $team;
-       }
-       elsif ($team->points > $winningTeam->points)
-       {
-	 $winningTeam = $team;
-       }
-    }
-    $winningTeam->name($winningTeamAbbr);
-    my $losingTeamAbbr = undef;
-    if ($winningTeamAbbr eq $teamOneAbbr) { $losingTeamAbbr = $teamTwoAbbr }
-    else { $losingTeamAbbr = $teamOneAbbr } 
-    foreach $team (@teams)
-    {
-       if ($team->name ne $winningTeamAbbr) { $team->name($losingTeamAbbr) }
-       $team->approved(1);
-    }
+#    print "no match\n";
   }
 }
 
