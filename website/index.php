@@ -227,7 +227,8 @@ echo '
 </TR>
 <TR>
 	<TD></TD>
-	<TD class="madeby">website owned and operated by <a href="mailto:ultimo@quakeworld.us">ult</a></TD>
+	<TD class="madeby">website design by <A href="http://www.arcsin.se/">Arcsin Webdesign</A></TD>
+</TR>
 </TABLE>
 </BODY>
 </HTML>
