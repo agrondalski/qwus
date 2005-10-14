@@ -1326,8 +1326,7 @@ sub outputPlayerScoreGraph
     }
   }
   my $graph = GD::Graph::lines->new($x,$y);
-  $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")\
-",
+  $graph->set(title => $teamOneName ." vs ". $teamTwoName . " (" . $map . ")",
               x_label => "time",
               x_label_position => .5,
               y_label => "score",
@@ -1410,13 +1409,13 @@ sub outputPlayerPieCharts
   foreach $player (@players)
   { 
    if ($player->graphedFrags < 1) { next; }
-    my @weaponList = ("SG\n" . $player->shotgunFrags(),
-                      "SSG\n" . $player->ssgFrags(),
-                      "NG\n" . $player->nailgunFrags(),
-                      "SNG\n" . $player->sngFrags(),
-                      "GL\n" . $player->grenadeFrags(),
-                      "RL\n" . $player->rocketFrags(),
-                      "LG\n" . $player->lightningFrags());
+    my @weaponList = ("SG - " . $player->shotgunFrags(),
+                      "SSG - " . $player->ssgFrags(),
+                      "NG - " . $player->nailgunFrags(),
+                      "SNG - " . $player->sngFrags(),
+                      "GL - " . $player->grenadeFrags(),
+                      "RL - " . $player->rocketFrags(),
+                      "LG - " . $player->lightningFrags());
     my @stats = ($player->shotgunFrags(),
                  $player->ssgFrags(),
                  $player->nailgunFrags(),
