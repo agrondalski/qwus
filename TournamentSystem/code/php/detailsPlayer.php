@@ -62,10 +62,10 @@ echo "<td>",$info['games_won'],"-",$info['games_lost'],"</td>";
 echo "<td nowrap>",$info['frag_diff'],"</td>";
 echo "</tr></table>";
 
-echo "<br><b>Recent Games</b><br>";
+echo "<br><b>Games Played</b><br>";
 //echo "<table>" ;
 
-foreach($player->getRecentGames($tid, array('limit'=>10)) as $g)
+foreach($player->getGamesPlayed($tid) as $g)
 {
   $m = $g->getMatch() ;
   $teams = $m->getTeams() ;

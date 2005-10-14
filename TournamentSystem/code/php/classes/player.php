@@ -278,7 +278,7 @@ class player
 	}
     }
 
-  public function getRecentGames($tid, $l)
+  public function getGamesPlayed($tid)
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
@@ -294,11 +294,6 @@ class player
       while ($row=mysql_fetch_row($result))
 	{
 	  $arr[] = new game(array('game_id'=>$row[0])) ;
-	}
-
-      if (is_array($l) && is_integer($l['limit']))
-	{
-	  $arr = array_slice($arr, 0, $l['limit']) ;
 	}
 
       mysql_free_result($result) ;
