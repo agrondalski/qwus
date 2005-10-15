@@ -52,6 +52,7 @@ class util
   const FRAG_DIFF    = 'frag_diff' ;
   const GAMES_WON    = 'games_won' ;
   const GAMES_LOST   = 'games_lost' ;
+  const AVG_SCORE    = 'avg_score';
   const FRAGS_PER_GAME  = 'frags_per_game';
   
   const DEFAULT_DATE = '0000-00-00' ;

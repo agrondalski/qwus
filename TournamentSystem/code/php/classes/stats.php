@@ -405,7 +405,19 @@ class stats
 	    }
 	  else
 	    {
-	      $arr[$pid][$row[1]] += $row[2] ;
+	      if ($row[1]!=util::FRAG_STREAK)
+		{
+		  $arr[$pid][$row[1]] += $row[2] ;
+		}
+	      else
+		{
+		  print $arr[$pid][$row[1]] ;
+		  if ($row[2]>$arr[$pid][$row[1]])
+		    {
+
+		      $arr[$pid][$row[1]] = $row[2] ;
+		    }
+		}
 	    }
 	}
 

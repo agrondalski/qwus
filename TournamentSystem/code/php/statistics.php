@@ -54,7 +54,14 @@ try
     {
       if ($page == "main")
 	{
-	  $sort = util::FRAGS_PER_GAME ;
+	  if ($show_player==1)
+	    {
+	      $sort = util::FRAGS_PER_GAME ;
+	    }
+	  else
+	    {
+	      $sort = util::AVG_SCORE ;
+	    }
 	}
       elseif ($page == "frags")
 	{
@@ -200,7 +207,7 @@ try
       else
 	{
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::AVG_SCORE,"'>F/G</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::EFFICIENCY,"'>Eff</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_DEATHS,"'>Deaths</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE,"'>Score</a></th>";
@@ -210,7 +217,16 @@ try
   elseif ($page == 'frags')
     {
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
+
+      if ($show_plaer==1)
+	{
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
+	}
+      else
+	{
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::AVG_SCORE,"'>F/G</a></th>";
+	}
+
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::AX_FRAGS,"'>Axe</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SG_FRAGS,"'>SG</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SSG_FRAGS,"'>SSG</a></th>";
@@ -282,11 +298,11 @@ try
     {
       if ($division_id == "-1") 
 	{
-	  $arr = $t->getSortedTeamStats(array($sort, $sortOrder, util::FRAGS_PER_GAME, SORT_DESC), $map_id);
+	  $arr = $t->getSortedTeamStats(array($sort, $sortOrder, util::AVG_SCORE, SORT_DESC), $map_id);
 	}
       else 
 	{
-	  $arr = $div->getSortedTeamStats(array($sort, $sortOrder, util::FRAGS_PER_GAME, SORT_DESC), $map_id);
+	  $arr = $div->getSortedTeamStats(array($sort, $sortOrder, util::AVG_SCORE, SORT_DESC), $map_id);
 	}
     }
 
@@ -315,6 +331,8 @@ try
 	  echo "<td nowrap>",util::nvl($player['games_played'],0),"</td>";
 	}
      
+      //var_dump($player) ;
+
       if ($page == 'main')
 	{  
 	  if ($show_player==1)
@@ -331,7 +349,7 @@ try
 	  else
 	    {
 	      echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
-	      echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
+	      echo "<td nowrap>",util::nvl($player[util::AVG_SCORE],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::EFFICIENCY], 0),"</td>";				
 	      echo "<td nowrap>",util::nvl($player[util::TOTAL_DEATHS],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::SCORE],0),"</td>";
@@ -341,7 +359,16 @@ try
       elseif ($page == 'frags')
 	{
 	  echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
-	  echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
+
+	  if ($show_player==1)
+	    {
+	      echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
+	    }
+	  else
+	    {
+	      echo "<td nowrap>",util::nvl($player[util::AVG_SCORE],0),"</td>";
+	    }
+
 	  echo "<td nowrap>",util::nvl($player[util::AX_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::SG_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::SSG_FRAGS],0),"</td>";
