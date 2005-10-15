@@ -380,11 +380,12 @@ class match
 		    }
 		  else
 		    {
+		      print ":(" ;
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
 
-	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
+	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
@@ -445,11 +446,12 @@ class match
 		    }
 		  else
 		    {
+		      print ":(" ;
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
 
-	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && $s!=0)
+	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
