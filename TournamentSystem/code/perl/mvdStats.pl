@@ -1417,8 +1417,8 @@ sub outputPlayerPieCharts
                 );
     my @data = (\@weaponList, \@stats);
     my $graph = GD::Graph::pie->new(250,175);
-    $graph->set(title => "Frags by " . $player->name . " (" . $player->frags 
-                         . ")",
+    $graph->set(title => "Frags by " . $player->name . " (" . 
+                         $player->graphedFrags . ")",
                 suppress_angle => 3
     ) or warn $graph->error;
     my @colorArray = qw(lred orange purple dgreen dyellow cyan marine);
