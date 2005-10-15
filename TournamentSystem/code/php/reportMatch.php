@@ -196,14 +196,14 @@ try
       $t2 = $teams[1] ;
 
       $db_winning_team_id = $m->getValue('winning_team_id') ;
-      if ($db_winning_team_id==$t1->getValue('team_id'))
+      if ($db_winning_team_id==$t2->getValue('team_id'))
 	{
-	  $winning_team_abbr = $t1->getValue('name_abbr') ;
+	  $winning_team_abbr = $t2->getValue('name_abbr') ;
 	  $team1_sel = "selected" ;
 	}
       else
 	{
-	  $winning_team_abbr = $t2->getValue('name_abbr') ;
+	  $winning_team_abbr = $t1->getValue('name_abbr') ;
 	  $team2_sel = "selected" ;
 	}
 
