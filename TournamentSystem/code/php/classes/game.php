@@ -318,7 +318,7 @@ class game
     {
       $team_id = team::validateColumn($team_id, 'team_id') ;
 
-      $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s'", $this->game_id, $team_id, util::SCORE) ;
+      $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s' order by value desc", $this->game_id, $team_id, util::SCORE) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))
