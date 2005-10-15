@@ -89,56 +89,39 @@ $gameout .= "</tr></table>";
 echo $gameout ;
 
 echo "<br><b>Extra Stats:</b>";
-//echo "<table border=0 cellpadding=0 cellspacing=0 align=center><tr><td>";
-//$tbl = 0;
+echo "<table border=1 cellpadding=3 cellspacing=0>";
+echo "<tr bgcolor='#999999'><th>Statistic</th><th>Team</th><th>Player</th><th>Value</th></tr>";
 $rank = 0;
-$first = true;
-$currentStat = "";
+$first = false ;
+$currentStat = null;
 foreach ($g->getStats(array('stat_name', SORT_ASC, 'value', SORT_DESC)) as $s) 
 {	
   $rank++;
-	$tm = new team(array('team_id'=>$s->getValue('team_id')));
-	$p = new player(array('player_id'=>$s->getValue('player_id')));
-	if ($first == true)
-	{
-		echo "<table border=1 cellpadding=2 cellspacing=0>";
-		echo "<tr bgcolor='#999999'><th>Team</th><th>Player</th><th>",$s->getValue('stat_name'),"</th></tr>";
-		$first = false;
-	}
-	else
-	{
-		if ($currentStat != $s->getValue('stat_name')) 
-		{
-			echo "</table><br>";
-			//$tbl++;
-			//if ($tbl == 2)
-			//{
-				//echo "</td></tr><tr><td>";
-				//$tbl = 0;
-			//}
-			//else
-			//{
-				//echo "</td><td>";
-			//}
-			echo "<table border=1 cellpadding=2 cellspacing=0>";
-			echo "<tr bgcolor='#999999'><th>Team</th><th>Player</th><th>",$s->getValue('stat_name'),"</th></tr>";
-		}
-	}
-	$currentStat = $s->getValue('stat_name');
+  $tm = new team(array('team_id'=>$s->getValue('team_id')));
+  $p = new player(array('player_id'=>$s->getValue('player_id')));
 
-	if ($rank % 2 == 1) 
-	{
-		$clr = "#CCCCCC";
-	}
-	else
-	{
-		$clr = "#C0C0C0";
-	}
-	echo "<tr bgcolor='$clr'>";
-	echo "<td>",$tm->getValue('name_abbr'),"</td>";
-	echo "<td>",$p->getValue('name'),"</td>";
-	echo "<td>",$s->getValue('value'),"</td>";
-	echo "</tr>";			
+  if ($rank % 2 == 1) 
+    {
+      $clr = "#CCCCCC";
+    }
+  else
+    {
+      $clr = "#C0C0C0";
+    }
+
+  if ($currentStat != $s->getValue('stat_name')) 
+    {
+      $currentStat = $s->getValue('stat_name');
+      echo "<tr bgcolor='$clr'><td><b>" . $s->getValue('stat_name') . "</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>" ;
+      $clr = ++$rank%2==1 ? $clr="#CCCCCC" : $clr="#C0C0C0" ;
+    }
+  
+  echo "<tr bgcolor='$clr'>";
+  echo "<td>&nbsp;</td>";
+  echo "<td>",$tm->getValue('name_abbr'),"</td>";
+  echo "<td>",$p->getValue('name'),"</td>";
+  echo "<td>",$s->getValue('value'),"</td>";
+  echo "</tr>";			
 }
 
 echo "</table>";

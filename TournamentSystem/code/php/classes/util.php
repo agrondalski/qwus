@@ -9,6 +9,7 @@ class util
 
   const NAME         = 'Name' ;
   const SCORE        = 'Score' ;
+  const RANK         = 'Rank' ;
   const EFFICIENCY   = 'Efficiency' ;
   const MATCHED      = 'Matched' ;
   const TOTAL_DEATHS = 'TotalDeaths' ;

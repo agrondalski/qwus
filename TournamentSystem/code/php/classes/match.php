@@ -379,7 +379,8 @@ class match
 		    }
 		}
 
-	      elseif ($k2!=util::NAME && $k2!=util::MATCHED && ($s!=0 || $k2==util::SCORE))
+	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&
+		      ($s!=0 || $k2==util::SCORE || $k2==util::RANK))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
@@ -441,7 +442,8 @@ class match
 		    }
 		}
 
-	      elseif ($k2!=util::NAME && $k2!=util::MATCHED && ($s!=0 || $k2==util::SCORE))
+	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&
+		      ($s!=0 || $k2==util::SCORE || $k2==util::RANK))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}

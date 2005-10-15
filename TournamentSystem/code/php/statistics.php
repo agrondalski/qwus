@@ -64,7 +64,7 @@ try
   echo "<table border=1 cellpadding=4 cellspacing=0>\n";
   echo "<tr bgcolor='#999999'>";
   echo "<th>#</th>";
-  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=name'>Name</a></th>";
+  //echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=name'>Name</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=team_name'>Team</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=division_name'>Div</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=games_played'>GP</a></th>";
@@ -97,8 +97,6 @@ try
   foreach ($arr as $player)
     {
       $count += 1;
-      //$loc = new location(array('location_id'=>$player['location_id']));
-      //$loc_name = $loc->getValue('country_name') ;
       if ($count % 2 == 1) 
 	{
 	  $clr = "#CCCCCC";
@@ -113,8 +111,7 @@ try
       echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$player['team_id'],"&amp;player_id=",$player['player_id'],"'>";
       echo $player['name'],"</a></td>\n";
       echo "<td nowrap><a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$player['team_id'],"'>",$player['team_name'],"</a></td>";
-      echo "<td nowrap>",$player['division_name'],"</td>";
-      //echo "\t<td>",$loc_name,"</td>\n";
+      //echo "<td nowrap>",$player['division_name'],"</td>";
       echo "<td nowrap>",$player['games_played'],"</td>";
       echo "<td nowrap>",$player['frags_per_game'],"</td>";
       echo "<td nowrap>",util::nvl($player['Efficiency'], 0),"</td>";

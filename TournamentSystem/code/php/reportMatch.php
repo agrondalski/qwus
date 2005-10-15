@@ -199,12 +199,12 @@ try
       if ($db_winning_team_id==$t2->getValue('team_id'))
 	{
 	  $winning_team_abbr = $t2->getValue('name_abbr') ;
-	  $team1_sel = "selected" ;
+	  $team2_sel = "selected" ;
 	}
       else
 	{
 	  $winning_team_abbr = $t1->getValue('name_abbr') ;
-	  $team2_sel = "selected" ;
+	  $team1_sel = "selected" ;
 	}
 
       if (!util::isNull($winning_team_id))
