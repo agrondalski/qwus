@@ -379,7 +379,7 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%s' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
+                                where s.stat_name!='%sX' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
                                   and ms.division_id=d.division_id %s %s and d.tourney_id=pi.tourney_id and s.player_id=pi.player_id and s.team_id=tm.team_id
                                   and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s %s",
 			       util::SCORE, $player_query_s, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d,
@@ -390,7 +390,7 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m
-                                where s.stat_name!='%s' %s %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true",
+                                where s.stat_name!='%sX' %s %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true",
 			       util::SCORE, $player_query_s, $map_query_g) ;
 	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -656,7 +656,7 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%s' %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
+                                where s.stat_name!='%sX' %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
                                   and ms.division_id=d.division_id and s.player_id=pi.player_id and d.tourney_id=pi.tourney_id and s.team_id=tm.team_id
                                   and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
 			       util::SCORE, $player_query_s, $game_query_g, $map_query_g, $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
@@ -665,7 +665,7 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value, g.map_id
                                 from stats s, game g, match_table m
-                                where s.stat_name!='%s' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
+                                where s.stat_name!='%sX' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
 			       util::SCORE, $player_query_s, $map_query_g) ;
 	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

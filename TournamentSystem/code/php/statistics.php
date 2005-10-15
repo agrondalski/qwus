@@ -196,13 +196,13 @@ try
       if ($show_player==1)
 	{
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>AS</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::EFFICIENCY,"'>Eff</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_DEATHS,"'>Deaths</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE,"'>Score</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GAMES_WON,"'>Record with</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GAMES_WON,"'>RW</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_DIFF,"'>+/-</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_STREAK,"'>FStreak</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_STREAK,"'>FS</a></th>";
 	}
       else
 	{
