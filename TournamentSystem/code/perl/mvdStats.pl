@@ -1012,7 +1012,6 @@ foreach $string (@strings)
         my $bottomColor = $';
         while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
         $bottomColor =~ s/\s+$//;
- #       $team->color($bottomColor);
         $player->bottomColor($bottomColor);
       }
       if ($string =~ m/\\topcolor\\/)
@@ -1298,9 +1297,9 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-#   print "<script>\n";
-#   print "document.stats.submit();\n";
-#   print "</script>\n";
+   print "<script>\n";
+   print "document.stats.submit();\n";
+   print "</script>\n";
 }
 
 sub outputPlayerScoreGraph
@@ -1310,12 +1309,9 @@ sub outputPlayerScoreGraph
   my @data = (\@graphTime);
   foreach $player (@players)
   { 
- #   if ($player->team != undef)
-    {
-      my @scoreArray = $player->scoreArray();
-      push(@data, \@scoreArray); 
-      push(@legendPlayers, $player->name);
-    }
+    my @scoreArray = $player->scoreArray();
+    push(@data, \@scoreArray); 
+    push(@legendPlayers, $player->name);
   }
   my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title => $teamOneName ." vs ". $teamTwoName . " (" . $map . ")",
