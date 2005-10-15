@@ -85,7 +85,7 @@ foreach ($m->getGames() as $g)
   if (array_key_exists(util::SCREENSHOT, $files))
     {
       $file = $files[util::SCREENSHOT]->getValue('url') ;
-      $gameout .= "<img src='" . $file . "'><p>";
+      $gameout .= "<img src='" . $file . "' width=300 height=100><p>";
     }
   else
     {
