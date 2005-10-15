@@ -35,7 +35,7 @@ if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 {
   $file = $files[util::TEAM_SCORE_GRAPH_LARGE]->getValue('url') ;
   $gameout .= "<b>Team Scores:</b> (number is current lead)";
-  $gameout .= "<img src='" . $file . "'>";
+  $gameout .= "<img src='" . $file . "' alt=''>";
   $gameout .= "<br><br>";
 }
 
@@ -44,7 +44,7 @@ if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
 {	
   $file = $files[util::PLAYER_SCORE_GRAPH]->getValue('url') ; 
   $gameout .= "<b>Player Scores:</b>";
-  $gameout .= "<img src='" . $file . "'>";
+  $gameout .= "<img src='" . $file . "' alt=''>";
   $gameout .= "<br><br><br>";
 }
 
@@ -75,7 +75,7 @@ foreach($teams as $t)
 
       if (!util::isNull($file))
 	{
-	  $gameout .= "<img src='" . $file . "'><p>";      
+	  $gameout .= "<img src='" . $file . "' alt=''><p>";
 	}
       else
 	{
