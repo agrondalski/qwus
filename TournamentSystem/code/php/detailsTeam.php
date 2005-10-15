@@ -50,6 +50,7 @@ echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;s
 echo "<th>Location</th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=games_played'>GP</a></th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=frags_per_game'>F/G</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=Efficiency'>Eff</a></th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=total_frags'>Frags</a></th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=games_won'>Record with</a></th>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=frag_diff'>+/-</a></th>";
@@ -99,6 +100,7 @@ foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_gam
   echo "\t<td>",$loc_name,"</td>\n";
   echo "<td nowrap>",$player['games_played'],"</td>";
   echo "<td nowrap>",$player['frags_per_game'],"</td>";
+  echo "<td nowrap>",$player['Efficiency'],"</td>";
   echo "<td nowrap>",$player['total_frags'],"</td>";
   echo "<td nowrap>",$player['games_won'],"-",$player['games_lost'],"</td>";
   echo "<td nowrap>",$player['frag_diff'],"</td>";

@@ -30,7 +30,7 @@ echo $tm->getValue('name'),"</a><p></p>";
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<tr bgcolor='#999999'>";
-echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Frags</th><th>Record with</th><th>+/-</th>";
+echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Eff</th><th>Frags</th><th>Record with</th><th>+/-</th>";
 
 // List player info
 echo "<tr bgcolor='#CCCCCC'><td>";
@@ -57,6 +57,7 @@ $info = $player->getTourneyStats($tid);
 echo "\t<td>",$loc_name,"</td>\n";
 echo "<td>",$info['games_played'],"</td>";
 echo "<td>",$info['frags_per_game'],"</td>";
+echo "<td>",$info[util::EFFICIENCY],"</td>";
 echo "<td>",$info['total_frags'],"</td>";
 echo "<td>",$info['games_won'],"-",$info['games_lost'],"</td>";
 echo "<td nowrap>",$info['frag_diff'],"</td>";
