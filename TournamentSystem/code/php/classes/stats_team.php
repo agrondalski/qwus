@@ -349,7 +349,7 @@ class stats_team
 		    $arr[$tmid]['losing_streak'] = $cur_losing_streak ;
 		  }
 
-		$arr[$tmid]['num_games'] = $num_games ;		
+		$arr[$tmid]['games_played'] = $num_games ;
 		$arr[$tmid]['max_score'] = $max_score ;
 		$arr[$tmid]['min_score'] = $min_score ;
 		$arr[$tmid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
@@ -471,7 +471,7 @@ class stats_team
 	  $arr[$tmid]['losing_streak'] = $cur_losing_streak ;
 	}
       
-      $arr[$tmid]['num_games'] = $num_games ;		
+      $arr[$tmid]['games_player'] = $num_games ;		
       $arr[$tmid]['max_score'] = $max_score ;
       $arr[$tmid]['min_score'] = $min_score ;
       $arr[$tmid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
@@ -696,7 +696,7 @@ class stats_team
 		    $arr[$tmid . '-' . $mid]['losing_streak'] = $cur_losing_streak ;
 		  }
 
-		$arr[$tmid . '-' . $mid]['num_games'] = $num_games ;		
+		$arr[$tmid . '-' . $mid]['games_played'] = $num_games ;		
 		$arr[$tmid . '-' . $mid]['max_score'] = $max_score ;
 		$arr[$tmid . '-' . $mid]['min_score'] = $min_score ;
 		$arr[$tmid . '-' . $mid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
@@ -785,7 +785,7 @@ class stats_team
 	      $arr[$tmid . '-' . $mid]['losing_streak'] = $cur_losing_streak ;
 	    }
       
-	  $arr[$tmid . '-' . $mid]['num_games'] = $num_games ;		
+	  $arr[$tmid . '-' . $mid]['games_played'] = $num_games ;		
 	  $arr[$tmid . '-' . $mid]['max_score'] = $max_score ;
 	  $arr[$tmid . '-' . $mid]['min_score'] = $min_score ;
 	  $arr[$tmid . '-' . $mid]['avg_score'] = util::choose($num_games!=0, $frags_for / $num_games, 0) ;

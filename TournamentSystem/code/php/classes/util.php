@@ -54,6 +54,9 @@ class util
   const GAMES_LOST   = 'games_lost' ;
   const AVG_SCORE    = 'avg_score';
   const FRAGS_PER_GAME  = 'frags_per_game';
+  const MINUTESPLAYED   = 'MinutesPlayed' ;
+  const MINUTESWITHLEAD = 'MinutesWithLead' ;
+
   
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;
