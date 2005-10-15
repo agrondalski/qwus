@@ -399,7 +399,7 @@ sub deaths
   (
     $self->axDeaths() + $self->shotgunDeaths() +
     $self->ssgDeaths() + $self->nailgunDeaths() +
-    $self->sngDeaths() + $self->grenadeFrags() +
+    $self->sngDeaths() + $self->grenadeDeaths() +
     $self->rocketDeaths() + $self->lightningDeaths() + 
     $self->dischargeDeaths() + $self->squishDeaths() +
     $self->selfKills() + $self->teleDeaths()
