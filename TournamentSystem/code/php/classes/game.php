@@ -82,6 +82,11 @@ class game
 		  util::throwException($col . ' cannot be null') ;
 		}
 	  
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
 	      return util::mysql_real_escape_string($val) ;
 	    }
 	}
@@ -93,6 +98,11 @@ class game
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -103,6 +113,11 @@ class game
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
       
@@ -113,6 +128,11 @@ class game
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
       
@@ -123,6 +143,11 @@ class game
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -236,6 +261,16 @@ class game
 
       $dest_root_dir = $t->getTourneyRoot() . util::SLASH . $this->getFileDirectory() ;
       $html_root_dir = $t->getTourneyRootHtml() . util::SLASH . $this->getFileDirectory() ;
+
+      // Create the required directory
+      if (!is_dir($dest_root_dir))
+	{
+	  if (!util::mkdir($dest_root_dir))
+	    {
+	      $g->deleteAll() ;
+	      util::throwException('unable to create required directory') ;
+	    }
+	}
 
       $pinfo = pathinfo($fileloc) ;
       $new_ss_name = $pinfo['basenmame'] ;
@@ -391,6 +426,8 @@ class game
 
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+
+      $m->setWinningTeam() ;
     }
 }
 ?>

@@ -174,7 +174,9 @@ class match
   public function addGame($a)
     {
       $a['match_id'] = $this->match_id ;
-      $m = new game($a) ;
+      $g = new game($a) ;
+
+      $this->setWinningTeam() ;
     }
 
   public function addGameWithStats($a)
@@ -214,11 +216,6 @@ class match
       $idx = util::findBestMatch($maps_abbr, $a['map']) ;
 
       $map = new map(array('map_id'=>$idx)) ;
-
-      if ($a['winning_team_id'] == $team1_id || $a['winning_team_id'] == $team2_id)
-	{
-	  $this->update('winning_team_id', $a['winning_team_id']) ;
-	}
 
       $this->update('match_date', util::curdate()) ;
 
@@ -282,7 +279,7 @@ class match
 
       foreach($team1_stats as $k=>$ts)
 	{
-	  if ($k!=util::SCORE && $k!='Name' && $k!='Matched')
+	  if ($k!=util::SCORE && $k!=util::NAME && $k!=util::MATCHED)
 	    {
 	      $g->addTeamStat(array('team_id'=>$this->team1_id, 'stat_name'=>$k,  'value'=>$ts)) ;
 	    }
@@ -290,7 +287,7 @@ class match
 
       foreach($team2_stats as $k=>$ts)
 	{
-	  if ($k!=util::SCORE && $k!='Name' && $k!='Matched')
+	  if ($k!=util::SCORE && $k!=util::NAME && $k!=util::MATCHED)
 	    {
 	      $g->addTeamStat(array('team_id'=>$this->team2_id, 'stat_name'=>$k, 'value'=>$ts)) ;
 	    }
@@ -381,7 +378,7 @@ class match
 		    }
 		}
 
-	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
+	      elseif ($k2!=util::NAME && $k2!=util::MATCHED && ($s!=0 || $k2==util::SCORE))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
@@ -443,7 +440,7 @@ class match
 		    }
 		}
 
-	      elseif ($k2!='Name' && $k2!='Matched' && $k2!='Efficiency' && ($s!=0 || $k2==util::SCORE))
+	      elseif ($k2!=util::NAME && $k2!=util::MATCHED && ($s!=0 || $k2==util::SCORE))
 		{
 		  $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$s)) ;
 		}
@@ -478,6 +475,8 @@ class match
 	{
 	  $g->addFile(array('file_desc'=>util::PLAYER_SCORE_GRAPH, 'url'=>$html_root_dir . util::SLASH . $new_psg_name)) ;
 	}
+
+      $this->setWinningTeam() ;
     }
 
   public function addComment($a)
@@ -518,6 +517,37 @@ class match
 
       mysql_free_result($result) ;
       return $arr ;
+    }
+
+  public function setWinningTeam()
+    {
+      $team1_wins = 0 ;
+      $team2_wins = 0 ;
+
+      foreach($this->getGames() as $g)
+	{
+	  if ($g->getValue('team1_score')>$g->getValue('team2_score'))
+	    {
+	      $team1_wins++ ;
+	    }
+	  else
+	    {
+	      $team2_wins++ ;
+	    }
+	}
+
+      if ($team1_wins > $team2_wins)
+	{
+	  $this->update('winning_team_id', $this->team1_id) ;
+	}
+      elseif ($team1_wins < $team2_wins)
+	{
+	  $this->update('winning_team_id', $this->team2_id) ;
+	}
+      else
+	{
+	  $this->update('winning_team_id', null) ;
+	}
     }
 
   public function getGames()
@@ -597,13 +627,16 @@ class match
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update match_table set %s=%d where match_id=%d", $col, $this->$col, $this->match_id) ;
+	  $sql_str = sprintf("update match_table set %s=%d where match_id=%d", $col, util::nvl($this->$col, 'null'), $this->match_id) ;
+	}
+      elseif ($col='winning_team_id')
+	{
+	  $sql_str = sprintf("update match_table set %s=%s where match_id=%d", $col, util::nvl($this->$col, 'null'), $this->match_id) ;
 	}
       else
 	{
 	  $sql_str = sprintf("update match_table set %s='%s' where match_id=%d", $col, $this->$col, $this->match_id) ;
 	}
-
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       $this->$col = $val ;
     }

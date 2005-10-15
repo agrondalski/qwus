@@ -129,7 +129,7 @@ class team
 	      util::throwException($col . ' cannot be null') ;
 	    }
 
-	  if (!util::isNull($val) && !is_numeric($val))
+	  if (!is_numeric($val))
 	    {
 	      util::throwException($col . ' is not a numeric value') ;
 	    }

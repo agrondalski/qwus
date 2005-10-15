@@ -225,7 +225,9 @@ try
     {
       // Try to save the match
       $m = new match(array('match_id'=>$match_id));
-      $m->update('winning_team_id', $winning_team_id);
+
+      // This will be computed as games are added
+      //$m->update('winning_team_id', $winning_team_id);
 
       if (!util::isLoggedInAsTeam())
 	{

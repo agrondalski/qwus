@@ -119,6 +119,11 @@ class stats
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -127,6 +132,11 @@ class stats
 	  if (util::isNull($val))
 	    {
 	      util::throwException($col . ' cannot be null') ;
+	    }
+
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
 	    }
 	  
 	  return util::mysql_real_escape_string($val) ;
@@ -180,7 +190,6 @@ class stats
 	  if (!util::isNull($a['team_id']))
 	    {
 	      $tm = team::validateColumn($a['team_id'], 'team_id') ;
-	      $career = false ;
 
 	      $team_query_tm  = ' and tm.team_id=' . $tm ;
 	      $team_query_s   = ' and s.team_id=' . $tm ;
@@ -216,7 +225,7 @@ class stats
                                     where s.stat_name='%s' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id
                                       and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join player p using (player_id),
                                    player_info pi, tourney_info ti, team tm, division d
-                              where p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
+                              where p.player_id=pi.player_id and pi.team_id=ti.team_id and pi.tourney_id=ti.tourney_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
                               order by p.player_id, s.match_id",
 			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d,
 			     $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
@@ -229,7 +238,7 @@ class stats
                               from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id
                                     from stats s, game g, match_table m
-                                    where s.stat_name='%s' %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id),
+                                    where s.stat_name='%s' %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id)
                               where 1=1 %s
                               order by p.player_id, s.match_id",
 			     util::SCORE, util::SCORE, $player_query_s, $player_query_p) ;
@@ -392,6 +401,28 @@ class stats
 	    }
 	}
 
+      foreach ($arr as $k=>$p)
+	{
+	  if (util::isNull($p[util::TOTAL_FRAGS]))
+	    {
+	      $p[util::TOTAL_FRAGS] = 0 ;
+	    }
+
+	  if (util::isNull($p[util::TOTAL_DEATHS]))
+	    {
+	      $p[util::TOTAL_DEATHS] = 0 ;
+	    }
+
+	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=01)
+	    {
+	      $arr[$k][util::EFFICIENCY] = round(($p[util::TOTAL_FRAGS]/($p[util::TOTAL_FRAGS]+$p[util::TOTAL_DEATHS]))*100, 2) ;
+	    }
+	  else
+	    {
+	      $arr[$k][util::EFFICIENCY] = 0 ;
+	    }
+	}
+
       mysql_free_result($result) ;
       return $arr ;
     }
@@ -480,10 +511,10 @@ class stats
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, maps mp
                                     where s.stat_name='%s' %s %s and s.game_id=g.game_id %s %s and g.map_id=mp.map_id and g.match_id=m.match_id
-                                     and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s, player p,
+                                     and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right out join player p using (player_id),
                                    player_info pi, tourney_info ti, team tm, division d
-                              where s.player_id=p.player_id and p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and
-                                    pi.team_id=ti.team_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
+                              where p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and
+                                    ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
                               order by p.player_id, s.map_id",
 			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g,
 			     $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
@@ -497,7 +528,7 @@ class stats
                               from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id, mp.map_id, mp.map_name
                                     from stats s, game g, match_table m, maps mp
-                                    where s.stat_name='%s' %s and s.game_id=g.game_id and %s g.map_id=mp.map_id and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id),
+                                    where s.stat_name='%s' %s and s.game_id=g.game_id and %s g.map_id=mp.map_id and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id)
                               where 1=1 %s
                               order by p.player_id, s.map_id",
 			     util::SCORE, util::SCORE, $player_query_s, $map_query_g, $player_query_p) ;
@@ -607,7 +638,7 @@ class stats
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
                                 where s.stat_name!='%s' %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
-                                  and ms.division_id=d.division_id and d.tourney_id=pi.tourney_id and s.player_id=pi.player_id and s.team_id=tm.team_id
+                                  and ms.division_id=d.division_id and s.player_id=pi.player_id and d.tourney_id=pi.tourney_id and s.team_id=tm.team_id
                                   and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
 			       util::SCORE, $player_query_s, $game_query_g, $map_query_g, $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
 	}
@@ -632,6 +663,28 @@ class stats
 	  else
 	    {
 	      $arr[$pid . '-' . $mid][$row[1]] += $row[2] ;
+	    }
+	}
+
+      foreach ($arr as $k=>$p)
+	{
+	  if (util::isNull($p[util::TOTAL_FRAGS]))
+	    {
+	      $p[util::TOTAL_FRAGS] = 0 ;
+	    }
+
+	  if (util::isNull($p[util::TOTAL_DEATHS]))
+	    {
+	      $p[util::TOTAL_DEATHS] = 0 ;
+	    }
+
+	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=01)
+	    {
+	      $arr[$k][util::EFFICIENCY] = round(($p[util::TOTAL_FRAGS]/($p[util::TOTAL_FRAGS]+$p[util::TOTAL_DEATHS]))*100, 2) ;
+	    }
+	  else
+	    {
+	      $arr[$k][util::EFFICIENCY] = 0 ;
 	    }
 	}
 

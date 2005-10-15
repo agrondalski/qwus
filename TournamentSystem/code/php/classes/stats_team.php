@@ -117,6 +117,11 @@ class stats_team
 	      util::throwException($col . ' cannot be null') ;
 	    }
 	  
+	  if (!is_numeric($val))
+	    {
+	      util::throwException($col . ' is not a numeric value') ;
+	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 
@@ -479,7 +484,7 @@ class stats_team
 	  $sql_str = sprintf("select s.team_id, s.stat_name, s.value
                               from stats s, game g, match_table m, match_schedule ms, division d, tourney_info ti
                               where s.stat_name!='%s' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true
-                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s and s.team_id=ti.team_id %s %s %s",
+                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=ti.tourney_id %s %s and s.team_id=ti.team_id %s %s %s",
 			     util::SCORE, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d, $tourney_query_ti, $division_query_ti, $team_query_tm) ;
 	}
       else
@@ -512,7 +517,7 @@ class stats_team
 	  $sql_str = sprintf("select st.team_id, st.stat_name, st.value
                               from stats_team st, game g, match_table m, match_schedule ms, division d, tourney_info ti
                               where st.stat_name!='%s' and st.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true
-                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s and st.team_id=ti.team_id %s %s %s",
+                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=ti.tourney_id %s %s and st.team_id=ti.team_id %s %s %s",
 			     util::SCORE, $game_query_g, $tourney_query_d, $division_query_d, $tourney_query_ti, $division_query_ti, $team_query_st) ;
 	}
       else
@@ -535,6 +540,28 @@ class stats_team
 	  else
 	    {
 	      $arr[$tid][$row[1]] += $row[2] ;
+	    }
+	}
+
+      foreach ($arr as $k=>$t)
+	{
+	  if (util::isNull($t[util::TOTAL_FRAGS]))
+	    {
+	      $t[util::TOTAL_FRAGS] = 0 ;
+	    }
+
+	  if (util::isNull($t[util::TOTAL_DEATHS]))
+	    {
+	      $t[util::TOTAL_DEATHS] = 0 ;
+	    }
+
+	  if ($t[util::TOTAL_FRAGS]!=0 || $t[util::TOTAL_DEATHS]!=01)
+	    {
+	      $arr[$k][util::EFFICIENCY] = round(($t[util::TOTAL_FRAGS]/($t[util::TOTAL_FRAGS]+$t[util::TOTAL_DEATHS]))*100, 2) ;
+	    }
+	  else
+	    {
+	      $arr[$k][util::EFFICIENCY] = 0 ;
 	    }
 	}
 
@@ -769,7 +796,7 @@ class stats_team
 	  $sql_str = sprintf("select s.team_id, s.stat_name, s.value, g.map_id
                               from stats s, game g, match_table m, match_schedule ms, division d, tourney_info ti
                               where s.stat_name!='%s' and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true
-                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %d %d s.team_id=ti.team_id %s %s %s",
+                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=ti.tourney_id %d %d s.team_id=ti.team_id %s %s %s",
 			     util::SCORE, $game_query_g, $map_query_g, $tourney_query_d, $division_query_d, $tourney_query_ti, $division_query_ti, $team_query_tm) ;
 	}
       else
@@ -803,7 +830,7 @@ class stats_team
 	  $sql_str = sprintf("select st.team_id, st.stat_name, st.value, g.map_id
                               from stats_team st, game g, match_table m, tourney_info ti
                               where st.stat_name!='%s' and st.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true
-                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s and st.team_id=ti.team_id %s %s %s",
+                                and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=ti.tourney_id %s %s and st.team_id=ti.team_id %s %s %s",
 			     util::SCORE, $game_query_g, $map_query_g, $tourney_query_d, $division_query_d, $tourney_query_ti, $division_query_to, $team_query_st) ;
 	}
       else
@@ -830,6 +857,27 @@ class stats_team
 	    }
 	}
 
+      foreach ($arr as $k=>$t)
+	{
+	  if (util::isNull($t[util::TOTAL_FRAGS]))
+	    {
+	      $t[util::TOTAL_FRAGS] = 0 ;
+	    }
+
+	  if (util::isNull($t[util::TOTAL_DEATHS]))
+	    {
+	      $t[util::TOTAL_DEATHS] = 0 ;
+	    }
+
+	  if ($t[util::TOTAL_FRAGS]!=0 || $t[util::TOTAL_DEATHS]!=01)
+	    {
+	      $arr[$k][util::EFFICIENCY] = round(($t[util::TOTAL_FRAGS]/($t[util::TOTAL_FRAGS]+$t[util::TOTAL_DEATHS]))*100, 2) ;
+	    }
+	  else
+	    {
+	      $arr[$k][util::EFFICIENCY] = 0 ;
+	    }
+	}
       mysql_free_result($result) ;
       return $arr ;
     }

@@ -7,7 +7,12 @@ class util
   const FOUND    = 1 ;
   const NOTFOUND = 0 ;
 
-  const SCORE = 'Score' ;
+  const NAME         = 'Name' ;
+  const SCORE        = 'Score' ;
+  const EFFICIENCY   = 'Efficiency' ;
+  const MATCHED      = 'Matched' ;
+  const TOTAL_DEATHS = 'TotalDeaths' ;
+  const TOTAL_FRAGS  = 'TotalFrags' ;
 
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;

@@ -337,6 +337,10 @@ class news
 	{
 	  $sql_str = sprintf("update news set %s=%d where news_id=%d", $col, $this->$col, $this->news_id) ;
 	}
+      elseif ($col=='id')
+	{
+	  $sql_str = sprintf("update news set %s=%s where news_id=%d", $col, util::nvl($this->$col, 'null'), $this->news_id) ;
+	}
       else
 	{
 	  $sql_str = sprintf("update news set %s='%s' where news_id=%d", $col, $this->$col, $this->news_id) ;

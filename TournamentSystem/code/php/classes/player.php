@@ -285,7 +285,7 @@ class player
       $sql_str = sprintf("select g.game_id, s.value, s.team_id, mp.map_abbr, t.name, m.team1_id, g.team1_score, g.team2_score
                           from stats s, game g, match_table m, match_schedule ms, division d, maps mp, team t
                           where s.player_id=%d and s.stat_name='%s' and s.game_id=g.game_id and g.match_id=m.match_id
-                            and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d and g.map_id=mp.map_id
+                            and m.approved=1 and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id and d.tourney_id=%d and g.map_id=mp.map_id
                             and (m.team1_id=t.team_id or m.team2_id=t.team_id) and t.team_id!=s.team_id
                           order by m.match_date desc, m.match_id desc, g.game_id desc",
 			 $this->player_id, util::SCORE, $tid) ;

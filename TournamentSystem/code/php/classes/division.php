@@ -113,6 +113,7 @@ class division
 	    {
 	      util::throwException($col . ' cannot be null') ;
 	    }
+
 	  return util::mysql_real_escape_string($val) ;
 	}
 

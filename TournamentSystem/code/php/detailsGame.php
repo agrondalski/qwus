@@ -24,22 +24,29 @@ $files = $g->getFiles() ;
 
 $gameout .= "<a href='?a=detailsMatch&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "'>Match Details</a><p>";
 
-if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
+if (util::isNull($files))
 {
-	$file = $files[util::TEAM_SCORE_GRAPH_LARGE]->getValue('url') ;
+  echo $gameout ;
+  echo 'No details available<p>' ;
+  util::throwException('No Details') ;
 }
 
-$gameout .= "<b>Team Scores:</b> (number is current lead)";
-$gameout .= "<img src='" . $file . "'>";
-$gameout .= "<br><br>";
+if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
+{
+  $file = $files[util::TEAM_SCORE_GRAPH_LARGE]->getValue('url') ;
+  $gameout .= "<b>Team Scores:</b> (number is current lead)";
+  $gameout .= "<img src='" . $file . "'>";
+  $gameout .= "<br><br>";
+}
+
 
 if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
 {	
   $file = $files[util::PLAYER_SCORE_GRAPH]->getValue('url') ; 
+  $gameout .= "<b>Player Scores:</b>";
+  $gameout .= "<img src='" . $file . "'>";
+  $gameout .= "<br><br><br>";
 }
-$gameout .= "<b>Player Scores:</b>";
-$gameout .= "<img src='" . $file . "'>";
-$gameout .= "<br><br><br>";
 
 
 $gameout .= "<b>Player frags by weapon:</b>";
@@ -48,7 +55,7 @@ $gameout .= "<tr>";
 $teams = $m->getTeams() ;
 foreach($teams as $t)
 {
-	$gameout .= "<td>";
+  $gameout .= "<td>";
   $players = $g->getTeamPlayers($t->getValue('team_id')) ;
 
   $gameout .= "<b><a href='?a=detailsTeam&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "'>" . $t->getValue('name') . "</a></b><p>";
@@ -133,11 +140,8 @@ foreach ($g->getStats(array('stat_name', SORT_ASC, 'value', SORT_DESC)) as $s)
 	echo "<td>",$s->getValue('value'),"</td>";
 	echo "</tr>";			
 }
+
 echo "</table>";
-//echo "</table>";
 echo "<p>";
 echo "<a href='?a=detailsMatch&amp;tourney_id=" . $tid . "&amp;match_id=" . $m->getValue('match_id'). "'>Match Details</a><p>";
-
-
-
 ?>

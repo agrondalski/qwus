@@ -85,22 +85,34 @@ foreach ($m->getGames() as $g)
   if (array_key_exists(util::SCREENSHOT, $files))
     {
       $file = $files[util::SCREENSHOT]->getValue('url') ;
+      $gameout .= "<img src='" . $file . "'><p>";
     }
-  $gameout .= "<img src='" . $file . "'><p>";
+  else
+    {
+      $gameout .= 'No Screenshot Available<p>' ;
+    }
   
   if (array_key_exists(util::TEAM_SCORE_GRAPH_SMALL, $files))
     {
       $file = $files[util::TEAM_SCORE_GRAPH_SMALL]->getValue('url') ;
+      $gameout .= "<img src='" . $file . "'><p>";
     }
-  $gameout .= "<img src='" . $file . "'><p>";
+  else
+    {
+      $gameout .= 'Not Graph Available<p>' ;
+    }
 
   $gameout .= "<a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Game Details</a><p>";
   
   if (array_key_exists(util::MVD_DEMO, $files))
     {
       $file = $files[util::MVD_DEMO]->getValue('url') ;
+      $gameout .= "<a href='". $file ."'>Demo</a><p>";
     }
-  $gameout .= "<a href='". $file ."'>Demo</a><p>";
+  else
+    {
+      $gameout .= 'No demo available.' ;
+    }
 
   $gameout .= "</td></tr></table>\n";
 }
