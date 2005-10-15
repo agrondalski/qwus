@@ -194,11 +194,11 @@ catch(Exception $e) {}
 <?php
 if (!util::isNull($_REQUEST['tourney_id']))
 {
-  $l = '&tourney_id=' . $_REQUEST['tourney_id'] ;
+  $l = '&amp;tourney_id=' . $_REQUEST['tourney_id'] ;
 }
 elseif (!util::isNull($_REQUEST['column']))
 {
-  $l = '&column=' . $_REQUEST['column'] ;
+  $l = '&amp;column=' . $_REQUEST['column'] ;
 }
 echo '			      
 				<TR>

@@ -69,20 +69,20 @@ foreach($teams as $t)
 
       $file = null ;
       if (array_key_exists($piechart, $files))
-			{
-				$file = $files[$piechart]->getValue('url') ;
-			}
+	{
+	  $file = $files[$piechart]->getValue('url') ;
+	}
 
-					if (!util::isNull($file))
-			{
-				$gameout .= "<img src='" . $file . "'><p>";      
-			}
-					else
-			{
-				$gameout .= "No Chart Available<p>" ;
-			}
+      if (!util::isNull($file))
+	{
+	  $gameout .= "<img src='" . $file . "'><p>";      
+	}
+      else
+	{
+	  $gameout .= "No Chart Available<p>" ;
+	}
     }
-    $gameout .= "</td>";
+    $gameout .= "</td><td>&nbsp;</td>";
 }
 $gameout .= "</tr></table>";
 
