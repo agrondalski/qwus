@@ -195,16 +195,20 @@ try
       $t1 = $teams[0] ;
       $t2 = $teams[1] ;
 
-      if ($winning_team_id==$t1->getValue('team_id'))
+      $db_winning_team_id = $m->getValue('winning_team_id') ;
+      if ($db_winning_team_id==$t1->getValue('team_id'))
 	{
 	  $winning_team_abbr = $t1->getValue('name_abbr') ;
-	  $team1_sel = "selected disabled" ;
-	  $disableMatchChange = "disabled" ;
+	  $team1_sel = "selected" ;
 	}
-      elseif ($winning_team_id==$t2->getValue('team_id'))
+      else
 	{
 	  $winning_team_abbr = $t2->getValue('name_abbr') ;
-	  $team2_sel = "selected disabled" ;
+	  $team2_sel = "selected" ;
+	}
+
+      if (!util::isNull($winning_team_id))
+	{
 	  $disableMatchChange = "disabled" ;
 	}
 

@@ -176,7 +176,7 @@ class match
       $a['match_id'] = $this->match_id ;
       $g = new game($a) ;
 
-      $this->setWinningTeam() ;
+      $this->syncMatchInfo() ;
     }
 
   public function addGameWithStats($a)
@@ -476,7 +476,7 @@ class match
 	  $g->addFile(array('file_desc'=>util::PLAYER_SCORE_GRAPH, 'url'=>$html_root_dir . util::SLASH . $new_psg_name)) ;
 	}
 
-      $this->setWinningTeam() ;
+      $this->syncMatchInfo() ;
     }
 
   public function addComment($a)
@@ -519,7 +519,7 @@ class match
       return $arr ;
     }
 
-  public function setWinningTeam()
+  public function syncMatchInfo()
     {
       $team1_wins = 0 ;
       $team2_wins = 0 ;
@@ -548,6 +548,7 @@ class match
 	{
 	  $this->update('winning_team_id', null) ;
 	  $this->update('match_date', util::DEFAULT_DATE) ;
+	  $this->update('approved', false) ;
 	}
     }
 
@@ -630,7 +631,7 @@ class match
 	{
 	  $sql_str = sprintf("update match_table set %s=%d where match_id=%d", $col, util::nvl($this->$col, 'null'), $this->match_id) ;
 	}
-      elseif ($col='winning_team_id')
+      elseif ($col=='winning_team_id')
 	{
 	  $sql_str = sprintf("update match_table set %s=%s where match_id=%d", $col, util::nvl($this->$col, 'null'), $this->match_id) ;
 	}
@@ -638,6 +639,7 @@ class match
 	{
 	  $sql_str = sprintf("update match_table set %s='%s' where match_id=%d", $col, $this->$col, $this->match_id) ;
 	}
+
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       $this->$col = $val ;
     }
