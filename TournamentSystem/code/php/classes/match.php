@@ -380,7 +380,6 @@ class match
 		    }
 		  else
 		    {
-		      print ":(" ;
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
@@ -446,7 +445,6 @@ class match
 		    }
 		  else
 		    {
-		      print ":(" ;
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
