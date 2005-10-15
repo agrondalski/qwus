@@ -625,9 +625,9 @@ class stats
 	  $arr[$pid . '-' . $mid]['games_played']   = $total_games;
 	  $arr[$pid . '-' . $mid]['total_frags']    = $total_frags;
 	  $arr[$pid . '-' . $mid]['frags_per_game'] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
-	  $arr[$pid . '-' . $mid]['games_won']    = $games_won ;
-	  $arr[$pid . '-' . $mid]['games_lost']   = $games_lost ;
-	  $arr[$pid . '-' . $mid]['frag_diff']    = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1). 0) ;
+	  $arr[$pid . '-' . $mid]['games_won']      = $games_won ;
+	  $arr[$pid . '-' . $mid]['games_lost']     = $games_lost ;
+	  $arr[$pid . '-' . $mid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
 	}
 
       mysql_free_result($result) ;
