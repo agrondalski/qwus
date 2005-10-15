@@ -838,9 +838,9 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) squished a teammate/)
   {
-# doesnt effect score?
-#    $fragger = findPlayer($1);
-#    $fragger->teamKills($fragger->teamKills() + 1);
+# doesnt effect score?  wrong it does!
+    $fragger = findPlayer($1);
+    $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) squishes (.*)/)
   {
