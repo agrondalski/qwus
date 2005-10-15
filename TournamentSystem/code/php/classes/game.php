@@ -157,9 +157,62 @@ class game
 	}
     }
 
-  public function getStats($a)
+  public function getStats($a, $stat_name)
     {
-      $sql_str = sprintf("select s.* from stats s where s.game_id=%d", $this->game_id) ;
+      if (util::isNull($stat_name))
+	{
+	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d", $this->game_id) ;
+	}
+      else
+	{
+	  $stat_name = stat::validateColumn($stat_name, 'stat_name') ;
+	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d and s.stat_name='%s'", $this->game_id, $stat_name) ;
+	}
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+	  
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getStatsByTeam($a, $team_id, $stat_name)
+    {
+      $team_id = team::validateColumn($team_id, 'team_id') ;
+
+      if (util::isNull($stat_name))
+	{
+	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d and s.team_id=%d", $this->game_id, $team_id) ;
+	}
+      else
+	{
+	  $stat_name = stat::validateColumn($stat_name, 'stat_name') ;
+	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s'", $this->game_id, $team_id, $stat_name) ;
+	}
+
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
