@@ -144,9 +144,12 @@ catch(Exception $e) {}
 			
 				for ($i=0; $i<count($columns); $i++)
 				{
-					$w = $columns[$i] ;
-					print '<TR id="column' . $i. '" class=submenu>
-					<TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . substr($w->getValue("name"), 0, 11) . '</a></TD>
+				  $w = $columns[$i] ;
+				  $d = $w->getLastNewsColumnDate() ;
+				  $name = '<SMALL>' . substr($w->getValue("name") . ' ' . substr($d,5), 0, 15) . '</SMALL>' ;
+
+				  print '<TR id="column' . $i. '" class=submenu>
+                                             <TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . $name . '</a></TD>
 					</TR>';
 				}
 				?>

@@ -358,6 +358,24 @@ class player
       return $arr ;
     }
 
+  public function getLastNewsColumnDate()
+    {
+      $sql_str = sprintf("select news_date from news n where n.writer_id=%d and n.news_type='Column' order by news_date desc, news_id desc", $this->player_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row = mysql_fetch_row($result))
+	{
+	  return $row[0] ;
+	}
+      else
+	{
+	  return null ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTeam($tid)
     {
       $tid = division::validateColumn($tid, 'tourney_id') ;

@@ -4,25 +4,19 @@ TO DO LIST:
   Report Match Page (player stats) : Add Scores for a game w/o mvd, swap players if player matching wasn't correct
 
   Polls
-  Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
 
   Resize Page (so it looks fine in 1024x, 1280x, etc.)
   Fix CSS
 
   script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
  
-  when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
-
-  map stats
-
-  schedule/statistics page should be able to limit by division, week
-
-  schedule page remove games that have already been played ? would improve readability especially later in the season?
+  map/weapon stats & rankings
 
 *Future*:
   Career Player/Teams Stats
-  Weapon Stats
   Auto creation of playoff games/tournament style
+  when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
+  schedule/statistics page should be able to limit by division, week
 
 
 Ongoing
@@ -47,3 +41,5 @@ comments link in news is not valid html
 Report Page integration with mvd stats
 screenshot upload
 improved gameDetails.php page
+Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
+schedule page remove games that have already been played ? would improve readability especially later in the season?
