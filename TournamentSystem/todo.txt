@@ -1,8 +1,7 @@
 TO DO LIST:   
 ------------------------------------------------
 *Current*:
-  Report Match Page (player stats)
-  Report Page integration with mvd stats
+  Report Match Page (player stats) : Add Scores for a game w/o mvd, swap players if player matching wasn't correct
 
   Polls
   Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
@@ -14,10 +13,8 @@ TO DO LIST:
  
   when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
 
-  improved gameDetails.php page
   map stats
 
-  screenshot upload
   schedule/statistics page should be able to limit by division, week
 
   schedule page remove games that have already been played ? would improve readability especially later in the season?
@@ -33,7 +30,6 @@ Ongoing
 Maintain security/privilege checks for added files
 
 
-
 FIXED
 ------------------------------------------------
 Bug #1: Tourney Stats: sorting by name does not work correctly. 
@@ -47,3 +43,7 @@ not sure what the players on the team pages are being sorted by now, but if no g
 many divide by zero warnings\errors in stats.php
 tournaments need to provide link to its news archive
 comments link in news is not valid html
+
+Report Page integration with mvd stats
+screenshot upload
+improved gameDetails.php page
