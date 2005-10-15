@@ -547,6 +547,7 @@ class match
       else
 	{
 	  $this->update('winning_team_id', null) ;
+	  $this->update('match_date', util::DEFAULT_DATE) ;
 	}
     }
 
