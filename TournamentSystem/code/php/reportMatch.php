@@ -144,7 +144,7 @@ try
   $dis = null;
 
   // *** PART 3
-  if (!util::isNull($match_id))
+  if ((!util::isNull($match_id)) && (!util::isNull($div)))
     {
       if (util::isLoggedInAsTeam())
 	{
@@ -221,7 +221,7 @@ try
     }
 
   // *** PART 4
-  if (!util::isNull($winning_team_id))
+  if ((!util::isNull($winning_team_id)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
       // Try to save the match
       $m = new match(array('match_id'=>$match_id));
@@ -271,7 +271,7 @@ try
       echo "</table></form>";
     }
   // *** PART 5
-  if ($_FILES['filename']['size'] != 0) 
+  if (($_FILES['filename']['size'] != 0) && (!util::isNull($winning_team_id)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
       $uploaddir = '/usr/quake/demos/tourney/';
       $uploadfile = $uploaddir . basename($_FILES['filename']['name']);
@@ -287,7 +287,7 @@ try
 		
       if(!preg_match("/.gz$|.mvd$/i", $_FILES['filename']['name'])) 
 	{
-	  echo("You cannot upload this type of file.  It must be an <b>mvd</b> file.");
+	  echo("You cannot upload this type of file.  It must be an <b>mvd or gz</b> file.");
 	  exit();
 	}
 

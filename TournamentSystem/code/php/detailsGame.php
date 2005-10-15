@@ -80,4 +80,64 @@ foreach($teams as $t)
 $gameout .= "</tr></table>";
 
 echo $gameout ;
+
+echo "<br><b>Extra Stats:</b>";
+//echo "<table border=0 cellpadding=0 cellspacing=0 align=center><tr><td>";
+//$tbl = 0;
+$rank = 0;
+$first = true;
+$currentStat = "";
+foreach ($g->getStats(array('stat_name', SORT_ASC, 'value', SORT_DESC)) as $s) 
+{	
+  $rank++;
+	$tm = new team(array('team_id'=>$s->getValue('team_id')));
+	$p = new player(array('player_id'=>$s->getValue('player_id')));
+	if ($first == true)
+	{
+		echo "<table border=1 cellpadding=2 cellspacing=0>";
+		echo "<tr bgcolor='#999999'><th>Team</th><th>Player</th><th>",$s->getValue('stat_name'),"</th></tr>";
+		$first = false;
+	}
+	else
+	{
+		if ($currentStat != $s->getValue('stat_name')) 
+		{
+			echo "</table><br>";
+			//$tbl++;
+			//if ($tbl == 2)
+			//{
+				//echo "</td></tr><tr><td>";
+				//$tbl = 0;
+			//}
+			//else
+			//{
+				//echo "</td><td>";
+			//}
+			echo "<table border=1 cellpadding=2 cellspacing=0>";
+			echo "<tr bgcolor='#999999'><th>Team</th><th>Player</th><th>",$s->getValue('stat_name'),"</th></tr>";
+		}
+	}
+	$currentStat = $s->getValue('stat_name');
+
+	if ($rank % 2 == 1) 
+	{
+		$clr = "#CCCCCC";
+	}
+	else
+	{
+		$clr = "#C0C0C0";
+	}
+	echo "<tr bgcolor='$clr'>";
+	echo "<td>",$tm->getValue('name_abbr'),"</td>";
+	echo "<td>",$p->getValue('name'),"</td>";
+	echo "<td>",$s->getValue('value'),"</td>";
+	echo "</tr>";			
+}
+echo "</table>";
+//echo "</table>";
+echo "<p>";
+echo "<a href='?a=detailsMatch&amp;tourney_id=" . $tid . "&amp;match_id=" . $m->getValue('match_id'). "'>Match Details</a><p>";
+
+
+
 ?>
