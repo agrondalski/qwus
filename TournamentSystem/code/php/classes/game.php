@@ -267,13 +267,12 @@ class game
 	{
 	  if (!util::mkdir($dest_root_dir))
 	    {
-	      $g->deleteAll() ;
 	      util::throwException('unable to create required directory') ;
 	    }
 	}
 
       $pinfo = pathinfo($fileloc) ;
-      $new_ss_name = $pinfo['basenmame'] ;
+      $new_ss_name = $pinfo['basename'] ;
       if (rename($fileloc, $dest_root_dir . util::SLASH . $new_ss_name))      
 	{
 	  $this->addFile(array('file_desc'=>util::SCREENSHOT, 'url'=>$html_root_dir . util::SLASH . $new_ss_name)) ;
