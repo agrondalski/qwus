@@ -411,7 +411,6 @@ class stats
 		}
 	      else
 		{
-		  print $arr[$pid][$row[1]] ;
 		  if ($row[2]>$arr[$pid][$row[1]])
 		    {
 
