@@ -847,7 +847,7 @@ foreach $string (@strings)
     $fraggee = findPlayer($2);
     $fraggee->squishDeaths($fraggee->squishDeaths() + 1);
     $fragger = findPlayer($1);
-    $fraggee->squishFrags($fragger->squishFrags() + 1);
+    $fragger->squishFrags($fragger->squishFrags() + 1);
   }
   elsif ($string =~ /^ visits the Volcano God/)
   {
