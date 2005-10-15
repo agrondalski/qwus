@@ -42,7 +42,7 @@ class util
   const LAVA_BORES   = 'Lava Bores';
   const SLIME_BORES  = 'Slime Bores';
   const WATER_BORES  = 'Water Bores';
-  const FALL_BORES   = 'Fall Bores ';
+  const FALL_BORES   = 'Fall Bores';
   const MISC_BORES   = 'Misc Bores';
   const GL_BORES     = 'Grenade Bores';
   const RL_BORES     = 'Rocket Bores';
