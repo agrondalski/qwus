@@ -263,8 +263,6 @@ class poll
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -272,7 +270,6 @@ class poll
     {
       $sql_str = sprintf("delete from poll where poll_id=%d", $this->poll_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

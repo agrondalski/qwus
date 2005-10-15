@@ -613,8 +613,6 @@ class match
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -622,7 +620,6 @@ class match
     {
       $sql_str = sprintf("delete from match_table where match_id=%d", $this->match_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

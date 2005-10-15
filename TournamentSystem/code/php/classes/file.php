@@ -178,8 +178,6 @@ class file
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -187,7 +185,6 @@ class file
     {
       $sql_str = sprintf("delete from file_table where file_id=%d", $this->file_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

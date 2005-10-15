@@ -343,8 +343,6 @@ class news
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -352,7 +350,6 @@ class news
     {
       $sql_str = sprintf("delete from news where news_id=%d", $this->news_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

@@ -349,8 +349,6 @@ class game
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -358,7 +356,6 @@ class game
     {
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 
   public function deleteAll()
@@ -387,19 +384,15 @@ class game
 
       $sql_str = sprintf("delete from stats where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
 
       $sql_str = sprintf("delete from stats_team where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
 
       $sql_str = sprintf("delete from file_table where id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
 
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

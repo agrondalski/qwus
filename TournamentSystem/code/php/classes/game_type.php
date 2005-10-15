@@ -184,8 +184,6 @@ class game_type
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -193,7 +191,6 @@ class game_type
     {
       $sql_str = sprintf("delete from game_type where game_type_id=%d", $this->game_type_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

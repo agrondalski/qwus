@@ -122,7 +122,7 @@ class player
 
       elseif ($col == 'superAdmin')
 	{
-	  return util::nvl(util::mysql_real_escape_string($val, false)) ;
+	  return util::nvl(util::mysql_real_escape_string($val), false) ;
 	}
 
       elseif ($col == 'location_id')
@@ -457,8 +457,6 @@ class player
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -466,7 +464,6 @@ class player
     {
       $sql_str = sprintf("delete from player where player_id=%d", $this->player_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

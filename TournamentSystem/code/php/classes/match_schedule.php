@@ -190,8 +190,6 @@ class match_schedule
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -199,7 +197,6 @@ class match_schedule
     {
       $sql_str = sprintf("delete from match_schedule where schedule_id=%d", $this->schedule_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

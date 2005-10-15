@@ -46,8 +46,6 @@ class tourney
 
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->tourney_id = mysql_insert_id() ;
-
-      mysql_free_result($result) ;
     }
 
   private function getTourneyInfo()
@@ -593,8 +591,6 @@ class tourney
 
       $sql_str = sprintf("insert into tourney_info(tourney_id, team_id, division_id) values(%d, %d, null)", $this->tourney_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function removeTeam($id)
@@ -611,8 +607,6 @@ class tourney
 
       $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function hasTeam($team_id)
@@ -641,8 +635,6 @@ class tourney
 
       $sql_str = sprintf("update tourney_info set division_id=%d where tourney_id=%d and team_id=%d", $div, $this->tourney_id, $team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function removeTeamFromDiv($team_id, $div)
@@ -652,8 +644,6 @@ class tourney
 
       $sql_str = sprintf("update tourney_info set division_id=null where tourney_id=%d and team_id=%d and division_id=%d", $this->tourney_id, $team_id, $div) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function addMap($mid)
@@ -669,8 +659,6 @@ class tourney
 
       $sql_str = sprintf("insert into tourney_maps(tourney_id, map_id) values(%d, %d)", $this->tourney_id, $mid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function removeMap($mid)
@@ -679,8 +667,6 @@ class tourney
 
       $sql_str = sprintf("delete from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $mid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function hasMap($mid)
@@ -708,8 +694,6 @@ class tourney
 
       $sql_str = sprintf("insert into tourney_admins(tourney_id, player_id) values(%d, %d)", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function removeAdmin($id)
@@ -718,8 +702,6 @@ class tourney
 
       $sql_str = sprintf("delete from tourney_admins where tourney_id=%d and player_id=%d", $this->tourney_id, $id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function hasAdmin($id)
@@ -800,8 +782,6 @@ class tourney
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -809,7 +789,6 @@ class tourney
     {
       $sql_str = sprintf("delete from tourney where tourney_id=%d", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>

@@ -243,7 +243,7 @@ class team
 	}
     }
     
-  public function getPlayers($tid)
+  public function getPlayers($tid, $a)
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
@@ -300,8 +300,6 @@ class team
 	{
 	  $this->updateTeamLeader($tid, $pid) ;
 	}
-      
-      mysql_free_result($result) ;
     }
 
   public function removePlayer($tid, $pid)
@@ -311,8 +309,6 @@ class team
 
       $sql_str = sprintf("delete from player_info where tourney_id=%d and team_id=%d and player_id=%d", $tid, $this->team_id, $pid) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      mysql_free_result($result) ;
     }
 
   public function hasPlayer($tid, $pid)
@@ -400,7 +396,6 @@ class team
 	  }
 	}
 	  
-      
       mysql_free_result($result) ;
       return null ;
     }
@@ -461,8 +456,6 @@ class team
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-      mysql_free_result($result) ;
-
       $this->$col = $val ;
     }
 
@@ -470,7 +463,6 @@ class team
     {
       $sql_str = sprintf("delete from team where team_id=%d", $this->team_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
-      mysql_free_result($result) ;
     }
 }
 ?>
