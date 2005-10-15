@@ -19,6 +19,11 @@ foreach ($t->getDivisions() as $div)
     {
       foreach($ms->getMatches() as $m)
 	{
+	  if ($m->getValue('approved')==1)
+	    {
+	      continue ;
+	    }
+
 	  $cnt += 1;
 	  if ($cnt % 2 == 1) 
 	    {

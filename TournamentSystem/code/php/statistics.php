@@ -69,7 +69,7 @@ try
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=division_name'>Div</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=games_played'>GP</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=frags_per_game'>F/G</a></th>";
-  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=Efficienct'>Eff</a></th>";
+  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=Efficiency'>Eff</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=total_frags'>Frags</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=games_won'>Record with</a></th>";
   echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&amp;sort=frag_diff'>+/-</a></th></tr>";
