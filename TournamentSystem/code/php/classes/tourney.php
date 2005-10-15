@@ -483,14 +483,34 @@ class tourney
       return $arr ;
     }
 
-  public function getMaps()
+  public function getMaps($a)
     {
-      $sql_str = sprintf("select tm.map_id from tourney_maps tm where tm.tourney_id=%d", $this->tourney_id) ;
+      $sql_str = sprintf("select m.* from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id", $this->tourney_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new map(array('map_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -742,15 +762,27 @@ class tourney
 	}
     }
 
-  public function getSortedTeamStats($a)
+  public function getSortedTeamStats($a, $map_id=null)
     {
-      $arr = stats_team::getTeamStats(array('tourney_id'=>$this->tourney_id)) ;
+      if (!util::isNull($map_id) && is_numeric($map_id) && $map_id!=-1)
+	{
+	  $q['map_id'] = $map_id ;
+	}
+
+      $q['tourney_id'] = $this->tourney_id ;
+      $arr = stats_team::getTeamStats($q) ;
       return util::row_sort($arr, $a) ;
     }
 
-  public function getSortedPlayerStats($a)
+  public function getSortedPlayerStats($a, $map_id=null)
     {
-      $arr = stats::getPlayerStats(array('tourney_id'=>$this->tourney_id)) ;
+      if (!util::isNull($map_id) && is_numeric($map_id) && $map_id!=-1)
+	{
+	  $q['map_id'] = $map_id ;
+	}
+
+      $q['tourney_id'] = $this->tourney_id ;
+      $arr = stats::getPlayerStats($q) ;
       return util::row_sort($arr, $a) ;
     }
 

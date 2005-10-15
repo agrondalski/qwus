@@ -407,15 +407,31 @@ class division
 	}
     }
 
-  public function getSortedTeamStats($a)
+  public function getSortedTeamStats($a, $map_id=null)
     {
-      $stats = stats_team::getTeamStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
+      if (!util::isNull($map_id) && is_numeric($map_id) && $map_id!=-1)
+	{
+	  $q['map_id'] = $map_id ;
+	}
+
+      $q['tourney_id'] = $this->tourney_id ;
+      $q['division_id'] = $this->division_id ;
+
+      $stats = stats_team::getTeamStats($q) ;
       return util::row_sort($stats, $a) ;
     }
 
-  public function getSortedPlayerStats($a)
+  public function getSortedPlayerStats($a, $map_id=null)
     {
-      $stats = stats::getPlayerStats(array('division_id'=>$this->division_id, 'tourney_id'=>$this->tourney_id)) ;
+      if (!util::isNull($map_id) && is_numeric($map_id) && $map_id!=-1)
+	{
+	  $q['map_id'] = $map_id ;
+	}
+
+      $q['tourney_id'] = $this->tourney_id ;
+      $q['division_id'] = $this->division_id ;
+
+      $arr = stats::getPlayerStats($q) ;
       return util::row_sort($stats, $a) ;
     }
 
