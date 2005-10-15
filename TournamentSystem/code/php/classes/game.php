@@ -375,7 +375,7 @@ class game
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = new player(array('player_id'=>$row[0])) ;
+	  $arr[$row[0]] = new player(array('player_id'=>$row[0])) ;
 	}
 
       mysql_free_result($result) ;

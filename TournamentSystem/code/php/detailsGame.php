@@ -48,7 +48,6 @@ if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
   $gameout .= "<br><br><br>";
 }
 
-
 $gameout .= "<b>Player frags by weapon:</b>";
 $gameout .= "<table border=0 cellpadding=0 cellspacing=8>";
 $gameout .= "<tr>";
@@ -60,7 +59,7 @@ foreach($teams as $t)
 
   $gameout .= "<b><a href='?a=detailsTeam&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "'>" . $t->getValue('name') . "</a></b><p>";
 
-  foreach($players as $p)
+  foreach($players as $k=>$p)
     {
       $gameout .= "<a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "&amp;player_id=" . $p->getValue('player_id') . "'>" ;
       $gameout .= $p->getValue('name'). "</a><br>";
@@ -89,49 +88,50 @@ $gameout .= "</tr></table>";
 echo $gameout ;
 
 echo "<br><b>Extra Stats:</b>";
-echo "<table border=0 cellpadding=10 cellspacing=0><tr><td>";
-echo "<table border=1 cellpadding=3 cellspacing=0>";
-echo "<tr bgcolor='#999999'><th colspan=3>Statistic</th></tr><tr bgcolor='#999999'><th>Team</th><th>Player</th><th>Value</th></tr>";
-$rank = 0;
-$first = false ;
-$currentStat = null;
-foreach ($g->getStats(array('stat_name', SORT_ASC, 'value', SORT_DESC)) as $s) 
-{	
-  $rank++;
-  $tm = new team(array('team_id'=>$s->getValue('team_id')));
-  $p = new player(array('player_id'=>$s->getValue('player_id')));
+echo "<table border=0 cellpadding=0 cellspacing=8>";
+echo "<tr>";
 
-  if ($rank % 2 == 1) 
-    {
-      $clr = "#CCCCCC";
-    }
-  else
-    {
-      $clr = "#C0C0C0";
-    }
+foreach($teams as $t)
+{
+  $rank = 0;
+  $currentStat = null;
 
-  if ($currentStat != $s->getValue('stat_name')) 
-    {    
-      $currentStat = $s->getValue('stat_name');
-      if ($currentStat == "Score") 
-      {
-      	echo "</table></td><td>";
-		echo "<table border=1 cellpadding=3 cellspacing=0>";
-		echo "<tr bgcolor='#999999'><th colspan=3>Statistic</th></tr><tr bgcolor='#999999'><th>Team</th><th>Player</th><th>Value</th></tr>";
-      }
-      echo "<tr bgcolor='$clr'><td colspan=3 align=center><b>" . $s->getValue('stat_name') . "</b></td></tr>" ;
+  echo "<td>" ;
+  echo "<table border=1 cellpadding=3 cellspacing=0>";
+
+  $clr = ++$rank%2==1 ? $clr="#CCCCCC" : $clr="#C0C0C0" ;
+  echo "<tr bgcolor='$clr'><th colspan=2><b><a href='?a=detailsTeam&amp;tourney_id=" . $tid . "&amp;team_id=" . $t->getValue('team_id') . "'>" . $t->getValue('name') . "</a></b></th></tr>";
+  echo "<tr>" ;
+
+  $tstats = $g->getStatsByTeam(array('stat_name', SORT_ASC, 'value', SORT_DESC), $t->getValue('team_id')) ;
+
+  $players = $g->getTeamPlayers($t->getValue('team_id')) ;
+
+  foreach ($tstats as $s) 
+    {	
+      $p = $players[$s->getValue('player_id')] ;
+     
+      if ($currentStat != $s->getValue('stat_name')) 
+	{    
+	  $currentStat = $s->getValue('stat_name');
+
+	  $clr = ++$rank%2==1 ? $clr="#CCCCCC" : $clr="#C0C0C0" ;
+	  echo "<tr bgcolor='$clr'><td colspan=3 align=center><b>" . $s->getValue('stat_name') . "</b></td></tr>" ;
+	}
+	  
       $clr = ++$rank%2==1 ? $clr="#CCCCCC" : $clr="#C0C0C0" ;
+      echo "<tr bgcolor='$clr'>";
+      echo "<td>",$p->getValue('name'),"</td>";
+      echo "<td>",$s->getValue('value'),"</td>";
+      echo "</tr>";	
     }
-  
-  echo "<tr bgcolor='$clr'>";
-  echo "<td>",$tm->getValue('name_abbr'),"</td>";
-  echo "<td>",$p->getValue('name'),"</td>";
-  echo "<td>",$s->getValue('value'),"</td>";
-  echo "</tr>";			
+
+  echo "</table>";
+  echo "</td><td>&nbsp;</td>" ;
 }
 
-echo "</table>";
-echo "</td></tr></table>";
+echo "</tr></table>" ;
+
 // Second table is the columns table
 
 echo "<p>";
