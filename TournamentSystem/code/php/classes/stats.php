@@ -413,7 +413,7 @@ class stats
 	      $p[util::TOTAL_DEATHS] = 0 ;
 	    }
 
-	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=01)
+	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=0)
 	    {
 	      $arr[$k][util::EFFICIENCY] = round(($p[util::TOTAL_FRAGS]/($p[util::TOTAL_FRAGS]+$p[util::TOTAL_DEATHS]))*100, 2) ;
 	    }
@@ -678,7 +678,7 @@ class stats
 	      $p[util::TOTAL_DEATHS] = 0 ;
 	    }
 
-	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=01)
+	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=0)
 	    {
 	      $arr[$k][util::EFFICIENCY] = round(($p[util::TOTAL_FRAGS]/($p[util::TOTAL_FRAGS]+$p[util::TOTAL_DEATHS]))*100, 2) ;
 	    }
