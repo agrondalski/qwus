@@ -176,6 +176,7 @@ class match
       $a['match_id'] = $this->match_id ;
       $g = new game($a) ;
 
+      $this->update('match_date', util::curdate()) ;
       $this->syncMatchInfo() ;
     }
 
