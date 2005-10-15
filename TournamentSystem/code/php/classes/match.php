@@ -367,11 +367,8 @@ class match
 		{
 		  $p = new player(array('player_id'=>$k1)) ;
 
-		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
-		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
-
 		  $pinfo = pathinfo($s) ;
-		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
+		  $new_file_name = $pinfo['basename'] ;
 
 		  $piechart = $p->getPieChartIdx($g->getValue('game_id')) ;
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
@@ -432,11 +429,8 @@ class match
 		{
 		  $p = new player(array('player_id'=>$k1)) ;
 
-		  $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $p->getValue('player_id') . '_' .
-		    $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
-
 		  $pinfo = pathinfo($s) ;
-		  $new_file_name = $prefix . '_pc.' . $pinfo['extension'] ;
+		  $new_file_name = $pinfo['basename'] ;
 
 		  $piechart = $p->getPieChartIdx($g->getValue('game_id')) ;
 		  if (rename($s, $dest_root_dir . util::SLASH . $new_file_name))
@@ -457,31 +451,29 @@ class match
 	}
 
       // Move the files to their permanent home
-      $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $g->getValue('game_id') ;
-
       $pinfo = pathinfo($a['filename']) ;
-      $new_demo_name = $prefix . '_demo.' . $pinfo['extension'] ;
+      $new_demo_name = $pinfo['basename'] ;
       if (rename($a['filename'], $dest_root_dir . util::SLASH . $new_demo_name))      
 	{
 	  $g->addFile(array('file_desc'=>util::MVD_DEMO, 'url'=>$html_root_dir . util::SLASH . $new_demo_name)) ;
 	}
 
       $pinfo = pathinfo($a['team_score_graph_small']) ;
-      $new_tsgs_name = $prefix . '_tsgs.' . $pinfo['extension'] ;
+      $new_tsgs_name = $pinfo['basename'] ;
       if (rename($a['team_score_graph_small'], $dest_root_dir . util::SLASH . $new_tsgs_name))
 	{
 	  $g->addFile(array(file_desc=>util::TEAM_SCORE_GRAPH_SMALL, url=>$html_root_dir . util::SLASH . $new_tsgs_name)) ;
 	}
 
       $pinfo = pathinfo($a['team_score_graph_large']) ;
-      $new_tsgl_name = $prefix . '_tsgl.' . $pinfo['extension'] ;
+      $new_tsgl_name = $pinfo['basename'] ;
       if (rename($a['team_score_graph_large'], $dest_root_dir . util::SLASH . $new_tsgl_name))
 	{
 	  $g->addFile(array('file_desc'=>util::TEAM_SCORE_GRAPH_LARGE, 'url'=>$html_root_dir . util::SLASH . $new_tsgl_name)) ;
 	}
 
       $pinfo = pathinfo($a['player_score_graph']) ;
-      $new_psg_name = $prefix . '_psg.' . $pinfo['extension'] ;
+      $new_psg_name = $pinfo['basename'] ;
       if (rename($a['player_score_graph'], $dest_root_dir . util::SLASH . $new_psg_name))
 	{
 	  $g->addFile(array('file_desc'=>util::PLAYER_SCORE_GRAPH, 'url'=>$html_root_dir . util::SLASH . $new_psg_name)) ;

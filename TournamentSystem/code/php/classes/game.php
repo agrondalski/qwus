@@ -237,10 +237,8 @@ class game
       $dest_root_dir = $t->getTourneyRoot() . util::SLASH . $this->getFileDirectory() ;
       $html_root_dir = $t->getTourneyRootHtml() . util::SLASH . $this->getFileDirectory() ;
 
-      $prefix = $team1->getValue('name_abbr') . '_' . $team2->getValue('name_abbr') . '_' . $map->getValue('map_abbr') . '_' . $this->match_id . '_' . $this->game_id ;
-
       $pinfo = pathinfo($fileloc) ;
-      $new_ss_name = $prefix . '_ss.' . $pinfo['extension'] ;
+      $new_ss_name = $pinfo['basenmame'] ;
       if (rename($fileloc, $dest_root_dir . util::SLASH . $new_ss_name))      
 	{
 	  $this->addFile(array('file_desc'=>util::SCREENSHOT, 'url'=>$html_root_dir . util::SLASH . $new_ss_name)) ;
