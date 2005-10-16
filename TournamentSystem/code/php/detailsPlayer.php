@@ -30,7 +30,7 @@ echo $tm->getValue('name'),"</a><p></p>";
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<tr bgcolor='#999999'>";
-echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Eff</th><th>Frags</th><th>Record with</th><th>+/-</th>";
+echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Eff</th><th>Score</th><th>Record with</th><th>+/-</th>";
 
 // List player info
 echo "<tr bgcolor='#CCCCCC'><td>";
@@ -55,16 +55,15 @@ else
 $info = $player->getTourneyStats($tid);
 
 echo "\t<td>",$loc_name,"</td>\n";
-echo "<td>",$info['games_played'],"</td>";
-echo "<td>",$info['frags_per_game'],"</td>";
+echo "<td>",$info[util::GAMES_PLAYED],"</td>";
+echo "<td>",$info[util::TOTAL_SCORE],"</td>";
+echo "<td>",$info[util::SCORE_PER_GAME],"</td>";
 echo "<td>",$info[util::EFFICIENCY],"</td>";
-echo "<td>",$info['total_frags'],"</td>";
-echo "<td>",$info['games_won'],"-",$info['games_lost'],"</td>";
-echo "<td nowrap>",$info['frag_diff'],"</td>";
+echo "<td>",$info[util::GAMES_WON],"-",$info[util::GAMES_LOST],"</td>";
+echo "<td nowrap>",$info[util::SCORE_DIFF],"</td>";
 echo "</tr></table>";
 
 echo "<br><b>Games Played</b><br>";
-//echo "<table>" ;
 
 foreach($player->getGamesPlayed($tid) as $g)
 {
@@ -95,8 +94,7 @@ foreach($player->getGamesPlayed($tid) as $g)
 
   echo "<a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>" ;
 
-  echo $stats['total_frags'] . ' frags ' . $status . $o_team->getValue('name') . ' on ' . $map->getValue('map_abbr') . ' (' . $tm_score . '-' . $o_score . ")</a><br>" ;
+  echo $stats[util::TOTAL_SCORE] . ' points ' . $status . $o_team->getValue('name') . ' on ' . $map->getValue('map_abbr') . ' (' . $tm_score . '-' . $o_score . ")</a><br>" ;
 }
 
-//echo '</table>' ;
 ?>

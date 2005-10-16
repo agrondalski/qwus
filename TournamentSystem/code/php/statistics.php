@@ -60,7 +60,7 @@ try
 	    }
 	  else
 	    {
-	      $sort = util::AVG_SCORE ;
+	      $sort = util::SCORE_PER_GAME ;
 	    }
 	}
       elseif ($page == "frags")
@@ -179,16 +179,17 @@ try
   echo "<table border=1 cellpadding=3 cellspacing=0>\n";
   echo "<tr bgcolor='#999999'>";
   echo "<th>#</th>";
+
   if ($show_player==1)
     {
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=name'>Name</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=team_name'>Team</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=games_played'>GP</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
     }
   else
     {
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=name'>Name</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=games_played'>GP</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
     }
   
   if ($page == 'main')
@@ -201,13 +202,13 @@ try
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_DEATHS,"'>Deaths</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::EFFICIENCY,"'>Eff</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GAMES_WON,"'>RW</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_DIFF,"'>+/-</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE_DIFF,"'>+/-</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_STREAK,"'>FS</a></th>";
 	}
       else
 	{
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE,"'>Score</a></th>";
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::AVG_SCORE,"'>AS</a></th>";
+	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE_PER_GAME,"'>AS</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_DEATHS,"'>Deaths</a></th>";
 	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::EFFICIENCY,"'>Eff</a></th>";
@@ -300,11 +301,11 @@ try
     {
       if ($division_id == "-1") 
 	{
-	  $arr = $t->getSortedTeamStats(array($sort, $sortOrder, util::AVG_SCORE, SORT_DESC), $map_id);
+	  $arr = $t->getSortedTeamStats(array($sort, $sortOrder, util::SCORE_PER_GAME, SORT_DESC), $map_id);
 	}
       else 
 	{
-	  $arr = $div->getSortedTeamStats(array($sort, $sortOrder, util::AVG_SCORE, SORT_DESC), $map_id);
+	  $arr = $div->getSortedTeamStats(array($sort, $sortOrder, util::SCORE_PER_GAME, SORT_DESC), $map_id);
 	}
     }
 
@@ -324,13 +325,13 @@ try
 	  echo "<a href='?a=detailsPlayer&amp;tourney_id=",$tid,"&amp;team_id=",$player['team_id'],"&amp;player_id=",$player['player_id'],"'>";
 	  echo $player['name'],"</a></td>\n";
 	  echo "<td nowrap><a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$player['team_id'],"'>",$tm->getValue('name_abbr'),"</a></td>";
-	  echo "<td nowrap>",util::nvl($player['games_played'],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::GAMES_PLAYED],0),"</td>";
 	}
       else
 	{
 	  echo "<a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$player['team_id'],"&amp;team_id=",$player['team_id'],"'>";
 	  echo $player['name'],"</a></td>\n";
-	  echo "<td nowrap>",util::nvl($player['games_played'],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::GAMES_PLAYED],0),"</td>";
 	}
      
       if ($page == 'main')
@@ -343,13 +344,13 @@ try
 	      echo "<td nowrap>",util::nvl($player[util::TOTAL_DEATHS],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::EFFICIENCY], 0),"</td>";				
 	      echo "<td nowrap>",util::nvl($player[util::GAMES_WON],0),"-",util::nvl($player[util::GAMES_LOST],0),"</td>";
-	      echo "<td nowrap>",util::nvl($player[util::FRAG_DIFF],0),"</td>";
+	      echo "<td nowrap>",util::nvl($player[util::SCORE_DIFF],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::FRAG_STREAK],0),"</td>";
 	    }
 	  else
 	    {
 	      echo "<td nowrap>",util::nvl($player[util::SCORE],0),"</td>";
-	      echo "<td nowrap>",util::nvl($player[util::AVG_SCORE],0),"</td>";
+	      echo "<td nowrap>",util::nvl($player[util::SCORE_PER_GAME],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::TOTAL_DEATHS],0),"</td>";
 	      echo "<td nowrap>",util::nvl($player[util::EFFICIENCY], 0),"</td>";				

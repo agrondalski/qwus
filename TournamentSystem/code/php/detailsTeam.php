@@ -20,7 +20,7 @@ catch (Exception $e)
 
 if ($sort == "")
 {
-  $sort = 'frags_per_game';
+  $sort = util::SCORE_PER_GAME ;
 }
 
 
@@ -48,12 +48,12 @@ echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<tr bgcolor='#999999'>";
 echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=name'>Name</a></th>";
 echo "<th>Location</th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=games_played'>GP</a></th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=frags_per_game'>F/G</a></th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=Efficiency'>Eff</a></th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=total_frags'>Frags</a></th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=games_won'>Record with</a></th>";
-echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=frag_diff'>+/-</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::TOTAL_SCORE,"'>Score</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::SCORE_PER_GAME,"'>AS</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::EFFICIENCY,"'>Eff</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::GAMES_WON,"'>Record with</a></th>";
+echo "<th><a href='?a=detailsTeam&amp;tourney_id=$tid&amp;team_id=$team_id&amp;sort=",util::SCORE_DIFF,"'>+/-</a></th>";
 if ($sort == "name") 
 {
   $sortOrder = SORT_ASC;
@@ -64,7 +64,7 @@ else
 }
 
 $count=0;
-foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_game', SORT_DESC, 'name', SORT_ASC)) as $player)
+foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, util::SCORE_PER_GAME, SORT_DESC, 'name', SORT_ASC)) as $player)
 {
   if (++$count % 2 == 1) 
     {
@@ -98,12 +98,12 @@ foreach ($tm->getSortedPlayerStats($tid, array($sort, $sortOrder, 'frags_per_gam
 
   //$info = $player->getTourneyStats($tid);
   echo "\t<td>",$loc_name,"</td>\n";
-  echo "<td nowrap>",$player['games_played'],"</td>";
-  echo "<td nowrap>",$player['frags_per_game'],"</td>";
-  echo "<td nowrap>",$player['Efficiency'],"</td>";
-  echo "<td nowrap>",$player['total_frags'],"</td>";
-  echo "<td nowrap>",$player['games_won'],"-",$player['games_lost'],"</td>";
-  echo "<td nowrap>",$player['frag_diff'],"</td>";
+  echo "<td nowrap>",$player[util::GAMES_PLAYED],"</td>";
+  echo "<td nowrap>",$player[util::TOTAL_SCORE],"</td>";
+  echo "<td nowrap>",$player[util::SCORE_PER_GAME],"</td>";
+  echo "<td nowrap>",$player[util::EFFICIENCY],"</td>";
+  echo "<td nowrap>",$player[util::GAMES_WON],"-",$player[util::GAMES_LOST],"</td>";
+  echo "<td nowrap>",$player[util::SCORE_DIFF],"</td>";
 }
 
 echo "</tr></table>";
@@ -177,14 +177,7 @@ foreach ($tm->getMatches($tid) as $m)
 	  elseif ($g->getValue('team1_score') < $g->getValue('team2_score'))
 	    {
 	      $team2 += 1;				
-	    }	
-	  
-	  //$map = new map(array('map_id'=>$g->getValue('map_id')));
-	  //echo "<tr>";
-	  //echo "<td>",$map->getValue('map_abbr'),"</td>";
-	  //echo "<td>",$g->getValue('team1_score')," - ";
-	  //echo $g->getValue('team2_score'),"</td>";
-	  //echo "</tr>\n";
+	    }
 	}
 
       echo " (",$team1,"-",$team2,")</a>";

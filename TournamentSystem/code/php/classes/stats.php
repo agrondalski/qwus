@@ -230,7 +230,7 @@ class stats
                                            g.team1_score, g.team2_score, g.game_id, s.team_id,
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
-                                    where s.stat_name='%s' %s %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id
+                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id
                                       and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join player p using (player_id),
                                    player_info pi, tourney_info ti, team tm, division d
                               where p.player_id=pi.player_id and pi.team_id=ti.team_id and pi.tourney_id=ti.tourney_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
@@ -262,21 +262,21 @@ class stats
 	    {
 	      if ($old_player!=-1)
 	      {
-		$arr[$pid]['matches_played'] = $total_matches ;
-		$arr[$pid]['games_played']   = $total_games;
-		$arr[$pid]['total_frags']    = $total_frags;
-		$arr[$pid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
-		$arr[$pid]['matches_won']    = $matches_won ;
-		$arr[$pid]['matches_lost']   = $matches_lost ;
-		$arr[$pid]['games_won']      = $games_won ;
-		$arr[$pid]['games_lost']     = $games_lost ;
-		$arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
+		$arr[$pid][util::TOTAL_SCORE]    = $total_score;
+		$arr[$pid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_score/$total_games, 1), 0);
+		$arr[$pid][util::SCORE_DIFF]     = util::choose($total_games!=0, round(($total_score)/($total_games)-($game_avg/$total_games), 1), 0) ;
+		$arr[$pid][util::MATCHES_PLAYED] = $total_matches ;
+		$arr[$pid][util::MATCHES_WON]    = $matches_won ;
+		$arr[$pid][util::MATCHES_LOST]   = $matches_lost ;
+		$arr[$pid][util::GAMES_PLAYED]   = $total_games;
+		$arr[$pid][util::GAMES_WON]      = $games_won ;
+		$arr[$pid][util::GAMES_LOST]     = $games_lost ;
 	      }
 
 	      $pid = $row[0] ;
 	      $old_player = $pid ;
 
-	      $total_frags   = 0 ;
+	      $total_score   = 0 ;
 	      $total_games   = 0 ;
 	      $total_matches = 0 ;
 	      $matches_won   = 0 ;
@@ -305,7 +305,7 @@ class stats
 	      continue ;
 	    }
 
-	  $total_frags += $row[6] ;
+	  $total_score += $row[6] ;
 
 	  $total_games += 1 ;
 
@@ -362,15 +362,15 @@ class stats
 
       if (!util::isNull($arr[$pid]))
 	{
-	  $arr[$pid]['matches_played'] = $total_matches ;
-	  $arr[$pid]['games_played']   = $total_games;
-	  $arr[$pid]['total_frags']    = $total_frags;
-	  $arr[$pid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
-	  $arr[$pid]['matches_won']    = $matches_won ;
-	  $arr[$pid]['matches_lost']   = $matches_lost ;
-	  $arr[$pid]['games_won']      = $games_won ;
-	  $arr[$pid]['games_lost']     = $games_lost ;
-	  $arr[$pid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
+	  $arr[$pid][util::TOTAL_SCORE]    = $total_score;
+	  $arr[$pid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_score/$total_games, 1), 0);
+	  $arr[$pid][util::SCORE_DIFF]     = util::choose($total_games!=0, round(($total_score)/($total_games)-($game_avg/$total_games), 1), 0) ;
+	  $arr[$pid][util::MATCHES_PLAYED] = $total_matches ;
+	  $arr[$pid][util::MATCHES_WON]    = $matches_won ;
+	  $arr[$pid][util::MATCHES_LOST]   = $matches_lost ;
+	  $arr[$pid][util::GAMES_PLAYED]   = $total_games;
+	  $arr[$pid][util::GAMES_WON]      = $games_won ;
+	  $arr[$pid][util::GAMES_LOST]     = $games_lost ;
 	}
 
       mysql_free_result($result) ;
@@ -379,18 +379,18 @@ class stats
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%sX' %s %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
+                                where s.stat_name!='%sX' %s %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
                                   and ms.division_id=d.division_id %s %s and d.tourney_id=pi.tourney_id and s.player_id=pi.player_id and s.team_id=tm.team_id
-                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s %s",
-			       util::SCORE, $player_query_s, $team_query_s, $game_query_g, $tourney_query_d, $division_query_d,
-			       $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s, $map_query_g) ;
+                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
+			       util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g, $tourney_query_d, $division_query_d,
+			       $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
 
 	}
       else
 	{
 	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
                                 from stats s, game g, match_table m
-                                where s.stat_name!='%sX' %s %s and s.game_id=g.game_id and g.match_id=m.match_id and m.approved=true",
+                                where s.stat_name!='%sX' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
 			       util::SCORE, $player_query_s, $map_query_g) ;
 	}
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -405,6 +405,7 @@ class stats
 	    }
 	  else
 	    {
+	      // Maxes/Mins
 	      if ($row[1]!=util::FRAG_STREAK)
 		{
 		  $arr[$pid][$row[1]] += $row[2] ;
@@ -413,13 +414,13 @@ class stats
 		{
 		  if ($row[2]>$arr[$pid][$row[1]])
 		    {
-
 		      $arr[$pid][$row[1]] = $row[2] ;
 		    }
 		}
 	    }
 	}
 
+      // Derived Stats
       foreach ($arr as $k=>$p)
 	{
 	  if (util::isNull($p[util::TOTAL_FRAGS]))
@@ -441,297 +442,14 @@ class stats
 	      $arr[$k][util::EFFICIENCY] = 0 ;
 	    }
 
-	  if ($p[util::TOTAL_FRAGS]!=0)
+	  if ($p[util::TOTAL_FRAGS]!=0 && $arr[$k][util::GAMES_PLAYED]!=0)
 	    {
-	      $arr[$k][util::FRAGS_PER_GAME] = $arr[$k][util::TOTAL_FRAGS] / $arr[$k]['games_played'] ;
+	      $arr[$k][util::FRAGS_PER_GAME] = $arr[$k][util::TOTAL_FRAGS] / $arr[$k][util::GAMES_PLAYED] ;
 	    }
 	}
 
       mysql_free_result($result) ;
       return $arr ;
-    }
-
-  public static function getSortedPlayerMapStats($a)
-    {
-      $arr = self::getPlayerMapStats() ;
-      return util::row_sort($arr, $a) ;
-    }
-
-  public static function getPlayerMapStats($a)
-    {
-      $map_query_g        = null ;
-      $game_query_g       = null ;
-      $game_query_s       = null ;
-      $player_query_p     = null ;
-      $player_query_s     = null ;
-      $team_query_tm      = null ;
-      $team_query_s       = null ;
-      $division_query_ti  = null ;
-      $division_query_d   = null ;
-      $tourney_query_pi   = null ;
-      $tourney_query_d    = null ;
-
-      $career             = true ;
-
-      if (is_array($a))
-	{
-	  if (!util::isNull($a['map_id']))
-	    {
-	      $mid = map::validateColumn($a['map_id'], 'map_id') ;
-
-	      $map_query_g = ' and g.map_id=' . $mid ;
-	    }
-
-	  if (!util::isNull($a['player_id']))
-	    {
-	      $pid = player::validateColumn($a['player_id'], 'player_id') ;
-
-	      $player_query_p = ' and p.player_id=' . $pid ;
-	      $player_query_s = ' and s.player_id=' . $pid ;
-	    }
-
-	  if (!util::isNull($a['game_id']))
-	    {
-	      $gid = game::validateColumn($a['game_id'], 'game_id') ;
-
-	      $game_query_g = ' and g.game_id=' . $gid  . ' and s.value is not null' ;
-	      $game_query_s = ' and s.value is not null';
-	    }
-
-	  if (!util::isNull($a['team_id']))
-	    {
-	      $tm = team::validateColumn($a['team_id'], 'team_id') ;
-	      $career = false ;
-
-	      $team_query_tm = ' and tm.team_id=' . $tm ;
-	      $team_query_tm = ' and s.team_id=' . $tm ;
-	    }
-
-	  if (!util::isNull($a['division_id']))
-	    {
-	      $div = division::validateColumn($a['division_id'], 'division_id') ;
-	      $career = false ;
-
-	      $division_query_ti = ' and ti.division_id=' . $div ;
-	      $division_query_d  = ' and d.division_id=' . $div ;
-	    }
-
-	  elseif (!util::isNull($a['tourney_id']))
-	    {
-	      $tid = tourney::validateColumn($a['tourney_id'], 'tourney_id') ;
-	      $career = false ;
-
-	      $tourney_query_pi = ' and pi.tourney_id=' . $tid ;
-	      $tourney_query_d  = ' and d.tourney_id=' . $tid ;
-	    }
-	}
-
-      if (!$career)
-	{
-	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
-                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.teamplayers, p.location_id, s.map_id, s.map_name
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
-                                           g.team1_score, g.team2_score, g.game_id, s.team_id, mp.map_id, mp.map_name
-                                           (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
-                                    from stats s, game g, match_table m, maps mp
-                                    where s.stat_name='%s' %s %s and s.game_id=g.game_id %s %s and g.map_id=mp.map_id and g.match_id=m.match_id
-                                     and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right out join player p using (player_id),
-                                   player_info pi, tourney_info ti, team tm, division d
-                              where p.player_id=pi.player_id and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and
-                                    ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
-                              order by p.player_id, s.map_id",
-			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g,
-			     $tourney_query_d, $division_query_d, $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
-	}
-      else
-	{
-	  $sql_str = sprintf("select p.player_id, p.name, s.team_id, null, null, null,
-                                     s.value, s.match_id, s.winning_team_id, s.team1_id, s.team1_score, s.team2_score,
-                                     (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id), p.location_id,
-                                     s.map_id, s.map_name
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
-                                           g.team1_score, g.team2_score, g.game_id, s.team_id, mp.map_id, mp.map_name
-                                    from stats s, game g, match_table m, maps mp
-                                    where s.stat_name='%s' %s and s.game_id=g.game_id and %s g.map_id=mp.map_id and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id)
-                              where 1=1 %s
-                              order by p.player_id, s.map_id",
-			     util::SCORE, util::SCORE, $player_query_s, $map_query_g, $player_query_p) ;
-	}
-
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-
-      $arr = array() ;
-      $old_player = -1 ;
-      $old_map    = -1 ;
-
-      while ($row = mysql_fetch_row($result))
-	{
-	  if ($row[0] != $old_player || $row[14] != $old_map) 
-	    {
-	      if ($old_player!=-1)
-	      {
-		$arr[$pid . '-' . $mid]['games_played']   = $total_games;
-		$arr[$pid . '-' . $mid]['total_frags']    = $total_frags;
-		$arr[$pid . '-' . $mid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
-		$arr[$pid . '-' . $mid]['games_won']      = $games_won ;
-		$arr[$pid . '-' . $mid]['games_lost']     = $games_lost ;
-		$arr[$pid . '-' . $mid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
-	      }
-
-	      $pid = $row[0] ;
-	      $mid = $row[14] ;
-	      $old_player = $pid ;
-	      $old_map    = $mid ;
-
-	      $total_games   = 0 ;
-	      $total_frags   = 0 ;
-	      $games_won     = 0 ;
-	      $games_lost    = 0 ;
-	      $team_score    = 0 ;
-	      $old_match_id  = 0 ;
-	      $game_avg      = 0 ;
-
-	      $team_id = $row[2] ;
-
-	      $arr[$pid . '-' . $mid] = array() ;
-	      $arr[$pid . '-' . $mid]['player_id']   = $pid ;
-	      $arr[$pid . '-' . $mid]['name']        = util::htmlentities($row[1], ENT_QUOTES) ;
-	      $arr[$pid . '-' . $mid]['location_id'] = $row[13] ;
-
-	      $arr[$pid . '-' . $mid]['map_id']    = $mid ;
-	      $arr[$pid . '-' . $mid]['map_name']  = util::htmlentities($row[15], ENT_QUOTES) ;
-	      $arr[$pid . '-' . $mid]['team_id']       = $row[2] ;
-	      $arr[$pid . '-' . $mid]['team_name']     = util::htmlentities($row[3], ENT_QUOTES) ;
-	      $arr[$pid . '-' . $mid]['division_id']   = $row[4] ;
-	      $arr[$pid . '-' . $mid]['division_name'] = util::htmlentities($row[5], ENT_QUOTES) ;
-	    }
-
-	  $total_games += 1 ;
-	  $total_frags += $row[6] ;
-
-	  if ($team_id==$row[9])
-	    {
-	      $team_score = $row[10] ;
-	    }
-	  else
-	    {
-	      $team_score = $row[11] ;
-	    }
-
-	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
-
-	  if ($row[2]==$row[9])
-	    {
-	      if ($row[10]>$row[11])
-		{
-		  $games_won++ ;
-		}
-	      else
-		{
-		  $games_lost++ ;
-		}
-	    }
-	  else
-	    {
-	      if ($row[10]<$row[11])
-		{
-		  $games_won++ ;
-		}
-	      else
-		{
-		  $games_lost++ ;
-		}
-	    }
-	}
-
-      if (!util::isNull($arr[$pid . '-' . $mid]))
-	{
-	  $arr[$pid . '-' . $mid]['games_played']   = $total_games;
-	  $arr[$pid . '-' . $mid]['total_frags']    = $total_frags;
-	  $arr[$pid . '-' . $mid][util::SCORE_PER_GAME] = util::choose($total_games!=0, round($total_frags/$total_games, 1), 0);
-	  $arr[$pid . '-' . $mid]['games_won']      = $games_won ;
-	  $arr[$pid . '-' . $mid]['games_lost']     = $games_lost ;
-	  $arr[$pid . '-' . $mid]['frag_diff']      = util::choose($total_games!=0, round(($total_frags)/($total_games)-($game_avg/$total_games), 1), 0) ;
-	}
-
-      mysql_free_result($result) ;
-
-
-      if (!$career)
-	{
-	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value
-                                from stats s, game g, match_table m, match_schedule ms, division d, player_info pi, tourney_info ti, team tm
-                                where s.stat_name!='%sX' %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id and m.approved=true and m.schedule_id=ms.schedule_id 
-                                  and ms.division_id=d.division_id and s.player_id=pi.player_id and d.tourney_id=pi.tourney_id and s.team_id=tm.team_id
-                                  and pi.tourney_id=ti.tourney_id and pi.team_id=ti.team_id and ti.team_id=tm.team_id %s %s %s %s",
-			       util::SCORE, $player_query_s, $game_query_g, $map_query_g, $team_query_tm, $tourney_query_pi, $division_query_ti, $game_query_s) ;
-	}
-      else
-	{
-	    $sql_str = sprintf("select s.player_id, s.stat_name, s.value, g.map_id
-                                from stats s, game g, match_table m
-                                where s.stat_name!='%sX' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
-			       util::SCORE, $player_query_s, $map_query_g) ;
-	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
-
-      while ($row = mysql_fetch_row($result))
-	{
-	  $pid = $row[0] ;
-	  $mid = $row[3] ;
-
-	  if (!isset($arr[$pid . '-' . $mid][$row[1]]))
-	    {
-	      $arr[$pid . '-' . $mid][$row[1]] = $row[2] ;
-	    }
-	  else
-	    {
-	      $arr[$pid . '-' . $mid][$row[1]] += $row[2] ;
-	    }
-	}
-
-      foreach ($arr as $k=>$p)
-	{
-	  if (util::isNull($p[util::TOTAL_FRAGS]))
-	    {
-	      $p[util::TOTAL_FRAGS] = 0 ;
-	    }
-
-	  if (util::isNull($p[util::TOTAL_DEATHS]))
-	    {
-	      $p[util::TOTAL_DEATHS] = 0 ;
-	    }
-
-	  if ($p[util::TOTAL_FRAGS]!=0 || $p[util::TOTAL_DEATHS]!=0)
-	    {
-	      $arr[$k][util::EFFICIENCY] = round(($p[util::TOTAL_FRAGS]/($p[util::TOTAL_FRAGS]+$p[util::TOTAL_DEATHS]))*100, 2) ;
-	    }
-	  else
-	    {
-	      $arr[$k][util::EFFICIENCY] = 0 ;
-	    }
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
-  public static function hasStatsEntry($pid, $gid, $sn)
-    {
-      $pid = player::validateColumn($pid, 'player_id') ;
-      $gid = game::validateColumn($gid, 'game_id') ;
-      $sn  = self::validateColumn($sn, 'stat_name') ;
-
-      $sql_str = sprintf("select 1 from stats where player_id=%d and game_id=%d and stat_name='%s'", $pid, $gid, $sn) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      if (mysql_num_rows($result)!=1)
-	{
-	  mysql_free_result($result) ;
-	  return false ; 
-	}
-
-      return true ;
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)

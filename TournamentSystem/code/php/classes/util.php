@@ -49,15 +49,28 @@ class util
   const SELF_KILLS   = 'Self Kills';
   const TEAM_KILLS   = 'Team Kills';
   const FRAG_STREAK  = 'Frag Streak';
-  const FRAG_DIFF    = 'frag_diff' ;
-  const GAMES_WON    = 'games_won' ;
-  const GAMES_LOST   = 'games_lost' ;
-  const AVG_SCORE    = 'avg_score';
-  const FRAGS_PER_GAME  = 'frags_per_game';
-  const SCORE_PER_GAME  = 'score_per_game';
+
+  const POINTS          = 'Points' ;
+  const GAMES_PLAYED    = 'Games_Played' ;
+  const GAMES_WON       = 'Games_Won' ;
+  const GAMES_LOST      = 'Games_Lost' ;
+  const MATCHES_PLAYED  = 'Matches_Played' ;
+  const MATCHES_WON     = 'Matches_Won' ;
+  const MATCHES_LOST    = 'Matches_Lost' ;
+  const TOTAL_SCORE     = 'Total_Score' ;
+  const TOTAL_SCORE_OPP = 'Total_Score_Opp' ;
+  const SCORE_PER_GAME  = 'Score_Per_Game';
+  const FRAGS_PER_GAME  = 'Frags_Per_Game';
+  const SCORE_DIFF      = 'Score_Diff' ;
   const MINUTESPLAYED   = 'MinutesPlayed' ;
   const MINUTESWITHLEAD = 'MinutesWithLead' ;
 
+  const WINNING_STREAK     = 'Winning_Streak' ;
+  const LOSING_STREAK      = 'Losing_Streak' ;
+  const MAX_WINNING_STREAK = 'Max_Winning_Streak' ;
+  const MAX_LOSING_STREAK  = 'Max_Losing_Streak' ;
+  const MAX_SCORE          = 'Max_Score' ;
+  const MIN_SCORE          = 'Min_Score' ;
   
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;

@@ -431,7 +431,7 @@ class division
       $q['tourney_id'] = $this->tourney_id ;
       $q['division_id'] = $this->division_id ;
 
-      $arr = stats::getPlayerStats($q) ;
+      $stats = stats::getPlayerStats($q) ;
       return util::row_sort($stats, $a) ;
     }
 

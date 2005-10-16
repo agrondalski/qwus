@@ -22,13 +22,13 @@ foreach ($t->getDivisions() as $div)
   echo "<th>GL</th>";
   echo "<th>Pts</th>";
   echo "<th>FF</th>";
-  echo "<th>FA</th>";		
+  echo "<th>FA</th>";
   echo "<th>FD</th>";	
   echo "<th>Strk</th>";	
   echo "</tr>\n";
   $rank = 0;
 
-  foreach ($div->getSortedTeamStats(array('points', SORT_DESC, 'maps_lost', SORT_ASC, 'frags_for', SORT_DESC, 'name', SORT_ASC)) as $tm)
+  foreach ($div->getSortedTeamStats(array(util::POINTS, SORT_DESC, util::GAMES_LOST, SORT_ASC, util::TOTAL_SCORE, SORT_DESC, 'name', SORT_ASC)) as $tm)
     {
       $rank += 1;		
       $m20 = $tm['match_2-0'];
@@ -65,25 +65,24 @@ foreach ($t->getDivisions() as $div)
       echo "<td nowrap>",$rank,"</td>";
       echo "<td nowrap><a href='?a=detailsTeam&amp;tourney_id=",$tid,"&amp;team_id=",$tm['team_id'],"'>";
       echo $tm['name'],"</a></td>";
-      echo "<td nowrap>",$tm['wins']," (",$m20," ",$m21,")</td>"; 
-      echo "<td nowrap>",$tm['losses']," (",$m12," ",$m02,")</td>"; 
-      echo "<td nowrap>",$tm['maps_won'],"&nbsp;</td>"; 
-      echo "<td nowrap>",$tm['maps_lost'],"&nbsp;</td>"; 
-      echo "<td nowrap>",$tm['points'],"&nbsp;</td>"; 
-      $frag_difference = ($tm['frags_for']-$tm['frags_against']);
-      //echo "<td>",$info['max_score'],"</td>"; 
-      //echo "<td>",$info['min_score'],"</td>"; 
-      //echo "<td>",$info['avg_score'],"</td>"; 
-      echo "<td nowrap>",$tm['frags_for'],"&nbsp;</td>"; 
-      echo "<td nowrap>",$tm['frags_against'],"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::MATCHES_WON]," (",$m20," ",$m21,")</td>"; 
+      echo "<td nowrap>",$tm[util::MATCHES_LOST]," (",$m12," ",$m02,")</td>"; 
+      echo "<td nowrap>",$tm[util::GAMES_WON],"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::GAMES_LOST],"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::POINTS],"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::TOTAL_SCORE],"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::TOTAL_SCORE_OPP],"&nbsp;</td>"; 
+
+      $frag_difference = ($tm[util::TOTAL_SCORE]-$tm[util::TOTAL_SCORE_OPP]);
       echo "<td nowrap>",$frag_difference,"&nbsp;</td>"; 
-      if ($tm['winning_streak'] != null) 
+
+      if ($tm[util::WINNING_STREAK] != null) 
 	{
-	  echo "<td nowrap>",$tm['winning_streak'],"W</td>";  
+	  echo "<td nowrap>",$tm[util::WINNING_STREAK],"W</td>";  
 	} 
-      elseif ($tm['losing_streak'] != null)
+      elseif ($tm[util::LOSING_STREAK] != null)
 	{
-	  echo "<td nowrap>",$tm['losing_streak'],"L</td>"; 
+	  echo "<td nowrap>",$tm[util::LOSING_STREAK],"L</td>"; 
 	} 
       else 
 	{
