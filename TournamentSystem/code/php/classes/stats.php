@@ -156,6 +156,8 @@ class stats
 
   public static function getPlayerStats($a)
     {
+      $join_query         = null ;
+
       $map_query_g        = null ;
       $player_query_p     = null ;
       $player_query_s     = null ;
@@ -172,6 +174,11 @@ class stats
 
       if (is_array($a))
 	{
+	  if (!util::isNull($a['all_players']) && is_bool($a['all_players']))
+	    {
+	      $join_query = ' right outer ' ;
+	    }
+
 	  if (!util::isNull($a['map_id']))
 	    {
 	      $mid = map::validateColumn($a['map_id'], 'map_id') ;
@@ -224,7 +231,6 @@ class stats
 
       if (!$career)
 	{
-	  /* s right outer join player */
 	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
                                      s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_players, p.location_id
                               from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
@@ -232,11 +238,11 @@ class stats
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
                                     where s.stat_name='%s' %s %s and s.game_id=g.game_id %s %s and g.match_id=m.match_id
-                                      and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s join player p using (player_id),
+                                      and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s %s join player p using (player_id),
                                    player_info pi, tourney_info ti, team tm, division d
                               where p.player_id=pi.player_id and pi.team_id=ti.team_id and pi.tourney_id=ti.tourney_id and ti.team_id=tm.team_id and ti.division_id=d.division_id %s %s %s %s %s
                               order by p.player_id, s.match_id",
-			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g, $tourney_query_d, $division_query_d,
+			     util::SCORE, util::SCORE, $player_query_s, $team_query_s, $game_query_g, $map_query_g, $tourney_query_d, $division_query_d, $join_query,
 			     $team_query_tm, $tourney_query_pi, $division_query_ti, $player_query_p, $game_query_s) ;
 	}
       else

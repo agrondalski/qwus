@@ -432,7 +432,7 @@ class team
 
   public function getSortedPlayerStats($tid, $a)
     {
-      $stats = stats::getPlayerStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid)) ;
+      $stats = stats::getPlayerStats(array('team_id'=>$this->team_id, 'tourney_id'=>$tid, 'all_players'=>true)) ;
       return util::row_sort($stats, $a) ;
     }
 
