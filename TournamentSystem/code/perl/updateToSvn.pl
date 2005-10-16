@@ -13,12 +13,18 @@ $shell = `gzip -9 "$filename"`;
 
 # copy the new stuff over.. (careful not to copy hidden svn files)
 
-$shell = `mv /var/www/html/php/dBConnect.php /var/www/html/php/oldDbConnect.php`;
+$shell = `mv /var/www/html/php/dbConnect.php /var/www/html/php/oldDbConnect.php`;
 
 $shell = `cp -f /usr/www/svn/TournamentSystem/code/php/classes/*.php /var/www/html/php/classes`;
 
 $shell = `cp -f /usr/www/svn/TournamentSystem/code/php/*.php /var/www/html/php`;
 
-$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/*.pl /var/www/html/perl`;
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/mvdStats.pl /var/www/html/perl`;
+
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/convertAscii.sed /var/www/html/perl`;
+
+$shell = `cp -f /usr/www/svn/website/index.php /var/www/html`;
+
+$shell = `cp -f /usr/www/svn/website/css/default.css /var/www/html/css`;
 
 $shell = `mv /var/www/html/php/oldDbConnect.php /var/www/html/php/dbConnect.php`;
