@@ -571,6 +571,11 @@ class stats_team
 	    {
 	      $arr[$k][util::EFFICIENCY] = 0 ;
 	    }
+
+	  if ($t[util::TOTAL_FRAGS]!=0)
+	    {
+	      $arr[$k][util::FRAGS_PER_GAME] = $arr[$k][util::TOTAL_FRAGS] / $arr[$k]['games_played'] ;
+	    }
 	}
 
       mysql_free_result($result) ;

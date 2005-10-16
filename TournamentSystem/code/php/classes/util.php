@@ -54,6 +54,7 @@ class util
   const GAMES_LOST   = 'games_lost' ;
   const AVG_SCORE    = 'avg_score';
   const FRAGS_PER_GAME  = 'frags_per_game';
+  const SCORE_PER_GAME  = 'score_per_game';
   const MINUTESPLAYED   = 'MinutesPlayed' ;
   const MINUTESWITHLEAD = 'MinutesWithLead' ;
 
