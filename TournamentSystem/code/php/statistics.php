@@ -54,14 +54,7 @@ try
     {
       if ($page == "main")
 	{
-	  if ($show_player==1)
-	    {
-	      $sort = util::SCORE_PER_GAME ;
-	    }
-	  else
-	    {
-	      $sort = util::SCORE_PER_GAME ;
-	    }
+	  $sort = util::SCORE_PER_GAME ;
 	}
       elseif ($page == "frags")
 	{
@@ -220,16 +213,7 @@ try
   elseif ($page == 'frags')
     {
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
-
-      if ($show_plaer==1)
-	{
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
-	}
-      else
-	{
-	  echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
-	}
-
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAGS_PER_GAME,"'>F/G</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::AX_FRAGS,"'>Axe</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SG_FRAGS,"'>SG</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SSG_FRAGS,"'>SSG</a></th>";
@@ -362,16 +346,7 @@ try
       elseif ($page == 'frags')
 	{
 	  echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
-
-	  if ($show_player==1)
-	    {
-	      echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
-	    }
-	  else
-	    {
-	      echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
-	    }
-
+	  echo "<td nowrap>",util::nvl($player[util::FRAGS_PER_GAME],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::AX_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::SG_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::SSG_FRAGS],0),"</td>";

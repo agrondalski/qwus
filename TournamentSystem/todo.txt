@@ -8,10 +8,6 @@ TO DO LIST:
   Resize Page (so it looks fine in 1024x, 1280x, etc.)
   Fix CSS
 
-  script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
- 
-  map/weapon stats & rankings
-
 *Future*:
   Career Player/Teams Stats
   Auto creation of playoff games/tournament style
@@ -43,3 +39,5 @@ screenshot upload
 improved gameDetails.php page
 Would like a way to know if a column has been updated.  Display number of days since last updated? or something.
 schedule page remove games that have already been played ? would improve readability especially later in the season?
+map/weapon stats & rankings
+script (updateToSvn.sh?) to update the website.  features should include creating tarball of current site so that we can revert if something goes wrong.  copying all files over.. and updating dbConnect and any other config files as need be.
