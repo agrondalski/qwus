@@ -30,7 +30,7 @@ echo $tm->getValue('name'),"</a><p></p>";
 
 echo "<table border=1 cellpadding=4 cellspacing=0>\n";
 echo "<tr bgcolor='#999999'>";
-echo "<th>Name</th><th>Location</th><th>GP</th><th>F/G</th><th>Eff</th><th>Score</th><th>Record with</th><th>+/-</th>";
+echo "<th>Name</th><th>Location</th><th>GP</th><th>Score</th><th>AS</th><th>Eff</th><th>Record with</th><th>+/-</th>";
 
 // List player info
 echo "<tr bgcolor='#CCCCCC'><td>";
