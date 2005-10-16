@@ -430,7 +430,7 @@ class player
     {
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
-      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid)) ;
+      $stats = stats::getPlayerStats(array('player_id'=>$this->player_id, 'tourney_id'=>$tid, 'all_players'=>true)) ;
       return $stats[$this->player_id] ;
     }
 
