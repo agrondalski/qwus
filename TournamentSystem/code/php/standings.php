@@ -28,7 +28,7 @@ foreach ($t->getDivisions() as $div)
   echo "</tr>\n";
   $rank = 0;
 
-  foreach ($div->getSortedTeamStats(array(util::POINTS, SORT_DESC, util::GAMES_LOST, SORT_ASC, util::TOTAL_SCORE, SORT_DESC, 'name', SORT_ASC)) as $tm)
+  foreach ($div->getSortedTeamStats(array(util::POINTS, SORT_DESC, util::GAMES_WON, SORT_DESC, util::GAMES_LOST, SORT_ASC, util::SCORE_DIFF, SORT_DESC, 'name', SORT_ASC)) as $tm)
     {
       $rank += 1;		
       $m20 = $tm['match_2-0'];
@@ -73,8 +73,7 @@ foreach ($t->getDivisions() as $div)
       echo "<td nowrap>",$tm[util::TOTAL_SCORE],"&nbsp;</td>"; 
       echo "<td nowrap>",$tm[util::TOTAL_SCORE_OPP],"&nbsp;</td>"; 
 
-      $frag_difference = ($tm[util::TOTAL_SCORE]-$tm[util::TOTAL_SCORE_OPP]);
-      echo "<td nowrap>",$frag_difference,"&nbsp;</td>"; 
+      echo "<td nowrap>",$tm[util::SCORE_DIFF],"&nbsp;</td>"; 
 
       if ($tm[util::WINNING_STREAK] != null) 
 	{
