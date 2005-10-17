@@ -151,7 +151,7 @@ try
   echo "<td><select name='map_id'>" ;
   echo "<option value='-1' $allmaps>All Maps" ;
 
-  foreach ($t->getMaps(array('map_abbr', SORT_DESC)) as $tmp)
+  foreach ($t->getMaps(array('map_abbr', SORT_ASC)) as $tmp)
     {
       $sel = "";
 
