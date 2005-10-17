@@ -566,7 +566,7 @@ class stats_team
 	      $t[util::TOTAL_DEATHS] = 0 ;
 	    }
 
-	  if ($t[util::TOTAL_FRAGS]!=0 || $t[util::TOTAL_DEATHS]!=01)
+	  if ($t[util::TOTAL_FRAGS]!=0 || $t[util::TOTAL_DEATHS]!=0)
 	    {
 	      $arr[$k][util::EFFICIENCY] = round(($t[util::TOTAL_FRAGS]/($t[util::TOTAL_FRAGS]+$t[util::TOTAL_DEATHS]))*100, 2) ;
 	    }
@@ -575,7 +575,7 @@ class stats_team
 	      $arr[$k][util::EFFICIENCY] = 0 ;
 	    }
 
-	  if ($t[util::TOTAL_FRAGS]!=0 &&$arr[$k][util::GAMES_PLAYED])
+	  if ($t[util::TOTAL_FRAGS]!=0 && $arr[$k][util::GAMES_PLAYED]!=0)
 	    {
 	      $arr[$k][util::FRAGS_PER_GAME] = $arr[$k][util::TOTAL_FRAGS] / $arr[$k][util::GAMES_PLAYED] ;
 	    }
