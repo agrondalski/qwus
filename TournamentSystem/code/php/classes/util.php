@@ -367,7 +367,9 @@ class util
 	  return null ;
 	}
 
-      return levenshtein($s1, $s2) ;
+      $i = similar_text($s1, $s2, $c) ;
+      return $c ;
+      //return levenshtein($s1, $s2) ;
     }
 
   public static function stringMatch($a1, $a2)
@@ -385,24 +387,23 @@ class util
 	      $matx[$e1][$e2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2)) ;
 	    }
 	}
-
       $results = array() ;
 
       while (count($matx)>0)
 	{
-	  $min = -1 ;
+	  $max = -1 ;
 
 	  foreach($matx as $k1=>$e1)
 	    {
 	      foreach($e1 as $k2=>$e2)
 		{
-		  if ($matx[$k1][$k2] < $min || $min==-1)
+		  if ($matx[$k1][$k2] > $max || $max==-1)
 		    {
-		      $min = $matx[$k1][$k2] ;
+		      $max = $matx[$k1][$k2] ;
 		      $idx1 = $k1 ;
 		      $idx2 = $k2 ;
 
-		      if ($min==0)
+		      if ($max==100)
 			{
 			  break ;
 			}

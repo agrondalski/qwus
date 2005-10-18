@@ -632,7 +632,7 @@ class match
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update match_table set %s=%d where match_id=%d", $col, util::nvl($this->$col, 'null'), $this->match_id) ;
+	  $sql_str = sprintf("update match_table set %s=%d where match_id=%d", $col, $this->$col, $this->match_id) ;
 	}
       elseif ($col=='winning_team_id')
 	{
