@@ -916,7 +916,6 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) died/)
   {
-    print $string;
     $fraggee = findPlayer($1);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
@@ -1170,8 +1169,6 @@ sub teamMatchup
       $teamTwoFound = 1;
     }
   }  
-
-  #print "$teamOneFound\t$teamTwoFound\n";
   
   # now for the non perfect matches
   foreach $team (@teams)
