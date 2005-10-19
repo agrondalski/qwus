@@ -1457,6 +1457,7 @@ sub colorConverter
 sub complementColor
 {
   my $color = shift;
+  if ($color == 0) { return 4; }
   return 0;
 }
 
