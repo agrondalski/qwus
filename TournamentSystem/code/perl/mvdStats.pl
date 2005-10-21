@@ -881,13 +881,14 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) sleeps with the fishes/)
   {
-    $fraggee = findPlayer($1);
+    chomp($oldString);
+    $fraggee = findPlayer($oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) sucks it down/)
   {
-    print $string;
-    $fraggee = findPlayer($1);
+    chomp($oldString);
+    $fraggee = findPlayer($oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) gulped a load of slime/)
@@ -910,8 +911,8 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) tried to leave/)
   {
-    print $string;
-    $fraggee = findPlayer($1);
+    chomp($oldString);
+    $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^(.*) died/)
