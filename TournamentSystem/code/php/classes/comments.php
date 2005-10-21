@@ -243,7 +243,8 @@ class comment
       $cid   = $this->validateColumn($cid, 'id') ;
       //$ctype = $this->validateColumn($ctype, 'comment_type') ;
 
-      $sql_str = sprintf("select min(time_to_sec(timediff(concat(comment_date, ' ', comment_time), concat(curdate(), ' ', curtime())))) from comments
+      $sql_str = sprintf("select min(time_to_sec(timediff(concat(curdate(), ' ', curtime()), concat(comment_date, ' ', comment_time))))
+                          from comments
                           where id=%d and comment_type='%s' and comment_ip='%s'",
 			 $cid, $ctype, $_SERVER['REMOTE_ADDR']) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());

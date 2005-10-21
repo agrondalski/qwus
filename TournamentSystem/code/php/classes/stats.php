@@ -451,7 +451,7 @@ class stats
 
 	  if ($p[util::TOTAL_FRAGS]!=0 && $arr[$k][util::GAMES_PLAYED]!=0)
 	    {
-	      $arr[$k][util::FRAGS_PER_GAME] = $arr[$k][util::TOTAL_FRAGS] / $arr[$k][util::GAMES_PLAYED] ;
+	      $arr[$k][util::FRAGS_PER_GAME] = round($arr[$k][util::TOTAL_FRAGS] / $arr[$k][util::GAMES_PLAYED], 2) ;
 	    }
 	}
 
