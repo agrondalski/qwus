@@ -899,8 +899,8 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) can't exist on slime alone/)
   {
-    print $oldString . $string;
-    $fraggee = findPlayer($1);
+    chomp($oldString);
+    $fraggee = findPlayer($oldString);
     $fraggee->slimeBores($fraggee->slimeBores() + 1);
   }
   elsif ($string =~ /^ was spiked/)
