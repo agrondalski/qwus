@@ -240,7 +240,7 @@ class match
 				     array($team1->getValue('name_abbr'), $team2->getValue('name_abbr'))) ;
 
       // If needed swap the teams
-      if ($teamMatch[$team1->getValue('name_abbr')]==$team2_stats['Name'])
+      if ($teamMatch[$team1_stats['Name']] == $team2->getValue('name_abbr'))
 	{
 	  $t1 = $a['team1'] ;
 	  $t2 = $a['team2'] ;
