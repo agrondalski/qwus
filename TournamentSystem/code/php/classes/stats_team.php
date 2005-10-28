@@ -352,7 +352,7 @@ class stats_team
 		$arr[$tmid][util::TOTAL_SCORE]     = $frags_for ;
 		$arr[$tmid][util::TOTAL_SCORE_OPP] = $frags_against ;
 		$arr[$tmid][util::SCORE_DIFF]      = $frags_for - $frags_against ;
-		$arr[$tmid][util::SCORE_PER_GAME]  = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
+		$arr[$tmid][util::SCORE_PER_GAME]  = util::choose($num_games!=0, round($frags_for / $num_games, 2), 0) ;
 		$arr[$tmid][util::POINTS]          = ($arr[$tmid]['match_2-0']*3) + ($arr[$tmid]['match_2-1']*3) + ($arr[$tmid]['match_1-2']) ;
 		$arr[$tmid][util::MAX_SCORE]       = $max_score ;
 		$arr[$tmid][util::MIN_SCORE]       = $min_score ;
@@ -475,7 +475,7 @@ class stats_team
       $arr[$tmid][util::TOTAL_SCORE]     = $frags_for ;
       $arr[$tmid][util::TOTAL_SCORE_OPP] = $frags_against ;
       $arr[$tmid][util::SCORE_DIFF]      = $frags_for - $frags_against ;
-      $arr[$tmid][util::SCORE_PER_GAME]  = util::choose($num_games!=0, $frags_for / $num_games, 0) ;
+      $arr[$tmid][util::SCORE_PER_GAME]  = util::choose($num_games!=0, round($frags_for / $num_games, 2), 0) ;
       $arr[$tmid][util::POINTS]          = ($arr[$tmid]['match_2-0']*3) + ($arr[$tmid]['match_2-1']*3) + ($arr[$tmid]['match_1-2']) ;
       $arr[$tmid][util::MAX_SCORE]       = $max_score ;
       $arr[$tmid][util::MIN_SCORE]       = $min_score ;
