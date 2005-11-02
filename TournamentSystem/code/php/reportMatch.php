@@ -1,5 +1,4 @@
 <?php
-
 require 'includes.php';
 require_once 'login.php';
 
@@ -33,7 +32,6 @@ try
 
   $division_id = $_REQUEST['division_id'];
   $match_id    = $_REQUEST['match_id'];
-  $winning_team_id = $_REQUEST['winning_team_id'];
   $approved    = $_REQUEST['approved'];
   $fileform    = $_REQUEST['fileform'];
 
@@ -164,7 +162,7 @@ try
       else 
 	{
 	  // First time here, so check the db
-	  if (util::isNull($winning_team_id))
+	  if (util::isNull($approved))
 	    {
 	      $m = new match(array('match_id'=>$match_id));
 	      if ($m->getValue('approved') == "1")
@@ -185,7 +183,6 @@ try
       echo "<h2>Match Details</h2>";
       echo "<form action='?a=reportMatch' method=post>";
       echo "<table border=0 cellpadding=2 cellspacing=0>";
-      echo "<tr><td><b>Who won?</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
@@ -195,28 +192,11 @@ try
       $t1 = $teams[0] ;
       $t2 = $teams[1] ;
 
-      $db_winning_team_id = $m->getValue('winning_team_id') ;
-      if ($db_winning_team_id==$t2->getValue('team_id'))
-	{
-	  $winning_team_abbr = $t2->getValue('name_abbr') ;
-	  $team2_sel = "selected" ;
-	}
-      else
-	{
-	  $winning_team_abbr = $t1->getValue('name_abbr') ;
-	  $team1_sel = "selected" ;
-	}
-
-      if (!util::isNull($winning_team_id))
+      if (!util::isNull($approved))
 	{
 	  $disableMatchChange = "disabled" ;
 	}
 
-      echo "<td><select name='winning_team_id' $disableMatchChange>";
-
-      echo "<option value='" . $t1->getValue('team_id') . "'" . $team1_sel . ">" . $t1->getValue('name') ;
-      echo "<option value='" . $t2->getValue('team_id') . "'" . $team2_sel . ">" . $t2->getValue('name') ;
-      echo "</select></td></tr>";
       echo "<tr><td><b>Match Approved?</b></td>";
       echo "<td><input type='checkbox' name='approved' value='1' $dis $checked $disableMatchChange></td></tr>";
       echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button' $disableMatchChange>";
@@ -225,13 +205,10 @@ try
     }
 
   // *** PART 4
-  if ((!util::isNull($winning_team_id)) && (!util::isNull($match_id)) && (!util::isNull($div)))
+  if ((!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
       // Try to save the match
       $m = new match(array('match_id'=>$match_id));
-
-      // This will be computed as games are added
-      //$m->update('winning_team_id', $winning_team_id);
 
       if (!util::isLoggedInAsTeam())
 	{
@@ -249,14 +226,11 @@ try
       
       // Post to mvdStats.pl page
       echo "<form action='?a=reportMatch' enctype='multipart/form-data' method=post>";
-      //echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Add game MVD:</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
-      echo "<input type='hidden' name='winning_team_abbr' value='$winning_team_abbr'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
       echo "<input type='hidden' name='fileform' value='1'>";
@@ -270,26 +244,26 @@ try
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
-      echo "<input type='hidden' name='winning_team_abbr' value='$winning_team_abbr'>";
       echo "<tr><td nowrap colspan=2><b>Manually add a game:</b></td>";
       echo "<td><input type='submit' value='Okay' name='B1' class='button'></td></tr>";
       echo "</table></form>";
     }
   // *** PART 5
-  if (($_FILES['filename']['size'] != 0) && (!util::isNull($winning_team_id)) && (!util::isNull($match_id)) && (!util::isNull($div)))
+  if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
-      $uploaddir = '/usr/quake/demos/tourney/';
-      $uploadfile = $uploaddir . basename($_FILES['filename']['name']);
+      $uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);
 
-      if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
-	echo "File ". $_FILES['filename']['name'] ." uploaded.\n";
-	//echo "Displaying contents\n";
-	//readfile($_FILES['filename']['tmp_name']);
-      } else {
-	echo "File Error on upload: ";
-	echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
-      }
+      if (is_uploaded_file($_FILES['filename']['tmp_name']))
+	{
+	  echo "File ". $_FILES['filename']['name'] ." uploaded.\n";
+	  //echo "Displaying contents\n";
+	  //readfile($_FILES['filename']['tmp_name']);
+	}
+      else
+	{
+	  echo "File Error on upload: ";
+	  echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
+	}
 		
       if(!preg_match("/.gz$|.mvd$/i", $_FILES['filename']['name'])) 
 	{
@@ -310,59 +284,23 @@ try
       $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
       $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
 
-      if ($winning_team_id==$t1->getValue('team_id'))
-	{
-	  $winning_team_abbr = $t1->getValue('name_abbr') ;
-	}
-      else
-	{
-	  $winning_team_abbr = $t2->getValue('name_abbr') ;
-	}
-
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
 
       // Post to mvdStats.pl page
-      //echo "<form action='?a=reportMatch' enctype='multipart/form-data' method=post>";
       echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Make it happen:</b></td>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='winning_team_id' value='$winning_team_id'>";
-      echo "<input type='hidden' name='winning_team_abbr' value='$winning_team_abbr'>";
-      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
-      echo "<input type='hidden' name='team1players' value='";
-
-      foreach ($t1->getPlayers($tid) as $player)
-	{
-	  echo $player->getValue('name')."\\\\";
-	}
-      echo "'>";
-      echo "<input type='hidden' name='team2players' value='";
-
-      foreach ($t2->getPlayers($tid) as $player)
-	{
-	  echo $player->getValue('name')."\\\\";
-	}
-      echo "'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
       echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
       echo "</table></form>";
     }
-		
-  //try
-  //{
-  //  $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
-  //  if ($p->hasColumn())
-  //  if ($p->isSuperAdmin())
-  //  if ($p->isTourneyAdmin())
-  //}
-  //catch(Exception $e){}
 }
 catch (Exception $e) {}
 ?>

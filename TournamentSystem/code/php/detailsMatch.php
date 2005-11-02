@@ -1,7 +1,19 @@
-
 <?php
 
 require_once 'includes.php';
+
+try
+{
+  session_start() ;
+
+  if (!util::isNull($_SESSION['user_id']))
+    {
+      $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+      require_once 'login.php';
+    }
+}
+catch(Exception $e) {}
+
 require 'userLinks.php';
 echo "<br>";
 
@@ -11,7 +23,7 @@ $t = new tourney(array('tourney_id'=>$tid));
 $match_id = $_REQUEST['match_id'];
 $m = new match(array('match_id'=>$match_id));
 
-if (!$m->getValue('approved'))
+if (!$m->getValue('approved') && (util::isNull($p) || (!$p->isSuperAdmin() && !$p->isTourneyAdmin($t->getValue('tourney_id')))))
 {
   util::throwException('Match has not been approved yet') ;
 }
@@ -99,10 +111,17 @@ foreach ($m->getGames() as $g)
     }
   else
     {
-      $gameout .= 'Not Graph Available<p>' ;
+      $gameout .= 'No Graph Available<p>' ;
     }
 
-  $gameout .= "<a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Game Details</a><p>";
+  if ($g->hasDetails())
+    {
+      $gameout .= "<a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Game Details</a><p>";
+    }
+  else
+    {
+      $gameout .= 'No Game Details Available<p>' ;
+    }
   
   if (array_key_exists(util::MVD_DEMO, $files))
     {

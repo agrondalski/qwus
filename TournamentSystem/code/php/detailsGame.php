@@ -1,7 +1,19 @@
-
 <?php
 
 require 'includes.php';
+
+try
+{
+  session_start() ;
+
+  if (!util::isNull($_SESSION['user_id']))
+    {
+      $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+      require_once 'login.php';
+    }
+}
+catch(Exception $e) {}
+
 require 'userLinks.php';
 echo "<br>";
 
@@ -11,9 +23,20 @@ $t = new tourney(array('tourney_id'=>$tid));
 $match_id = $_REQUEST['match_id'];
 $m = new match(array('match_id'=>$match_id));
 
-if (!$m->getValue('approved'))
+try
 {
-  util::throwException('Match has not been approved yet') ;
+  session_start() ;
+
+  if (!util::isNull($_SESSION['user_id']))
+    {
+      $p = new player(array('player_id'=>$_SESSION['user_id'])) ;
+    }
+}
+catch(Exception $e) {}
+
+if (!$m->getValue('approved') && (util::isNull($p) || (!$p->isSuperAdmin() && !$p->isTourneyAdmin($t->getValue('tourney_id')))))
+{
+  util::throwException('Game has not been approved yet') ;
 }
 
 $game_id = $_REQUEST['game_id'];
@@ -24,7 +47,7 @@ $files = $g->getFiles() ;
 
 $gameout .= "<a href='?a=detailsMatch&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "'>Match Details</a><p>";
 
-if (util::isNull($files))
+if (!$g->hasDetails())
 {
   echo $gameout ;
   echo 'No details available<p>' ;
@@ -38,7 +61,6 @@ if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
   $gameout .= "<img src='" . $file . "' alt=''>";
   $gameout .= "<br><br>";
 }
-
 
 if (array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
 {	

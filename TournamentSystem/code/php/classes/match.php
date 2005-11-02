@@ -187,7 +187,7 @@ class match
 	  return ;
 	}
 
-      if (!array_key_exists('winning_team_id', $a) || !array_key_exists('filename', $a) || !array_key_exists('map', $a) || !array_key_exists('teamStats', $a) ||
+      if (!array_key_exists('filename', $a) || !array_key_exists('map', $a) || !array_key_exists('teamStats', $a) ||
 	  !array_key_exists('team1', $a) || !array_key_exists('team2', $a) || !array_key_exists('team_score_graph_small', $a) ||
 	  !array_key_exists('team_score_graph_large', $a) || !array_key_exists('player_score_graph', $a) || !array_key_exists('playerFields', $a) ||
 	  !array_key_exists('PlayerStats', $a) || !array_key_exists('team1players', $a) || !array_key_exists('team2players', $a))

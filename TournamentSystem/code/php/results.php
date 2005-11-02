@@ -86,20 +86,18 @@ foreach ($t->getDivisions() as $div)
 		    {
 		      $team2 += 1;				
 		    }	
-		
-		  //$map = new map(array('map_id'=>$g->getValue('map_id')));
-		  //echo "<tr>";
-		  //echo "<td>",$map->getValue('map_abbr'),"</td>";
-		  //echo "<td>",$g->getValue('team1_score')," - ";
-		  //echo $g->getValue('team2_score'),"</td>";
-		  //echo "</tr>\n";
 		}
 
 	      echo " (",$team1,"-",$team2,")</a>";
+	      echo "</td>";
+	      echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
+	    }
+	  else
+	    {
+	      echo "<td>" . util::DEFAULT_DATE . "</td></tr>\n";
+
 	    }
 
-	  echo "</td>";
-	  echo "<td>",$m->getValue('match_date'),"</td></tr>\n";
 	}
     }
   echo "</table><br>\n";

@@ -81,6 +81,8 @@ class util
   const ROOT_DIR       = '/usr/quake/demos/tourney' ;
   const HTML_ROOT_DIR  = 'http://www.quakeworld.us/tourney' ;
 
+  const UPLOAD_DIR     = '/usr/quake/demos/tourney/';
+
   const SCREENSHOT              = 'SCREENSHOT' ;
   const MVD_DEMO                = 'MVD_DEMO' ;
   const TEAM_SCORE_GRAPH_SMALL  = 'TEAM_SCORE_GRAPH_SMALL' ;

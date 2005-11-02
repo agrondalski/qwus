@@ -175,14 +175,14 @@ try
 
   if ($show_player==1)
     {
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=name'>Name</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=team_name'>Team</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=name'>Name</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=team_name'>Team</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
     }
   else
     {
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=name'>Name</a></th>";
-      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=name'>Name</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GAMES_PLAYED,"'>GP</a></th>";
     }
   
   if ($page == 'main')

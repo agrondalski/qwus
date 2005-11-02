@@ -279,6 +279,22 @@ class game
       $f = new file($a) ;
     }
 
+  public function hasDetails()
+    {
+      if (count($this->getStats())==0)
+	{
+	  return false ;
+	}
+
+      $files = $this->getFiles() ;
+      if (!array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files) || !array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
+	{
+	  return false ;
+	}
+
+      return true ;
+    }
+
   public function getScreenshot($fileloc)
     {
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;

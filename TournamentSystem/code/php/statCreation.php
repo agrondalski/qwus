@@ -7,7 +7,6 @@ try
   $tid             = $_REQUEST['tourney_id'];
   $division_id     = $_REQUEST['division_id'];
   $match_id        = $_REQUEST['match_id'];
-  $winning_team_id =$_REQUEST['winning_team_id'];
 
   $m = new match(array('match_id'=>$match_id));
   if ($m->getValue('approved'))
@@ -21,8 +20,7 @@ try
   
   try
     {
-      $m->addGameWithStats(array('winning_team_id'=>$_REQUEST['winning_team_id'],
-				 'filename'=>$_REQUEST['filename'],
+      $m->addGameWithStats(array('filename'=>$_REQUEST['filename'],
 				 'map'=>$_REQUEST['map'],
 				 'teamStats'=>$_REQUEST['teamStats'],
 				 'team1'=>$_REQUEST['team1'],
@@ -43,7 +41,7 @@ try
       echo 'Unable to Add Game<br>';
     }
   
-  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;winning_team_id=$winning_team_id&amp;approved=$approved'>Report Match Page</a>";
+  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved'>Report Match Page</a>";
 }
 catch (Exception $e) {}
 

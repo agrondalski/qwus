@@ -374,8 +374,8 @@ class stats_team
 	      $frags_for       = 0 ;
 	      $frags_against   = 0 ;
 	      $num_games       = 0 ;
-	      $games_won        = 0 ;
-	      $games_lost       = 0 ;
+	      $games_won       = 0 ;
+	      $games_los       = 0 ;
 	      $match_maps_won  = 0 ;
 	      $match_maps_lost = 0 ;
 	      $total_wins      = 0 ;
