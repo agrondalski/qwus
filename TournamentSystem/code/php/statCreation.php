@@ -41,7 +41,7 @@ try
       echo 'Unable to Add Game<br>';
     }
   
-  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved'>Report Match Page</a>";
+  echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved&amp;approved_step=1'>Report Match Page</a>";
 }
 catch (Exception $e) {}
 

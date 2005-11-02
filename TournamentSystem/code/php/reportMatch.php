@@ -32,8 +32,18 @@ try
 
   $division_id = $_REQUEST['division_id'];
   $match_id    = $_REQUEST['match_id'];
-  $approved    = $_REQUEST['approved'];
   $fileform    = $_REQUEST['fileform'];
+
+  if ($_REQUEST['approved_step'])
+    {
+      $approved = $_REQUEST['approved'];
+
+      if (util::isNull($approved))
+	{
+	  $approved = 0 ;
+	}
+    }
+
 
   $t = new tourney(array('tourney_id'=>$tid));
 
@@ -199,6 +209,7 @@ try
 
       echo "<tr><td><b>Match Approved?</b></td>";
       echo "<td><input type='checkbox' name='approved' value='1' $dis $checked $disableMatchChange></td></tr>";
+      echo "<input type='hidden' name='approved_step' value='1'>";
       echo "<tr><td>&nbsp;</td><td><input type='submit' value='Okay' name='B1' class='button' $disableMatchChange>";
       echo "<br></td></tr>";
       echo "</table></form>";
