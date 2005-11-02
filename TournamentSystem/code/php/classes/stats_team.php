@@ -301,6 +301,7 @@ class stats_team
                               order by team_id, match_date desc, match_id desc",
 			     $map_query_g, $map_query_g, $team_query_tm) ;
 	}
+      print $sql_str ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $arr = array() ;
@@ -377,7 +378,7 @@ class stats_team
 	      $frags_against   = 0 ;
 	      $num_games       = 0 ;
 	      $games_won       = 0 ;
-	      $games_los       = 0 ;
+	      $games_lost      = 0 ;
 	      $match_maps_won  = 0 ;
 	      $match_maps_lost = 0 ;
 	      $total_wins      = 0 ;
