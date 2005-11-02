@@ -271,14 +271,16 @@ class stats_team
 
       if (!$career)
 	{
-	  $sql_str = sprintf("select tm.team_id, tm.name, s.score, s.other, s.match_id, tm.location_id
-                              from (select m.team1_id team_id, g.team1_score score, g.team2_score other, m.match_id, m.match_date
-                                    from game g, match_table m, match_schedule ms, division d
-                                    where g.match_id=m.match_id %s %s and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s
+	  $sql_str = sprintf("select tm.team_id, tm.name, s.score, s.other, s.match_id, tm.location_id, s.map_name
+                              from (select mt.team1_id team_id, g.team1_score score, g.team2_score other, mt.match_id, mt.match_date, m.map_name
+                                    from game g, maps m, match_table mt, match_schedule ms, division d
+                                    where g.map_id=m.map_id and g.match_id=mt.match_id %s %s and mt.approved=true and
+                                          mt.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s
                                    union all
-                                    select m.team2_id team_id, g.team2_score score, g.team1_score other, m.match_id, m.match_date
-                                    from game g, match_table m, match_schedule ms, division d
-                                    where g.match_id=m.match_id %s %s and m.approved=true and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join team tm using (team_id),
+                                    select mt.team2_id team_id, g.team2_score score, g.team1_score other, mt.match_id, mt.match_date, m.map_name
+                                    from game g, maps m, match_table mt, match_schedule ms, division d
+                                    where g.map_id=m.map_id and g.match_id=mt.match_id %s %s and mt.approved=true and
+                                          mt.schedule_id=ms.schedule_id and ms.division_id=d.division_id %s %s) s right outer join team tm using (team_id),
                                     tourney_info ti
                                where tm.team_id=ti.team_id %s %s %s %s
                               order by team_id, match_date desc, match_id desc",
@@ -287,14 +289,14 @@ class stats_team
 	}
       else
 	{
-	  $sql_str = sprintf("select tm.team_id, tm.name, s.score, s.other, s.match_id, tm.location_id
-                              from (select m.team1_id team_id, g.team1_score score, g.team2_score other, m.match_id, m.match_date
-                                    from game g, match_table m
-                                    where %s g.match_id=m.match_id and m.approved=true
+	  $sql_str = sprintf("select tm.team_id, tm.name, s.score, s.other, s.match_id, tm.location_id, s.map_name
+                              from (select mt.team1_id team_id, g.team1_score score, g.team2_score other, mt.match_id, mt.match_date, m.map_name
+                                    from game g, maps m, match_table mt
+                                    where %s g.map_id=m.map_id and g.match_id=mt.match_id and mt.approved=true
                                    union all
-                                    select m.team2_id team_id, g.team2_score score, g.team1_score other, m.match_id, m.match_date
-                                    from game g, match_table m
-                                    where %s g.match_id=m.match_id and m.approved=true) s right outer join team tm using(team_id)
+                                    select mt.team2_id team_id, g.team2_score score, g.team1_score other, mt.match_id, mt.match_date, m.map_name
+                                    from game g, maps m, match_table mt
+                                    where %s g.map_id=m.map_id and g.match_id=mt.match_id and mt.approved=true) s right outer join team tm using(team_id)
                               where 1=1 %s
                               order by team_id, match_date desc, match_id desc",
 			     $map_query_g, $map_query_g, $team_query_tm) ;
@@ -419,18 +421,21 @@ class stats_team
 	      $match_maps_lost = 0 ;
 	    }
 
-	  $frags_for += $row[2] ;
-	  $frags_against += $row[3] ;
-	  $num_games += 1 ;
-
-	  if ($row[2] > $max_score)
+	  if ($row[6]!=util::FORFEIT_MAP)
 	    {
-	      $max_score = $row[2] ;
-	    }
+	      $frags_for += $row[2] ;
+	      $frags_against += $row[3] ;
+	      $num_games += 1 ;
 
-	  if ($row[2] < $min_score)
-	    {
-	      $min_score = $row[2] ;
+	      if ($row[2] > $max_score)
+		{
+		  $max_score = $row[2] ;
+		}
+
+	      if ($row[2] < $min_score)
+		{
+		  $min_score = $row[2] ;
+		}
 	    }
 
 	  if ($row[2]>$row[3])

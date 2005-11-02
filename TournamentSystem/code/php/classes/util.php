@@ -72,6 +72,8 @@ class util
   const MAX_SCORE          = 'Max_Score' ;
   const MIN_SCORE          = 'Min_Score' ;
   
+  const FORFEIT_MAP        = 'Forfeit' ;
+
   const DEFAULT_DATE = '0000-00-00' ;
   const DEFAULT_TIME = '00:00:00' ;
   const DEFAULT_INT  = -1 ;

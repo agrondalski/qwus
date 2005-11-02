@@ -485,7 +485,7 @@ class tourney
 
   public function getMaps($a)
     {
-      $sql_str = sprintf("select m.* from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id", $this->tourney_id) ;
+      $sql_str = sprintf("select m.* from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id and m.map_name!='%s'", $this->tourney_id, util::FORFEIT_MAP) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
