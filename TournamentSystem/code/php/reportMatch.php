@@ -243,6 +243,7 @@ try
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
+      echo "<input type='hidden' name='approved_step' value='1'>";
       echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
       echo "<input type='hidden' name='fileform' value='1'>";
       echo "<td><input type='file' name='filename'></td>";
