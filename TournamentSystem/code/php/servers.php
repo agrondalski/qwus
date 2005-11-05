@@ -42,8 +42,10 @@
 </TR>
 </TABLE>
 <BR>
+For a comprehensive list of quakeworld servers check out <a href="http://www.quakeservers.net" TARGET="_blank">QuakeServers.net</a>.
+<BR>
 The Chicago servers were taken down since there are a few other qw servers in the same building now.  Should there be a need for them to return in the future then they will.
 <BR><BR>
 We also host a few other games from time to time including qw tf, et, and savage.  Teamspeak and Ventrillo servers are available for use by NA qw clans.
 <BR><BR>
-ZDaemon players:  I shut down all my doom servers a while back for various reasons.  I've considered putting some back up lately, but as of right now there is no linux client.  No linux client for me = no linux server for you :(
+ZDaemon players:  I shut down all my doom servers a while back for various reasons.
