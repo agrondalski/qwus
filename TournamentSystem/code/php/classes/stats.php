@@ -232,8 +232,8 @@ class stats
       if (!$career)
 	{
 	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
-                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_players, p.location_id
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
+                                     s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_players, p.location_id, s.game_id
+                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id, g.game_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id,
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
@@ -249,8 +249,8 @@ class stats
 	{
 	  $sql_str = sprintf("select p.player_id, p.name, s.team_id, null, null, null,
                                      s.value, s.match_id, s.winning_team_id, s.team1_id, s.team1_score, s.team2_score,
-                                     (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id), p.location_id
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
+                                     (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id), p.location_id, s.game_id
+                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,, g.game_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id
                                     from stats s, game g, match_table m
                                     where s.stat_name='%s' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id)
@@ -307,7 +307,7 @@ class stats
 	      $arr[$pid]['division_name'] = util::htmlentities($row[5], ENT_QUOTES) ;
 	    }
 
-	  if (util::isNull($row[6]))
+	  if (util::isNull($row[6]) || ($row[0]==97 && $row[14]==48))
 	    {
 	      continue ;
 	    }

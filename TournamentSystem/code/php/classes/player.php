@@ -293,7 +293,10 @@ class player
 
       while ($row=mysql_fetch_row($result))
 	{
-	  $arr[] = new game(array('game_id'=>$row[0])) ;
+	  if ($this->player_id!=97 || $row[0]!=48)
+	    {
+	      $arr[] = new game(array('game_id'=>$row[0])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
