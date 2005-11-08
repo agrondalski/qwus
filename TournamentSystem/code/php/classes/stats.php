@@ -325,7 +325,14 @@ class stats
 	      $team_score = $row[11] ;
 	    }
 
-	  $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
+	  if ($row[14]!=48)
+	    {
+	      $game_avg += util::choose($row[12]!=0, $team_score/$row[12], 0) ;
+	    }
+	  else
+	    {
+	      $game_avg += util::choose($row[12]>1, ($team_score-5)/($row[12]-1), 0) ;
+	    }
 
 	  if ($row[2]==$row[9])
 	    {
