@@ -517,6 +517,40 @@ class tourney
       return $arr ;
     }
 
+  public function getMapsReport($a)
+    {
+      $sql_str = sprintf("select m.* from tourney_maps tm, maps m where tm.tourney_id=%d and tm.map_id=m.map_id", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new map(array('map_id'=>$row['map_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTourneyTypes()
     {
       $arr = array(self::TYPE_LEAGUE=>'League', self::TYPE_TOURNAMENT=>'Tournament', self::TYPE_LADDER=>'Ladder') ;

@@ -70,7 +70,7 @@ try
   echo "<td>Map:</td>";
   echo "<td><select name='map_id' $dis>";
   
-  foreach ($t->getMaps() as $tmp) 
+  foreach ($t->getMapsReport() as $tmp) 
     {
       $sel = "";
       if ($tmp->getValue('map_id') == $map_id) 
