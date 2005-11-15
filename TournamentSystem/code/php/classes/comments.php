@@ -264,7 +264,17 @@ class comment
   public function getValue($col, $quote_style=ENT_QUOTES)
     {
       $this->validateColumnName($col) ;
-      return util::htmlentities($this->$col, $quote_style) ;
+
+      if ($col=='comment_text')
+	{
+	  $str = $this->$col ;
+	  $str = util::html_encode($str) ;
+	  return $str ;
+	}
+      else
+	{
+	  return util::htmlentities($this->$col, $quote_style) ;
+	}
     }
 
   public function update($col, $val)

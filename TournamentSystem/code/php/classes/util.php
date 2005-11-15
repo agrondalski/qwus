@@ -614,5 +614,28 @@ class util
 	  return false;
 	}
     }
+
+  public static function html_encode($s)
+    {
+      if (self::isNull($s))
+	{
+	  return null ;
+	}
+
+      $ents = array('[b]'   => '<b>',
+		    '[/b]'  => '</b>',
+		    '[br]'  => '<br>',
+		    //'[/br]' => '</br>',
+		    '[i]'   => '<i>',
+		    '[/i]'  => '</i>',
+		    '[p]'   => '<p>',
+		    '[/p]'  => '</p>',
+		    '[strike]' => '<strike>',
+		    '[/strike]' => '</strike>',
+		    '[u]'   => '<u>',
+		    '[/u]'  => '</u>') ;
+
+      return strtr($s, $ents) ;
+    }
 }
 ?>

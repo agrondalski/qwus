@@ -12,13 +12,13 @@ TO DO LIST:
   Auto creation of playoff games/tournament style
   when reporting a match a team should be able to add 'commentary'.  this was a feature of the nqr system and worked fairly well.
   schedule/statistics page should be able to limit by division, week
-  Enhance comment system (paragraphs, etc)
 
 
 Ongoing
 ------------------------------------------------
-Maintain security/privilege checks for added files
+  Maintain security/privilege checks for added files
 
 
 FIXED
 ------------------------------------------------
+  Enhance comment system (paragraphs, etc)
