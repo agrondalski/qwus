@@ -136,8 +136,6 @@ class location
 
       if ($sort)
 	{
-	  print_r($arr) ;
-	  print_r($a) ;
 	  $sorted_arr = util::row_sort($arr, $a) ;
 
 	  $arr = array() ;

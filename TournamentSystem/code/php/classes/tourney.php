@@ -453,8 +453,6 @@ class tourney
 	{
 	  $sorted_arr = util::row_sort($arr, $a) ;
 
-      print_r($arr) ;
-
 	  $arr = array() ;
 	  foreach($sorted_arr as $row)
 	    {
