@@ -47,9 +47,9 @@ sub new
   $self->{TEAMKILLS} = 0;
   $self->{MAX_FRAG_STREAK} = 0;
   $self->{CURRENT_FRAG_STREAK} = 0;
- #  $self->{CTF_CAPTURES} = 0;
- #  $self->{CTF_FLAG_DEFENDS} = 0;
- #  $self->{CTF_CARRIER_DEFENDS} = 0;
+  $self->{CTF_CAPTURES} = 0;
+  $self->{CTF_FLAG_DEFENDS} = 0;
+  $self->{CTF_CARRIER_DEFENDS} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -353,6 +353,27 @@ sub dischargeDeaths
   return $self->{DISCHARGE_DEATHS}; 
 }
 
+sub captures
+{
+  my $self = shift;
+  if (@_) { $self->{CTF_CAPTURES} = shift; }
+  return $self->{CTF_CAPTURES};
+}
+
+sub flagDefends
+{
+  my $self = shift;
+  if (@_) { $self->{CTF_FLAG_DEFENDS} = shift; }
+  return $self->{CTF_FLAG_DEFENDS};
+}
+
+sub carrierDefends
+{
+  my $self = shift;
+  if (@_) { $self->{CTF_CARRIER_DEFENDS} = shift; }
+  return $self->{CTF_CARRIER_DEFENDS};
+}
+
 sub selfKills
 {
   my $self = shift;
@@ -491,6 +512,9 @@ sub outputStatsHeader
   print "Efficiency\\\\";
   print "Score\\\\";
   print "Frag Streak\\\\";
+  print "Captures\\\\";
+  print "Flag Defends\\\\";
+  print "Carrier Defends\\\\";
   print "PieChart";
   print "'>\n";
 }
@@ -539,6 +563,9 @@ sub outputStats
   print $self->eff . "\\\\";
   print $self->points . "\\\\";
   print $self->fragStreak . "\\\\";
+  print $self->captures . "\\\\";
+  print $self->flagDefends . "\\\\";
+  print $self->carrierDefends . "\\\\";
 }
 
 package Team;
@@ -926,6 +953,24 @@ foreach $string (@strings)
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
   }
+  elsif ($string =~ /^ captured the/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->captures($fragger->captures() + 1);
+  }
+  elsif ($string =~ /^ defends the/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->flagDefends($fragger->flagDefends() + 1);
+  }
+  elsif ($string =~ /^ defends/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->carrierDefends($fragger->carrierDefends() + 1);
+  }
   elsif ($string =~ /^ was telefragged by his teammate/) 
   {
     # this seems to have no effect on score in ktpro ??
@@ -1295,9 +1340,9 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-   print "<script>\n";
-   print "document.stats.submit();\n";
-   print "</script>\n";
+#   print "<script>\n";
+#   print "document.stats.submit();\n";
+#   print "</script>\n";
 }
 
 sub outputPlayerScoreGraph
