@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 
 # todo:
+# 10 points per teammate cap
+# weapon stats for ctf games
 # team stats (end of mvd)
 # player minutes played ( * left the game)
-# player line graph should check for not null team
 
 use CGI qw/:standard/;
 use GD::Graph::lines;
@@ -52,6 +53,8 @@ sub new
   $self->{CTF_FLAG_DEFENDS} = 0;
   $self->{CTF_CARRIER_DEFENDS} = 0;
   $self->{CTF_FLAG_RETURNS} = 0;
+  $self->{CTF_RETURN_ASSISTS} = 0;
+  $self->{CTF_FRAG_ASSISTS} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -383,6 +386,21 @@ sub flagReturns
     return $self->{CTF_FLAG_RETURNS};
 }
 
+sub fragAssists
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_FRAG_ASSISTS} = shift; }
+    return $self->{CTF_FRAG_ASSISTS};
+}
+
+sub returnAssists
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_RETURN_ASSISTS} = shift; }
+    return $self->{CTF_RETURN_ASSISTS};
+}
+
+
 sub selfKills
 {
   my $self = shift;
@@ -449,10 +467,13 @@ sub eff
   return ($self->frags / ($self->deaths + $self->frags)) * 100;
 }
 
+# need 10 * teammate caps 
 sub points
 {
   my $self = shift;
-  return ($self->frags - $self->teamKills - $self->selfKills);
+  return ($self->frags - $self->teamKills - $self->selfKills + 
+   $self->fragAssists + $self->returnAssists + $self->flagReturns +
+   $self->flagDefends + (15 * $self->captures));
 }
 
 sub incrementFragStreak
@@ -525,6 +546,8 @@ sub outputStatsHeader
   print "Flag Defends\\\\";
   print "Carrier Defends\\\\";
   print "Flag Returns\\\\";
+  print "Frag Assists\\\\";
+  print "Return Assists\\\\";
   print "PieChart";
   print "'>\n";
 }
@@ -577,6 +600,8 @@ sub outputStats
   print $self->flagDefends . "\\\\";
   print $self->carrierDefends . "\\\\";
   print $self->flagReturns . "\\\\";
+  print $self->fragAssists . "\\\\";
+  print $self->returnAssists . "\\\\";
 }
 
 package Team;
@@ -685,28 +710,28 @@ $teamOneScore = 0;
 $teamTwoScore = 0;
 $tempDir = "/tmp/";
 
-if (!$DEBUG)
+if ($DEBUG)
 {
-  my $cgi = new CGI;
-  my $tourney_id = $cgi->param('tourney_id');
-  my $division_id = $cgi->param('division_id');
-  my $match_id = $cgi->param('match_id');
-  my $winning_team_id = $cgi->param('winning_team_id');
-  my $winningTeamAbbr = $cgi->param('winning_team_abbr');
-  my $approved = $cgi->param('approved');
-  my $mvd = $cgi->param('filename');
-  my $teamOneAbbr = $cgi->param('team1');
-  my $teamTwoAbbr = $cgi->param('team2');
-  my $teamOnePlayers = $cgi->param('team1players');
-  my $teamTwoPlayers = $cgi->param('team2players');
+  $mvd = "test.mvd";
+}
+else
+{
+  $cgi = new CGI;
+  $tourney_id = $cgi->param('tourney_id');
+  $division_id = $cgi->param('division_id');
+  $match_id = $cgi->param('match_id');
+  $winning_team_id = $cgi->param('winning_team_id');
+  $winningTeamAbbr = $cgi->param('winning_team_abbr');
+  $approved = $cgi->param('approved');
+  $mvd = $cgi->param('filename');
+  $teamOneAbbr = $cgi->param('team1');
+  $teamTwoAbbr = $cgi->param('team2');
+  $teamOnePlayers = $cgi->param('team1players');
+  $teamTwoPlayers = $cgi->param('team2players');
 
   print "Content-type: text/html\n\n";
   my $referer = $ENV{"HTTP_REFERER"};
   if ($referer != /reportMatch/) { exit; }
-}
-else
-{
-  $mvd = "test.mvd";
 }
 
 if ($mvd =~ /(.*)\.gz$/)
@@ -994,6 +1019,18 @@ foreach $string (@strings)
     chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->carrierDefends($fragger->carrierDefends() + 1);
+  }
+  elsif ($string =~ /^ gets an assist for returning his flag/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->returnAssists($fragger->returnAssists() + 1);
+  }
+  elsif ($string =~ /^ gets an assist for fragging/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->fragAssists($fragger->fragAssists() + 1);
   }
   elsif ($string =~ /^ was telefragged by his teammate/) 
   {
@@ -1359,7 +1396,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='42'>\n";
+   print "\t<input type='hidden' name='playerFields' value='48'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
