@@ -51,6 +51,7 @@ sub new
   $self->{CTF_CAPTURES} = 0;
   $self->{CTF_FLAG_DEFENDS} = 0;
   $self->{CTF_CARRIER_DEFENDS} = 0;
+  $self->{CTF_FLAG_RETURNS} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -375,6 +376,13 @@ sub carrierDefends
   return $self->{CTF_CARRIER_DEFENDS};
 }
 
+sub flagReturns
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_FLAG_RETURNS} = shift; }
+    return $self->{CTF_FLAG_RETURNS};
+}
+
 sub selfKills
 {
   my $self = shift;
@@ -516,6 +524,7 @@ sub outputStatsHeader
   print "Captures\\\\";
   print "Flag Defends\\\\";
   print "Carrier Defends\\\\";
+  print "Flag Returns\\\\";
   print "PieChart";
   print "'>\n";
 }
@@ -567,6 +576,7 @@ sub outputStats
   print $self->captures . "\\\\";
   print $self->flagDefends . "\\\\";
   print $self->carrierDefends . "\\\\";
+  print $self->flagReturns . "\\\\";
 }
 
 package Team;
@@ -966,6 +976,12 @@ foreach $string (@strings)
     chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->captures($fragger->captures() + 1);
+  }
+  elsif ($string =~ /^ returned the/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->flagReturns($fragger->flagReturns() + 1);
   }
   elsif ($string =~ /^ defends the/)
   {
