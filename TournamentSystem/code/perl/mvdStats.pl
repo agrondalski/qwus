@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 # todo:
+# ctf graphs
 # weapon stats for ctf games
 # team stats (end of mvd)
 # player minutes played ( * left the game)
@@ -449,7 +450,7 @@ foreach $string (@strings)
       $team->removePlayer($1);
     }
   }
-  elsif ($string =~ /^(.*) min left$/)
+  elsif ($string =~ /^(.*) min left$/) #ktpro timer
   {
     push(@graphTime, $1);
     push(@graphTeamOneScore, $teamOneScore);
@@ -460,7 +461,13 @@ foreach $string (@strings)
       $player->minutesPlayed($player->minutesPlayed + 1);
     }
   }
-  elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/)
+  elsif ($string =~ /^(.*):(.*) left$/) #pure ctf timer
+  {
+    $minutes = $1;
+    $seconds = $2;
+    #print $minutes . ":" . $seconds . "\n";
+  }	 
+  elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/) #ktpro score display
   {
     $teamOneScore = $2;
     $teamTwoScore = $4;
