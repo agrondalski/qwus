@@ -10,6 +10,7 @@ use GD::Graph::lines;
 use GD::Graph::pie;
 use GD::Graph::colour;
 use mvdPlayer;
+use mvdTeam;
 
 $DEBUG = 0;
 
