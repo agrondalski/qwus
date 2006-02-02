@@ -471,9 +471,15 @@ sub eff
 sub points
 {
   my $self = shift;
+  my $team = $self->team;
+  if ($team == null)
+  {
+    return 0;
+  }
   return ($self->frags - $self->teamKills - $self->selfKills + 
    $self->fragAssists + $self->returnAssists + $self->flagReturns +
-   $self->flagDefends + (15 * $self->captures));
+   $self->flagDefends + (15 * $self->captures) + 
+   (10 * ($team->captures - $self->captures)));
 }
 
 sub incrementFragStreak
@@ -703,6 +709,18 @@ sub points
     $points += $player->points;
   }
   return $points;
+}
+
+sub captures
+{
+  my $self = shift;
+  my $caps = 0;
+  foreach $player ($self->players)
+  {
+    $player = main::findPlayer($player);
+    $caps += $player->captures;
+  }
+  return $caps;
 }
 
 package main;
