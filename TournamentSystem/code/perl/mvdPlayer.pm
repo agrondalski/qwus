@@ -1,17 +1,6 @@
 #!/usr/bin/perl
 
-# todo:
-# 10 points per teammate cap
-# weapon stats for ctf games
-# team stats (end of mvd)
-# player minutes played ( * left the game)
-
-use CGI qw/:standard/;
-use GD::Graph::lines;
-use GD::Graph::pie;
-use GD::Graph::colour;
-
-$DEBUG = 1;
+1;
 
 package Player;
 sub new
@@ -467,13 +456,15 @@ sub eff
   return ($self->frags / ($self->deaths + $self->frags)) * 100;
 }
 
-# need 10 * teammate caps 
 sub points
 {
   my $self = shift;
+  my $team = $self->team;
+  if ($team == null) { return 0; }
   return ($self->frags - $self->teamKills - $self->selfKills + 
    $self->fragAssists + $self->returnAssists + $self->flagReturns +
-   $self->flagDefends + (15 * $self->captures));
+   $self->flagDefends + (15 * $self->captures) +
+   (10 * ($team->captures - $self->captures)));
 }
 
 sub incrementFragStreak
@@ -704,3 +695,16 @@ sub points
   }
   return $points;
 }
+
+sub captures
+{
+  my $self = shift;
+  my $caps = 0;
+  foreach $player ($self->players)
+  {
+    $player = main::findPlayer($player);
+    $caps += $player->captures;
+  }
+  return $caps;
+}
+

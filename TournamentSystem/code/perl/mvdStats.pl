@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # todo:
-# 10 points per teammate cap
 # weapon stats for ctf games
 # team stats (end of mvd)
 # player minutes played ( * left the game)
