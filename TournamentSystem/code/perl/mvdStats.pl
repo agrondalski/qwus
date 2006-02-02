@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # todo:
-# ctf msgs
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 # player line graph should check for not null team
@@ -10,6 +9,8 @@ use CGI qw/:standard/;
 use GD::Graph::lines;
 use GD::Graph::pie;
 use GD::Graph::colour;
+
+$DEBUG = 0;
 
 package Player;
 sub new
@@ -674,22 +675,29 @@ $teamOneScore = 0;
 $teamTwoScore = 0;
 $tempDir = "/tmp/";
 
-my $cgi = new CGI;
-my $tourney_id = $cgi->param('tourney_id');
-my $division_id = $cgi->param('division_id');
-my $match_id = $cgi->param('match_id');
-my $winning_team_id = $cgi->param('winning_team_id');
-my $winningTeamAbbr = $cgi->param('winning_team_abbr');
-my $approved = $cgi->param('approved');
-my $mvd = $cgi->param('filename');
-my $teamOneAbbr = $cgi->param('team1');
-my $teamTwoAbbr = $cgi->param('team2');
-my $teamOnePlayers = $cgi->param('team1players');
-my $teamTwoPlayers = $cgi->param('team2players');
+if (!$DEBUG)
+{
+  my $cgi = new CGI;
+  my $tourney_id = $cgi->param('tourney_id');
+  my $division_id = $cgi->param('division_id');
+  my $match_id = $cgi->param('match_id');
+  my $winning_team_id = $cgi->param('winning_team_id');
+  my $winningTeamAbbr = $cgi->param('winning_team_abbr');
+  my $approved = $cgi->param('approved');
+  my $mvd = $cgi->param('filename');
+  my $teamOneAbbr = $cgi->param('team1');
+  my $teamTwoAbbr = $cgi->param('team2');
+  my $teamOnePlayers = $cgi->param('team1players');
+  my $teamTwoPlayers = $cgi->param('team2players');
 
-print "Content-type: text/html\n\n";
-my $referer = $ENV{"HTTP_REFERER"};
-if ($referer != /reportMatch/) { exit; }
+  print "Content-type: text/html\n\n";
+  my $referer = $ENV{"HTTP_REFERER"};
+  if ($referer != /reportMatch/) { exit; }
+}
+else
+{
+  $mvd = "test.mvd";
+}
 
 if ($mvd =~ /(.*)\.gz$/)
 {
@@ -1321,11 +1329,11 @@ sub outputForm
        print "'>\n";
        $teamNumber++;
      }
-   
+
      my $imagePath = outputTeamScoreGraph(320, 200);
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
-   
+
      $imagePath = outputTeamScoreGraph(550, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
@@ -1380,6 +1388,10 @@ sub outputTeamScoreGraph
 {
   my $x = 400; my $y = 300;
   if (@_) { $x = shift; $y = shift; }
+  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
+  {
+      return;
+  } 
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
   my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
