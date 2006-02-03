@@ -45,6 +45,8 @@ sub new
   $self->{CTF_FLAG_RETURNS} = 0;
   $self->{CTF_RETURN_ASSISTS} = 0;
   $self->{CTF_FRAG_ASSISTS} = 0;
+  $self->{CTF_GRAPPLE_FRAGS} = 0;
+  $self->{CTF_GRAPPLE_DEATHS} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -236,6 +238,20 @@ sub axFrags
   return $self->{AX_FRAGS};
 }
 
+sub grappleDeaths
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_GRAPPLE_DEATHS} = shift; $self->resetFragStreak; }
+    return $self->{CTF_GRAPPLE_DEATHS};
+}
+
+sub grappleFrags
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_GRAPPLE_FRAGS} = shift; $self->incrementFragStreak; }
+    return $self->{CTF_GRAPPLE_FRAGS};
+}
+
 sub teleDeaths
 {
   my $self = shift;
@@ -421,7 +437,7 @@ sub frags
     $self->sngFrags() + $self->grenadeFrags() +
     $self->rocketFrags() + $self->lightningFrags() +
     $self->dischargeFrags() + $self->squishFrags() +
-    $self->teleFrags()
+    $self->teleFrags() + $self->grappleFrags()
   );
 }
 
@@ -447,7 +463,7 @@ sub deaths
     $self->sngDeaths() + $self->grenadeDeaths() +
     $self->rocketDeaths() + $self->lightningDeaths() + 
     $self->dischargeDeaths() + $self->squishDeaths() +
-    $self->selfKills() + $self->teleDeaths()
+    $self->selfKills() + $self->teleDeaths() + $self->grappleDeaths()
    );
 }
 
@@ -548,6 +564,8 @@ sub outputStatsHeader
   print "Flag Drops\\\\";
   print "Frag Assists\\\\";
   print "Return Assists\\\\";
+  print "Grapple Frags\\\\";
+  print "Grapple Deaths\\\\";
   print "PieChart";
   print "'>\n";
 }
@@ -603,4 +621,6 @@ sub outputStats
   print $self->flagDrops . "\\\\";
   print $self->fragAssists . "\\\\";
   print $self->returnAssists . "\\\\";
+  print $self->grappleFrags . "\\\\";
+  print $self->grappleDeaths . "\\\\";
 }

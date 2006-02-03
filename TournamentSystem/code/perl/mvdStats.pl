@@ -4,8 +4,26 @@
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # ctf graphs
 # weapon stats for ctf games (in progress)
+# improve regexs
+# always team #3 in ctf?
 # team stats (end of mvd)
 # player minutes played ( * left the game)
+
+#grim
+# was hooked by
+#skeLman
+
+#Bloodydemon  .s
+# was nailed by
+#HarC0n__
+
+#ninja bob
+# was telefragged by
+#Toaster
+
+#ninja bob
+# was punctured by
+#BLooD_DoG(D_P)
 
 use CGI qw/:standard/;
 use GD::Graph::lines;
@@ -24,7 +42,7 @@ $tempDir = "/tmp/";
 if ($DEBUG)
 {
   print "-- Debug Enabled --\n";
-  $mvd = "test.mvd";
+  $mvd = shift(@ARGV);
 }
 else
 {
@@ -321,6 +339,20 @@ foreach $string (@strings)
     $fragger = findPlayer($oldString);
     $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
+  elsif ($string =~ /^'s boomstick/)
+  {
+      $fraggee = findPlayer($oldString2);
+      $fraggee->shotgunDeaths($fraggee->shotgunDeaths() + 1);
+      $fragger = findPlayer($oldString);
+      $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
+  }
+  elsif ($string =~ /^'s buckshot/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->ssgDeaths($fraggee->ssgDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->ssgFrags($fragger->ssgFrags() + 1);
+  }
   elsif ($string =~ /^ captured the/)
   {
     $fragger = findPlayer($oldString);
@@ -546,10 +578,10 @@ outputForm();
 
 if ($DEBUG)
 {
-    print "Found " . @players . " players\n";
+  print "Found " . @players . " players\n";
   foreach $player (@players)
   {
-     print $player->name . " " . $player->lightningFrags . "\n";
+ #    print $player->name . " " . $player->lightningFrags . "\n";
   }
 }
 
@@ -742,7 +774,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='49'>\n";
+   print "\t<input type='hidden' name='playerFields' value='51'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
