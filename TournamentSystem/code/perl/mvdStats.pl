@@ -14,7 +14,7 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 0;
+$DEBUG = 1;
 
 package main;
 $teamOneScore = 0;
@@ -728,7 +728,8 @@ sub outputForm
 sub outputPlayerScoreGraph
 {
   my $x = 400; my $y = 300;
-  if (@_) { $x = shift; $y = shift; }
+  if (@_) { $x = shift; $y = shift; } 
+  if (@graphTime < 5) { return; }
   my @data = (\@graphTime);
   foreach $player (@players)
   { 
