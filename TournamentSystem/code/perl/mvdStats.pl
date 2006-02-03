@@ -89,8 +89,6 @@ foreach $string (@strings)
   # ctf attempt for lg
   elsif ($string =~ /^'s shaft/)
   {
-    chomp($oldString2);
-    chomp($oldString);
     $fraggee = findPlayer($oldString2);
     $fraggee->lightningDeaths($fraggee->lightningDeaths() + 1);
     $fragger = findPlayer($oldString);
@@ -175,7 +173,6 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) becomes bored with life/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->rocketBores($fraggee->rocketBores() + 1);
   }
@@ -187,25 +184,21 @@ foreach $string (@strings)
   #}
   elsif ($string =~ /^ tries to put the pin back in/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->grenadeBores($fraggee->grenadeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the water/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the slime/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the lava/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
@@ -242,67 +235,57 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^ visits the Volcano God/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }    
   elsif ($string =~ /^ burst into flames/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }
   elsif ($string =~ /^ turned into hot slag/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }
   elsif ($string =~ /^(.*) cratered/)
   {
-    print $string;
+  #  print $string;
     $fraggee = findPlayer($1);
     $fraggee->fallBores($fraggee->fallBores() + 1);
   }
   elsif ($string =~ /^ fell to his death/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->fallBores($fraggee->fallBores() + 1);
   }
   elsif ($string =~ /^(.*) sleeps with the fishes/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) sucks it down/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) gulped a load of slime/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->slimeBores($fraggee->slimeBores() + 1);
   }
   elsif ($string =~ /^(.*) can't exist on slime alone/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->slimeBores($fraggee->slimeBores() + 1);
   }
   elsif ($string =~ /^ was spiked/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^(.*) tried to leave/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
@@ -313,56 +296,47 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^ suicides/)
   {
-    chomp($oldString);
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
   }
   elsif ($string =~ /^ captured the/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->captures($fragger->captures() + 1);
   }
   elsif ($string =~ /^ returned the/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->flagReturns($fragger->flagReturns() + 1);
   }
   elsif ($string =~ /^ defends the/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->flagDefends($fragger->flagDefends() + 1);
   }
   elsif ($string =~ /^ defends/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->carrierDefends($fragger->carrierDefends() + 1);
   }
   elsif ($string =~ /^ lost the/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->flagDrops($fragger->flagDrops() + 1);
   }
   elsif ($string =~ /^ gets an assist for returning his flag/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->returnAssists($fragger->returnAssists() + 1);
   }
   elsif ($string =~ /^ gets an assist for fragging/)
   {
-    chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->fragAssists($fragger->fragAssists() + 1);
   }
   elsif ($string =~ /^ was telefragged by his teammate/) 
   {
     # this seems to have no effect on score in ktpro ??
-    #chomp($oldString);
     #$fraggee = findPlayer($oldString);
     #$fraggee->miscBores($fraggee->miscBores() + 1);
   }
@@ -501,6 +475,7 @@ foreach $string (@strings)
   $oldString2 = $oldString1;
   $oldString1 = $oldString;
   $oldString = $string;
+  chomp($oldString);
 }
 push(@graphTime, 0);
 push(@graphTeamOneScore, $teamOneScore);
