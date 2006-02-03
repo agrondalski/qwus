@@ -40,6 +40,7 @@ sub new
   $self->{CURRENT_FRAG_STREAK} = 0;
   $self->{CTF_CAPTURES} = 0;
   $self->{CTF_FLAG_DEFENDS} = 0;
+  $self->{CTF_FLAG_DROPS} = 0;
   $self->{CTF_CARRIER_DEFENDS} = 0;
   $self->{CTF_FLAG_RETURNS} = 0;
   $self->{CTF_RETURN_ASSISTS} = 0;
@@ -375,6 +376,13 @@ sub flagReturns
     return $self->{CTF_FLAG_RETURNS};
 }
 
+sub flagDrops
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_FLAG_DROPS} = shift; }
+    return $self->{CTF_FLAG_DROPS};
+}
+
 sub fragAssists
 {
     my $self = shift;
@@ -537,6 +545,7 @@ sub outputStatsHeader
   print "Flag Defends\\\\";
   print "Carrier Defends\\\\";
   print "Flag Returns\\\\";
+  print "Flag Drops\\\\";
   print "Frag Assists\\\\";
   print "Return Assists\\\\";
   print "PieChart";
@@ -591,6 +600,7 @@ sub outputStats
   print $self->flagDefends . "\\\\";
   print $self->carrierDefends . "\\\\";
   print $self->flagReturns . "\\\\";
+  print $self->flagDrops . "\\\\";
   print $self->fragAssists . "\\\\";
   print $self->returnAssists . "\\\\";
 }

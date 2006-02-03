@@ -3,7 +3,7 @@
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # ctf graphs
-# weapon stats for ctf games
+# weapon stats for ctf games (in progress)
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 
@@ -340,6 +340,12 @@ foreach $string (@strings)
     chomp($oldString);
     $fragger = findPlayer($oldString);
     $fragger->carrierDefends($fragger->carrierDefends() + 1);
+  }
+  elsif ($string =~ /^ lost the/)
+  {
+    chomp($oldString);
+    $fragger = findPlayer($oldString);
+    $fragger->flagDrops($fragger->flagDrops() + 1);
   }
   elsif ($string =~ /^ gets an assist for returning his flag/)
   {
@@ -739,7 +745,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='48'>\n";
+   print "\t<input type='hidden' name='playerFields' value='49'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
