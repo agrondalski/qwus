@@ -86,6 +86,16 @@ foreach $string (@strings)
     $fragger = findPlayer($2);
     $fragger->lightningFrags($fragger->lightningFrags() + 1);
   }
+  # ctf attempt for lg
+  elsif ($string =~ /^'s shaft/)
+  {
+    chomp($oldString2);
+    chomp($oldString);
+    $fraggee = findPlayer($oldString2);
+    $fraggee->lightningDeaths($fraggee->lightningDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->lightningFrags($fragger->lightningFrags() + 1);
+  }
   elsif ($string =~ /^(.*) chewed on (.*)'s boomstick/) 
   {
     $fraggee = findPlayer($1);
@@ -479,6 +489,11 @@ foreach $string (@strings)
 # breaking out of the loop not only provides a speed boost, but
 # eliminates the disconnected player list from being added again
   elsif ($string =~ /. - disconnected player/) { last; }
+
+#ugly stuff to add ctf support :/
+  $oldString3 = $oldString2;
+  $oldString2 = $oldString1;
+  $oldString1 = $oldString;
   $oldString = $string;
 }
 push(@graphTime, 0);
@@ -525,6 +540,15 @@ $shell = `gzip -9 "$mvd"`;
 $mvd .= ".gz";
 calculateTeamColors();
 outputForm();
+
+if ($DEBUG)
+{
+    print "Found " . @players . " players\n";
+  foreach $player (@players)
+  {
+     print $player->name . " " . $player->lightningFrags . "\n";
+  }
+}
 
 # Searches player array for the name passed in
 # Returns player object if found or new player object if not
