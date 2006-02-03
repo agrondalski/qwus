@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 # todo:
+# watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # ctf graphs
 # weapon stats for ctf games
 # team stats (end of mvd)
@@ -520,6 +521,8 @@ for (my $i = 0; $i <= $time; $i++)
   }
 }  
 $shell = `rm -f "$tempMvd"`;
+$shell = `gzip -9 "$mvd"`;
+$mvd .= ".gz";
 calculateTeamColors();
 outputForm();
 
