@@ -3,7 +3,7 @@
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # check ctf ax frags
-# ctf graphs
+# ctf graphs (almost complete)
 # improve regexs
 # always team #3 in ctf?
 # team stats (end of mvd)
@@ -21,6 +21,8 @@ $DEBUG = 0;
 package main;
 $teamOneScore = 0;
 $teamTwoScore = 0;
+$teamOneName = "red";
+$teamTwoName = "blue";
 $tempDir = "/tmp/";
 
 if ($DEBUG)
@@ -479,6 +481,7 @@ foreach $string (@strings)
       {
         if (@teams < 2)
         {
+	   print "$team\n";
 	  $team = findTeam($team);
           $team->addPlayer($name);
           $player->team($team);
@@ -543,8 +546,10 @@ foreach $string (@strings)
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
     {
       push(@graphTime, $minutes);
-      push(@graphTeamOneScore, ++$teamOneScore);
-      push(@graphTeamTwoScore, ++$teamTwoScore);
+      $team = findTeam("red");
+      push(@graphTeamOneScore, $team->points);
+      $team = findTeam("blue");
+      push(@graphTeamTwoScore, $team->points);
       foreach $player (@players)
       {
 	$player->addScore($player->points);
@@ -625,7 +630,8 @@ if ($DEBUG)
   print "Found " . @players . " players\n";
   foreach $player (@players)
   {
- #    print $player->name . " " . $player->lightningFrags . "\n";
+#     $team = findTeamNoCreate($player->team);
+#     print $player->name . " " . $team->name . "\n";
   }
   for $i (0 .. @graphTime - 1)
   {
@@ -812,11 +818,11 @@ sub outputForm
        $teamNumber++;
      }
 
-#     my $imagePath = outputTeamScoreGraph(320, 200);
+     my $imagePath = outputTeamScoreGraph(320, 200);
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
 
-#     $imagePath = outputTeamScoreGraph(550, 480);
+     $imagePath = outputTeamScoreGraph(550, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
@@ -872,10 +878,10 @@ sub outputTeamScoreGraph
 {
   my $x = 400; my $y = 300;
   if (@_) { $x = shift; $y = shift; }
-  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
-  {
-    return;
-  } 
+#  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
+#  {
+#    return;
+#  } 
   if (@graphTime != @graphTeamOneScore || 
       @graphTeamOneScore != @graphTeamTwoScore) { return; }
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
@@ -886,6 +892,7 @@ sub outputTeamScoreGraph
               y_label => "score",
               line_width => 2
              );
+
   $graph->set_legend(@graphTeams);
   my $teamOne = findTeam($teamOneName);
   my $teamTwo = findTeam($teamTwoName);
@@ -998,6 +1005,7 @@ sub colorConverter
 # available colors:
 # white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
 
+#not yet implemented
 sub complementColor
 {
   my $color = shift;
@@ -1037,109 +1045,4 @@ sub calculateTeamColors
     }
     $team->color($modeColor);
   }
-}
-sub outputStatsHeader
-{
-  print "\t<input type='hidden' name='PlayerStats' value='";
-  print "Name\\\\";
-  print "Matched\\\\";
-  print "Ax Frags\\\\";
-  print "Ax Deaths\\\\";
-  print "Shotgun Frags\\\\";
-  print "Shotgun Deaths\\\\";
-  print "SSG Frags\\\\";
-  print "SSG Deaths\\\\";
-  print "Nailgun Frags\\\\";
-  print "Nailgun Deaths\\\\";
-  print "SNG Frags\\\\";
-  print "SNG Deaths\\\\";
-  print "Grenade Frags\\\\";
-  print "Grenade Deaths\\\\";
-  print "Rocket Frags\\\\";
-  print "Rocket Deaths\\\\";
-  print "LG Frags\\\\";
-  print "LG Deaths\\\\";
-  print "Tele Frags\\\\";
-  print "Tele Deaths\\\\";
-  print "Discharge Frags\\\\";
-  print "Discharge Deaths\\\\";
-  print "Discharge Bores\\\\";
-  print "Squish Frags\\\\";
-  print "Squish Deaths\\\\";
-  print "Squish Bores\\\\";
-  print "Lava Bores\\\\";
-  print "Slime Bores\\\\";
-  print "Water Bores\\\\";
-  print "Fall Bores\\\\"; 
-  print "Misc Bores\\\\";
-  print "Grenade Bores\\\\";
-  print "Rocket Bores\\\\";
-  print "Self Kills\\\\";
-  print "Team Kills\\\\"; 
-  print "Total Frags\\\\";
-  print "Total Deaths\\\\";
-  print "Rank\\\\";
-  print "Efficiency\\\\";
-  print "Score\\\\";
-  print "Frag Streak\\\\";
-  print "Captures\\\\";
-  print "Flag Defends\\\\";
-  print "Carrier Defends\\\\";
-  print "Flag Returns\\\\";
-  print "Frag Assists\\\\";
-  print "Return Assists\\\\";
-  print "PieChart";
-  print "'>\n";
-}
-
-sub outputStats
-{
-  my $self = shift;
-  print $self->name . "\\\\";
-  print $self->approved . "\\\\";
-  print $self->axFrags . "\\\\";
-  print $self->axDeaths . "\\\\";
-  print $self->shotgunFrags . "\\\\";
-  print $self->shotgunDeaths . "\\\\";
-  print $self->ssgFrags . "\\\\";
-  print $self->ssgDeaths . "\\\\";
-  print $self->nailgunFrags . "\\\\";
-  print $self->nailgunDeaths . "\\\\";
-  print $self->sngFrags . "\\\\";
-  print $self->sngDeaths . "\\\\";
-  print $self->grenadeFrags . "\\\\";
-  print $self->grenadeDeaths . "\\\\";
-  print $self->rocketFrags . "\\\\";
-  print $self->rocketDeaths . "\\\\";
-  print $self->lightningFrags . "\\\\";
-  print $self->lightningDeaths . "\\\\";
-  print $self->teleFrags . "\\\\";
-  print $self->teleDeaths . "\\\\";
-  print $self->dischargeFrags . "\\\\";
-  print $self->dischargeDeaths . "\\\\";
-  print $self->dischargeBores . "\\\\";
-  print $self->squishFrags . "\\\\";
-  print $self->squishDeaths . "\\\\";
-  print $self->squishBores . "\\\\";
-  print $self->lavaBores . "\\\\";
-  print $self->slimeBores . "\\\\";
-  print $self->waterBores . "\\\\";
-  print $self->fallBores . "\\\\";
-  print $self->miscBores . "\\\\";
-  print $self->grenadeBores . "\\\\";
-  print $self->rocketBores . "\\\\";
-  print $self->selfKills . "\\\\";
-  print $self->teamKills . "\\\\";
-  print $self->frags . "\\\\";
-  print $self->deaths . "\\\\";
-  print $self->rank . "\\\\";
-  print $self->eff . "\\\\";
-  print $self->points . "\\\\";
-  print $self->fragStreak . "\\\\";
-  print $self->captures . "\\\\";
-  print $self->flagDefends . "\\\\";
-  print $self->carrierDefends . "\\\\";
-  print $self->flagReturns . "\\\\";
-  print $self->fragAssists . "\\\\";
-  print $self->returnAssists . "\\\\";
 }
