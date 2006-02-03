@@ -2,28 +2,12 @@
 
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
+# check ctf ax frags
 # ctf graphs
-# weapon stats for ctf games (in progress)
 # improve regexs
 # always team #3 in ctf?
 # team stats (end of mvd)
 # player minutes played ( * left the game)
-
-#grim
-# was hooked by
-#skeLman
-
-#Bloodydemon  .s
-# was nailed by
-#HarC0n__
-
-#ninja bob
-# was telefragged by
-#Toaster
-
-#ninja bob
-# was punctured by
-#BLooD_DoG(D_P)
 
 use CGI qw/:standard/;
 use GD::Graph::lines;
@@ -81,8 +65,10 @@ my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
 my @strings = `strings -2 "$tempMvd"`;
 my $fraggee = undef;
 my $fragger = undef;
+$stringCounter = -1;
 foreach $string (@strings)
 {
+  $stringCounter++;
   if (length($string) < 8)
   { 
     1;
@@ -120,12 +106,39 @@ foreach $string (@strings)
     $fragger = findPlayer($2);
     $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
   }
+  elsif ($string =~ /^ was punctured by/)
+  {
+    $nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+    $fraggee = findPlayer($oldString);
+    $fraggee->sngDeaths($fraggee->sngDeaths() + 1);
+    $fragger = findPlayer($nextString);
+    $fragger->sngFrags($fragger->sngFrags() + 1);
+  }
   elsif ($string =~ /^(.*) was punctured by (.*)/) 
   {
     $fraggee = findPlayer($1);
     $fraggee->sngDeaths($fraggee->sngDeaths() + 1);
     $fragger = findPlayer($2);
     $fragger->sngFrags($fragger->sngFrags() + 1);
+  }
+  elsif ($string =~ /^ was hooked by/)
+  {
+    $nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+    $fraggee = findPlayer($oldString);
+    $fraggee->grappleDeaths($fraggee->grappleDeaths() + 1);
+    $fragger = findPlayer($nextString);
+    $fragger->grappleFrags($fragger->grappleFrags() + 1);
+  }
+  elsif ($string =~ /^ was nailed by/)
+  {
+    $nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+    $fraggee = findPlayer($oldString);
+    $fraggee->nailgunDeaths($fraggee->nailgunDeaths() + 1);
+    $fragger = findPlayer($nextString);
+    $fragger->nailgunFrags($fragger->nailgunFrags() + 1);
   }
   elsif ($string =~ /^(.*) was nailed by (.*)/) 
   {
@@ -327,10 +340,17 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^'s Quad rocket/)
   {
-      $fraggee = findPlayer($oldString2);
-      $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-      $fragger = findPlayer($oldString);
-      $fragger->rocketFrags($fragger->rocketFrags() + 1);
+    $fraggee = findPlayer($oldString2);
+    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->rocketFrags($fragger->rocketFrags() + 1);
+  }
+  elsif ($string =~ /^'s pineapple/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^'s grenade/)
   {
@@ -341,10 +361,10 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^'s boomstick/)
   {
-      $fraggee = findPlayer($oldString2);
-      $fraggee->shotgunDeaths($fraggee->shotgunDeaths() + 1);
-      $fragger = findPlayer($oldString);
-      $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
+    $fraggee = findPlayer($oldString2);
+    $fraggee->shotgunDeaths($fraggee->shotgunDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
   }
   elsif ($string =~ /^'s buckshot/)
   {
@@ -393,6 +413,15 @@ foreach $string (@strings)
     # this seems to have no effect on score in ktpro ??
     #$fraggee = findPlayer($oldString);
     #$fraggee->miscBores($fraggee->miscBores() + 1);
+  }
+  elsif ($string =~ /^ was telefragged by/)
+  {
+    $nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+    $fraggee = findPlayer($oldString);
+    $fraggee->teleDeaths($fraggee->teleDeaths() + 1);
+    $fragger = findPlayer($nextString);
+    $fragger->teleFrags($fragger->teleFrags() + 1);
   }
   elsif ($string =~ /^(.*) was telefragged by (.*)/) 
   {
