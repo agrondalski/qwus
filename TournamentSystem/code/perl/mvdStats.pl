@@ -23,6 +23,7 @@ $tempDir = "/tmp/";
 
 if ($DEBUG)
 {
+  print "-- Debug Enabled --\n";
   $mvd = "test.mvd";
 }
 else
@@ -298,6 +299,27 @@ foreach $string (@strings)
   {
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
+  }
+  elsif ($string =~ /^'s rocket/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->rocketFrags($fragger->rocketFrags() + 1);
+  }
+  elsif ($string =~ /^'s Quad rocket/)
+  {
+      $fraggee = findPlayer($oldString2);
+      $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+      $fragger = findPlayer($oldString);
+      $fragger->rocketFrags($fragger->rocketFrags() + 1);
+  }
+  elsif ($string =~ /^'s grenade/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^ captured the/)
   {
