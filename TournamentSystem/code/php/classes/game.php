@@ -287,7 +287,9 @@ class game
 	}
 
       $files = $this->getFiles() ;
-      if (!array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files) || !array_key_exists(util::PLAYER_SCORE_GRAPH, $files))
+
+      if ((!array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files) || !array_key_exists(util::PLAYER_SCORE_GRAPH, $files)) &&
+	  $this->getTourney()->getGameType()->getValue('name')!='qwctf')
 	{
 	  return false ;
 	}
