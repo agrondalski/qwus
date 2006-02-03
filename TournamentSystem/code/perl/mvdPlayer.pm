@@ -42,6 +42,7 @@ sub new
   $self->{CTF_FLAG_DEFENDS} = 0;
   $self->{CTF_FLAG_DROPS} = 0;
   $self->{CTF_CARRIER_DEFENDS} = 0;
+  $self->{CTF_CARRIER_FRAGS} = 0;
   $self->{CTF_FLAG_RETURNS} = 0;
   $self->{CTF_RETURN_ASSISTS} = 0;
   $self->{CTF_FRAG_ASSISTS} = 0;
@@ -385,6 +386,13 @@ sub carrierDefends
   return $self->{CTF_CARRIER_DEFENDS};
 }
 
+sub carrierFrags
+{
+    my $self = shift;
+    if (@_) { $self->{CTF_CARRIER_FRAGS} = shift; }
+    return $self->{CTF_CARRIER_FRAGS};
+}
+
 sub flagReturns
 {
     my $self = shift;
@@ -487,7 +495,7 @@ sub points
   if ($team == null) { return 0; }
   return ($self->frags - $self->teamKills - $self->selfKills + 
    $self->fragAssists + $self->returnAssists + $self->flagReturns +
-   $self->flagDefends + (15 * $self->captures) +
+   $self->flagDefends + (15 * $self->captures) + $self->carrierFrags +
    (10 * ($team->captures - $self->captures)));
 }
 
@@ -560,6 +568,7 @@ sub outputStatsHeader
   print "Captures\\\\";
   print "Flag Defends\\\\";
   print "Carrier Defends\\\\";
+  print "Carrier Frags\\\\";
   print "Flag Returns\\\\";
   print "Flag Drops\\\\";
   print "Frag Assists\\\\";
@@ -617,6 +626,7 @@ sub outputStats
   print $self->captures . "\\\\";
   print $self->flagDefends . "\\\\";
   print $self->carrierDefends . "\\\\";
+  print $self->carrierFrags . "\\\\";
   print $self->flagReturns . "\\\\";
   print $self->flagDrops . "\\\\";
   print $self->fragAssists . "\\\\";

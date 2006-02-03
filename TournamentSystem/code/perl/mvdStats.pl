@@ -380,6 +380,11 @@ foreach $string (@strings)
     $fragger = findPlayer($oldString);
     $fragger->captures($fragger->captures() + 1);
   }
+  elsif ($string =~ /^ killed the flag carrier/)
+  {
+    $fragger = findPlayer($oldString);
+    $fragger->carrierFrags($fragger->carrierFrags() + 1);
+  }
   elsif ($string =~ /^ returned the/)
   {
     $fragger = findPlayer($oldString);
@@ -481,7 +486,6 @@ foreach $string (@strings)
       {
         if (@teams < 2)
         {
-	   print "$team\n";
 	  $team = findTeam($team);
           $team->addPlayer($name);
           $player->team($team);
@@ -543,21 +547,24 @@ foreach $string (@strings)
     $minutes = $1;
     while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
     if ($minutes eq "") { $minutes = 0; }
+    my $redTeam = findTeam("red");
+    my $blueTeam = findTeam("blue");
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
     {
       push(@graphTime, $minutes);
-      $team = findTeam("red");
-      push(@graphTeamOneScore, $team->points);
-      $team = findTeam("blue");
-      push(@graphTeamTwoScore, $team->points);
+      push(@graphTeamOneScore, $redTeam->points);
+      push(@graphTeamTwoScore, $blueTeam->points);
       foreach $player (@players)
       {
 	$player->addScore($player->points);
 	$player->minutesPlayed($player->minutesPlayed + 1);
       }
-      #print $minutes . "\n";
     }
-    #print $minutes . ":" . $seconds . "\n";
+    else
+    {
+      $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
+      $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+    }
   }	 
   elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/) #ktpro score display
   {
