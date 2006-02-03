@@ -538,7 +538,20 @@ foreach $string (@strings)
   elsif ($string =~ /^(.*):(.*) left$/) #pure ctf timer
   {
     $minutes = $1;
-    $seconds = $2;
+    while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
+    if ($minutes eq "") { $minutes = 0; }
+    if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
+    {
+      push(@graphTime, $minutes);
+      push(@graphTeamOneScore, ++$teamOneScore);
+      push(@graphTeamTwoScore, ++$teamTwoScore);
+      foreach $player (@players)
+      {
+	$player->addScore($player->points);
+	$player->minutesPlayed($player->minutesPlayed + 1);
+      }
+      #print $minutes . "\n";
+    }
     #print $minutes . ":" . $seconds . "\n";
   }	 
   elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/) #ktpro score display
@@ -560,9 +573,12 @@ foreach $string (@strings)
   $oldString = $string;
   chomp($oldString);
 }
-push(@graphTime, 0);
-push(@graphTeamOneScore, $teamOneScore);
-push(@graphTeamTwoScore, $teamTwoScore);
+if (@graphTime != 0 && $graphTime[@graphTime - 1] != 0)
+{
+  push(@graphTime, 0);
+  push(@graphTeamOneScore, $teamOneScore);
+  push(@graphTeamTwoScore, $teamTwoScore);
+}
 @graphTime = reverse(@graphTime);
 push(@graphTeams, $teamOneName);
 push(@graphTeams, $teamTwoName);
@@ -603,7 +619,6 @@ $shell = `rm -f "$tempMvd"`;
 $shell = `gzip -9 "$mvd"`;
 $mvd .= ".gz";
 calculateTeamColors();
-outputForm();
 
 if ($DEBUG)
 {
@@ -612,7 +627,14 @@ if ($DEBUG)
   {
  #    print $player->name . " " . $player->lightningFrags . "\n";
   }
+  for $i (0 .. @graphTime - 1)
+  {
+      print "$graphTime[$i] \t $graphTeamOneScore[$i] \t $graphTeamTwoScore[$i] \n";
+  }
+  print "@graphTime @graphTeamOneScore @graphTeamTwoScore\n";
 }
+
+outputForm();
 
 # Searches player array for the name passed in
 # Returns player object if found or new player object if not
@@ -790,15 +812,16 @@ sub outputForm
        $teamNumber++;
      }
 
-     my $imagePath = outputTeamScoreGraph(320, 200);
+#     my $imagePath = outputTeamScoreGraph(320, 200);
      print "\t<input type='hidden' name='team_score_graph_small' " . 
                                    "value='$imagePath'>\n";
 
-     $imagePath = outputTeamScoreGraph(550, 480);
+#     $imagePath = outputTeamScoreGraph(550, 480);
      print "\t<input type='hidden' name='team_score_graph_large' " . 
                                    "value='$imagePath'>\n";
 
      $imagePath = outputPlayerScoreGraph(550, 480);
+#     $imagePath = outputPlayerScoreGraph(1600,1200);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
@@ -808,9 +831,9 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-#   print "<script>\n";
-#   print "document.stats.submit();\n";
-#   print "</script>\n";
+   print "<script>\n";
+   print "document.stats.submit();\n";
+   print "</script>\n";
 }
 
 sub outputPlayerScoreGraph
@@ -851,8 +874,10 @@ sub outputTeamScoreGraph
   if (@_) { $x = shift; $y = shift; }
   if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
   {
-      return;
+    return;
   } 
+  if (@graphTime != @graphTeamOneScore || 
+      @graphTeamOneScore != @graphTeamTwoScore) { return; }
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
   my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
