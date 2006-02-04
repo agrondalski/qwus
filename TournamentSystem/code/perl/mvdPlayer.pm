@@ -518,7 +518,7 @@ sub points
   return ($self->frags - $self->teamKills - $self->selfKills + 
    (2 * $self->fragAssists) + $self->returnAssists + 
    $self->flagReturns + $self->flagDefends + (15 * $self->captures) + 
-   (2 * $self->carrierFragsBonus) + $self->carrierDefends +
+   (2 * $self->carrierFragsBonus) + (2 * $self->carrierDefends) +
    (10 * ($team->captures - $self->captures)));
 }
 
