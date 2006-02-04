@@ -16,7 +16,7 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 0;
+$DEBUG = 1;
 
 package main;
 $teamOneScore = 0;
@@ -552,6 +552,9 @@ foreach $string (@strings)
     $minutes = $1;
     while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
     if ($minutes eq "") { $minutes = 0; }
+
+    #this is fairly ugly but yeah.. 
+
     my $redTeam = findTeam("red");
     my $blueTeam = findTeam("blue");
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
@@ -569,6 +572,11 @@ foreach $string (@strings)
     {
       $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
       $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+      foreach $player (@players)
+      {
+	$player->removeScore();
+        $player->addScore($player->points);
+      }
     }
   }	 
   elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/) #ktpro score display

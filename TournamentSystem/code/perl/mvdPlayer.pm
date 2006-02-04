@@ -128,6 +128,12 @@ sub addScore
   }
 }
 
+sub removeScore
+{
+  my $self = shift;
+  pop(@{$self->{SCORE_GRAPH}});
+}
+
 sub rocketDeaths
 {
   my $self = shift;
