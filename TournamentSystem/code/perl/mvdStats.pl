@@ -3,7 +3,6 @@
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # check ctf ax frags
-# ctf graphs (almost complete)
 # improve regexs
 # always team #3 in ctf?
 # team stats (end of mvd)
@@ -16,7 +15,7 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 1;
+$DEBUG = 0;
 
 package main;
 $teamOneScore = 0;
@@ -600,9 +599,18 @@ foreach $string (@strings)
 }
 if (@graphTime != 0 && $graphTime[@graphTime - 1] != 0)
 {
+  #kt pro
   push(@graphTime, 0);
   push(@graphTeamOneScore, $teamOneScore);
   push(@graphTeamTwoScore, $teamTwoScore);
+}
+else
+{
+  #pure ctf
+  my $redTeam = findTeam("red");
+  my $blueTeam = findTeam("blue");
+  $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
+  $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
 }
 @graphTime = reverse(@graphTime);
 push(@graphTeams, $teamOneName);
