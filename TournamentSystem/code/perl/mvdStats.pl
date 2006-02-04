@@ -382,7 +382,16 @@ foreach $string (@strings)
   elsif ($string =~ /^ killed the flag carrier/)
   {
     $fragger = findPlayer($oldString);
-    $fragger->carrierFrags($fragger->carrierFrags() + 1);
+    $nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+    if ($nextString =~ /^ bonus frags/)
+    {
+      $fragger->carrierFragsBonus($fragger->carrierFragsBonus() + 1);
+    }
+    else
+    {
+      $fragger->carrierFragsNoBonus($fragger->carrierFragsNoBonus() + 1);
+    }
   }
   elsif ($string =~ /^ returned the/)
   {
