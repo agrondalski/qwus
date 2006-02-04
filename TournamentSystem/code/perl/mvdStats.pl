@@ -2,6 +2,7 @@
 
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
+# capture times
 # check ctf ax frags
 # improve regexs
 # always team #3 in ctf?

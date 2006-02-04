@@ -516,8 +516,8 @@ sub points
   my $team = $self->team;
   if ($team == null) { return 0; }
   return ($self->frags - $self->teamKills - $self->selfKills + 
-   $self->fragAssists + $self->returnAssists + $self->flagReturns +
-   $self->flagDefends + (15 * $self->captures) + 
+   (2 * $self->fragAssists) + $self->returnAssists + 
+   $self->flagReturns + $self->flagDefends + (15 * $self->captures) + 
    (2 * $self->carrierFragsBonus) + $self->carrierDefends +
    (10 * ($team->captures - $self->captures)));
 }
