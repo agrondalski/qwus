@@ -390,6 +390,11 @@ foreach $string (@strings)
     $fragger = findPlayer($oldString);
     $fragger->flagReturns($fragger->flagReturns() + 1);
   }
+  elsif ($string =~ /^ got the /)
+  {
+    $fragger = findPlayer($oldString);
+    $fragger->flagPickups($fragger->flagPickups() + 1);
+  }
   elsif ($string =~ /^ defends the/)
   {
     $fragger = findPlayer($oldString);
@@ -834,12 +839,11 @@ sub outputForm
                                    "value='$imagePath'>\n";
 
      $imagePath = outputPlayerScoreGraph(550, 480);
-#     $imagePath = outputPlayerScoreGraph(1600,1200);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='52'>\n";
+   print "\t<input type='hidden' name='playerFields' value='53'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
