@@ -409,10 +409,17 @@ foreach $string (@strings)
     $fragger = findPlayer($oldString);
     $fragger->flagDefends($fragger->flagDefends() + 1);
   }
-  elsif ($string =~ /^ defends/)
+  elsif ($string =~ /^'s flag carrier/)
   {
-    $fragger = findPlayer($oldString);
-    $fragger->carrierDefends($fragger->carrierDefends() + 1);
+    $fragger = findPlayer($oldString2);
+    if ($string =~ /agressive/) #poor spelling
+    {
+      $fragger->carrierDefendsAgg($fragger->carrierDefendsAgg() + 1);
+    }
+    else
+    {
+      $fragger->carrierDefends($fragger->carrierDefends() + 1);
+    }
   }
   elsif ($string =~ /^ lost the/)
   {
