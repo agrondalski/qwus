@@ -306,6 +306,7 @@ try
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
+      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";

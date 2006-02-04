@@ -7,15 +7,13 @@ try
   $tid             = $_REQUEST['tourney_id'];
   $division_id     = $_REQUEST['division_id'];
   $match_id        = $_REQUEST['match_id'];
+  $approved        = $_REQUEST['approved'];
 
-  $m = new match(array('match_id'=>$match_id));
-  if ($m->getValue('approved'))
+  $m = new match(array('match_id'=>$match_id)) ;
+
+  if ($approved == "1")
     {
-      $approved = 1 ;
-    }
-  else
-    {
-      $approved = 0 ;
+      $m->update('approved',"1");
     }
   
   try
