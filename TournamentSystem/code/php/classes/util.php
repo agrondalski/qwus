@@ -50,18 +50,18 @@ class util
   const SELF_KILLS   = 'Self Kills';
   const TEAM_KILLS   = 'Team Kills';
   const FRAG_STREAK  = 'Frag Streak';
+
   // QWCTF Stats
-  const CAPTURES 		=  'Captures';
+  const CAPTURES	=  'Captures';
   const CARRIER_DEFENDS =  'Carrier Defends';
   const FLAG_DEFENDS 	=  'Flag Defends';
-  const FLAG_DROPS 		=  'Flag Drops';
+  const FLAG_DROPS	=  'Flag Drops';
   const FLAG_RETURNS 	=  'Flag Returns';
   const FRAG_ASSISTS 	=  'Frag Assists';
   const RETURN_ASSISTS 	=  'Return Assists';
   const GRAPPLE_FRAGS	=  'Grapple Frags';
   const GRAPPLE_DEATHS	=  'Grapple Deaths';
-  const CARRIER_FRAGS	=  'Carrier Frags';
-  
+  const CARRIER_FRAGS	=  'Carrier Frags';  
 
   const POINTS          = 'Points' ;
   const GAMES_PLAYED    = 'Games_Played' ;
@@ -470,6 +470,64 @@ class util
       return $idx_match ;
     }
 
+  public static function matchTeamsByPlayers($t1, $t2, $abbr, $p1_game, $p2_game, $tid)
+    {
+      $p1_real = $t1->getPlayers($tid) ;
+      $p2_real = $t2->getPlayers($tid) ;
+
+      $matx = array() ;
+      $score_11 = 0 ;
+      $score_22 = 0 ;
+      $score_12 = 0 ;
+      $score_21 = 0 ;
+
+      foreach($p1_game as $k1=>$e1)
+	{
+	  foreach($p1_real as $k2=>$e2)
+	    {
+	      $matx[$k2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2->getValue('name'))) ;
+	    }
+	  $score_11 += max($matx) ;
+	}
+
+      foreach($p2_game as $k1=>$e1)
+	{
+	  foreach($p2_real as $k2=>$e2)
+	    {
+	      $matx[$k2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2->getValue('name'))) ;
+	    }
+	  $score_22 += max($matx) ;
+	}
+
+      foreach($p1_game as $k1=>$e1)
+	{
+	  foreach($p2_real as $k2=>$e2)
+	    {
+	      $matx[$k2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2->getValue('name'))) ;
+	    }
+	  $score_12 += max($matx) ;
+	}
+
+      foreach($p2_game as $k1=>$e1)
+	{
+	  foreach($p1_real as $k2=>$e2)
+	    {
+	      $matx[$k2]  = self::getStringMatchScore(strtolower($e1), strtolower($e2->getValue('name'))) ;
+	    }
+	  $score_21 += max($matx) ;
+	}
+
+      if (($score_11+$score_22) > ($score_12+$score_21))
+	{
+	  $ret = array($abbr[0]=>$t1->getValue('name_abbr'), $abbr[1]=>$t2->getValue('name_abbr')) ;
+	}
+      else
+	{
+	  $ret = array($abbr[1]=>$t1->getValue('name_abbr'), $abbr[0]=>$t2->getValue('name_abbr')) ;
+	}
+
+      return $ret ;
+    }
 
   public static function isLoggedInAsPlayer()
     {

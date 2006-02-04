@@ -220,6 +220,49 @@ class match
 
       $this->update('match_date', util::curdate()) ;
 
+      // Find the players in the game
+      $team1_stats_all = explode('\\\\', $a['team1players']) ;
+      $team2_stats_all = explode('\\\\', $a['team2players']) ;
+      $player_stats    = explode('\\\\', $a['PlayerStats']) ;
+
+      if (is_numeric($a['playerFields']))
+	{
+	  $field_count = $a['playerFields'] ;
+	}
+      else
+	{
+	  util::throwException('invalid data') ;
+	}
+
+      if (fmod(count($team1_stats_all), $field_count)!=0 || fmod(count($team1_stats_all), $field_count)!=0)
+	{
+	  util::throwException('invalid data') ;
+	}	  
+
+      $team1_game_players = array() ;
+      $team2_game_players = array() ;
+
+      for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $team1_game_players[] = $team1_stats_all[$cnt] ;
+	    }
+	}
+
+      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
+	{
+	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
+
+	  if ($curheader==$player_stats[0])
+	    {
+	      $team2_game_players[] = $team2_stats_all[$cnt] ;
+	    }
+	}
+
+      // Find the teams
       $teams = $this->getTeams() ;
       $team1 = $teams[0] ;
       $team2 = $teams[1] ;
@@ -238,6 +281,12 @@ class match
 
       $teamMatch = util::stringMatch(array($team1_stats['Name'], $team2_stats['Name']),
 				     array($team1->getValue('name_abbr'), $team2->getValue('name_abbr'))) ;
+
+      if ($this->getTourney()->getGameType()->getValue('name') == 'qwctf')
+	{
+	  $teamMatch = util::matchTeamsByPlayers($team1, $team2, array($team1_stats['Name'], $team2_stats['Name']),
+						 $team1_game_players, $team2_game_players, $t->getValue('tourney_id')) ;
+	}
 
       // If needed swap the teams
       if ($teamMatch[$team1_stats['Name']] == $team2->getValue('name_abbr'))
@@ -261,6 +310,16 @@ class match
 	  $t2 = $team2_stats ;
 	  $team1_stats = $t2 ;
 	  $team2_stats = $t1 ;
+
+	  $t1 = $team1_stats_all ;
+	  $t2 = $team2_stats_all ;
+	  $team1_stats_all = $t2 ;
+	  $team2_stats_all = $t1 ;
+
+	  $t1 = $team1_game_players ;
+	  $t2 = $team2_game_players ;
+	  $team1_game_players = $t2 ;
+	  $team2_game_players = $t1 ;
 	}
 
       $g = new game(array('match_id'=>$this->match_id, 'map_id'=>$map->getValue('map_id'), 'team1_score'=>$team1_stats[util::SCORE], 'team2_score'=>$team2_stats[util::SCORE])) ;
@@ -306,37 +365,8 @@ class match
 	  $team2_names[$p->getValue('player_id')] = $p->getValue('name') ;
 	}
 
-      if (is_numeric($a['playerFields']))
-	{
-	  $field_count = $a['playerFields'] ;
-	}
-      else
-	{
-	  util::throwException('invalid data') ;
-	}
-
-      $team1_stats_all = explode('\\\\', $a['team1players']) ;
-      $team2_stats_all = explode('\\\\', $a['team2players']) ;
-      $player_stats    = explode('\\\\', $a['PlayerStats']) ;
-
-      if (fmod(count($team1_stats_all), $field_count)!=0 || fmod(count($team1_stats_all), $field_count)!=0)
-	{
-	  util::throwException('invalid data') ;
-	}	  
-
       // Team 1 Player Stats
       $team1_stats = array() ;
-      $team1_game_players = array() ;
-
-      for($cnt=0; $cnt<count($team1_stats_all); $cnt++)      
-	{
-	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
-
-	  if ($curheader==$player_stats[0])
-	    {
-	      $team1_game_players[] = $team1_stats_all[$cnt] ;
-	    }
-	}
 
       $team1_player_match = util::stringMatch($team1_game_players, $team1_names) ;
       $team1_names = array_flip($team1_names) ;
@@ -389,17 +419,6 @@ class match
 
       // Team 2 Player Stats
       $team2_stats = array() ;
-      $team2_game_players = array() ;
-
-      for($cnt=0; $cnt<count($team2_stats_all); $cnt++)      
-	{
-	  $curheader = $player_stats[fmod($cnt, $field_count)] ;
-
-	  if ($curheader==$player_stats[0])
-	    {
-	      $team2_game_players[] = $team2_stats_all[$cnt] ;
-	    }
-	}
 
       $team2_player_match = util::stringMatch($team2_game_players, $team2_names) ;
       $team2_names = array_flip($team2_names) ;
