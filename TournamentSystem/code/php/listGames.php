@@ -42,18 +42,18 @@ try
       echo "\t<td>",$map->getValue('map_abbr'),"</td>\n";
       echo "\t<td>",$g->getValue('team1_score'),"</td>\n";
       echo "\t<td>",$g->getValue('team2_score'),"</td>\n";
-      echo "<td><a href='?a=manageGame&amp;tourney_id=$tid&amp;mode=edit&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
+      echo "<td><a href='?a=manageGame&amp;tourney_id=$tid&amp;mode=edit&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
       echo "Edit</a></td>";
-      echo "<td><a href='?a=saveGame&amp;tourney_id=$tid&amp;mode=delete&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
+      echo "<td><a href='?a=saveGame&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
       echo "Delete</a></td>";
       echo "<td><a href='?a=recomputeGame&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
       echo "Recompute</a></td>";
-      echo "<td><a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Details</a><p></td>";
+      echo "<td><a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;division_id=$division_id&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Details</a><p></td>";
 
       echo "\t</tr>\n";
     }
   echo "</table>\n";
-  echo "<p><a href='?a=manageGame&amp;tourney_id=$tid&amp;match_id=$match_id'>Add a Game</a>";
+  echo "<p><a href='?a=manageGame&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id'>Add a Game</a>";
 }
 catch (Exception $e) {}
 ?>

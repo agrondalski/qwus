@@ -34,6 +34,7 @@ try
       util::throwException('not authorized') ;
   }
   
+  $division_id = $_REQUEST['division_id'];
   $mode = $_REQUEST['mode'];
   $game_id = "";
 
@@ -55,6 +56,7 @@ try
   // FORM
   echo "<form action='?a=saveGame' enctype='multipart/form-data' method=post>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
+  echo "<input type='hidden' name='division_id' value='$division_id'>";
   echo "<input type='hidden' name='match_id' value='$match_id'>";
 	
   if ($mode == "edit")

@@ -161,6 +161,7 @@ try
 
   echo $msg ;
   include 'listGames.php';
+  echo "<br><br><a href='?a=manageGame&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id'>Manage Games</a>";
   echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved&amp;approved_step=1'>Report Match Page</a>";
 }
 catch (Exception $e) {
