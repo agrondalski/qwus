@@ -419,6 +419,7 @@ try
 	  elseif ($page == 'ctf')
 	{
 	  echo "<td nowrap>",util::nvl($player[util::SCORE],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::SCORE_PER_GAME],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::CAPTURES],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::FLAG_DROPS],0),"</td>";
