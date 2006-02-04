@@ -16,7 +16,7 @@ try
 	  util::throwException('not authorized') ;
 	}
 
-      echo "<h2>Tourney Home</h2>";
+      echo "<h2>Tourney Home (",$t->getValue('name'),")</h2>";
       echo "<b>Tourney specific Actions</b><br>";
       echo "<table border=1 cellpadding=2 cellspacing=0>";
       echo "<tr>";
