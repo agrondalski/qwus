@@ -7,6 +7,7 @@ class util
   const FOUND    = 1 ;
   const NOTFOUND = 0 ;
 
+  // QW Stats
   const NAME         = 'Name' ;
   const SCORE        = 'Score' ;
   const RANK         = 'Rank' ;
@@ -49,6 +50,18 @@ class util
   const SELF_KILLS   = 'Self Kills';
   const TEAM_KILLS   = 'Team Kills';
   const FRAG_STREAK  = 'Frag Streak';
+  // QWCTF Stats
+  const CAPTURES 		=  'Captures';
+  const CARRIER_DEFENDS =  'Carrier Defends';
+  const FLAG_DEFENDS 	=  'Flag Defends';
+  const FLAG_DROPS 		=  'Flag Drops';
+  const FLAG_RETURNS 	=  'Flag Returns';
+  const FRAG_ASSISTS 	=  'Frag Assists';
+  const RETURN_ASSISTS 	=  'Return Assists';
+  const GRAPPLE_FRAGS	=  'Grapple Frags';
+  const GRAPPLE_DEATHS	=  'Grapple Deaths';
+  const CARRIER_FRAGS	=  'Carrier Frags';
+  
 
   const POINTS          = 'Points' ;
   const GAMES_PLAYED    = 'Games_Played' ;

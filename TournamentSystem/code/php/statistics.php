@@ -98,7 +98,11 @@ try
     {
       $bsel = "selected";
     }
-
+  elseif ($page == "ctf")
+    {
+      $csel = "selected";
+    }
+    
   if ($show_player==1)
     {
       $psel = "selected" ;
@@ -144,6 +148,7 @@ try
   echo "<option value='frags'  $fsel>Frag Stats";
   echo "<option value='deaths' $dsel>Death Stats";
   echo "<option value='bores'  $bsel>Bore Stats";
+  echo "<option value='ctf'  $csel>CTF Stats";
   echo "</select></td><td>&nbsp;&nbsp;</td>";
 
   // Pick a map if you like
@@ -258,21 +263,37 @@ try
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TEAM_KILLS,"'>TK</a></th>";  
     }
 
+  elseif ($page == 'ctf')
+    {
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::SCORE,"'>Score</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::CAPTURES,"'>Caps</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_DROPS,"'>Flag<br>Drop</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::CARRIER_FRAGS,"'>FC<br>Kill</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_RETURNS,"'>Flag<br>Rtn</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_ASSISTS,"'>Frag<br>Ast</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::RETURN_ASSISTS,"'>Rtn<br>Ast</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::CARRIER_DEFENDS,"'>FC<br>Def</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_DEFENDS,"'>Flag<br>Def</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GRAPPLE_FRAGS,"'>Grap<br>Kill</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::GRAPPLE_DEATHS,"'>Grap<br>Dth</a></th>";     
+    }
+    
   echo "</tr>";
   
-  if ($sort == "name" || $sort==team_name) 
-    {
-      $sortOrder = SORT_ASC;
-    }
-  else 
-    {
-      $sortOrder = SORT_DESC;
-    }
-  
-  // User division or don't
+  if ($sort == "name" || $sort==team_name) 																		  													    	
+    {																											  													    
+      $sortOrder = SORT_ASC;																					  
+    }																											  													   
+  else 																											  													 
+    {																											  													 
+      $sortOrder = SORT_DESC;																					  													 
+    }																											  
+  																												  													 
+  // User division or don't																																			 
   if ($show_player == 1)
-    {
-      if ($division_id == "-1") 
+    {																																								 
+      if ($division_id == "-1") 																																	 
 	{
 	  $arr = $t->getSortedPlayerStats(array($sort, $sortOrder, util::SCORE_PER_GAME, SORT_DESC), $map_id);
 	}
@@ -390,6 +411,22 @@ try
 	  echo "<td nowrap>",util::nvl($player[util::RL_BORES],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::TEAM_KILLS],0),"</td>";
 	}
+	  elseif ($page == 'ctf')
+	{
+	  echo "<td nowrap>",util::nvl($player[util::SCORE],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::CAPTURES],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::FLAG_DROPS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::CARRIER_FRAGS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::FLAG_RETURNS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::FRAG_ASSISTS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::RETURN_ASSISTS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::CARRIER_DEFENDS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::FLAG_DEFENDS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::GRAPPLE_FRAGS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::GRAPPLE_DEATHS],0),"</td>";
+	}	
+	
     }
 
   echo "</tr></table>";
