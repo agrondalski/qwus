@@ -35,8 +35,6 @@ else
   $tourney_id = $cgi->param('tourney_id');
   $division_id = $cgi->param('division_id');
   $match_id = $cgi->param('match_id');
-  $winning_team_id = $cgi->param('winning_team_id');
-  $winningTeamAbbr = $cgi->param('winning_team_abbr');
   $approved = $cgi->param('approved');
   $mvd = $cgi->param('filename');
   $teamOneAbbr = $cgi->param('team1');
@@ -834,7 +832,6 @@ sub outputForm
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
    print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
-   print "\t<input type='hidden' name='winning_team_id' value='$winning_team_id'>\n";
    print "\t<input type='hidden' name='approved' value='$approved'>\n";
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
@@ -888,7 +885,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='53'>\n";
+   print "\t<input type='hidden' name='playerFields' value='54'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
