@@ -2,7 +2,6 @@
 
 # todo:
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
-# capture times
 # check ctf ax frags
 # improve regexs
 # always team #3 in ctf?
@@ -64,7 +63,7 @@ if ($mvd !~ /(.*)\.mvd$/)
 
 my $tempMvd = $mvd . ".tmp";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
-my @strings = `strings -2 "$tempMvd"`;
+my @strings = `strings -1 "$tempMvd"`;
 my $fraggee = undef;
 my $fragger = undef;
 $stringCounter = -1;
@@ -379,12 +378,19 @@ foreach $string (@strings)
   {
     $fragger = findPlayer($oldString);
     $fragger->captures($fragger->captures() + 1);
+    $nextString = $strings[$stringCounter + 1];
+    if ($nextString =~ /capture took/)
+    {
+      $minutes = $strings[$stringCounter + 2];
+      $seconds = $strings[$stringCounter + 4];
+      chomp($minutes);  chomp($seconds);
+      $fragger->captureTimes(60 * $minutes + $seconds);
+    }
   }
   elsif ($string =~ /^ killed the flag carrier/)
   {
     $fragger = findPlayer($oldString);
-    $nextString = $strings[$stringCounter + 1];
-    chomp($nextString);
+    $nextString = $strings[$stringCounter + 2];
     if ($nextString =~ /^ bonus frags/)
     {
       $fragger->carrierFragsBonus($fragger->carrierFragsBonus() + 1);
@@ -877,7 +883,7 @@ sub outputForm
                                    "value='$imagePath'>\n";  
    }
 
-   print "\t<input type='hidden' name='playerFields' value='53'>\n";
+   print "\t<input type='hidden' name='playerFields' value='54'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";

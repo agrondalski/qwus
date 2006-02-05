@@ -39,6 +39,7 @@ sub new
   $self->{MAX_FRAG_STREAK} = 0;
   $self->{CURRENT_FRAG_STREAK} = 0;
   $self->{CTF_CAPTURES} = 0;
+  $self->{CTF_CAPTURE_TIMES} = [];
   $self->{CTF_FLAG_DEFENDS} = 0;
   $self->{CTF_FLAG_DROPS} = 0;
   $self->{CTF_FLAG_PICKUPS} = 0;
@@ -381,11 +382,32 @@ sub captures
   return $self->{CTF_CAPTURES};
 }
 
+sub captureTimes
+{
+  my $self = shift;
+  if (@_)
+  {
+    my $capTime = shift;
+    push(@{ $self->{CTF_CAPTURE_TIMES} }, $capTime);
+  }
+  else
+  {
+    my $capTimes = "";
+    foreach $cap (@{$self->{CTF_CAPTURE_TIMES}})
+    {
+      $cap .= " ";
+      $capTimes .= $cap;  
+    }
+    chop($capTimes);
+    return $capTimes;
+  }
+}
+
 sub flagPickups
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_FLAG_PICKUPS} = shift; }
-    return $self->{CTF_FLAG_PICKUPS};
+  my $self = shift;
+  if (@_) { $self->{CTF_FLAG_PICKUPS} = shift; }
+  return $self->{CTF_FLAG_PICKUPS};
 }
 
 sub flagDefends
@@ -404,51 +426,51 @@ sub carrierDefends
 
 sub carrierDefendsAgg
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_CARRIER_DEFENDS_AGG} = shift; }
-    return $self->{CTF_CARRIER_DEFENDS_AGG};
+  my $self = shift;
+  if (@_) { $self->{CTF_CARRIER_DEFENDS_AGG} = shift; }
+  return $self->{CTF_CARRIER_DEFENDS_AGG};
 }
 
 sub carrierFragsBonus
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_CARRIER_FRAGS_WITH_BONUS} = shift; }
-    return $self->{CTF_CARRIER_FRAGS_WITH_BONUS};
+  my $self = shift;
+  if (@_) { $self->{CTF_CARRIER_FRAGS_WITH_BONUS} = shift; }
+  return $self->{CTF_CARRIER_FRAGS_WITH_BONUS};
 }
 
 sub carrierFragsNoBonus
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_CARRIER_FRAGS_NO_BONUS} = shift; }
-    return $self->{CTF_CARRIER_FRAGS_NO_BONUS};
+  my $self = shift;
+  if (@_) { $self->{CTF_CARRIER_FRAGS_NO_BONUS} = shift; }
+  return $self->{CTF_CARRIER_FRAGS_NO_BONUS};
 }
 
 sub flagReturns
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_FLAG_RETURNS} = shift; }
-    return $self->{CTF_FLAG_RETURNS};
+  my $self = shift;
+  if (@_) { $self->{CTF_FLAG_RETURNS} = shift; }
+  return $self->{CTF_FLAG_RETURNS};
 }
 
 sub flagDrops
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_FLAG_DROPS} = shift; }
-    return $self->{CTF_FLAG_DROPS};
+  my $self = shift;
+  if (@_) { $self->{CTF_FLAG_DROPS} = shift; }
+  return $self->{CTF_FLAG_DROPS};
 }
 
 sub fragAssists
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_FRAG_ASSISTS} = shift; }
-    return $self->{CTF_FRAG_ASSISTS};
+  my $self = shift;
+  if (@_) { $self->{CTF_FRAG_ASSISTS} = shift; }
+  return $self->{CTF_FRAG_ASSISTS};
 }
 
 sub returnAssists
 {
-    my $self = shift;
-    if (@_) { $self->{CTF_RETURN_ASSISTS} = shift; }
-    return $self->{CTF_RETURN_ASSISTS};
+  my $self = shift;
+  if (@_) { $self->{CTF_RETURN_ASSISTS} = shift; }
+  return $self->{CTF_RETURN_ASSISTS};
 }
 
 
@@ -597,6 +619,7 @@ sub outputStatsHeader
   print "Score\\\\";
   print "Frag Streak\\\\";
   print "Captures\\\\";
+  print "Capture Times\\\\";
   print "Flag Pickups\\\\";
   print "Flag Defends\\\\";
   print "Carrier Defends\\\\";
@@ -656,6 +679,7 @@ sub outputStats
   print $self->points . "\\\\";
   print $self->fragStreak . "\\\\";
   print $self->captures . "\\\\";
+  print $self->captureTimes . "\\\\";
   print $self->flagPickups . "\\\\";
   print $self->flagDefends . "\\\\";
   print $self->carrierDefends + $self->carrierDefendsAgg . "\\\\";
