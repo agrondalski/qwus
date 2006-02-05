@@ -399,6 +399,7 @@ sub captureTimes
       $capTimes .= $cap;  
     }
     chop($capTimes);
+    if ($capTimes == "") { return -1; }
     return $capTimes;
   }
 }

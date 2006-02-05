@@ -384,6 +384,11 @@ foreach $string (@strings)
       $minutes = $strings[$stringCounter + 2];
       $seconds = $strings[$stringCounter + 4];
       chomp($minutes);  chomp($seconds);
+      if ($seconds == 0) 
+      { 
+	$seconds = $strings[$stringCounter + 5];
+	chomp($seconds);
+      }
       $fragger->captureTimes(60 * $minutes + $seconds);
     }
   }
