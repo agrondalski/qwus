@@ -16,7 +16,7 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 1;
+$DEBUG = 0;
 
 package main;
 $teamOneScore = 0;
