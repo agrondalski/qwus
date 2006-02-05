@@ -392,6 +392,7 @@ sub captureTimes
   }
   else
   {
+    return 0; # remove later
     my $capTimes = "";
     foreach $cap (@{$self->{CTF_CAPTURE_TIMES}})
     {
@@ -399,7 +400,6 @@ sub captureTimes
       $capTimes .= $cap;  
     }
     chop($capTimes);
-    if ($capTimes == "") { return -1; }
     return $capTimes;
   }
 }
