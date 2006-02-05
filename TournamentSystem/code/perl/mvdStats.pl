@@ -8,6 +8,7 @@
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 
+use Benchmark;
 use CGI qw/:standard/;
 use GD::Graph::lines;
 use GD::Graph::pie;
@@ -15,7 +16,7 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 0;
+$DEBUG = 1;
 
 package main;
 $teamOneScore = 0;
@@ -49,8 +50,11 @@ else
 
 if ($mvd =~ /(.*)\.gz$/)
 {
+  $start = new Benchmark;
   my $shell = `gzip -d "$mvd"`;
   $mvd = $1;
+  $end = new Benchmark;
+  print "MVD uncompressed: " . timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 if ($mvd !~ /(.*)\.mvd$/)
 {
@@ -60,11 +64,18 @@ if ($mvd !~ /(.*)\.mvd$/)
 }
 
 my $tempMvd = $mvd . ".tmp";
+$start = new Benchmark;
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
+$end = new Benchmark;
+print "sed script: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+$start = new Benchmark;
 my @strings = `strings -1 "$tempMvd"`;
+$end = new Benchmark;
+print "string generation: " . timestr(timediff($end,$start), 'all') . "<br>\n";
 my $fraggee = undef;
 my $fragger = undef;
 $stringCounter = -1;
+$start = new Benchmark;
 foreach $string (@strings)
 {
   $stringCounter++;
@@ -673,9 +684,14 @@ for (my $i = 0; $i <= $time; $i++)
   {
     $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
   }
-}  
+} 
+$end = new Benchmark;
+print "parsing mvd: " . timestr(timediff($end,$start), 'all') . "<br>\n"; 
 $shell = `rm -f "$tempMvd"`;
+$start = new Benchmark;
 $shell = `gzip -9 "$mvd"`;
+$end = new Benchmark;
+print "compressing mvd: " . timestr(timediff($end,$start), 'all') . "<br>\n";
 $mvd .= ".gz";
 calculateTeamColors();
 
@@ -828,6 +844,7 @@ sub teamMatchup
 
 sub outputForm
 {
+   $start = new Benchmark;
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
@@ -884,8 +901,8 @@ sub outputForm
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
-
-   print "\t<input type='hidden' name='playerFields' value='54'>\n";
+   $playerFields = `cat mvdPlayer.pm | grep print | grep -c self` + 1;
+   print "\t<input type='hidden' name='playerFields' value='$playerFields'>\n";
    Player::outputStatsHeader();
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
@@ -893,6 +910,9 @@ sub outputForm
 #   print "<script>\n";
 #   print "document.stats.submit();\n";
 #   print "</script>\n";
+   $end = new Benchmark;
+   print "output + image generation: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+
 }
 
 sub outputPlayerScoreGraph
