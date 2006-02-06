@@ -40,6 +40,8 @@ sub new
   $self->{CURRENT_FRAG_STREAK} = 0;
   $self->{CTF_CAPTURES} = 0;
   $self->{CTF_CAPTURE_TIMES} = [];
+  $self->{CTF_HAS_FLAG} = 0;
+  $self->{CTF_FLAG_TIME} = 0;
   $self->{CTF_FLAG_DEFENDS} = 0;
   $self->{CTF_FLAG_DROPS} = 0;
   $self->{CTF_FLAG_PICKUPS} = 0;
@@ -378,7 +380,7 @@ sub dischargeDeaths
 sub captures
 {
   my $self = shift;
-  if (@_) { $self->{CTF_CAPTURES} = shift; }
+  if (@_) { $self->{CTF_CAPTURES} = shift; $self->{CTF_HAS_FLAG} = 0; }
   return $self->{CTF_CAPTURES};
 }
 
@@ -407,8 +409,22 @@ sub captureTimes
 sub flagPickups
 {
   my $self = shift;
-  if (@_) { $self->{CTF_FLAG_PICKUPS} = shift; }
+  if (@_) { $self->{CTF_FLAG_PICKUPS} = shift; $self->{CTF_HAS_FLAG} = 1; }
   return $self->{CTF_FLAG_PICKUPS};
+}
+
+sub hasFlag
+{
+  my $self = shift;
+  if ($self->{CTF_HAS_FLAG}) { return 1; }
+  return 0;
+}
+
+sub flagTime
+{
+  my $self = shift;
+  if (@_) { $self->{CTF_FLAG_TIME} = shift; }
+  return $self->{CTF_FLAG_TIME};
 }
 
 sub flagDefends
@@ -456,7 +472,7 @@ sub flagReturns
 sub flagDrops
 {
   my $self = shift;
-  if (@_) { $self->{CTF_FLAG_DROPS} = shift; }
+  if (@_) { $self->{CTF_FLAG_DROPS} = shift; $self->{CTF_HAS_FLAG} = 0; }
   return $self->{CTF_FLAG_DROPS};
 }
 
@@ -627,6 +643,7 @@ sub outputStatsHeader
   print "Carrier Frags\\\\";
   print "Flag Returns\\\\";
   print "Flag Drops\\\\";
+  print "Flag Time\\\\";
   print "Frag Assists\\\\";
   print "Return Assists\\\\";
   print "Grapple Frags\\\\";
@@ -687,6 +704,7 @@ sub outputStats
   print $self->carrierFragsBonus + $self->carrierFragsNoBonus . "\\\\";
   print $self->flagReturns . "\\\\";
   print $self->flagDrops . "\\\\";
+  print $self->flagTime . "\\\\";
   print $self->fragAssists . "\\\\";
   print $self->returnAssists . "\\\\";
   print $self->grappleFrags . "\\\\";

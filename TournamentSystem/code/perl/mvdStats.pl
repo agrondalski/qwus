@@ -24,11 +24,14 @@ $teamTwoScore = 0;
 $teamOneName = "red";
 $teamTwoName = "blue";
 $tempDir = "/tmp/";
+$oldSeconds = 0;
+$oldMinutes = 0;
+$mvd = shift(@ARGV);
 
-if ($DEBUG)
+if ($mvd != "")
 {
+  $DEBUG = 1;
   print "-- Debug Enabled --\n";
-  $mvd = shift(@ARGV);
 }
 else
 {
@@ -585,9 +588,13 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*):(.*) left$/) #pure ctf timer
   {
-    $minutes = $1;
+    my $minutes = $1; 
+    my $seconds = $2;
     while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
     if ($minutes eq "") { $minutes = 0; }
+
+    while ($seconds =~ /^0(.*)/) { $seconds = $1; }
+    if ($seconds eq "") { $seconds = 0; }
 
     #this is fairly ugly but yeah.. 
 
@@ -602,6 +609,12 @@ foreach $string (@strings)
       {
 	$player->addScore($player->points);
 	$player->minutesPlayed($player->minutesPlayed + 1);
+        if ($player->hasFlag)
+        {
+          $flagTime = (60 * $oldMinutes + $oldSeconds) -
+	              (60 * $minutes + $seconds);
+          $player->flagTime($player->flagTime + $flagTime);
+        }
       }
     }
     else
@@ -612,8 +625,16 @@ foreach $string (@strings)
       {
 	$player->removeScore();
         $player->addScore($player->points);
+        if ($player->hasFlag) 
+        {
+	  $flagTime = (60 * $oldMinutes + $oldSeconds) - 
+                      (60 * $minutes + $seconds);
+          $player->flagTime($player->flagTime + $flagTime);
+        }
       }
     }
+    $oldMinutes = $minutes;
+    $oldSeconds = $seconds;
   }	 
   elsif ($string =~ /^\[(.*)\](.*):\[(.*)\](.*)$/) #ktpro score display
   {
@@ -700,6 +721,8 @@ if ($DEBUG)
   print "Found " . @players . " players\n";
   foreach $player (@players)
   {
+    $name = $player->name;
+    print $player->name . "\t" . $player->flagTime . "\n";
 #     $team = findTeamNoCreate($player->team);
 #     print $player->name . " " . $team->name . "\n";
   }
