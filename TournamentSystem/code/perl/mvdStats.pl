@@ -28,7 +28,7 @@ $oldSeconds = 0;
 $oldMinutes = 0;
 $mvd = shift(@ARGV);
 
-if ($mvd != "")
+if (!$mvd eq "")
 {
   $DEBUG = 1;
   print "-- Debug Enabled --\n";
@@ -687,6 +687,25 @@ foreach $player (@players)
   }
 }
 
+#testing removing players not actually in game
+#todo: need to remove their score from graph data (how???)
+#might be able to build it into the padarray block above
+foreach $player (@players)
+{
+  if ($player->frags == 0 && $player->deaths == 0)
+  {
+    if ($player->team != null)
+    {
+      $team = findTeam($player->team->name);
+      if ($team != null)
+      {
+  #      print "removing " . $player->name . "\n";
+        $team->removePlayer($player->name);
+      }
+    }
+  }
+}
+
 # this seems like a suboptimal solution
 my $teamOne = findTeam($teamOneName);
 my $teamTwo = findTeam($teamTwoName);
@@ -726,11 +745,16 @@ if ($DEBUG)
 #     $team = findTeamNoCreate($player->team);
 #     print $player->name . " " . $team->name . "\n";
   }
-  for $i (0 .. @graphTime - 1)
-  {
-      print "$graphTime[$i] \t $graphTeamOneScore[$i] \t $graphTeamTwoScore[$i] \n";
-  }
-  print "@graphTime @graphTeamOneScore @graphTeamTwoScore\n";
+#  for $i (0 .. @graphTime - 1)
+#  {
+#      print "$graphTime[$i] \t $graphTeamOneScore[$i] \t $graphTeamTwoScore[$i] \n";
+#  }
+#  print "@graphTime @graphTeamOneScore @graphTeamTwoScore\n";
+   foreach $team (@teams)
+   {
+      print $team->name . "\n";
+      $team->playerList();
+   }
 }
 
 outputForm();

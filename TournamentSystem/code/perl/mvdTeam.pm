@@ -77,6 +77,15 @@ sub removePlayer
   }
 }
 
+sub playerList
+{
+  my $self = shift;
+  foreach $player ($self->players)
+  {
+    print "\t" . $player . "\n";
+  }
+}
+
 sub addPlayer
 {
   my $self = shift;
