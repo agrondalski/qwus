@@ -578,6 +578,11 @@ foreach $string (@strings)
   elsif ($string =~ /^(.*) min left$/) #ktpro timer
   {
     push(@graphTime, $1);
+    foreach $team (@teams)
+    {
+      if ($team->name eq $teamOneName) { $team->pushScore($teamOneScore); }
+      if ($team->name eq $teamTwoName) { $team->pushScore($teamTwoScore); }
+    }
     push(@graphTeamOneScore, $teamOneScore);
     push(@graphTeamTwoScore, $teamTwoScore);
     foreach $player (@players)
@@ -603,8 +608,10 @@ foreach $string (@strings)
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
     {
       push(@graphTime, $minutes);
-      push(@graphTeamOneScore, $redTeam->points);
-      push(@graphTeamTwoScore, $blueTeam->points);
+  #    push(@graphTeamOneScore, $redTeam->points);
+  #    push(@graphTeamTwoScore, $blueTeam->points);
+      $redTeam->pushScore($redTeam->points);
+      $blueTeam->pushScore($blueTeam->points);
       foreach $player (@players)
       {
 	$player->addScore($player->points);
@@ -619,8 +626,10 @@ foreach $string (@strings)
     }
     else
     {
-      $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
-      $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+ #     $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
+ #     $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+      $redTeam->popScore(); $redTeam->pushScore($redTeam->points);
+      $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points);
       foreach $player (@players)
       {
 	$player->removeScore();
@@ -667,24 +676,12 @@ else
   #pure ctf
   my $redTeam = findTeam("red");
   my $blueTeam = findTeam("blue");
-  $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
-  $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
-}
-@graphTime = reverse(@graphTime);
-push(@graphTeams, $teamOneName);
-push(@graphTeams, $teamTwoName);
-
-# first we add the last score to each players score array
-# then if the size of the score array is smaller than the time
-# array we pad it with leading zeroes
-foreach $player (@players)
-{
-  $player->addScore($player->points);
-  my @playerScoreArray = $player->scoreArray();
-  for($i = 0; $i < @graphTime - @playerScoreArray; $i++)
-  {
-    $player->padScoreArray();
-  }
+  $redTeam->popScore; $redTeam->pushScore($redTeam->points);
+  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points);
+#  $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
+#  $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+  @graphTeamOneScore = $redTeam->getScoreArray;
+  @graphTeamTwoScore = $blueTeam->getScoreArray;
 }
 
 #testing removing players not actually in game
@@ -699,10 +696,26 @@ foreach $player (@players)
       $team = findTeam($player->team->name);
       if ($team != null)
       {
-  #      print "removing " . $player->name . "\n";
-        $team->removePlayer($player->name);
+	$team->removePlayer($player->name);        
       }
     }
+  }
+}
+
+@graphTime = reverse(@graphTime);
+push(@graphTeams, $teamOneName);
+push(@graphTeams, $teamTwoName);
+
+# first we add the last score to each players score array
+# then if the size of the score array is smaller than the time
+# array we pad it with leading zeroes
+foreach $player (@players)
+{
+  $player->addScore($player->points);
+  my @playerScoreArray = $player->scoreArray();
+  for($i = 0; $i < @graphTime - @playerScoreArray; $i++)
+  {
+    $player->padScoreArray();
   }
 }
 

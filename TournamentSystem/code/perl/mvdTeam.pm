@@ -13,6 +13,7 @@ sub new
   $self->{COLOR} = undef;
   $self->{MINUTES_PLAYED} = 0;
   $self->{MINUTES_WITH_LEAD} = 0;
+  $self->{SCORE_GRAPH} = [];
   bless ($self, $class);
   return $self;
 }
@@ -57,6 +58,27 @@ sub minutesWithLead
   my $self = shift;
   if (@_) { $self->{MINUTES_WITH_LEAD} = shift }
   return $self->{MINUTES_WITH_LEAD};
+}
+
+sub pushScore
+{
+  my $self = shift;
+  if (@_)
+  {
+    push(@{ $self->{SCORE_GRAPH} }, shift);
+  }
+}
+
+sub popScore
+{
+  my $self = shift;
+  return pop(@{ $self->{SCORE_GRAPH} });
+}
+
+sub getScoreArray
+{
+  my $self = shift;
+  return @{$self->{SCORE_GRAPH}};
 }
 
 # might need some error checking here
