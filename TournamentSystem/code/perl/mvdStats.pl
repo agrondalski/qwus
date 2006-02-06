@@ -981,11 +981,15 @@ sub outputPlayerScoreGraph
   if (@_) { $x = shift; $y = shift; } 
   if (@graphTime < 5) { return; }
   my @data = (\@graphTime);
-  foreach $player (@players)
-  { 
-    my @scoreArray = $player->scoreArray();
-    push(@data, \@scoreArray); 
-    push(@legendPlayers, $player->name);
+  foreach $team (@teams)
+  {
+    foreach $player ($team->players)
+    { 
+      $player = findPlayer($player);
+      my @scoreArray = $player->scoreArray();
+      push(@data, \@scoreArray); 
+      push(@legendPlayers, $player->name);
+    }
   }
   my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title => $teamOneName ." vs ". $teamTwoName . " (" . $map . ")",
