@@ -608,8 +608,6 @@ foreach $string (@strings)
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
     {
       push(@graphTime, $minutes);
-  #    push(@graphTeamOneScore, $redTeam->points);
-  #    push(@graphTeamTwoScore, $blueTeam->points);
       $redTeam->pushScore($redTeam->points);
       $blueTeam->pushScore($blueTeam->points);
       foreach $player (@players)
@@ -626,8 +624,6 @@ foreach $string (@strings)
     }
     else
     {
- #     $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
- #     $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
       $redTeam->popScore(); $redTeam->pushScore($redTeam->points);
       $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points);
       foreach $player (@players)
@@ -678,28 +674,9 @@ else
   my $blueTeam = findTeam("blue");
   $redTeam->popScore; $redTeam->pushScore($redTeam->points);
   $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points);
-#  $graphTeamOneScore[@graphTeamOneScore - 1] = $redTeam->points;
-#  $graphTeamTwoScore[@graphTeamTwoScore - 1] = $blueTeam->points;
+  CleanUpScores();
   @graphTeamOneScore = $redTeam->getScoreArray;
   @graphTeamTwoScore = $blueTeam->getScoreArray;
-}
-
-#testing removing players not actually in game
-#todo: need to remove their score from graph data (how???)
-#might be able to build it into the padarray block above
-foreach $player (@players)
-{
-  if ($player->frags == 0 && $player->deaths == 0)
-  {
-    if ($player->team != null)
-    {
-      $team = findTeam($player->team->name);
-      if ($team != null)
-      {
-	$team->removePlayer($player->name);        
-      }
-    }
-  }
 }
 
 @graphTime = reverse(@graphTime);
@@ -771,6 +748,36 @@ if ($DEBUG)
 }
 
 outputForm();
+
+#only works for ctf games right now
+sub CleanUpScores
+{
+  foreach $player (@players)
+  {
+    if ($player->frags == 0 && $player->deaths == 0)
+    {
+      if ($player->team != null)
+      {
+	$team = findTeam($player->team->name);
+        if ($team != null)
+        {
+	  $team->removePlayer($player->name);
+	  my @tempArray = [];
+          while ($player->scoreArray)
+          {
+	    $teamScore = $team->popScore();
+	    $teamScore -= $player->removeScore();
+	    push(@tempArray, $teamScore);
+          }
+          while (@tempArray - 1)  # this -1 is confusing me atm
+          {
+	    $team->pushScore(pop(@tempArray));
+          }
+        }
+      }
+    }
+  }
+}
 
 # Searches player array for the name passed in
 # Returns player object if found or new player object if not
