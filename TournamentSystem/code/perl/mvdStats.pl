@@ -4,9 +4,9 @@
 # add real team name in addition to red\blue to graphs for ctf
 # insane demo support for non tournament games--Started--refer from demoStats
 # can dew support undef values?
-# watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # check ctf ax frags
 # improve regexs
+# bring ktpro stats up to par with pure ctf
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 
@@ -71,12 +71,12 @@ if ($mvd =~ /(.*)\.gz$/)
 }
 if ($mvd =~ /(.*)\.bz2$/)
 {
-    $start = new Benchmark;
-    print "Uncompressing..\t\t";
-    my $shell = `bzip2 -d "$mvd"`;
-    $mvd = $1;
-    $end = new Benchmark;
-    print timestr(timediff($end,$start), 'all') . "<br>\n";
+  $start = new Benchmark;
+  print "Uncompressing..\t\t";
+  my $shell = `bzip2 -d "$mvd"`;
+  $mvd = $1;
+  $end = new Benchmark;
+  print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd !~ /(.*)\.mvd$/)
@@ -127,7 +127,6 @@ foreach $string (@strings)
     $fragger = findPlayer($2);
     $fragger->lightningFrags($fragger->lightningFrags() + 1);
   }
-  # ctf attempt for lg
   elsif ($string =~ /^'s shaft/)
   {
     $fraggee = findPlayer($oldString2);
@@ -189,6 +188,15 @@ foreach $string (@strings)
     $fraggee->ssgDeaths($fraggee->ssgDeaths() + 1);
     $fragger = findPlayer($2);
     $fragger->ssgFrags($fragger->ssgFrags() + 1);
+  }
+  elsif ($string =~ /^ was ax-murdered by/)
+  {
+    $fraggee = findPlayer($oldString);
+    $fraggee->axDeaths($fraggee->axDeaths() + 1);
+    $fragger = $strings[$stringCounter + 1];
+    chomp($fragger);
+    $fragger = findPlayer($fragger);
+    $fragger->axFrags($fragger->axFrags() + 1);
   }
   elsif ($string =~ /^(.*) was ax-murdered by (.*)/)
   {
@@ -1157,6 +1165,7 @@ sub outputPlayerPieCharts
  
     my $image = $graph->plot(\@data); # or warn $graph->error;
     my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
+
     $imagePath =~ s/\s//g;
     open(OUT, ">$imagePath");
     binmode OUT;
