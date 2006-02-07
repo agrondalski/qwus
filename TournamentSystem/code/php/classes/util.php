@@ -62,6 +62,7 @@ class util
   const GRAPPLE_FRAGS	=  'Grapple Frags';
   const GRAPPLE_DEATHS	=  'Grapple Deaths';
   const CARRIER_FRAGS	=  'Carrier Frags';  
+  const FLAG_TIME	    =  'Flag Time';  
 
   const POINTS          = 'Points' ;
   const GAMES_PLAYED    = 'Games_Played' ;

@@ -274,6 +274,7 @@ try
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::TOTAL_FRAGS,"'>Frags</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::CAPTURES,"'>Caps</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_DROPS,"'>Flag<br>Drop</a></th>";
+      echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_TIME,"'>Flag<br>Time</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::CARRIER_FRAGS,"'>FC<br>Kill</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FLAG_RETURNS,"'>Flag<br>Rtn</a></th>";
       echo "<th><a href='?a=statistics&amp;tourney_id=$tid&amp;division_id=$division_id&page=$page&amp;map_id=$map_id&amp;show_player=$show_player&amp;sort=",util::FRAG_ASSISTS,"'>Frag<br>Ast</a></th>";
@@ -423,6 +424,7 @@ try
 	  echo "<td nowrap>",util::nvl($player[util::TOTAL_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::CAPTURES],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::FLAG_DROPS],0),"</td>";
+	  echo "<td nowrap>",util::nvl($player[util::FLAG_TIME],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::CARRIER_FRAGS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::FLAG_RETURNS],0),"</td>";
 	  echo "<td nowrap>",util::nvl($player[util::FRAG_ASSISTS],0),"</td>";
