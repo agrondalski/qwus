@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 
 # todo:
+# add real team name in addition to red\blue to graphs for ctf
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # check ctf ax frags
 # improve regexs
-# always team #3 in ctf?
 # team stats (end of mvd)
 # player minutes played ( * left the game)
 
@@ -54,10 +54,11 @@ else
 if ($mvd =~ /(.*)\.gz$/)
 {
   $start = new Benchmark;
+  print "Uncompressing..\t\t";
   my $shell = `gzip -d "$mvd"`;
   $mvd = $1;
   $end = new Benchmark;
-  print "MVD uncompressed: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+  print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 if ($mvd !~ /(.*)\.mvd$/)
 {
@@ -68,16 +69,19 @@ if ($mvd !~ /(.*)\.mvd$/)
 
 my $tempMvd = $mvd . ".tmp";
 $start = new Benchmark;
+print "Converting ascii..\t";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
 $end = new Benchmark;
-print "sed script: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+print timestr(timediff($end,$start), 'all') . "<br>\n";
 $start = new Benchmark;
+print "Generating strings..\t";
 my @strings = `strings -1 "$tempMvd"`;
 $end = new Benchmark;
-print "string generation: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+print timestr(timediff($end,$start), 'all') . "<br>\n";
 my $fraggee = undef;
 my $fragger = undef;
 $stringCounter = -1;
+print "Parsing strings..\t";
 $start = new Benchmark;
 foreach $string (@strings)
 {
@@ -716,35 +720,23 @@ for (my $i = 0; $i <= $time; $i++)
   }
 } 
 $end = new Benchmark;
-print "parsing mvd: " . timestr(timediff($end,$start), 'all') . "<br>\n"; 
+print timestr(timediff($end,$start), 'all') . "<br>\n"; 
 $shell = `rm -f "$tempMvd"`;
 $start = new Benchmark;
+print "Compressing..\t\t";
 $shell = `gzip -9 "$mvd"`;
 $end = new Benchmark;
-print "compressing mvd: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+print timestr(timediff($end,$start), 'all') . "<br>\n";
 $mvd .= ".gz";
 calculateTeamColors();
 
 if ($DEBUG)
 {
-  print "Found " . @players . " players\n";
-  foreach $player (@players)
+  foreach $team (@teams)
   {
-    $name = $player->name;
-    print $player->name . "\t" . $player->flagTime . "\n";
-#     $team = findTeamNoCreate($player->team);
-#     print $player->name . " " . $team->name . "\n";
+    print $team->name . "\n";
+    $team->playerList();
   }
-#  for $i (0 .. @graphTime - 1)
-#  {
-#      print "$graphTime[$i] \t $graphTeamOneScore[$i] \t $graphTeamTwoScore[$i] \n";
-#  }
-#  print "@graphTime @graphTeamOneScore @graphTeamTwoScore\n";
-   foreach $team (@teams)
-   {
-      print $team->name . "\n";
-      $team->playerList();
-   }
 }
 
 outputForm();
@@ -911,6 +903,7 @@ sub teamMatchup
 
 sub outputForm
 {
+   print "Generating Images and Output..";
    $start = new Benchmark;
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
@@ -974,11 +967,11 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-#   print "<script>\n";
-#   print "document.stats.submit();\n";
-#   print "</script>\n";
+   print "<script>\n";
+   print "document.stats.submit();\n";
+   print "</script>\n";
    $end = new Benchmark;
-   print "output + image generation: " . timestr(timediff($end,$start), 'all') . "<br>\n";
+   print timestr(timediff($end,$start), 'all') . "<br>\n";
 
 }
 
