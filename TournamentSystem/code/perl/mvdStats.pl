@@ -2,6 +2,8 @@
 
 # todo:
 # add real team name in addition to red\blue to graphs for ctf
+# insane demo support for non tournament games--Started--refer from demoStats
+# can dew support undef values?
 # watch out for paranthesis in image filenames? as in PIANO_DOG(DP)
 # check ctf ax frags
 # improve regexs
@@ -36,19 +38,26 @@ if (!$mvd eq "")
 else
 {
   $cgi = new CGI;
-  $tourney_id = $cgi->param('tourney_id');
-  $division_id = $cgi->param('division_id');
-  $match_id = $cgi->param('match_id');
-  $approved = $cgi->param('approved');
-  $mvd = $cgi->param('filename');
-  $teamOneAbbr = $cgi->param('team1');
-  $teamTwoAbbr = $cgi->param('team2');
-  $teamOnePlayers = $cgi->param('team1players');
-  $teamTwoPlayers = $cgi->param('team2players');
-
   print "Content-type: text/html\n\n";
   my $referer = $ENV{"HTTP_REFERER"};
-  if ($referer != /reportMatch/) { exit; }
+  if ($referer =~ /demoStats/)
+  {
+    $mvd = $cgi->param('filename');
+    $tourney_id = -1;
+  }
+  elsif ($referer =~ /reportMatch/)
+  {
+    $tourney_id = $cgi->param('tourney_id');
+    $division_id = $cgi->param('division_id');
+    $match_id = $cgi->param('match_id');
+    $approved = $cgi->param('approved');
+    $mvd = $cgi->param('filename');
+    $teamOneAbbr = $cgi->param('team1');
+    $teamTwoAbbr = $cgi->param('team2');
+    $teamOnePlayers = $cgi->param('team1players');
+    $teamTwoPlayers = $cgi->param('team2players');
+  }
+  else { exit; }
 }
 
 if ($mvd =~ /(.*)\.gz$/)
@@ -60,10 +69,20 @@ if ($mvd =~ /(.*)\.gz$/)
   $end = new Benchmark;
   print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
+if ($mvd =~ /(.*)\.bz2$/)
+{
+    $start = new Benchmark;
+    print "Uncompressing..\t\t";
+    my $shell = `bzip2 -d "$mvd"`;
+    $mvd = $1;
+    $end = new Benchmark;
+    print timestr(timediff($end,$start), 'all') . "<br>\n";
+}
+
 if ($mvd !~ /(.*)\.mvd$/)
 {
   $mvd = "";
-  outputForm();
+  print "Error: Invalid MVD (possibly zipped?)<br>";
   exit();
 }
 
@@ -503,6 +522,37 @@ foreach $string (@strings)
   {
     $fragger = findPlayer($1);
     $fragger->teamKills($fragger->teamKills() + 1);
+  }
+  # ctf pings.. fairly hacked
+  elsif ($string =~ /^\"DMSTATS\"/)
+  {
+    my $step = $stringCounter - 2;
+    my $name = $strings[$step];
+    my $previousPlayer = null;
+    while ($name !~ /^Name/)
+    {
+      chomp($name);
+      $player = findPlayerNoCreate($name);
+      if ($player != null || $name =~ /^-----------/)
+      {
+        if ($previousPlayer != null)
+        {
+          for my $i (3 .. 6)
+          {
+	    $ping = $strings[$step + $i];
+            chomp($ping);
+            if ($ping != "")
+            {
+	      $previousPlayer->ping($ping);
+            }
+            if ($i == 5 && $previousPlayer->ping > 99) { last; }
+          }
+        }
+        $previousPlayer = $player;
+      }
+      $step--;
+      $name = $strings[$step];  
+    }
   }
   elsif ($string =~ m/\\map\\/)
   {

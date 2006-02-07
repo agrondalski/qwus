@@ -9,6 +9,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
+  $self->{PING} = undef;
   $self->{APPROVED} = 0;
   $self->{SCORE_GRAPH} = [];
   $self->{MINUTES_PLAYED} = 0;
@@ -68,14 +69,21 @@ sub name
 sub team
 {
   my $self = shift;
-  if (@_) {$self->{TEAM} = shift }
+  if (@_) { $self->{TEAM} = shift }
   return $self->{TEAM};
+}
+
+sub ping
+{
+  my $self = shift;
+  if (@_) { $self->{PING} = shift }
+  return $self->{PING};
 }
 
 sub approved
 {
   my $self = shift;
-  if (@_) {$self->{APPROVED} = shift }
+  if (@_) { $self->{APPROVED} = shift }
   return $self->{APPROVED};
 }
 
@@ -99,14 +107,14 @@ sub playing
 sub topColor
 {
   my $self = shift;
-  if (@_) {$self->{TOP_COLOR} = shift }
+  if (@_) { $self->{TOP_COLOR} = shift }
   return $self->{TOP_COLOR};
 }
 
 sub bottomColor
 {
   my $self = shift;
-  if (@_) {$self->{BOTTOM_COLOR} = shift }
+  if (@_) { $self->{BOTTOM_COLOR} = shift }
   return $self->{BOTTOM_COLOR};
 }
 
@@ -596,6 +604,7 @@ sub outputStatsHeader
   print "\t<input type='hidden' name='PlayerStats' value='";
   print "Name\\\\";
   print "Matched\\\\";
+  print "Ping\\\\";
   print "Ax Frags\\\\";
   print "Ax Deaths\\\\";
   print "Shotgun Frags\\\\";
@@ -657,6 +666,7 @@ sub outputStats
   my $self = shift;
   print $self->name . "\\\\";
   print $self->approved . "\\\\";
+  print $self->ping . "\\\\";
   print $self->axFrags . "\\\\";
   print $self->axDeaths . "\\\\";
   print $self->shotgunFrags . "\\\\";
