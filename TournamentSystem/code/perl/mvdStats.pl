@@ -124,13 +124,35 @@ foreach $string (@strings)
   {
     next;
   }
-  elsif ($string =~ /^(.*) rides (.*)'s rocket/)
+  #ROCKETS#######################
+  elsif ($string =~ /'s rocket/)
   {
-    $fraggee = findPlayer($1);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
+	  if ($string =~ /^(.*) was \w+ by (.*)'s .*? rocket/) 
+	  {
+		  $fraggee = findPlayer($1);
+		  $fragger = findPlayer($2);
+	  }
+	  elsif ($string =~ /^(.*) rides (.*)'s rocket/)
+	  {
+		$fraggee = findPlayer($1);
+		$fragger = findPlayer($2);
+	  }
+	  else
+	  {
+		$fraggee = findPlayer($oldString2);
+		$fragger = findPlayer($oldString);
+	  }
+	  $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+	  $fragger->rocketFrags($fragger->rocketFrags() + 1);
   }
+  elsif ($string =~ /^(.*) rips (.*)/)
+  {
+    $fragger = findPlayer($1);
+    $fragger->rocketFrags($fragger->rocketFrags() + 1);
+    $fraggee = findPlayer($2);
+    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+  }
+  #END ROCKETS#######################
   elsif ($string =~ /^(.*) accepts (.*)'s shaft/)
   {
     $fraggee = findPlayer($1);
@@ -144,6 +166,34 @@ foreach $string (@strings)
     $fraggee->lightningDeaths($fraggee->lightningDeaths() + 1);
     $fragger = findPlayer($oldString);
     $fragger->lightningFrags($fragger->lightningFrags() + 1);
+  }
+    elsif ($string =~ /^(.*) eats (.*)'s pineapple/)
+  {
+    $fraggee = findPlayer($1);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($2);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+  }
+  elsif ($string =~ /^(.*) was gibbed by (.*)'s grenade/) 
+  {
+    $fraggee = findPlayer($1);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($2);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+  }
+  elsif ($string =~ /^'s pineapple/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+  }
+  elsif ($string =~ /^'s grenade/)
+  {
+    $fraggee = findPlayer($oldString2);
+    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+    $fragger = findPlayer($oldString);
+    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^(.*) chewed on (.*)'s boomstick/) 
   {
@@ -216,48 +266,8 @@ foreach $string (@strings)
     $fragger = findPlayer($2);
     $fragger->axFrags($fragger->axFrags() + 1);
   }
-  elsif ($string =~ /^(.*) rips (.*) a new one/)
-  {
-    $fragger = findPlayer($1);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-    $fraggee = findPlayer($2);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-  }
-  elsif ($string =~ /^(.*) was smeared by (.*)'s quad rocket/)
-  {
-    $fraggee = findPlayer($1);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-  }
-  elsif ($string =~ /^(.*) was brutalized by (.*)'s quad rocket/) 
-  {
-    $fraggee = findPlayer($1);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-  }
-  elsif ($string =~ /^(.*) eats (.*)'s pineapple/)
-  {
-    $fraggee = findPlayer($1);
-    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
-  }
-  elsif ($string =~ /^(.*) was gibbed by (.*)'s grenade/) 
-  {
-    $fraggee = findPlayer($1);
-    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
-  }
-  elsif ($string =~ /^(.*) was gibbed by (.*)'s rocket/) 
-  {
-    $fraggee = findPlayer($1);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($2);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-  }
+  
+
   elsif ($string =~ /^(.*) becomes bored with life/)
   {
     $fraggee = findPlayer($oldString);
@@ -386,34 +396,8 @@ foreach $string (@strings)
     $fraggee = findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
   }
-  elsif ($string =~ /^'s rocket/)
-  {
-    $fraggee = findPlayer($oldString2);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($oldString);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-  }
-  elsif ($string =~ /^'s Quad rocket/)
-  {
-    $fraggee = findPlayer($oldString2);
-    $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
-    $fragger = findPlayer($oldString);
-    $fragger->rocketFrags($fragger->rocketFrags() + 1);
-  }
-  elsif ($string =~ /^'s pineapple/)
-  {
-    $fraggee = findPlayer($oldString2);
-    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($oldString);
-    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
-  }
-  elsif ($string =~ /^'s grenade/)
-  {
-    $fraggee = findPlayer($oldString2);
-    $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($oldString);
-    $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
-  }
+  
+  
   elsif ($string =~ /^'s boomstick/)
   {
     $fraggee = findPlayer($oldString2);
@@ -721,6 +705,8 @@ foreach $string (@strings)
     $teamOneName = $1;
     $teamTwoName = $3;
   }
+  #########################################################################
+  #########################################################################
 # once we reach this point the match is over and no good data remains
 # breaking out of the loop not only provides a speed boost, but
 # eliminates the disconnected player list from being added again
