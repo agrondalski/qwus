@@ -64,17 +64,28 @@ if ($mvd =~ /(.*)\.gz$/)
 {
   $start = new Benchmark;
   print "Uncompressing..\t\t";
-  my $shell = `gzip -d "$mvd"`;
+  my $shell = `gzip -fd "$mvd"`;
   $mvd = $1;
   $end = new Benchmark;
   print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
+
 if ($mvd =~ /(.*)\.bz2$/)
 {
   $start = new Benchmark;
   print "Uncompressing..\t\t";
-  my $shell = `bzip2 -d "$mvd"`;
+  my $shell = `bzip2 -fd "$mvd"`;
   $mvd = $1;
+  $end = new Benchmark;
+  print timestr(timediff($end,$start), 'all') . "<br>\n";
+}
+
+if ($mvd =~ /(.*)\.qwd$/)
+{
+  $start = new Benchmark;
+  print "Converting to MVD..\t";
+  my $shell = `qwdtools "$mvd"`;
+  $mvd = $1 . ".mvd";
   $end = new Benchmark;
   print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
@@ -782,7 +793,7 @@ print timestr(timediff($end,$start), 'all') . "<br>\n";
 $shell = `rm -f "$tempMvd"`;
 $start = new Benchmark;
 print "Compressing..\t\t";
-$shell = `gzip -9 "$mvd"`;
+$shell = `gzip -f9 "$mvd"`;
 $end = new Benchmark;
 print timestr(timediff($end,$start), 'all') . "<br>\n";
 $mvd .= ".gz";
