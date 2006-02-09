@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 
 1;
 
@@ -89,8 +90,8 @@ sub removePlayer
   {
     my $playerToRemove = shift;
     my $id = 0;
-    my $playerId = null;
-    foreach $player ($self->players)
+    my $playerId = undef;
+    foreach my $player ($self->players)
     {
       if ($player eq $playerToRemove) { $playerId = $id }
       $id++;
@@ -102,7 +103,7 @@ sub removePlayer
 sub playerList
 {
   my $self = shift;
-  foreach $player ($self->players)
+  foreach my $player ($self->players)
   {
     print "\t" . $player . "\n";
   }
@@ -114,7 +115,7 @@ sub addPlayer
   if (@_) 
   {
     my $playerToAdd = shift; 
-    foreach $player ($self->players)
+    foreach my $player ($self->players)
     {
       if ($playerToAdd eq $player) { return; }
     }
@@ -125,10 +126,11 @@ sub addPlayer
 sub points
 {
   my $self = shift;
+  my $players = shift;
   my $points = 0;
-  foreach $player ($self->players)
+  foreach my $player ($self->players)
   {
-    $player = main::findPlayer($player);
+    $player = main::findPlayer($players,$player);
     $points += $player->points;
   }
   return $points;
@@ -137,10 +139,11 @@ sub points
 sub captures
 {
   my $self = shift;
+  my $players = shift;
   my $caps = 0;
-  foreach $player ($self->players)
+  foreach my $player ($self->players)
   {
-    $player = main::findPlayer($player);
+    $player = main::findPlayer($players,$player);
     $caps += $player->captures;
   }
   return $caps;

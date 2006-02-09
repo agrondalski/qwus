@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 
 1;
 
@@ -9,7 +10,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
-  $self->{PING} = undef;
+  $self->{PING} = 0;#undef;
   $self->{APPROVED} = 0;
   $self->{SCORE_GRAPH} = [];
   $self->{MINUTES_PLAYED} = 0;
@@ -404,7 +405,7 @@ sub captureTimes
   {
     return 0; # remove later
     my $capTimes = "";
-    foreach $cap (@{$self->{CTF_CAPTURE_TIMES}})
+    foreach my $cap (@{$self->{CTF_CAPTURE_TIMES}})
     {
       $cap .= " ";
       $capTimes .= $cap;  
@@ -569,7 +570,7 @@ sub points
 {
   my $self = shift;
   my $team = $self->team;
-  if ($team == null) { return 0; }
+  if (!defined($team)) { return 0; }
   return ($self->frags - $self->teamKills - $self->selfKills + 
    (2 * $self->fragAssists) + $self->returnAssists + $self->carrierDefends +
    $self->flagReturns + $self->flagDefends + (15 * $self->captures) + 

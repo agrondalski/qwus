@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 
 # todo:
 # add real team name in addition to red\blue to graphs for ctf
@@ -18,18 +19,20 @@ use GD::Graph::colour;
 use mvdPlayer;
 use mvdTeam;
 
-$DEBUG = 0;
+my $DEBUG = 0;
 
 package main;
-$teamOneScore = 0;
-$teamTwoScore = 0;
-$teamOneName = "red";
-$teamTwoName = "blue";
-$tempDir = "/tmp/";
-$oldSeconds = 0;
-$oldMinutes = 0;
-$mvd = shift(@ARGV);
-
+my $teamOneScore = 0;
+my $teamTwoScore = 0;
+my $teamOneName = "red";
+my $teamTwoName = "blue";
+my $tempDir = "/tmp/";
+my $oldSeconds = 0;
+my $oldMinutes = 0;
+my $mvd = shift(@ARGV);
+my($tourney_id, $division_id, $match_id, $approved, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers) = ("Test1","A","320","Yes","WTG","GTW","","");
+my($start,$end);
+my $cgi;
 if (!$mvd eq "")
 {
   $DEBUG = 1;
@@ -67,7 +70,7 @@ if ($mvd =~ /(.*)\.gz$/)
   my $shell = `gzip -fd "$mvd"`;
   $mvd = $1;
   $end = new Benchmark;
-  print timestr(timediff($end,$start), 'all') . "<br>\n";
+  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd =~ /(.*)\.bz2$/)
@@ -77,7 +80,7 @@ if ($mvd =~ /(.*)\.bz2$/)
   my $shell = `bzip2 -fd "$mvd"`;
   $mvd = $1;
   $end = new Benchmark;
-  print timestr(timediff($end,$start), 'all') . "<br>\n";
+  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd =~ /(.*)\.qwd$/)
@@ -87,7 +90,7 @@ if ($mvd =~ /(.*)\.qwd$/)
   my $shell = `qwdtools "$mvd"`;
   $mvd = $1 . ".mvd";
   $end = new Benchmark;
-  print timestr(timediff($end,$start), 'all') . "<br>\n";
+  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd !~ /(.*)\.mvd$/)
@@ -110,10 +113,14 @@ $end = new Benchmark;
 print timestr(timediff($end,$start), 'all') . "<br>\n";
 my $fraggee = undef;
 my $fragger = undef;
-$stringCounter = -1;
+my $stringCounter = -1;
 print "Parsing strings..\t";
 $start = new Benchmark;
-foreach $string (@strings)
+my($oldString,$oldString1,$oldString2,$oldString3, $nextString);
+my($map,$team,$player,$flagTime,$teamScore);
+my(@teams,@graphTime,@graphTeamOneScore,@graphTeamTwoScore,@graphTeams);
+my %players;
+foreach my $string (@strings)
 {
   $stringCounter++;
   if (length($string) < 8)
@@ -125,302 +132,306 @@ foreach $string (@strings)
     next;
   }
   #ROCKETS#######################
-  elsif ($string =~ /'s rocket/)
+ # elsif($string =~ /uad /){
+  #print "$string\n";die;
+  #}
+  elsif ($string =~ /'s\s*.*?\s*rocket/g)
   {
-	  if ($string =~ /^(.*) was \w+ by (.*)'s .*? rocket/) 
+  	  
+	  if ($string =~ /^(.*) was \w+ by (.*)'s\s(.uad\s)*rocket/) 
 	  {
-		  $fraggee = findPlayer($1);
-		  $fragger = findPlayer($2);
+		  $fraggee = findPlayer(\%players,$1);
+		  $fragger = findPlayer(\%players,$2);
 	  }
 	  elsif ($string =~ /^(.*) rides (.*)'s rocket/)
 	  {
-		$fraggee = findPlayer($1);
-		$fragger = findPlayer($2);
+		$fraggee = findPlayer(\%players,$1);
+		$fragger = findPlayer(\%players,$2);
 	  }
 	  else
 	  {
-		$fraggee = findPlayer($oldString2);
-		$fragger = findPlayer($oldString);
+		$fraggee = findPlayer(\%players,$oldString2);
+		$fragger = findPlayer(\%players,$oldString);
 	  }
 	  $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
 	  $fragger->rocketFrags($fragger->rocketFrags() + 1);
   }
-  elsif ($string =~ /^(.*) rips (.*)/)
+elsif ($string =~ /^(.*) rips (.*)/)
   {
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->rocketFrags($fragger->rocketFrags() + 1);
-    $fraggee = findPlayer($2);
+    $fraggee = findPlayer(\%players,$2);
     $fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
   }
   #END ROCKETS#######################
   elsif ($string =~ /^(.*) accepts (.*)'s shaft/)
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->lightningDeaths($fraggee->lightningDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->lightningFrags($fragger->lightningFrags() + 1);
   }
   elsif ($string =~ /^'s shaft/)
   {
-    $fraggee = findPlayer($oldString2);
+    $fraggee = findPlayer(\%players,$oldString2);
     $fraggee->lightningDeaths($fraggee->lightningDeaths() + 1);
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->lightningFrags($fragger->lightningFrags() + 1);
   }
     elsif ($string =~ /^(.*) eats (.*)'s pineapple/)
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^(.*) was gibbed by (.*)'s grenade/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^'s pineapple/)
   {
-    $fraggee = findPlayer($oldString2);
+    $fraggee = findPlayer(\%players,$oldString2);
     $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^'s grenade/)
   {
-    $fraggee = findPlayer($oldString2);
+    $fraggee = findPlayer(\%players,$oldString2);
     $fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->grenadeFrags($fragger->grenadeFrags() + 1);
   }
   elsif ($string =~ /^(.*) chewed on (.*)'s boomstick/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->shotgunDeaths($fraggee->shotgunDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
   }
   elsif ($string =~ /^ was punctured by/)
   {
     $nextString = $strings[$stringCounter + 1];
     chomp($nextString);
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->sngDeaths($fraggee->sngDeaths() + 1);
-    $fragger = findPlayer($nextString);
+    $fragger = findPlayer(\%players,$nextString);
     $fragger->sngFrags($fragger->sngFrags() + 1);
   }
   elsif ($string =~ /^(.*) was punctured by (.*)/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->sngDeaths($fraggee->sngDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->sngFrags($fragger->sngFrags() + 1);
   }
   elsif ($string =~ /^ was hooked by/)
   {
     $nextString = $strings[$stringCounter + 1];
     chomp($nextString);
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->grappleDeaths($fraggee->grappleDeaths() + 1);
-    $fragger = findPlayer($nextString);
+    $fragger = findPlayer(\%players,$nextString);
     $fragger->grappleFrags($fragger->grappleFrags() + 1);
   }
   elsif ($string =~ /^ was nailed by/)
   {
     $nextString = $strings[$stringCounter + 1];
     chomp($nextString);
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->nailgunDeaths($fraggee->nailgunDeaths() + 1);
-    $fragger = findPlayer($nextString);
+    $fragger = findPlayer(\%players,$nextString);
     $fragger->nailgunFrags($fragger->nailgunFrags() + 1);
   }
   elsif ($string =~ /^(.*) was nailed by (.*)/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->nailgunDeaths($fraggee->nailgunDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->nailgunFrags($fragger->nailgunFrags() + 1);
   }
   elsif ($string =~ /^(.*) ate 2 loads of (.*)'s buckshot/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->ssgDeaths($fraggee->ssgDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->ssgFrags($fragger->ssgFrags() + 1);
   }
   elsif ($string =~ /^ was ax-murdered by/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->axDeaths($fraggee->axDeaths() + 1);
     $fragger = $strings[$stringCounter + 1];
     chomp($fragger);
-    $fragger = findPlayer($fragger);
+    $fragger = findPlayer(\%players,$fragger);
     $fragger->axFrags($fragger->axFrags() + 1);
   }
   elsif ($string =~ /^(.*) was ax-murdered by (.*)/)
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->axDeaths($fraggee->axDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->axFrags($fragger->axFrags() + 1);
   }
   
 
   elsif ($string =~ /^(.*) becomes bored with life/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->rocketBores($fraggee->rocketBores() + 1);
   }
   #elsif ($string =~ /^(.*) discovers blast radius/)
   #{
   #  print $string;
-  #  $fraggee = findPlayer($1);
+  #  $fraggee = findPlayer(\%players,$1);
   #  $fraggee->rocketBores($fraggee->rocketBores() + 1);
   #}
   elsif ($string =~ /^ tries to put the pin back in/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->grenadeBores($fraggee->grenadeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the water/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the slime/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
   elsif ($string =~ /^ discharges into the lava/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   }
   #elsif ($string =~ /^(.*) electrocutes himself/)
   #{
   #  print $string;
-  #  $fraggee = findPlayer($1);
+  #  $fraggee = findPlayer(\%players,$1);
   #  $fraggee->dischargeBores($fraggee->dischargeBores() + 1);
   #}
   elsif ($string =~ /^(.*) accepts (.*)'s discharge/)
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->dischargeDeaths($fraggee->dischargeDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->dischargeFrags($fragger->dischargeFrags() + 1);
   }
   elsif ($string =~ /^(.*) was squished/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->squishBores($fraggee->squishBores() + 1);
   }
   elsif ($string =~ /^(.*) squished a teammate/)
   {
 # doesnt effect score?  wrong it does!
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) squishes (.*)/)
   {
-    $fraggee = findPlayer($2);
+    $fraggee = findPlayer(\%players,$2);
     $fraggee->squishDeaths($fraggee->squishDeaths() + 1);
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->squishFrags($fragger->squishFrags() + 1);
   }
   elsif ($string =~ /^ visits the Volcano God/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }    
   elsif ($string =~ /^ burst into flames/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }
   elsif ($string =~ /^ turned into hot slag/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->lavaBores($fraggee->lavaBores() + 1);
   }
   elsif ($string =~ /^(.*) cratered/)
   {
   #  print $string;
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->fallBores($fraggee->fallBores() + 1);
   }
   elsif ($string =~ /^ fell to his death/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->fallBores($fraggee->fallBores() + 1);
   }
   elsif ($string =~ /^(.*) sleeps with the fishes/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) sucks it down/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->waterBores($fraggee->waterBores() + 1);
   }
   elsif ($string =~ /^(.*) gulped a load of slime/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->slimeBores($fraggee->slimeBores() + 1);
   }
   elsif ($string =~ /^(.*) can't exist on slime alone/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->slimeBores($fraggee->slimeBores() + 1);
   }
   elsif ($string =~ /^ was spiked/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^(.*) tried to leave/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^(.*) died/)
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^ suicides/)
   {
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
   }
   
   
   elsif ($string =~ /^'s boomstick/)
   {
-    $fraggee = findPlayer($oldString2);
+    $fraggee = findPlayer(\%players,$oldString2);
     $fraggee->shotgunDeaths($fraggee->shotgunDeaths() + 1);
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->shotgunFrags($fragger->shotgunFrags() + 1);
   }
   elsif ($string =~ /^'s buckshot/)
   {
-    $fraggee = findPlayer($oldString2);
+    $fraggee = findPlayer(\%players,$oldString2);
     $fraggee->ssgDeaths($fraggee->ssgDeaths() + 1);
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->ssgFrags($fragger->ssgFrags() + 1);
   }
   elsif ($string =~ /^ captured the/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->captures($fragger->captures() + 1);
     $nextString = $strings[$stringCounter + 1];
     if ($nextString =~ /capture took/)
     {
-      $minutes = $strings[$stringCounter + 2];
-      $seconds = $strings[$stringCounter + 4];
+      my $minutes = $strings[$stringCounter + 2];
+      my $seconds = $strings[$stringCounter + 4];
       chomp($minutes);  chomp($seconds);
       if ($seconds == 0) 
       { 
@@ -432,7 +443,7 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^ killed the flag carrier/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $nextString = $strings[$stringCounter + 2];
     if ($nextString =~ /^ bonus frags/)
     {
@@ -445,22 +456,22 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^ returned the/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->flagReturns($fragger->flagReturns() + 1);
   }
   elsif ($string =~ /^ got the /)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->flagPickups($fragger->flagPickups() + 1);
   }
   elsif ($string =~ /^ defends the/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->flagDefends($fragger->flagDefends() + 1);
   }
   elsif ($string =~ /^'s flag carrier/)
   {
-    $fragger = findPlayer($oldString2);
+    $fragger = findPlayer(\%players,$oldString2);
     if ($string =~ /agressive/) #poor spelling
     {
       $fragger->carrierDefendsAgg($fragger->carrierDefendsAgg() + 1);
@@ -472,39 +483,39 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^ lost the/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->flagDrops($fragger->flagDrops() + 1);
   }
   elsif ($string =~ /^ gets an assist for returning his flag/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->returnAssists($fragger->returnAssists() + 1);
   }
   elsif ($string =~ /^ gets an assist for fragging/)
   {
-    $fragger = findPlayer($oldString);
+    $fragger = findPlayer(\%players,$oldString);
     $fragger->fragAssists($fragger->fragAssists() + 1);
   }
   elsif ($string =~ /^ was telefragged by his teammate/) 
   {
     # this seems to have no effect on score in ktpro ??
-    #$fraggee = findPlayer($oldString);
+    #$fraggee = findPlayer(\%players,$oldString);
     #$fraggee->miscBores($fraggee->miscBores() + 1);
   }
   elsif ($string =~ /^ was telefragged by/)
   {
     $nextString = $strings[$stringCounter + 1];
     chomp($nextString);
-    $fraggee = findPlayer($oldString);
+    $fraggee = findPlayer(\%players,$oldString);
     $fraggee->teleDeaths($fraggee->teleDeaths() + 1);
-    $fragger = findPlayer($nextString);
+    $fragger = findPlayer(\%players,$nextString);
     $fragger->teleFrags($fragger->teleFrags() + 1);
   }
   elsif ($string =~ /^(.*) was telefragged by (.*)/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = findPlayer(\%players,$1);
     $fraggee->teleDeaths($fraggee->teleDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = findPlayer(\%players,$2);
     $fragger->teleFrags($fragger->teleFrags() + 1);
   }
   #elsif ($string =~ /satan/i) # doesn't change score?
@@ -513,17 +524,17 @@ foreach $string (@strings)
   #}
   elsif ($string =~ /^(.*) loses another friend/) 
   {
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) mows down a teammate/)
   {
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) checks his glasses/) 
   {
-    $fragger = findPlayer($1);
+    $fragger = findPlayer(\%players,$1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   # ctf pings.. fairly hacked
@@ -531,20 +542,21 @@ foreach $string (@strings)
   {
     my $step = $stringCounter - 2;
     my $name = $strings[$step];
-    my $previousPlayer = null;
+    my $previousPlayer = undef;
     while ($name !~ /^Name/)
     {
       chomp($name);
-      $player = findPlayerNoCreate($name);
-      if ($player != null || $name =~ /^-----------/)
+      $player = findPlayerNoCreate(\%players,$name);
+      my $ping;
+      if (defined($player) || $name =~ /^-----------/)
       {
-        if ($previousPlayer != null)
+        if (defined($previousPlayer))
         {
           for my $i (3 .. 6)
           {
 	    $ping = $strings[$step + $i];
             chomp($ping);
-            if ($ping != "")
+            if (defined($ping) && $ping ne "")
             {
 	      $previousPlayer->ping($ping);
             }
@@ -565,14 +577,14 @@ foreach $string (@strings)
   }
   elsif ($string =~ m/\\name\\/)
   {
-    $name = $';
+    my $name = $';
     if ($string =~ m/\\team\\/)
     {
       $team = $';
  # Dont bother with spectators
       if ($string =~ m/\\*spectator\\/i)
       {
-        $spec = $';
+        my $spec = $';
         while ($spec =~ /(.*)\\/) { $spec = $1; }
         $spec =~ s/\s+$//;
         if ($spec > 0) { next; }      
@@ -581,20 +593,21 @@ foreach $string (@strings)
       while ($name =~ /(.*)\\/) { $name = $1; }
       $name =~ s/\s+$//;
       $team =~ s/\s+$//;
-      $player = findPlayer($name);
+      
+      $player = findPlayer(\%players,$name); 
       # should prevent player rejoining game on different team
-      if ($player->team == undef)
+      if (!defined($player->team))
       {
         if (@teams < 2)
         {
-	  $team = findTeam($team);
+	  $team = findTeam(\@teams,$team);
           $team->addPlayer($name);
           $player->team($team);
         }
         else
         {
-	   $team = findTeamNoCreate($team);
-           if ($team != null)
+	   $team = findTeamNoCreate(\@teams,$team);
+           if (defined($team))
            {
 	      $team->addPlayer($name);
               $player->team($team);
@@ -623,11 +636,11 @@ foreach $string (@strings)
   }
   elsif ($string =~ /^(.*) changed name to (.*)$/)
   {
-    $player = findPlayerNoCreate($1);
-    if ($player != null) 
+    $player = findPlayerNoCreate(\%players,$1);
+    if (defined($player)) 
     {
       $player->name($2);
-      $team = findTeam($player->team);
+      $team = findTeam(\@teams,$player->team);
       $team->addPlayer($2);
       $team->removePlayer($1);
     }
@@ -642,7 +655,7 @@ foreach $string (@strings)
     }
     push(@graphTeamOneScore, $teamOneScore);
     push(@graphTeamTwoScore, $teamTwoScore);
-    foreach $player (@players)
+    foreach $player (values %players)
     {
       $player->addScore($player->points);
       $player->minutesPlayed($player->minutesPlayed + 1);
@@ -660,14 +673,14 @@ foreach $string (@strings)
 
     #this is fairly ugly but yeah.. 
 
-    my $redTeam = findTeam("red");
-    my $blueTeam = findTeam("blue");
+    my $redTeam = findTeam(\@teams,"red");
+    my $blueTeam = findTeam(\@teams,"blue");
     if (@graphTime == 0 || $graphTime[@graphTime - 1] != $minutes)
     {
       push(@graphTime, $minutes);
-      $redTeam->pushScore($redTeam->points);
-      $blueTeam->pushScore($blueTeam->points);
-      foreach $player (@players)
+      $redTeam->pushScore($redTeam->points(\%players));
+      $blueTeam->pushScore($blueTeam->points(\%players));
+      foreach $player (values %players)
       {
 	$player->addScore($player->points);
 	$player->minutesPlayed($player->minutesPlayed + 1);
@@ -681,9 +694,9 @@ foreach $string (@strings)
     }
     else
     {
-      $redTeam->popScore(); $redTeam->pushScore($redTeam->points);
-      $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points);
-      foreach $player (@players)
+      $redTeam->popScore(); $redTeam->pushScore($redTeam->points(\%players));
+      $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points(\%players));
+      foreach $player (values %players)
       {
 	$player->removeScore();
         $player->addScore($player->points);
@@ -729,13 +742,14 @@ if (@graphTime != 0 && $graphTime[@graphTime - 1] != 0)
 else
 {
   #pure ctf
-  my $redTeam = findTeam("red");
-  my $blueTeam = findTeam("blue");
-  $redTeam->popScore; $redTeam->pushScore($redTeam->points);
-  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points);
-  CleanUpScores();
+  my $redTeam = findTeam(\@teams,"red");
+  my $blueTeam = findTeam(\@teams,"blue");
+  $redTeam->popScore; $redTeam->pushScore($redTeam->points(\%players));
+  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points(\%players));
+  CleanUpScores(\%players);
   @graphTeamOneScore = $redTeam->getScoreArray;
   @graphTeamTwoScore = $blueTeam->getScoreArray;
+  
 }
 
 @graphTime = reverse(@graphTime);
@@ -745,27 +759,33 @@ push(@graphTeams, $teamTwoName);
 # first we add the last score to each players score array
 # then if the size of the score array is smaller than the time
 # array we pad it with leading zeroes
-foreach $player (@players)
+foreach my $player (values %players)
 {
   $player->addScore($player->points);
   my @playerScoreArray = $player->scoreArray();
-  for($i = 0; $i < @graphTime - @playerScoreArray; $i++)
+  for(my $i = 0; $i < @graphTime - @playerScoreArray; $i++)
   {
     $player->padScoreArray();
   }
 }
 
 # this seems like a suboptimal solution
-my $teamOne = findTeam($teamOneName);
-my $teamTwo = findTeam($teamTwoName);
+my $teamOne = findTeam(\@teams,$teamOneName);
+my $teamTwo = findTeam(\@teams,$teamTwoName);
 my @tempGraphTime = @graphTime;
 my $time = pop(@tempGraphTime);
 $teamOne->minutesPlayed($time);
 $teamTwo->minutesPlayed($time);
+
 for (my $i = 0; $i <= $time; $i++)
 {
+  if(!defined($graphTeamOneScore[$i]) || !defined($graphTeamTwoScore[$i]))
+  {
+  #check init of arrays
+  next;
+  }
   # do nothing if ==
-  if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
+  elsif ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
   {
     $teamOne->minutesWithLead($teamOne->minutesWithLead() + 1);
   }
@@ -783,7 +803,7 @@ $shell = `gzip -f9 "$mvd"`;
 $end = new Benchmark;
 print timestr(timediff($end,$start), 'all') . "<br>\n";
 $mvd .= ".gz";
-calculateTeamColors();
+#calculateTeamColors();
 
 if ($DEBUG)
 {
@@ -793,20 +813,20 @@ if ($DEBUG)
     $team->playerList();
   }
 }
-
-outputForm();
-
+outputForm(\%players,\@teams,$teamOneAbbr,$teamTwoAbbr, $tourney_id, $division_id, $match_id, $approved, $mvd, $map);
+exit;
 #only works for ctf games right now
 sub CleanUpScores
 {
-  foreach $player (@players)
+  my $players = shift;
+  foreach my $player (values %{$players})
   {
     if ($player->frags == 0 && $player->deaths == 0)
     {
-      if ($player->team != null)
+      if (defined($player->team))
       {
-	$team = findTeam($player->team->name);
-        if ($team != null)
+	$team = findTeam(\@teams,$player->team->name);
+        if (defined($team))
         {
 	  $team->removePlayer($player->name);
 	  my @tempArray = [];
@@ -830,57 +850,65 @@ sub CleanUpScores
 # Returns player object if found or new player object if not
 sub findPlayer
 {
-  my $playerName = shift;
-  foreach $player (@players)
-  {
-    if ($player->name() eq $playerName) { return $player }    
-  }
+  my($players, $playerName) = @_;
+  
+  	foreach my $player (values %{$players})
+  	{
+    		if ($player->name() eq $playerName) { return $player; }    
+  	}
+  
   my $newPlayer = Player->new();
   $newPlayer->name($playerName);
-  push(@players, $newPlayer);
+  $players->{$playerName} = $newPlayer;
   return $newPlayer;
 }
 
 sub findPlayerNoCreate
 {
+  my $players = shift;	
   my $playerName = shift;
-  foreach $player (@players)
+  foreach my $player (values %{$players})
   {
-    if ($player->name() eq $playerName) { return $player }
+    if ($player->name() eq $playerName) { return $player; }
   }
-  return null;
+  return undef;
 }
 
 sub findTeam
 {
+  my $teams = shift;
   my $teamName = shift;
-  foreach $team (@teams)
+  foreach my $team (@{$teams})
   {
-    if ($team->name eq $teamName) { return $team }
+    if ($team->name eq $teamName) { return $team; }
   }
   my $newTeam = Team->new();
   $newTeam->name($teamName);
-  push(@teams, $newTeam);
+  push(@{$teams}, $newTeam);
   return $newTeam;
 }
 
 sub findTeamNoCreate
 {
+  my $teams = shift;
   my $teamName = shift;
-  foreach $team (@teams)
+  foreach $team (@{$teams})
   {
-    if ($team->name eq $teamName) { return $team }
+    if ($team->name eq $teamName) { return $team; }
   }
-  return null;
+  return undef;
 }
 
 sub teamMatchup
 {
+  my $teams = shift;
+  my $teamOneAbbr = shift;
+  my $teamTwoAbbr = shift;
   my $teamOneFound = 0;
   my $teamTwoFound = 0; 
 
   # first lets try to find perfect matches (minus case sensitivity)
-  foreach $team (@teams)
+  foreach my $team (@{$teams})
   {
     my $name = $team->name;
     #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
@@ -897,7 +925,7 @@ sub teamMatchup
   }  
   
   # now for the non perfect matches
-  foreach $team (@teams)
+  foreach my $team (@teams)
   {
     my $name = $team->name;
     if ($team->approved() == 0)
@@ -929,7 +957,7 @@ sub teamMatchup
   # well we got 1 of 2 so we can assume the unknown is #2
   {
     my $lastTeam = undef;
-    foreach $team (@teams)
+    foreach $team (@{$teams})
     {
       $lastTeam = $team;
       if ($team->approved == 0) { last; }
@@ -958,6 +986,16 @@ sub teamMatchup
 
 sub outputForm
 {
+   my $players = shift;
+   my $teams = shift;
+   my $teamOneAbbr = shift;
+   my $teamTwoAbbr = shift;
+   my $tourney_id = shift;
+   my $division_id = shift;
+   my $match_id = shift;
+   my $approved = shift;
+   my $mvd = shift;
+   my $map = shift;
    print "Generating Images and Output..";
    $start = new Benchmark;
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
@@ -968,16 +1006,16 @@ sub outputForm
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
 
-   if (@teams > 1 && @players > 0)
+   if (@{$teams} > 1 && (keys %{$players} > 0))
    {
-     outputPlayerPieCharts();
-     teamMatchup();
+     outputPlayerPieCharts($players);
+     teamMatchup($teams,$teamOneAbbr,$teamTwoAbbr);
      
      print "\t<input type='hidden' name='teamStats' value='";
      print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
 
      my $teamNumber = 1;
-     foreach $team (@teams)
+     foreach my $team (@{$teams})
      {
        my $a = $team->name; 
        my $b = $team->approved; 
@@ -990,10 +1028,10 @@ sub outputForm
        print "\t<input type='hidden' name='team" . $teamNumber . "players' value='";
        my $playerC = @tPlayers;
        my $currentC = 0;
-       foreach $player (@tPlayers)
+       foreach my $player (@tPlayers)
        {
  	  $currentC++;
-	  $player = findPlayer($player);
+	  $player = findPlayer(\%players,$player);
 	  $player->outputStats();
 	  my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
 	  $imagePath =~ s/\s//g;
@@ -1004,19 +1042,17 @@ sub outputForm
        $teamNumber++;
      }
 
-     my $imagePath = outputTeamScoreGraph(320, 200);
-     print "\t<input type='hidden' name='team_score_graph_small' " . 
-                                   "value='$imagePath'>\n";
+     #my $imagePath = outputTeamScoreGraph(\@graphTime, \@graphTeamOneScore,\@graphTeamTwoScore,$teamOneName, $teamTwoName, $map,$tempDir,320,200);
+#     print "\t<input type='hidden' name='team_score_graph_small' " . "value='$imagePath'>\n";
+#
+#     $imagePath = outputTeamScoreGraph(\@graphTime,\@graphTeamOneScore,\@graphTeamTwoScore,$teamOneName,$teamTwoName,$map,$tempDir,550,480);
+#     print "\t<input type='hidden' name='team_score_graph_large' " . "value='$imagePath'>\n";
 
-     $imagePath = outputTeamScoreGraph(550, 480);
-     print "\t<input type='hidden' name='team_score_graph_large' " . 
-                                   "value='$imagePath'>\n";
-
-     $imagePath = outputPlayerScoreGraph(550, 480);
+     my $imagePath = outputPlayerScoreGraph(\@graphTime,\@teams,$teamOneName,$teamTwoName,$map,$tempDir,550,480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
-   $playerFields = `cat mvdPlayer.pm | grep print | grep -c self` + 1;
+   my $playerFields = `cat mvdPlayer.pm | grep print | grep -c self` + 1;
    print "\t<input type='hidden' name='playerFields' value='$playerFields'>\n";
    Player::outputStatsHeader();
   
@@ -1033,14 +1069,22 @@ sub outputForm
 sub outputPlayerScoreGraph
 {
   my $x = 400; my $y = 300;
+  my $graphTime = shift;
+  my $teams = shift;
+  my $teamOneName = shift;
+  my $teamTwoName = shift;
+  my $map = shift;
+  my $tempDir = shift;
+  
   if (@_) { $x = shift; $y = shift; } 
-  if (@graphTime < 5) { return; }
-  my @data = (\@graphTime);
-  foreach $team (@teams)
+  if (@{$graphTime} < 5) { return; }
+  my @data = (\@{$graphTime});
+  my @legendPlayers;
+  foreach my $team (@{$teams})
   {
-    foreach $player ($team->players)
+    foreach my $player ($team->players)
     { 
-      $player = findPlayer($player);
+      $player = findPlayer(\%players,$player);
       my @scoreArray = $player->scoreArray();
       push(@data, \@scoreArray); 
       push(@legendPlayers, $player->name);
@@ -1065,18 +1109,28 @@ sub outputPlayerScoreGraph
   close OUT;
   return $imagePath;
 }
-
+#
 sub outputTeamScoreGraph
 {
   my $x = 400; my $y = 300;
+  my $graphTime = shift;
+  my $graphTeams = shift;
+  my $graphTeamOneScore = shift;
+  my $graphTeamTwoScore = shift;
+  my $teamOneName = shift;
+  my $teamTwoName = shift;
+  my $map = shift;
+  my $teams = shift;
+  my $tempDir = shift;
+  
   if (@_) { $x = shift; $y = shift; }
 #  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
 #  {
 #    return;
 #  } 
-  if (@graphTime != @graphTeamOneScore || 
-      @graphTeamOneScore != @graphTeamTwoScore) { return; }
-  my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
+  if (@{$graphTime} != @{$graphTeamOneScore} || 
+      @{$graphTeamOneScore} != @{$graphTeamTwoScore}) { return; }
+  my @data = ($graphTime, $graphTeamOneScore, $graphTeamTwoScore);
   my $graph = GD::Graph::lines->new($x,$y);
   $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
               x_label => "time", 
@@ -1085,9 +1139,10 @@ sub outputTeamScoreGraph
               line_width => 2
              );
 
-  $graph->set_legend(@graphTeams);
-  my $teamOne = findTeam($teamOneName);
-  my $teamTwo = findTeam($teamTwoName);
+  $graph->set_legend(@{$graphTeams});
+  my $teamOne = findTeam($teams,$teamOneName);
+  my $teamTwo = findTeam($teams,$teamTwoName);
+  my(@colorArray);
   if ($teamOne->color == $teamTwo->color) 
   {
       $teamOne->color(complementColor($teamOne->color));
@@ -1102,15 +1157,15 @@ sub outputTeamScoreGraph
   else
   { 
     my @pointData = undef;
-    my @tempTime = @graphTime;
+    my @tempTime = @{$graphTime};
     my $timePlayed = pop(@tempTime);
 
-    for ($i = 0; $i <= $timePlayed; $i++)
+    for (my $i = 0; $i <= $timePlayed; $i++)
     {
       push(@{$pointData[0]}, $i);
-      if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
+      if ($graphTeamOneScore->[$i] > $graphTeamTwoScore->[$i])
       { 
-        push(@{$pointData[1]}, $graphTeamOneScore[$i]-$graphTeamTwoScore[$i]);
+        push(@{$pointData[1]}, $graphTeamOneScore->[$i]-$graphTeamTwoScore->[$i]);
         push(@{$pointData[2]}, undef);
       }
       else
@@ -1130,10 +1185,11 @@ sub outputTeamScoreGraph
   close OUT;
   return $imagePath;
 }
-
+#
 sub outputPlayerPieCharts
 {
-  foreach $player (@players)
+my $players = shift;
+  foreach my $player (values %{$players})
   { 
    if ($player->graphedFrags < 1) { next; }
     my @weaponList = ("SG " . $player->shotgunFrags(),
@@ -1208,18 +1264,19 @@ sub complementColor
 
 sub calculateTeamColors
 {
-  foreach $team (@teams)
+  my $teams = shift;
+  foreach my $team (@{$teams})
   {
     my @teamPlayers = $team->players;
     my @colors = [];
-    foreach $player (@teamPlayers)
+    foreach my $player (@teamPlayers)
     {
-      $player = findPlayer($player);
+      $player = findPlayer(\%players,$player);
       push(@colors, $player->bottomColor);
     }
     @colors = reverse(sort(@colors));
-    $modeColor = 0; $modeCount = 0; $currentColor = 0; $currentCount = 0;
-    foreach $color (@colors)
+    my($modeColor,$modeCount,$currentColor,$currentCount) = (0,0,0,0);
+    foreach my $color (@colors)
     {
       if ($color == $currentColor)
       {
