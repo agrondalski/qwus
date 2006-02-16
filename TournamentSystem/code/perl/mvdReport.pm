@@ -3,13 +3,14 @@ use strict;
 
 use mvdPlayer;
 use mvdTeam;
+use qwGraph;
 
 package mvdReport;
 
 sub new
 {
-	my $class = shift;
-	my $self = {};
+my $class = shift;
+my $self = {};
 	$self->{teamOneScore} = 0;
 	$self->{teamTwoScore} = 0;
 	$self->{teamOneName} = "red";
@@ -17,7 +18,6 @@ sub new
 	$self->{tempDir} = "/tmp/";
 	$self->{oldSeconds} = 0;
 	$self->{oldMinutes} = 0;
-#my $mvd = shift(@ARGV);
 	$self->{tourney_id} = "Test1"; 
 	$self->{division_id} = "A"; 
 	$self->{match_id} = "320"; 
@@ -82,11 +82,11 @@ my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
 print "Generating strings..\t";
 my @strings = `strings -1 "$tempMvd"`;
 $self->{mvdStrings} = \@strings;
-return
+return 1;
 }
 
 
-sub stringstoObjects
+sub parseStrings
 {
 my $self = shift;	
 my $fraggee;
@@ -716,71 +716,72 @@ elsif ($string =~ /^(.*) rips (.*)/)
   $oldString = $string;
   chomp($oldString);
 }
+if (@{$self->{graphTime}} != 0 && $self->{graphTime}[@{$self->{graphTime}} - 1] != 0)
+{
+  #kt pro
+  push(@{$self->{graphTime}}, 0);
+  push(@{$self->{graphTeamOneScore}}, $self->{teamOneScore});
+  push(@{$self->{graphTeamTwoScore}}, $self->{teamTwoScore});
 }
-#sub unnamed{
-#if (@{$self->{graphTime}} != 0 && $self->{graphTime}[@{$self->{graphTime}} - 1] != 0)
-#{
-#  #kt pro
-#  push(@{$self->{graphTime}}, 0);
-#  push(@{$self->{graphTeamOneScore}}, $self->{teamOneScore});
-#  push(@{$self->{graphTeamTwoScore}}, $self->{teamTwoScore});
-#}
-#else
-#{
-#  #pure ctf
-#  my $redTeam = findTeam(\@teams,"red");
-#  my $blueTeam = findTeam(\@teams,"blue");
-#  $redTeam->popScore; $redTeam->pushScore($redTeam->points(\%players));
-#  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points(\%players));
-#  CleanUpScores(\%players);
-#  @graphTeamOneScore = $redTeam->getScoreArray;
-#  @graphTeamTwoScore = $blueTeam->getScoreArray;
-#  
-#}
-#
-#@graphTime = reverse(@graphTime);
-#push(@graphTeams, $teamOneName);
-#push(@graphTeams, $teamTwoName);
-#
-## first we add the last score to each players score array
-## then if the size of the score array is smaller than the time
-## array we pad it with leading zeroes
-#foreach my $player (values %players)
-#{
-#  $player->addScore($player->points);
-#  my @playerScoreArray = $player->scoreArray();
-#  for(my $i = 0; $i < @graphTime - @playerScoreArray; $i++)
-#  {
-#    $player->padScoreArray();
-#  }
-#}
-#
-## this seems like a suboptimal solution
-#my $teamOne = findTeam(\@teams,$teamOneName);
-#my $teamTwo = findTeam(\@teams,$teamTwoName);
-#my @tempGraphTime = @graphTime;
-#my $time = pop(@tempGraphTime);
-#$teamOne->minutesPlayed($time);
-#$teamTwo->minutesPlayed($time);
-#
-#for (my $i = 0; $i <= $time; $i++)
-#{
-#  if(!defined($graphTeamOneScore[$i]) || !defined($graphTeamTwoScore[$i]))
-#  {
-#  #check init of arrays
-#  next;
-#  }
-#  # do nothing if ==
-#  elsif ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
-#  {
-#    $teamOne->minutesWithLead($teamOne->minutesWithLead() + 1);
-#  }
-#  elsif ($graphTeamTwoScore[$i] > $graphTeamOneScore[$i])
-#  {
-#    $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
-#  }
-#}
-#}
+else
+{
+  #pure ctf
+  my $redTeam = $self->findTeam("red");
+  my $blueTeam = $self->findTeam("blue");
+  $redTeam->popScore; $redTeam->pushScore($redTeam->points($self->{players}));
+  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points($self->{players}));
+  $self->CleanUpScores();
+  @{$self->{graphTeamOneScore}} = $redTeam->getScoreArray;
+  @{$self->{graphTeamTwoScore}} = $blueTeam->getScoreArray;
+  
+}
+my @graphTime = $self->{graphTime};
+@graphTime = reverse(@graphTime);
+my @graphTeams = $self->{graphTeams};
+push(@graphTeams, $self->{teamOneName});
+push(@graphTeams,  $self->{teamTwoName});
+$self->{graphTime} = \@graphTime;
+$self->{graphTeams} = \@graphTeams;
+# first we add the last score to each players score array
+# then if the size of the score array is smaller than the time
+# array we pad it with leading zeroes
+foreach my $player (values %{$self->{players}})
+{
+  $player->addScore($player->points);
+  my @playerScoreArray = $player->scoreArray();
+  for(my $i = 0; $i < @graphTime - @playerScoreArray; $i++)
+  {
+    $player->padScoreArray();
+  }
+}
+
+# this seems like a suboptimal solution
+my $teamOne = $self->findTeam($self->{teamOneName});
+my $teamTwo = $self->findTeam($self->{teamTwoName});
+my @tempGraphTime = @graphTime;
+my $time = pop(@tempGraphTime);
+$teamOne->minutesPlayed($time);
+$teamTwo->minutesPlayed($time);
+
+for (my $i = 0; $i <= $time; $i++)
+{
+  if(!defined(${$self->{graphTeamOneScore}}[$i]) || !defined(${$self->{graphTeamTwoScore}}[$i]))
+  {
+  #check init of arrays
+  next;
+  }
+  # do nothing if ==
+  elsif (${$self->{graphTeamOneScore}}[$i] > ${$self->{graphTeamTwoScore}}[$i])
+  {
+    $teamOne->minutesWithLead($teamOne->minutesWithLead() + 1);
+  }
+  elsif (${$self->{graphTeamTwoScore}}[$i] > ${$self->{graphTeamOneScore}}[$i])
+  {
+    $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
+  }
+}
+}
+
 
 ##### piano cut out
 #$shell = `rm -f "$tempMvd"`;
@@ -800,14 +801,14 @@ sub CleanUpScores
     {
       if (defined($player->team))
       {
-	$team = $self->findTeam(\@teams,$player->team->name);
+	my $team = $self->findTeam($player->team->name);
         if (defined($team))
         {
 	  $team->removePlayer($player->name);
 	  my @tempArray = [];
           while ($player->scoreArray)
           {
-	    $teamScore = $team->popScore();
+	    my $teamScore = $team->popScore();
 	    $teamScore -= $player->removeScore();
 	    push(@tempArray, $teamScore);
           }
@@ -860,7 +861,7 @@ sub findTeam
   }
   my $newTeam = Team->new();
   $newTeam->name($teamName);
-  push(@{$teams->{teams}}, $newTeam);
+  push(@{$self->{teams}}, $newTeam);
   return $newTeam;
 }
 
@@ -868,7 +869,7 @@ sub findTeamNoCreate
 {
   my $self = shift;
   my $teamName = shift;
-  foreach $team (@{$self->{teams}})
+  foreach my $team (@{$self->{teams}})
   {
     if ($team->name eq $teamName) { return $team; }
   }
@@ -882,9 +883,9 @@ sub teamMatchup
   my $teamTwoAbbr = $self->{teamTwoAbbr};
   my $teamOneFound = 0;
   my $teamTwoFound = 0; 
-  my @teams = @{$self->{$teams}};
+  my @teams = @{$self->{teams}};
   # first lets try to find perfect matches (minus case sensitivity)
-  foreach my $team (@teams})
+  foreach my $team (@{$self->{teams}})
   {
     my $name = $team->name;
     #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
@@ -933,7 +934,7 @@ sub teamMatchup
   # well we got 1 of 2 so we can assume the unknown is #2
   {
     my $lastTeam = undef;
-    foreach $team (@teams)
+    foreach my $team (@teams)
     {
       $lastTeam = $team;
       if ($team->approved == 0) { last; }
@@ -962,18 +963,20 @@ sub teamMatchup
 
 sub outputForm
 {
-   my $players = shift;
-   my $teams = shift;
-   my $teamOneAbbr = shift;
-   my $teamTwoAbbr = shift;
-   my $tourney_id = shift;
-   my $division_id = shift;
-   my $match_id = shift;
-   my $approved = shift;
-   my $mvd = shift;
-   my $map = shift;
+	my $self = shift;
+   	my $players = $self->{players};
+  	my $teams = $self->{teams};
+   	my $teamOneAbbr = $self->{teamOneAbbr};
+   	my $teamTwoAbbr = $self->{teamTwoAbbr};
+   	my $tourney_id = $self->{tourney_id};
+   	my $division_id = $self->{division_id};
+   	my $match_id = $self->{match_id};
+   	my $approved = $self->{approved};
+   	my $mvd = $self->{mvd};
+   	my $map = $self->{map};
+	my $tempDir = $self->{tempDir};
    print "Generating Images and Output..";
-   $start = new Benchmark;
+   
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
@@ -984,8 +987,8 @@ sub outputForm
 
    if (@{$teams} > 1 && (keys %{$players} > 0))
    {
-     outputPlayerPieCharts($players);
-     teamMatchup($teams,$teamOneAbbr,$teamTwoAbbr);
+     $self->outputPlayerPieCharts();
+     $self->teamMatchup();
      
      print "\t<input type='hidden' name='teamStats' value='";
      print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
@@ -1007,7 +1010,7 @@ sub outputForm
        foreach my $player (@tPlayers)
        {
  	  $currentC++;
-	  $player = findPlayer($player);
+	  $player = $self->findPlayer($player);
 	  $player->outputStats();
 	  my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
 	  $imagePath =~ s/\s//g;
@@ -1018,13 +1021,13 @@ sub outputForm
        $teamNumber++;
      }
 
-     #my $imagePath = outputTeamScoreGraph(\@graphTime, \@graphTeamOneScore,\@graphTeamTwoScore,$teamOneName, $teamTwoName, $map,$tempDir,320,200);
-#     print "\t<input type='hidden' name='team_score_graph_small' " . "value='$imagePath'>\n";
-#
-#     $imagePath = outputTeamScoreGraph(\@graphTime,\@graphTeamOneScore,\@graphTeamTwoScore,$teamOneName,$teamTwoName,$map,$tempDir,550,480);
-#     print "\t<input type='hidden' name='team_score_graph_large' " . "value='$imagePath'>\n";
+     my $imagePath = $self->outputTeamScoreGraph(320,200);
+     print "\t<input type='hidden' name='team_score_graph_small' " . "value='$imagePath'>\n";
 
-     my $imagePath = outputPlayerScoreGraph(\@graphTime,\@teams,$teamOneName,$teamTwoName,$map,$tempDir,550,480);
+     $imagePath = $self->outputTeamScoreGraph(550,480);
+     print "\t<input type='hidden' name='team_score_graph_large' " . "value='$imagePath'>\n";
+
+     $imagePath = $self->outputPlayerScoreGraph(550,480);
      print "\t<input type='hidden' name='player_score_graph' " . 
                                    "value='$imagePath'>\n";  
    }
@@ -1037,87 +1040,69 @@ sub outputForm
    print "<script>\n";
    print "document.stats.submit();\n";
    print "</script>\n";
-   $end = new Benchmark;
-   print timestr(timediff($end,$start), 'all') . "<br>\n";
-
 }
-
+#
 sub outputPlayerScoreGraph
 {
+  my $self = shift;
   my $x = 400; my $y = 300;
-  my $graphTime = shift;
-  my $teams = shift;
-  my $teamOneName = shift;
-  my $teamTwoName = shift;
-  my $map = shift;
-  my $tempDir = shift;
-  
   if (@_) { $x = shift; $y = shift; } 
-  if (@{$graphTime} < 5) { return; }
-  my @data = (\@{$graphTime});
+  if (@{$self->{graphTime}} < 5) { return; }
+  my @data = ($self->{graphTime});
   my @legendPlayers;
-  foreach my $team (@{$teams})
+  foreach my $team (@{$self->{teams}})
   {
     foreach my $player ($team->players)
     { 
-      $player = findPlayer($player);
+      $player = $self->findPlayer($player);
       my @scoreArray = $player->scoreArray();
       push(@data, \@scoreArray); 
       push(@legendPlayers, $player->name);
     }
   }
-  my $graph = GD::Graph::lines->new($x,$y);
-  $graph->set(title => $teamOneName ." vs ". $teamTwoName . " (" . $map . ")",
-              x_label => "time",
-              x_label_position => .5,
-              y_label => "score",
-              line_width => 2
-	      );
+  
   my @colorArray = qw(red orange blue dgreen dyellow cyan marine purple);
-  $graph->set(dclrs => [@colorArray]);
-  $graph->set_legend(@legendPlayers);
-  my $image = $graph->plot(\@data); # or die ("Died creating image");
-  my $imagePath = $tempDir . $teamOneName . "_" . $teamTwoName . "_" . $map . "_" . "players_" . $x . "x" . $y . ".png";
-  $imagePath =~ s/\s//g;
-  open(OUT, ">$imagePath");
-  binmode OUT;
-  print OUT $image->png();
-  close OUT;
-  return $imagePath;
+ 
+  my %qwhash = (	'data'=>\@data,
+    				'x'	=> $x,
+					'y'	=> $y,
+					'x_label'=>"time",
+					'y_label'=>"score",
+					'legend'=> \@legendPlayers,
+					'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
+    				'colors'=> \@colorArray,
+					'tempDir'=> $self->{'tempdir'}
+			);
+    
+    
+    my $imagePath = line_graph(\%qwhash);
+    return $imagePath;
 }
-#
+##
 sub outputTeamScoreGraph
 {
-  my $x = 400; my $y = 300;
-  my $graphTime = shift;
-  my $graphTeams = shift;
-  my $graphTeamOneScore = shift;
-  my $graphTeamTwoScore = shift;
-  my $teamOneName = shift;
-  my $teamTwoName = shift;
-  my $map = shift;
-  my $teams = shift;
-  my $tempDir = shift;
-  
-  if (@_) { $x = shift; $y = shift; }
+	my $self = shift;	
+  	my $x = 400; 
+	my $y = 300;
+	if (@_) { $x = shift; $y = shift; }
+  	my @graphTime = $self->{graphTime};
+  	my @graphTeams = $self->{graphTeams};
+  	my @graphTeamOneScore = $self->{graphTeamOneScore};
+  	my @graphTeamTwoScore = $self->{graphTeamTwoScore};
+  	my $teamOneName = $self->{teamOneName};
+  	my $teamTwoName = $self->{teamTwoName};
+  	my @teams = $self->{teams};
+  	my $tempDir = $self->{tempDir};
+	my @pointData;
 #  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
 #  {
 #    return;
 #  } 
-  if (@{$graphTime} != @{$graphTeamOneScore} || 
-      @{$graphTeamOneScore} != @{$graphTeamTwoScore}) { return; }
-  my @data = ($graphTime, $graphTeamOneScore, $graphTeamTwoScore);
-  my $graph = GD::Graph::lines->new($x,$y);
-  $graph->set(title   => $teamOneName . " vs " . $teamTwoName . " (" . $map . ")", 
-              x_label => "time", 
-              x_label_position => .5,
-              y_label => "score",
-              line_width => 2
-             );
-
-  $graph->set_legend(@{$graphTeams});
-  my $teamOne = findTeam($teams,$teamOneName);
-  my $teamTwo = findTeam($teams,$teamTwoName);
+  if (@graphTime != @graphTeamOneScore || @graphTeamOneScore != @graphTeamTwoScore) { return; }
+  my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
+   
+  my $teamOne = $self->findTeam($teamOneName);
+  my $teamTwo = $self->findTeam($teamTwoName);
   my(@colorArray);
   if ($teamOne->color == $teamTwo->color) 
   {
@@ -1125,23 +1110,23 @@ sub outputTeamScoreGraph
   }
   push(@colorArray, colorConverter($teamOne->color));
   push(@colorArray, colorConverter($teamTwo->color));
-  $graph->set(dclrs => [@colorArray]);
+  
   if ($x < 401)
   {
-    $graph->set(x_label_skip => 5)
+   
   }
   else
   { 
-    my @pointData = undef;
-    my @tempTime = @{$graphTime};
+    @pointData = undef;
+    my @tempTime = @graphTime;
     my $timePlayed = pop(@tempTime);
 
     for (my $i = 0; $i <= $timePlayed; $i++)
     {
       push(@{$pointData[0]}, $i);
-      if ($graphTeamOneScore->[$i] > $graphTeamTwoScore->[$i])
+      if ($graphTeamOneScore[$i] > $graphTeamTwoScore[$i])
       { 
-        push(@{$pointData[1]}, $graphTeamOneScore->[$i]-$graphTeamTwoScore->[$i]);
+        push(@{$pointData[1]}, $graphTeamOneScore[$i]-$graphTeamTwoScore[$i]);
         push(@{$pointData[2]}, undef);
       }
       else
@@ -1150,22 +1135,28 @@ sub outputTeamScoreGraph
         push(@{$pointData[1]}, undef);
       }
     }
-    $graph->set(show_values => \@pointData);
+    
   }
-  my $image = $graph->plot(\@data); # or die ("Died creating image");
-  my $imagePath = $tempDir . $teamOneName . "_" . $teamTwoName . "_" . $map . "_" . $x . "x" . $y . ".png";
-  $imagePath =~ s/\s//g;
-  open(OUT, ">$imagePath");
-  binmode OUT;
-  print OUT $image->png();
-  close OUT;
+  my %qwhash = (	'data'=>\@data,
+    				'x'	=> $x,
+					'y'	=> $y,
+					'x_label'=>"time",
+					'y_label'=>"score",
+					'showvalues'=>\@pointData,
+					'legend'=> \@graphTeams,
+					'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
+    				'colors'=> \@colorArray,
+					'tempDir'=> $self->{'tempdir'}
+			);
+  my $imagePath = line_graph(\%qwhash);
   return $imagePath;
 }
-#
+
+##
 sub outputPlayerPieCharts
 {
-my $players = shift;
-  foreach my $player (values %{$players})
+my $self = shift;
+  foreach my $player (values %{$self->{'players'}})
   { 
    if ($player->graphedFrags < 1) { next; }
     my @weaponList = ("SG " . $player->shotgunFrags(),
@@ -1184,27 +1175,22 @@ my $players = shift;
                  $player->lightningFrags()
                 );
     my @data = (\@weaponList, \@stats);
-    my $graph = GD::Graph::pie->new(250,175);
-    $graph->set(title => "Frags by " . $player->name . " (" . 
-                         $player->graphedFrags . ")",
-                suppress_angle => 3
-    ) or warn $graph->error;
     my @colorArray = qw(lred orange purple dgreen dyellow cyan marine);
-    $graph->set(dclrs => [@colorArray]);
- 
-    my $image = $graph->plot(\@data); # or warn $graph->error;
-    my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
-
-    $imagePath =~ s/\s//g;
-    open(OUT, ">$imagePath");
-    binmode OUT;
-    print OUT $image->png();
-    close OUT;    
+    my %qwhash = (	'data'=>\@data,
+    				'x'	=> '250',
+					'y'	=> '175',
+					'title'	=> "Frags by " . $player->name . " (" . $player->graphedFrags . ")",
+    				'colors'=> \@colorArray,
+					'tempDir'=> $self->{'tempdir'}
+			);
+    
+    
+    pie_graph(\%qwhash);
   }
 }
-
-# returns the quake color corresponding to the number passed in
-# white becomes black for display purposes
+#
+## returns the quake color corresponding to the number passed in
+## white becomes black for display purposes
 sub colorConverter
 {
   if (!@_) { return "black" }
@@ -1227,10 +1213,10 @@ sub colorConverter
   return "black";
 }
 
-# available colors:
-# white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
-
-#not yet implemented
+## available colors:
+## white, lgray, gray, dgray, black, lblue, blue, dblue, gold, lyellow, yellow, dyellow, lgreen, green, dgreen, lred, red, dred, lpurple, purple, dpurple, lorange, orange, pink, dpink, marine, cyan, lbrown, dbrown.
+#
+##not yet implemented
 sub complementColor
 {
   my $color = shift;
@@ -1272,3 +1258,4 @@ sub calculateTeamColors
     $team->color($modeColor);
   }
 }
+1;
