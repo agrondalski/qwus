@@ -29,7 +29,7 @@ try
     }
 
   echo "</table>\n";
-  echo "<br" ;
+  echo "<br>" ;
 
   echo "<form action='?a=saveTourneyMap' method=post>";
   echo "<input type='hidden' name='tourney_id' value='$tid'>";
@@ -42,7 +42,7 @@ try
 
   echo "</select>&nbsp;&nbsp;";
   echo "<input type='submit' value='Add Map' name='B1' class='button'>";
-  echo "<br>";
+  echo "<br></form>";
 }
 catch (Exception $e) {}
 
