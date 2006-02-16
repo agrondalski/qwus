@@ -19,7 +19,15 @@ $shell = `cp -f /usr/www/svn/TournamentSystem/code/php/classes/*.php /var/www/ht
 
 $shell = `cp -f /usr/www/svn/TournamentSystem/code/php/*.php /var/www/html/php`;
 
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/qwGraph.pm /var/www/html/perl`;
+
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/mvdPlayer.pm /var/www/html/perl`;
+
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/mvdReport.pm /var/www/html/perl`;
+
 $shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/mvdStats.pl /var/www/html/perl`;
+
+$shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/mvdTeam.pm /var/www/html/perl`;
 
 $shell = `cp -f /usr/www/svn/TournamentSystem/code/perl/convertAscii.sed /var/www/html/perl`;
 
