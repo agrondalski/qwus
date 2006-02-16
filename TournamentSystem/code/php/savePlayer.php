@@ -21,22 +21,22 @@ try
   if ($mode=="edit" && !util::isLoggedInAsTeam())
     {
       $player_id = $_POST['player_id'];
-      $p = new player(array('player_id'=>$player_id));
-      $p->update('name',$_POST['name']);
-      $p->update('location_id',$_POST['location_id']);
+      $play = new player(array('player_id'=>$player_id));
+      $play->update('name',$_POST['name']);
+      $play->update('location_id',$_POST['location_id']);
 
       if ($_POST['password'] != "")
 	{
 	  // only update the pw if a new one is supplied
-	  $p->update('password',$_POST['password']);
+	  $play->update('password',$_POST['password']);
 	}
 
       if ($p->isSuperAdmin())
 	{
 	  $hascolumn = util::choose(($_POST['hascolumn'] == "1"), 1, 0) ;
-	  $p->update('hasColumn', $hascolumn);
+	  $play->update('hasColumn', $hascolumn);
 
-	  $p->update('superAdmin',$_POST['superadmin']);
+	  $play->update('superAdmin',$_POST['superadmin']);
 	}
 
  
@@ -46,10 +46,10 @@ try
   elseif ($mode=="delete" && !util::isLoggedInAsTeam())
     {
       $player_id = $_REQUEST['player_id'];
-      $p = new player(array('player_id'=>$player_id));
+      $play = new player(array('player_id'=>$player_id));
       try
 	{
-	  $p->delete();
+	  $play->delete();
 	  $msg = "<br>Player deleted!<br>";
 	}
       catch (Exception $e)
@@ -74,7 +74,7 @@ try
 
       try
 	{
-	  $p = new player(array('name'=>$_POST['name'],
+	  $play = new player(array('name'=>$_POST['name'],
 				'superAdmin'=>$_POST['superadmin'],
 				'location_id'=>$_POST['location_id'],
 				'password'=>$pw,
