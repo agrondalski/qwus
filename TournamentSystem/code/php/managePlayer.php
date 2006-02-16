@@ -22,14 +22,14 @@ try
       echo "<b><p>Modify a Player:</b></p>";
 
       $player_id = $_REQUEST['player_id'];
-      $p = new player(array('player_id'=>$player_id));
+      $play = new player(array('player_id'=>$player_id));
 
-      $name=$p->getValue('name');
-      $superadmin=$p->getValue('superAdmin');
-      $location_id=$p->getValue('location_id');
+      $name=$play->getValue('name');
+      $superadmin=$play->getValue('superAdmin');
+      $location_id=$play->getValue('location_id');
       $loc = new location(array('location_id'=>$location_id));
-      $password=$p->getValue('password');
-      $hascolumn=$p->getValue('hasColumn');
+      $password=$play->getValue('password');
+      $hascolumn=$play->getValue('hasColumn');
     }
 
   else
