@@ -15,7 +15,6 @@ class util
   const MATCHED      = 'Matched' ;
   const TOTAL_DEATHS = 'Total Deaths' ;
   const TOTAL_FRAGS  = 'Total Frags' ;
-  const MATCHED      = 'Matched';
   const AX_FRAGS     = 'Ax Frags';
   const AX_DEATHS    = 'Ax Deaths';
   const SG_FRAGS     = 'Shotgun Frags';

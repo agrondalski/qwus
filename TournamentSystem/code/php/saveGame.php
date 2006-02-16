@@ -122,7 +122,6 @@ try
 	    }
 	  catch (Exception $e) 
 	    {
-	      print $e;
 	      echo "Problem adding screenshot to game!<br>";
 	    }
 	}
