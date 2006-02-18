@@ -1149,12 +1149,13 @@ sub outputTeamScoreGraph
     }
     
   }
+  
   my %qwhash = (	'data'=>\@data,
     			'x'	=> $x,
 			'y'	=> $y,
 			'x_label'=>"time",
 			'y_label'=>"score",
-			#'showvalues'=>\@pointData,
+			'showvalues'=>\@pointData,
 			'legend'=> \@graphTeams,
 			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
