@@ -1083,7 +1083,7 @@ sub outputPlayerScoreGraph
 			'legend'=> \@legendPlayers,
 			'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
-			'tempDir'=> $self->{'tempDir'}
+			'imagePath'=> $self->{teamOneName} . " vs " . $self->{teamTwoName} . "_players_(" . $self->{map} . ")_" . $x . "x" . $y . ".png"
 			);
     
    
@@ -1106,10 +1106,7 @@ sub outputTeamScoreGraph
   	my @teams = @{$self->{teams}};
   	my $tempDir = $self->{tempDir};
 	my @pointData;
-#  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
-#  {
-#    return;
-#  } 
+
   if ((@graphTime != @graphTeamOneScore) || (@graphTeamOneScore != @graphTeamTwoScore)) { return "0"; }
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
    
@@ -1157,8 +1154,9 @@ sub outputTeamScoreGraph
 			'y_label'=>"score",
 			'showvalues'=>\@pointData,
 			'legend'=> \@graphTeams,
-			'title'	=> $teamOneName ." vs ". $teamTwoName . "_player_" . "(" . $self->{map} . ")",
+			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
+                        'imagePath'=> $teamOneName . " vs " . $teamTwoName . "_(" . $self->{map} . ")_" . $x . "x" . $y . ".png",
 			'tempDir'=> $tempDir
 			);
   my $imagePath = qwGraph::line_graph(\%qwhash);

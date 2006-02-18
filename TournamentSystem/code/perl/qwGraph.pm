@@ -16,7 +16,7 @@ sub line_graph{
   my $x_label = $qwhash->{'xlabel'};
   my $y_label = $qwhash->{'ylabel'};
   my @colorArray = @{$qwhash->{'colors'}};
-  my $tempDir = $qwhash->{'tempDir'};
+  my $imagePath = $qwhash->{'imagePath'};
   my $graph = GD::Graph::lines->new($x,$y);
   
   my $showvals;
@@ -43,7 +43,6 @@ sub line_graph{
   }
   my $image = $graph->plot(\@data); # or die ("Died creating image");
   
-  my $imagePath = $tempDir . $title . "_" . $x . "x" . $y . ".png";
   $imagePath =~ s/\s/\_/g;
   open(OUT, ">$imagePath") or die $!;
   binmode OUT;
