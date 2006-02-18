@@ -54,6 +54,63 @@ if (!$g->hasDetails())
   util::throwException('No Details') ;
 }
 
+
+// Show Ping/Score/Player table
+$teams = $m->getTeams();
+foreach($teams as $t)
+{  
+  $currentStat = null;
+  $tstats = $g->getStatsByTeam(array('stat_name', SORT_ASC, 'value', SORT_DESC), $t->getValue('team_id')) ;
+  $players = $g->getTeamPlayers($t->getValue('team_id')) ;
+
+  foreach ($tstats as $s) 
+  {	
+      $p = $players[$s->getValue('player_id')] ;
+      $currentStat = $s->getValue('stat_name');
+
+			if ($currentStat == "Ping") 
+			{
+				$ping[$p->getValue('name')] = $s->getValue('value');
+			}
+			if ($currentStat == "Score") 
+			{
+				$score[$p->getValue('name')] = $s->getValue('value');
+			}	  
+    }    
+}
+
+$gameout .= "<table cellpadding=3 cellspacing=0 border=1><tr>";
+$clr = "#C0C0C0";
+$gameout .= "<th bgcolor='$clr'>Ping</th><th bgcolor='$clr'>Score</th><th bgcolor='$clr'>Player</th><th bgcolor='$clr'>Team</th></tr>";
+$rank = 0;
+
+foreach($teams as $t)
+{
+	$playercount = 0;
+	$pingtotal   = 0;
+	$pingavg    = 0;
+	$scoretotal  = 0;
+	$tstats = $g->getStatsByTeam(array('stat_name', SORT_ASC, 'value', SORT_DESC), $t->getValue('team_id')) ;
+  $players = $g->getTeamPlayers($t->getValue('team_id')) ;
+	foreach ($players as $p) 
+  {	
+  	$clr = "#CCCCCC";
+		$gameout .= "<tr>";		
+		$gameout .= "<td bgcolor='$clr'>".$ping[$p->getValue('name')]."</td><td bgcolor='$clr'>".$score[$p->getValue('name')]."</td><td bgcolor='$clr'>".$p->getValue('name')."</td><td bgcolor='$clr'>".$t->getValue('name')."</td>";		
+		$gameout .= "</tr>";
+		$pingtotal   += $ping[$p->getValue('name')];
+		$scoretotal  += $score[$p->getValue('name')];
+		$playercount += 1;
+	}
+	$pingavg = ($pingtotal) / ($playercount);
+	$clr = "#C0C0C0";
+	$gameout .= "<td bgcolor='$clr'>".$pingavg."</td><td bgcolor='$clr'><b>".$scoretotal."</b></td><td bgcolor='$clr' colspan=2>".$t->getValue('name')."</td>";		
+}
+$gameout .= "</table><p>";
+
+
+
+
 if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 {
   $file = $files[util::TEAM_SCORE_GRAPH_LARGE]->getValue('url') ;
