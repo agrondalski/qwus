@@ -52,6 +52,7 @@ class util
 
   // QWCTF Stats
   const CAPTURES	=  'Captures';
+  const CAPTURE_TIMES   =  'Capture Times' ;
   const CARRIER_DEFENDS =  'Carrier Defends';
   const FLAG_DEFENDS 	=  'Flag Defends';
   const FLAG_DROPS	=  'Flag Drops';

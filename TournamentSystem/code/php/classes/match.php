@@ -408,6 +408,10 @@ class match
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
+	      elseif ($k2 == util::CAPTURE_TIMES)
+		{
+
+		}
 
 	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&
 		      ($s!=0 || $k2==util::SCORE || $k2==util::RANK || $k2==util::EFFICIENCY))
@@ -459,6 +463,11 @@ class match
 		    {
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
+		}
+
+	      elseif ($k2 == util::CAPTURE_TIMES)
+		{
+
 		}
 
 	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&

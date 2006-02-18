@@ -33,7 +33,6 @@ class stats
       $sql_str = sprintf("insert into stats(player_id, game_id, stat_name, team_id, value)" .
                          "values(%d, %d, '%s', %d, %d)",
 			 $this->player_id, $this->game_id, $this->stat_name, $this->team_id, $this->value) ;
-		echo "Adding ",$this->stat_name," ..<br>\n";
       $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
     }
 
