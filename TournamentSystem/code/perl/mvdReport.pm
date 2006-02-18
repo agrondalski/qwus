@@ -219,6 +219,15 @@ elsif ($string =~ /^(.*) rips (.*)/)
     $fragger = $self->findPlayer($nextString);
     $fragger->grappleFrags($fragger->grappleFrags() + 1);
   }
+  elsif ($string =~ /^ was disemboweled by/)
+  {
+  $nextString = $strings[$stringCounter + 1];
+  chomp($nextString);
+  $fraggee = $self->findPlayer($oldString);
+  $fraggee->grappleDeaths($fraggee->grappleDeaths() + 1);
+  $fragger = $self->findPlayer($nextString);
+  $fragger->grappleFrags($fragger->grappleFrags() + 1);
+  } 
   elsif ($string =~ /^ was nailed by/)
   {
     $nextString = $strings[$stringCounter + 1];
