@@ -487,7 +487,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
     chomp($nextString);
     $fraggee = $self->findPlayer($oldString);
     $fraggee->teleDeaths($fraggee->teleDeaths() + 1);
-    $fragger = findPlayer($nextString);
+    $fragger = $self->findPlayer($nextString);
     $fragger->teleFrags($fragger->teleFrags() + 1);
   }
   elsif ($string =~ /^(.*) was telefragged by (.*)/) 
@@ -820,7 +820,7 @@ sub findPlayer
 {
 	my $self = shift;
 	my($playerName) = shift;
-  	if($playerName =~ /^\s*$/){die};
+  	#if(!defined($playerName)){return undef;}
 	$playerName =~ s/ /\_/g;
   	foreach my $player (values %{$self->{players}})
   	{
