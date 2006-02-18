@@ -751,7 +751,7 @@ else
 }
 my @graphTime = @{$self->{graphTime}};
 @graphTime = reverse(@graphTime);
-my @graphTeams = $self->{graphTeams};
+my @graphTeams = @{$self->{graphTeams}};
 push(@graphTeams, $self->{teamOneName});
 push(@graphTeams,  $self->{teamTwoName});
 $self->{graphTime} = \@graphTime;
