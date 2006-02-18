@@ -1024,8 +1024,7 @@ sub outputForm
 	  
 	  $player->outputStats($self);
 	 
-	  my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
-	  $imagePath =~ s/\s//g;
+	  my $imagePath = $player->{PIE_CHART};
 	  print $imagePath;
 	  if ($currentC < $playerC) { print "\\\\"; }
        }
@@ -1087,7 +1086,7 @@ sub outputPlayerScoreGraph
 			'tempDir'=> $self->{'tempDir'}
 			);
     
-    die 
+   
     my $imagePath = qwGraph::line_graph(\%qwhash);
     return $imagePath;
 }
@@ -1197,9 +1196,10 @@ my $self = shift;
     			'colors'=> \@colorArray,
 			'tempDir'=> $self->{'tempDir'}
 			);
-    if(!defined($qwhash{title})){die $!;}
-    
-    qwGraph::pie_graph(\%qwhash);
+ 
+    my $imagePath = qwGraph::pie_graph(\%qwhash);
+    $player->{PIE_CHART} = "$imagePath";	  
+  
   }
 }
 #

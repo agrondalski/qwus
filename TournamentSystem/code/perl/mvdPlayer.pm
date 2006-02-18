@@ -56,6 +56,7 @@ sub new
   $self->{CTF_FRAG_ASSISTS} = 0;
   $self->{CTF_GRAPPLE_FRAGS} = 0;
   $self->{CTF_GRAPPLE_DEATHS} = 0;
+  $self->{PIE_CHART} = undef;
   bless ($self, $class);
   return $self;
 }
