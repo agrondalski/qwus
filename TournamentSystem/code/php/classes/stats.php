@@ -9,11 +9,9 @@ class stats
 
   function __construct($a)
     {
-      if (array_key_exists('player_id', $a) && array_key_exists('game_id', $a) && array_key_exists('stat_name', $a) && !array_key_exists('value', $a))
+      if (array_key_exists('stat_id', $a))
 	{
-	  $this->player_id = $this->validateColumn($a['player_id'], 'player_id') ;
-	  $this->game_id   = $this->validateColumn($a['game_id'], 'game_id') ;
-	  $this->stat_name = $this->validateColumn($a['stat_name'], 'stat_name') ;
+	  $this->stat_id = $this->validateColumn($a['stat_id'], 'stat_id') ;
 	  
 	  if ($this->getStatsInfo()==util::NOTFOUND)
 	    {
@@ -38,7 +36,7 @@ class stats
 
   private function getStatsInfo()
     {
-      $sql_str = sprintf("select team_id, value from stats where player_id=%d and game_id=%d and stat_name='%s' limit 1", $this->player_id, $this->game_id, $this->stat_name) ;
+      $sql_str = sprintf("select player_id, game_id, team_id, stat_name, value from stats where stat_id=%d", $this->stat_id) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
@@ -48,8 +46,11 @@ class stats
 	}
       $row = mysql_fetch_row($result) ;
 
-      $this->team_id  = $row[0] ; 
-      $this->value    = $row[1] ; 
+      $this->player_id  = $row[0] ; 
+      $this->game_id    = $row[1] ; 
+      $this->team_id    = $row[2] ; 
+      $this->stat_name  = $row[3] ; 
+      $this->value      = $row[4] ; 
 
       mysql_free_result($result) ;
 
@@ -71,7 +72,25 @@ class stats
 
   public static function validateColumn($val, $col, $cons=false)
     {
-      if ($col == 'player_id')
+      if ($col == 'stat_id')
+	{
+	  if (!$cons)
+	    {
+	      if (util::isNull($val))
+		{
+		  util::throwException($col . ' cannot be null') ;
+		}
+
+	      if (!is_numeric($val))
+		{
+		  util::throwException($col . ' is not a numeric value') ;
+		}
+
+	      return util::mysql_real_escape_string($val) ;
+	    }
+	}
+
+      elseif ($col == 'player_id')
 	{
 	  if (util::isNull($val))
 	    {
@@ -477,11 +496,11 @@ class stats
 
       if (is_numeric($this->$col))
 	{
-	  $sql_str = sprintf("update stats set %s=%d where player_id=%d and game_id=%d and stat_name='%s'", $col, $this->$col, $this->player_id, $this->game_id, $this->stat_name) ;
+	  $sql_str = sprintf("update stats set %s=%d where stat_id_id=%d", $col, $this->$col, $this->stat_id) ;
 	}
       else
 	{
-	  $sql_str = sprintf("update stats set %s='%s' where player_id=%d and game_id=%d and stat_name='%s'", $col, $this->$col, $this->player_id, $this->game_id, $this->stat_name) ;
+	  $sql_str = sprintf("update stats set %s='%s' where stat_id=%d", $col, $this->$col, $this->stat_id) ;
 	}
 
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
@@ -490,7 +509,7 @@ class stats
 
   public function delete()
     {
-      $sql_str = sprintf("delete from stats where player_id=%d and game_id=%d and stat_name='%s'", $this->player_id, $this->game_id, $this->stat_name) ;
+      $sql_str = sprintf("delete from stats where stat_id", $this->stat_id, $this->game_id, $this->stat_name) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 }

@@ -151,16 +151,20 @@ create table maps(
 ENGINE=INNODB ;
 
 create table stats(
+  stat_id    integer       NOT NULL auto_increment,
   player_id  integer       NOT NULL,
   game_id    integer       NOT NULL,
-  stat_name  varchar(250)  NOT NULL,
   team_id    integer       NOT NULL,
+  stat_name  varchar(250)  NOT NULL,
   value      integer       NOT NULL,
 --
-  constraint stats_pk primary key(player_id, game_id, stat_name))
+  constraint stats_pk primary key(stat_id))
 ENGINE=INNODB ;
 --create index stats_idx1 on stats(game_id) ;
 --create index stats_idx2 on stats(stat_name) ;
+drop index stats_idx on stats ;
+create index stats_idx on stats_new(player_id, game_id) ;
+
 
 create table stats_team(
   team_id    integer       NOT NULL,

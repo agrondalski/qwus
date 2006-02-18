@@ -303,20 +303,6 @@ class player
       return $arr ;
     }
 
-  public function getStats()
-    {
-      $sql_str = sprintf("select s.game_id from stats s where s.player_id=%d", $this->player_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
-
-      while ($row=mysql_fetch_row($result))
-	{
-	  $arr[] = new stats(array('player_id'=>$this->player_id, 'game_id'=>$row[0])) ;
-	}
-
-      mysql_free_result($result) ;
-      return $arr ;
-    }
-
   public function getLocation()
     {
       return new location(array('location_id'=>$this->location_id)) ;

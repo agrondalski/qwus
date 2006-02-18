@@ -180,7 +180,7 @@ class game
 	    }
 	  else
 	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	      $arr[] = new stats(array('stat_id'=>$row['stat_id'])) ;
 	    }
 	}
 
@@ -191,7 +191,7 @@ class game
 	  $arr = array() ;
 	  foreach($sorted_arr as $row)
 	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	      $arr[] = new stats(array('stat_id'=>$row['stat_id'])) ;
 	    }
 	}
 
@@ -225,7 +225,7 @@ class game
 	    }
 	  else
 	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	      $arr[] = new stats(array('stat_id'=>$row['stat_id'])) ;
 	    }
 	}
 
@@ -236,7 +236,7 @@ class game
 	  $arr = array() ;
 	  foreach($sorted_arr as $row)
 	    {
-	      $arr[] = new stats(array('player_id'=>$row['player_id'], 'game_id'=>$row['game_id'], 'stat_name'=>$row['stat_name'])) ;
+	      $arr[] = new stats(array('stat_id'=>$row['stat_id'])) ;
 	    }
 	}
 
