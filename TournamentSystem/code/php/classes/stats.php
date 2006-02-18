@@ -38,7 +38,7 @@ class stats
 
   private function getStatsInfo()
     {
-      $sql_str = sprintf("select team_id, value from stats where player_id=%d and game_id=%d and stat_name='%s'", $this->player_id, $this->game_id, $this->stat_name) ;
+      $sql_str = sprintf("select team_id, value from stats where player_id=%d and game_id=%d and stat_name='%s' limit 1", $this->player_id, $this->game_id, $this->stat_name) ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)

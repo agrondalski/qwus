@@ -408,9 +408,14 @@ class match
 		      unlink($html_root_dir . util::SLASH . $new_file_name) ;
 		    }
 		}
-	      elseif ($k2 == util::CAPTURE_TIMES)
-		{
 
+	      elseif ($k2 == util::CAPTURE_TIMES && !util::isNull($s))
+		{
+		  $caps = split(' ', $s) ;
+		  foreach($caps as $t)
+		    {
+		      $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team1_id, 'stat_name'=>$k2, 'value'=>$t)) ;
+		    }
 		}
 
 	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&
@@ -465,9 +470,14 @@ class match
 		    }
 		}
 
-	      elseif ($k2 == util::CAPTURE_TIMES)
+	      elseif ($k2 == util::CAPTURE_TIMES && !util::isNull($s))
 		{
+		  $caps = split(' ', $s) ;
 
+		  foreach($caps as $t)
+		    {
+		      $g->addStat(array('player_id'=>$k1, 'team_id'=>$this->team2_id, 'stat_name'=>$k2, 'value'=>$t)) ;
+		    }
 		}
 
 	      elseif ($k2!=util::NAME && $k2!=util::MATCHED &&
