@@ -526,7 +526,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
     {
       chomp($name);
       $player = $self->findPlayerNoCreate($name);
-      my $ping;
+      my $ping = 0;
       if (defined($player) || $name =~ /^-----------/)
       {
         if (defined($previousPlayer))
@@ -535,7 +535,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
           {
 	    $ping = $strings[$step + $i];
             chomp($ping);
-            if (defined($ping) && $ping ne "")
+            if (defined($ping) && $ping ne "" && !($ping =~ /^\s*$/))
             {
 	      $previousPlayer->ping($ping);
             }
