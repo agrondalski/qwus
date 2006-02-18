@@ -56,7 +56,7 @@ $teamTwoPlayers = [];
 }
 my $mvdRep = mvdReport->new();
 
-$mvdRep->{tempDir} = 'tmp/';
+$mvdRep->{tempDir} = '/tmp/';
 $mvdRep->{tourney_id} = $tourney_id; 
 $mvdRep->{division_id} = $division_id; 
 $mvdRep->{match_id} = $match_id; 
