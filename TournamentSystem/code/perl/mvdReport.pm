@@ -1083,7 +1083,7 @@ sub outputPlayerScoreGraph
 			'legend'=> \@legendPlayers,
 			'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
-			'imagePath'=> $self->{teamOneName} . " vs " . $self->{teamTwoName} . "_players_(" . $self->{map} . ")_" . $x . "x" . $y . ".png"
+			'imagePath'=> $self->{tempDir} . $self->{teamOneName} . " vs " . $self->{teamTwoName} . "_players_(" . $self->{map} . ")_" . $x . "x" . $y . ".png"
 			);
     
    
@@ -1156,8 +1156,7 @@ sub outputTeamScoreGraph
 			'legend'=> \@graphTeams,
 			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
-                        'imagePath'=> $teamOneName . " vs " . $teamTwoName . "_(" . $self->{map} . ")_" . $x . "x" . $y . ".png",
-			'tempDir'=> $tempDir
+                        'imagePath'=> $tempDir . $teamOneName . " vs " . $teamTwoName . "_(" . $self->{map} . ")_" . $x . "x" . $y . ".png"
 			);
   my $imagePath = qwGraph::line_graph(\%qwhash);
   return $imagePath;
