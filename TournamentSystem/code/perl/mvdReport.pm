@@ -80,7 +80,11 @@ print "Converting ascii..\t";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
 print "Generating strings..\t";
 my @strings = `strings -1 "$tempMvd"`;
+print "Compressing..\t\t";
 $shell = `rm -f "$tempMvd"`;
+$shell = `gzip -f9 "$mvd"`;
+$mvd .= ".gz";
+$self->{mvd} = $mvd;
 $self->{mvdStrings} = \@strings;
 return 1;
 }
@@ -1072,14 +1076,14 @@ sub outputPlayerScoreGraph
   my @colorArray = qw(red orange blue dgreen dyellow cyan marine purple);
  
   my %qwhash = (	'data'=>\@data,
-    				'x'	=> $x,
-					'y'	=> $y,
-					'x_label'=>"time",
-					'y_label'=>"score",
-					'legend'=> \@legendPlayers,
-					'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
-    				'colors'=> \@colorArray,
-					'tempDir'=> $self->{'tempDir'}
+    			'x'	=> $x,
+			'y'	=> $y,
+			'x_label'=>"time",
+			'y_label'=>"score",
+			'legend'=> \@legendPlayers,
+			'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
+    			'colors'=> \@colorArray,
+			'tempDir'=> $self->{'tempDir'}
 			);
     
     
@@ -1150,7 +1154,7 @@ sub outputTeamScoreGraph
 			'y'	=> $y,
 			'x_label'=>"time",
 			'y_label'=>"score",
-			'showvalues'=>\@pointData,
+			#'showvalues'=>\@pointData,
 			'legend'=> \@graphTeams,
 			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
     			'colors'=> \@colorArray,
