@@ -403,7 +403,6 @@ sub captureTimes
   }
   else
   {
-    return 0; # remove later
     my $capTimes = "";
     foreach my $cap (@{$self->{CTF_CAPTURE_TIMES}})
     {
