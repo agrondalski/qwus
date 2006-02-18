@@ -35,7 +35,7 @@ else
     $mvd = $cgi->param('filename');
     $tourney_id = -1;
   }
-  elsif ($referer =~ /reportMatch/)
+  elsif ($referer =~ /reportMatch/ || $referer =~ /recomputeGame/)
   {
     $tourney_id = $cgi->param('tourney_id');
     $division_id = $cgi->param('division_id');
