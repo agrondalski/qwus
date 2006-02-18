@@ -163,7 +163,8 @@ ENGINE=INNODB ;
 --create index stats_idx1 on stats(game_id) ;
 --create index stats_idx2 on stats(stat_name) ;
 drop index stats_idx on stats ;
-create index stats_idx on stats_new(player_id, game_id) ;
+create index stats_idx1 on stats(player_id, game_id, stat_name) ;
+create index stats_idx2 on stats(game_id, team_id, stat_name) ;
 
 
 create table stats_team(
