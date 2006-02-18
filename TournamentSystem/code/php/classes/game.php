@@ -478,6 +478,24 @@ class game
 		}
 	    }
 
+	  if (!$found || count($m->getGames())==0)
+	    {
+	      rmdir($dir) ;
+	    }
+	}
+
+      $found = false ;
+      $dir = $t->getTourneyRoot() ;
+      if (is_dir($dir))
+	{
+	  foreach(scandir($t->getTourneyRoot()) as $f)
+	    {
+	      if ($f!='.' && $f!='..')
+		{
+		  $found = true ;
+		}
+	    }
+
 	  if (!$found)
 	    {
 	      rmdir($dir) ;
