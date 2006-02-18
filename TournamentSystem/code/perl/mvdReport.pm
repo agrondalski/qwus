@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 use strict;
-
+use lib ".";
 use mvdPlayer;
 use mvdTeam;
 use qwGraph;
@@ -18,12 +18,12 @@ my $self = {};
 	$self->{tempDir} = "/tmp/";
 	$self->{oldSeconds} = 0;
 	$self->{oldMinutes} = 0;
-	$self->{tourney_id} = "Test1"; 
-	$self->{division_id} = "A"; 
-	$self->{match_id} = "320"; 
-	$self->{approved} = "1"; 
-	$self->{teamOneAbbr} = "WTG"; 
-	$self->{teamTwoAbbr} = "GTW";
+	$self->{tourney_id} = ""; 
+	$self->{division_id} = ""; 
+	$self->{match_id} = ""; 
+	$self->{approved} = ""; 
+	$self->{teamOneAbbr} = ""; 
+	$self->{teamTwoAbbr} = "";
 	$self->{teamOnePlayers} = "";
 	$self->{teamTwoPlayers} = "";
 	$self->{mvdStrings} = [];
@@ -38,11 +38,13 @@ my $self = {};
 	$self->{graphTeamTwoScore} = [];
 	$self->{graphTeams} = [];
 	$self->{players} = {};
+	$self->{mvd} = "";
 	bless ($self, $class);
 	return $self;
 }
 
-sub mvdtoStrings{
+sub mvdtoStrings
+{
 my $self = shift;
 my $mvd = shift;
 
@@ -51,7 +53,6 @@ if ($mvd =~ /(.*)\.gz$/)
   print "Uncompressing..\t\t";
   my $shell = `gzip -fd "$mvd"`;
   $mvd = $1;
-  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd =~ /(.*)\.bz2$/)
@@ -59,7 +60,6 @@ if ($mvd =~ /(.*)\.bz2$/)
   print "Uncompressing..\t\t";
   my $shell = `bzip2 -fd "$mvd"`;
   $mvd = $1;
-  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd =~ /(.*)\.qwd$/)
@@ -67,7 +67,6 @@ if ($mvd =~ /(.*)\.qwd$/)
   print "Converting to MVD..\t";
   my $shell = `qwdtools "$mvd"`;
   $mvd = $1 . ".mvd";
-  #print timestr(timediff($end,$start), 'all') . "<br>\n";
 }
 
 if ($mvd !~ /(.*)\.mvd$/)
@@ -81,6 +80,7 @@ print "Converting ascii..\t";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;
 print "Generating strings..\t";
 my @strings = `strings -1 "$tempMvd"`;
+$shell = `rm -f "$tempMvd"`;
 $self->{mvdStrings} = \@strings;
 return 1;
 }
@@ -95,6 +95,7 @@ my $stringCounter = -1;
 my $team;
 my $player;
 print "Parsing strings..\t";
+my $r =0;
 
 my($oldString,$oldString1,$oldString2,$oldString3, $nextString);
 my @strings = @{$self->{mvdStrings}};
@@ -126,7 +127,7 @@ foreach my $string (@strings)
 	  elsif ($string =~ /^(.*) rides (.*)'s rocket/)
 	  {
 		$fraggee = $self->findPlayer($1);
-		$fragger = $self-> findPlayer($2);
+		$fragger = $self->findPlayer($2);
 	  }
 	  else
 	  {
@@ -387,8 +388,6 @@ elsif ($string =~ /^(.*) rips (.*)/)
     $fraggee = $self->findPlayer($oldString);
     $fraggee->miscBores($fraggee->miscBores() + 2);
   }
-  
-  
   elsif ($string =~ /^'s boomstick/)
   {
     $fraggee = $self->findPlayer($oldString2);
@@ -493,9 +492,9 @@ elsif ($string =~ /^(.*) rips (.*)/)
   }
   elsif ($string =~ /^(.*) was telefragged by (.*)/) 
   {
-    $fraggee = findPlayer($1);
+    $fraggee = $self->findPlayer($1);
     $fraggee->teleDeaths($fraggee->teleDeaths() + 1);
-    $fragger = findPlayer($2);
+    $fragger = $self->findPlayer($2);
     $fragger->teleFrags($fragger->teleFrags() + 1);
   }
   #elsif ($string =~ /satan/i) # doesn't change score?
@@ -504,17 +503,17 @@ elsif ($string =~ /^(.*) rips (.*)/)
   #}
   elsif ($string =~ /^(.*) loses another friend/) 
   {
-    $fragger = findPlayer($1);
+    $fragger = $self->findPlayer($1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) mows down a teammate/)
   {
-    $fragger = findPlayer($1);
+    $fragger = $self->findPlayer($1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   elsif ($string =~ /^(.*) checks his glasses/) 
   {
-    $fragger = findPlayer($1);
+    $fragger = $self->findPlayer($1);
     $fragger->teamKills($fragger->teamKills() + 1);
   }
   # ctf pings.. fairly hacked
@@ -526,7 +525,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
     while ($name !~ /^Name/)
     {
       chomp($name);
-      $player = findPlayerNoCreate($name);
+      $player = $self->findPlayerNoCreate($name);
       my $ping;
       if (defined($player) || $name =~ /^-----------/)
       {
@@ -587,6 +586,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
         }
         else
         {
+	   
 	   $team = $self->findTeamNoCreate($team);
            if (defined($team))
            {
@@ -638,7 +638,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
     push(@{$self->{graphTeamTwoScore}}, $self->{teamTwoScore});
     foreach $player (values %{$self->{players}})
     {
-      $player->addScore($player->points);
+      $player->addScore($player->points($self));
       $player->minutesPlayed($player->minutesPlayed + 1);
     }
   }
@@ -656,17 +656,17 @@ elsif ($string =~ /^(.*) rips (.*)/)
 
     #this is fairly ugly but yeah.. 
 
-    my $redTeam = findTeam("red");
-    my $blueTeam = findTeam("blue");
+    my $redTeam = $self->findTeam("red");
+    my $blueTeam = $self->findTeam("blue");
     my $flagTime;
     if (@{$self->{graphTime}} == 0 || $self->{graphTime}[@{$self->{graphTime}} - 1] != $minutes)
     {
       push(@{$self->{graphTime}}, $minutes);
-      $redTeam->pushScore($redTeam->points($self->{players}));
-      $blueTeam->pushScore($blueTeam->points($self->{players}));
+      $redTeam->pushScore($redTeam->points($self));
+      $blueTeam->pushScore($blueTeam->points($self));
       foreach $player (values %{$self->{players}})
       {
-	$player->addScore($player->points);
+	$player->addScore($player->points($self));
 	$player->minutesPlayed($player->minutesPlayed + 1);
         if ($player->hasFlag)
         {
@@ -678,12 +678,12 @@ elsif ($string =~ /^(.*) rips (.*)/)
     }
     else
     {
-      $redTeam->popScore(); $redTeam->pushScore($redTeam->points($self->{players}));
-      $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points($self->{players}));
+      $redTeam->popScore(); $redTeam->pushScore($redTeam->points($self));
+      $blueTeam->popScore(); $blueTeam->pushScore($blueTeam->points($self));
       foreach $player (values %{$self->{players}})
       {
 	$player->removeScore();
-        $player->addScore($player->points);
+        $player->addScore($player->points($self));
         if ($player->hasFlag) 
         {
 	  $flagTime = (60 * $oldMinutes + $oldSeconds) - 
@@ -716,6 +716,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
   $oldString = $string;
   chomp($oldString);
 }
+#print "start step2\n";
 if (@{$self->{graphTime}} != 0 && $self->{graphTime}[@{$self->{graphTime}} - 1] != 0)
 {
   #kt pro
@@ -728,14 +729,14 @@ else
   #pure ctf
   my $redTeam = $self->findTeam("red");
   my $blueTeam = $self->findTeam("blue");
-  $redTeam->popScore; $redTeam->pushScore($redTeam->points($self->{players}));
-  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points($self->{players}));
+  $redTeam->popScore; $redTeam->pushScore($redTeam->points($self));
+  $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points($self));
   $self->CleanUpScores();
   @{$self->{graphTeamOneScore}} = $redTeam->getScoreArray;
   @{$self->{graphTeamTwoScore}} = $blueTeam->getScoreArray;
   
 }
-my @graphTime = $self->{graphTime};
+my @graphTime = @{$self->{graphTime}};
 @graphTime = reverse(@graphTime);
 my @graphTeams = $self->{graphTeams};
 push(@graphTeams, $self->{teamOneName});
@@ -747,7 +748,7 @@ $self->{graphTeams} = \@graphTeams;
 # array we pad it with leading zeroes
 foreach my $player (values %{$self->{players}})
 {
-  $player->addScore($player->points);
+  $player->addScore($player->points($self));
   my @playerScoreArray = $player->scoreArray();
   for(my $i = 0; $i < @graphTime - @playerScoreArray; $i++)
   {
@@ -780,17 +781,8 @@ for (my $i = 0; $i <= $time; $i++)
     $teamTwo->minutesWithLead($teamTwo->minutesWithLead() + 1);
   }
 }
+
 }
-
-
-##### piano cut out
-#$shell = `rm -f "$tempMvd"`;
-#print "Compressing..\t\t";
-#$shell = `gzip -f9 "$mvd"`;
-#$mvd .= ".gz";
-#calculateTeamColors();
-##### piano cut out
-#only works for ctf games right now
 
 sub CleanUpScores
 {
@@ -827,8 +819,9 @@ sub CleanUpScores
 sub findPlayer
 {
 	my $self = shift;
-	my($playerName) = @_;
-  
+	my($playerName) = shift;
+  	if($playerName =~ /^\s*$/){die};
+	$playerName =~ s/ /\_/g;
   	foreach my $player (values %{$self->{players}})
   	{
     		if ($player->name() eq $playerName) { return $player; }    
@@ -855,10 +848,12 @@ sub findTeam
 {
   my $self = shift;
   my $teamName = shift;
+
   foreach my $team (@{$self->{teams}})
   {
     if ($team->name eq $teamName) { return $team; }
   }
+
   my $newTeam = Team->new();
   $newTeam->name($teamName);
   push(@{$self->{teams}}, $newTeam);
@@ -869,6 +864,7 @@ sub findTeamNoCreate
 {
   my $self = shift;
   my $teamName = shift;
+  
   foreach my $team (@{$self->{teams}})
   {
     if ($team->name eq $teamName) { return $team; }
@@ -884,8 +880,9 @@ sub teamMatchup
   my $teamOneFound = 0;
   my $teamTwoFound = 0; 
   my @teams = @{$self->{teams}};
+  #die "$teamOneAbbr $teamTwoAbbr\n";
   # first lets try to find perfect matches (minus case sensitivity)
-  foreach my $team (@{$self->{teams}})
+  foreach my $team (@teams)
   {
     my $name = $team->name;
     #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
@@ -976,7 +973,7 @@ sub outputForm
    	my $map = $self->{map};
 	my $tempDir = $self->{tempDir};
    print "Generating Images and Output..";
-   
+   print "\n";
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
    print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
    print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
@@ -994,15 +991,15 @@ sub outputForm
      print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
 
      my $teamNumber = 1;
+     
      foreach my $team (@{$teams})
      {
        my $a = $team->name; 
        my $b = $team->approved; 
-       my $c = $team->points; 
+       my $c = $team->points($self); 
        my $d = $team->minutesPlayed; 
        my $e = $team->minutesWithLead;
-       print "\t<input type='hidden' name='team" . 
-           $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";
+       print "\t<input type='hidden' name='team" . $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";   
        my @tPlayers = $team->players;
        print "\t<input type='hidden' name='team" . $teamNumber . "players' value='";
        my $playerC = @tPlayers;
@@ -1011,7 +1008,9 @@ sub outputForm
        {
  	  $currentC++;
 	  $player = $self->findPlayer($player);
-	  $player->outputStats();
+	  
+	  $player->outputStats($self);
+	 
 	  my $imagePath = $tempDir . $player->name . "_" . $map . ".png";
 	  $imagePath =~ s/\s//g;
 	  print $imagePath;
@@ -1071,11 +1070,11 @@ sub outputPlayerScoreGraph
 					'legend'=> \@legendPlayers,
 					'title'	=> $self->{teamOneName} ." vs ". $self->{teamTwoName} . " (" . $self->{map} . ")",
     				'colors'=> \@colorArray,
-					'tempDir'=> $self->{'tempdir'}
+					'tempDir'=> $self->{'tempDir'}
 			);
     
     
-    my $imagePath = line_graph(\%qwhash);
+    my $imagePath = qwGraph::line_graph(\%qwhash);
     return $imagePath;
 }
 ##
@@ -1085,24 +1084,25 @@ sub outputTeamScoreGraph
   	my $x = 400; 
 	my $y = 300;
 	if (@_) { $x = shift; $y = shift; }
-  	my @graphTime = $self->{graphTime};
-  	my @graphTeams = $self->{graphTeams};
-  	my @graphTeamOneScore = $self->{graphTeamOneScore};
-  	my @graphTeamTwoScore = $self->{graphTeamTwoScore};
+  	my @graphTime = @{$self->{graphTime}};
+  	my @graphTeams = @{$self->{graphTeams}};
+  	my @graphTeamOneScore = @{$self->{graphTeamOneScore}};
+  	my @graphTeamTwoScore = @{$self->{graphTeamTwoScore}};
   	my $teamOneName = $self->{teamOneName};
   	my $teamTwoName = $self->{teamTwoName};
-  	my @teams = $self->{teams};
+  	my @teams = @{$self->{teams}};
   	my $tempDir = $self->{tempDir};
 	my @pointData;
 #  if (@graphTime < 5 || @graphTeamOneScore < 1 || @graphTeamTwoScore < 1)
 #  {
 #    return;
 #  } 
-  if (@graphTime != @graphTeamOneScore || @graphTeamOneScore != @graphTeamTwoScore) { return; }
+  if ((@graphTime != @graphTeamOneScore) || (@graphTeamOneScore != @graphTeamTwoScore)) { return "0"; }
   my @data = (\@graphTime, \@graphTeamOneScore, \@graphTeamTwoScore);
    
   my $teamOne = $self->findTeam($teamOneName);
   my $teamTwo = $self->findTeam($teamTwoName);
+  
   my(@colorArray);
   if ($teamOne->color == $teamTwo->color) 
   {
@@ -1120,7 +1120,6 @@ sub outputTeamScoreGraph
     @pointData = undef;
     my @tempTime = @graphTime;
     my $timePlayed = pop(@tempTime);
-
     for (my $i = 0; $i <= $timePlayed; $i++)
     {
       push(@{$pointData[0]}, $i);
@@ -1138,17 +1137,17 @@ sub outputTeamScoreGraph
     
   }
   my %qwhash = (	'data'=>\@data,
-    				'x'	=> $x,
-					'y'	=> $y,
-					'x_label'=>"time",
-					'y_label'=>"score",
-					'showvalues'=>\@pointData,
-					'legend'=> \@graphTeams,
-					'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
-    				'colors'=> \@colorArray,
-					'tempDir'=> $self->{'tempdir'}
+    			'x'	=> $x,
+			'y'	=> $y,
+			'x_label'=>"time",
+			'y_label'=>"score",
+			'showvalues'=>\@pointData,
+			'legend'=> \@graphTeams,
+			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
+    			'colors'=> \@colorArray,
+			'tempDir'=> $tempDir
 			);
-  my $imagePath = line_graph(\%qwhash);
+  my $imagePath = qwGraph::line_graph(\%qwhash);
   return $imagePath;
 }
 
@@ -1177,15 +1176,15 @@ my $self = shift;
     my @data = (\@weaponList, \@stats);
     my @colorArray = qw(lred orange purple dgreen dyellow cyan marine);
     my %qwhash = (	'data'=>\@data,
-    				'x'	=> '250',
-					'y'	=> '175',
-					'title'	=> "Frags by " . $player->name . " (" . $player->graphedFrags . ")",
-    				'colors'=> \@colorArray,
-					'tempDir'=> $self->{'tempdir'}
+    			'x'	=> '250',
+			'y'	=> '175',
+			'title'	=> "Frags by " . $player->name . " (" . $player->graphedFrags . ")",
+    			'colors'=> \@colorArray,
+			'tempDir'=> $self->{'tempDir'}
 			);
+    if(!defined($qwhash{title})){die $!;}
     
-    
-    pie_graph(\%qwhash);
+    qwGraph::pie_graph(\%qwhash);
   }
 }
 #
@@ -1226,14 +1225,15 @@ sub complementColor
 
 sub calculateTeamColors
 {
-  my $teams = shift;
+my $self = shift;
+  my $teams = $self->{teams};
   foreach my $team (@{$teams})
   {
     my @teamPlayers = $team->players;
     my @colors = [];
     foreach my $player (@teamPlayers)
     {
-      $player = findPlayer($player);
+      $player = $self->findPlayer($player);
       push(@colors, $player->bottomColor);
     }
     @colors = reverse(sort(@colors));

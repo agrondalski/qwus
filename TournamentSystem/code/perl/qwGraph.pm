@@ -3,6 +3,7 @@ use strict;
 use GD::Graph::lines;
 use GD::Graph::pie;
 use GD::Graph::colour;
+package qwGraph;
 
 sub line_graph{
   #if (@_) { $x = shift; $y = shift;} 
@@ -41,8 +42,9 @@ sub line_graph{
   $graph->set(show_values => $showvals);
   }
   my $image = $graph->plot(\@data); # or die ("Died creating image");
+  
   my $imagePath = $tempDir . $title . "_" . $x . "x" . $y . ".png";
-  $imagePath =~ s/\s//g;
+  $imagePath =~ s/\s/\_/g;
   open(OUT, ">$imagePath") or die $!;
   binmode OUT;
   print OUT $image->png();
@@ -60,6 +62,7 @@ sub pie_graph{
   	my $y_label = $qwhash->{'ylabel'};
   	my @colorArray = @{$qwhash->{'colors'}};
   	my $tempDir = $qwhash->{'tempDir'};
+	if(!defined($tempDir)){die $!;}
     my $graph = GD::Graph::pie->new($x,$y);
     $graph->set(title => $title,
                 suppress_angle => 3) or warn $graph->error;
@@ -67,7 +70,7 @@ sub pie_graph{
  
     my $image = $graph->plot(\@data); # or warn $graph->error;
     my $imagePath = $tempDir . $title . ".png";
-	$imagePath =~ s/\s//g;
+	$imagePath =~ s/\s/\_/g;
     open(OUT, ">$imagePath");
     binmode OUT;
     print OUT $image->png();

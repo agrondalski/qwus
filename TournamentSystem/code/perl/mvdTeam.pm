@@ -11,7 +11,7 @@ sub new
   $self->{NAME} = undef;
   $self->{APPROVED} = 0;
   $self->{PLAYERS} = [];
-  $self->{COLOR} = undef;
+  $self->{COLOR} = 0;
   $self->{MINUTES_PLAYED} = 0;
   $self->{MINUTES_WITH_LEAD} = 0;
   $self->{SCORE_GRAPH} = [];
@@ -127,11 +127,13 @@ sub points
 {
   my $self = shift;
   my $players = shift;
+  #int "$players\n";die;
   my $points = 0;
   foreach my $player ($self->players)
   {
-    $player = main::findPlayer($players,$player);
-    $points += $player->points;
+   
+    $player = $players->findPlayer($player);
+    $points += $player->points($players);
   }
   return $points;
 }
@@ -140,10 +142,12 @@ sub captures
 {
   my $self = shift;
   my $players = shift;
+  
   my $caps = 0;
   foreach my $player ($self->players)
   {
-    $player = main::findPlayer($players,$player);
+#    print "$player\n";die;
+    $player = $players->findPlayer($player);
     $caps += $player->captures;
   }
   return $caps;

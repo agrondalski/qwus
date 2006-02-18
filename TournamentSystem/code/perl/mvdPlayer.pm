@@ -569,13 +569,15 @@ sub eff
 sub points
 {
   my $self = shift;
+  my $self2 = shift;
+  if(!defined($self2)){die;}
   my $team = $self->team;
   if (!defined($team)) { return 0; }
   return ($self->frags - $self->teamKills - $self->selfKills + 
    (2 * $self->fragAssists) + $self->returnAssists + $self->carrierDefends +
    $self->flagReturns + $self->flagDefends + (15 * $self->captures) + 
    (2 * $self->carrierFragsBonus) + (2 * $self->carrierDefendsAgg) +
-   (10 * ($team->captures - $self->captures)));
+   (10 * ($team->captures($self2) - $self->captures)));
 }
 
 sub incrementFragStreak
@@ -665,6 +667,7 @@ sub outputStatsHeader
 sub outputStats
 {
   my $self = shift;
+  my $self2 =shift;
   print $self->name . "\\\\";
   print $self->approved . "\\\\";
   print $self->ping . "\\\\";
@@ -705,7 +708,7 @@ sub outputStats
   print $self->deaths . "\\\\";
   print $self->rank . "\\\\";
   print $self->eff . "\\\\";
-  print $self->points . "\\\\";
+  print $self->points($self2) . "\\\\";
   print $self->fragStreak . "\\\\";
   print $self->captures . "\\\\";
   print $self->captureTimes . "\\\\";
