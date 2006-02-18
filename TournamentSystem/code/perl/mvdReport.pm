@@ -1059,6 +1059,7 @@ sub outputPlayerScoreGraph
   my $self = shift;
   my $x = 400; my $y = 300;
   if (@_) { $x = shift; $y = shift; } 
+  
   if (@{$self->{graphTime}} < 5) { return; }
   my @data = ($self->{graphTime});
   my @legendPlayers;
@@ -1086,7 +1087,7 @@ sub outputPlayerScoreGraph
 			'tempDir'=> $self->{'tempDir'}
 			);
     
-    
+    die 
     my $imagePath = qwGraph::line_graph(\%qwhash);
     return $imagePath;
 }
@@ -1157,7 +1158,7 @@ sub outputTeamScoreGraph
 			'y_label'=>"score",
 			'showvalues'=>\@pointData,
 			'legend'=> \@graphTeams,
-			'title'	=> $teamOneName ." vs ". $teamTwoName . " (" . $self->{map} . ")",
+			'title'	=> $teamOneName ." vs ". $teamTwoName . "_player_" . "(" . $self->{map} . ")",
     			'colors'=> \@colorArray,
 			'tempDir'=> $tempDir
 			);

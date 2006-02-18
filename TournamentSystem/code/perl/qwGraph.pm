@@ -63,13 +63,13 @@ sub pie_graph{
   	my @colorArray = @{$qwhash->{'colors'}};
   	my $tempDir = $qwhash->{'tempDir'};
 	if(!defined($tempDir)){die $!;}
-    my $graph = GD::Graph::pie->new($x,$y);
-    $graph->set(title => $title,
-                suppress_angle => 3) or warn $graph->error;
-    $graph->set(dclrs => [@colorArray]);
+	my $graph = GD::Graph::pie->new($x,$y);
+    	$graph->set(title => $title,
+        suppress_angle => 3) or warn $graph->error;
+        $graph->set(dclrs => [@colorArray]);
  
-    my $image = $graph->plot(\@data); # or warn $graph->error;
-    my $imagePath = $tempDir . $title . ".png";
+	my $image = $graph->plot(\@data); # or warn $graph->error;
+        my $imagePath = $tempDir . $title . ".png";
 	$imagePath =~ s/\s/\_/g;
     open(OUT, ">$imagePath");
     binmode OUT;
