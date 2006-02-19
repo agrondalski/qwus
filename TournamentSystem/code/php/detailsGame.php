@@ -55,7 +55,7 @@ if (!$g->hasDetails())
 }
 
 
-// Show Ping/Score/Player table
+// Get Ping/Score/Player table from stats
 $teams = $m->getTeams();
 foreach($teams as $t)
 {  
@@ -79,37 +79,163 @@ foreach($teams as $t)
     }    
 }
 
-$gameout .= "<table cellpadding=3 cellspacing=0 border=1><tr>";
-$clr = "#C0C0C0";
-$gameout .= "<th bgcolor='$clr'>Ping</th><th bgcolor='$clr'>Score</th><th bgcolor='$clr'>Player</th><th bgcolor='$clr'>Team</th></tr>";
+// Grab totals / averages by cycling through it again by team, then player
 $rank = 0;
-
+$team = 0;
 foreach($teams as $t)
 {
+	$team++;
 	$playercount = 0;
 	$pingtotal   = 0;
-	$pingavg    = 0;
+	$pinglow     = 999;
+	$pingavg     = 0;
+	$pinghigh    = 0;
 	$scoretotal  = 0;
 	$tstats = $g->getStatsByTeam(array('stat_name', SORT_ASC, 'value', SORT_DESC), $t->getValue('team_id')) ;
   $players = $g->getTeamPlayers($t->getValue('team_id')) ;
+  $count = 0;
 	foreach ($players as $p) 
   {	
-  	$clr = "#CCCCCC";
-		$gameout .= "<tr>";		
-		$gameout .= "<td bgcolor='$clr'>".$ping[$p->getValue('name')]."</td><td bgcolor='$clr'>".$score[$p->getValue('name')]."</td><td bgcolor='$clr'>".$p->getValue('name')."</td><td bgcolor='$clr'>".$t->getValue('name')."</td>";		
-		$gameout .= "</tr>";
+  	$count++;
+  	//$clr = "#CCCCCC";
+		//$gameout .= "<tr>";		
+		//$gameout .= "<td bgcolor='$clr'>".$ping[$p->getValue('name')]."</td><td bgcolor='$clr'>".$score[$p->getValue('name')]."</td><td bgcolor='$clr'>".$p->getValue('name')."</td><td bgcolor='$clr'>".$t->getValue('name')."</td>";		
+		//$gameout .= "</tr>";
+		if ($team == 1)
+		{
+			$t1pings[$count]  = $ping[$p->getValue('name')];
+			$t1scores[$count] = $score[$p->getValue('name')];
+			$t1names[$count]  = $p->getValue('name');
+			$t1pid[$count]     = $p->getValue('player_id');
+			$team1            = $t->getValue('name');
+		} else 
+		{
+			$t2pings[$count]  = $ping[$p->getValue('name')];
+			$t2scores[$count] = $score[$p->getValue('name')];
+			$t2names[$count]  = $p->getValue('name');
+			$t2pid[$count]     = $p->getValue('player_id');
+			$team2            = $t->getValue('name');
+		}
+		// ping checks / averages / etc
+		if ($ping[$p->getValue('name')] < $pinglow)
+		{
+			$pinglow = $ping[$p->getValue('name')];
+		}
+		if ($ping[$p->getValue('name')] > $pinghigh)
+		{
+			$pinghigh = $ping[$p->getValue('name')];
+		}
 		$pingtotal   += $ping[$p->getValue('name')];
 		$scoretotal  += $score[$p->getValue('name')];
 		$playercount += 1;
 	}
 	$pingavg = ($pingtotal) / ($playercount);
 	$clr = "#C0C0C0";
-	$gameout .= "<td bgcolor='$clr'>".$pingavg."</td><td bgcolor='$clr'><b>".$scoretotal."</b></td><td bgcolor='$clr' colspan=2>".$t->getValue('name')."</td>";		
+	// Save the totals / average for each team
+	if ($team == 1) 
+	{
+		$t1players = $playercount;
+		$t1plow    = $pinglow;
+		$t1ping    = $pingavg;
+		$t1phigh   = $pinghigh;
+		$t1score   = $scoretotal;
+		$t1name    = $t->getValue('name');
+		$t1id      = $t->getValue('team_id');
+	} else 
+	{
+	  $t2players = $playercount;
+		$t2plow    = $pinglow;
+		$t2ping    = $pingavg;
+		$t2phigh   = $pinghigh;
+		$t2score   = $scoretotal;
+		$t2name    = $t->getValue('name');
+		$t2id      = $t->getValue('team_id');
+	}
+	//$gameout .= "<td bgcolor='$clr'>".$pingavg."</td><td bgcolor='$clr'><b>".$scoretotal."</b></td><td bgcolor='$clr' colspan=2>".$t->getValue('name')."</td>";		
 }
+
+// Display team pings/scores
+$clr = "#999999";
+$gameout .= "<table cellpadding=3 cellspacing=0 border=1><tr>";
+$gameout .= "<th bgcolor='$clr'>low&nbsp;/&nbsp;avg&nbsp;/&nbsp;high</th><th bgcolor='$clr'>team</th><th bgcolor='$clr'>total</th><th bgcolor='$clr'>players</th></tr>";
+if ($t1score >= $t2score) 
+{
+	$clr = "#808080";
+	$gameout .= "<tr>";
+	$gameout .= "<td bgcolor='$clr'>".$t1plow."&nbsp;/&nbsp;".$t1ping."&nbsp;/&nbsp;".$t1phigh."</td>";
+	$gameout .= "<td bgcolor='$clr'><b><a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t1id."'>".$t1name."</a></b></td><td bgcolor='$clr'>".$t1score."</td><td bgcolor='$clr'>".$t1players."</td>";		
+	$gameout .= "</tr>";
+	$clr = "#CCCCCC";
+	$gameout .= "<tr>";
+	$gameout .= "<td bgcolor='$clr'>".$t2plow."&nbsp;/&nbsp;".$t2ping."&nbsp;/&nbsp;".$t2phigh."</td>";
+	$gameout .= "<td bgcolor='$clr'><b><a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t2id."'>".$t2name."</a></b></td><td bgcolor='$clr'>".$t2score."</td><td bgcolor='$clr'>".$t2players."</td>";		
+	$gameout .= "</tr>";
+} else 
+{	
+	$clr = "#808080";
+	$gameout .= "<tr>";
+	$gameout .= "<td bgcolor='$clr'>".$t2plow."&nbsp;/&nbsp;".$t2ping."&nbsp;/&nbsp;".$t2phigh."</td>";
+	$gameout .= "<td bgcolor='$clr'><b><a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t2id."'>".$t2name."</a></b></td><td bgcolor='$clr'>".$t2score."</td><td bgcolor='$clr'>".$t2players."</td>";		
+	$gameout .= "</tr>";
+	$clr = "#CCCCCC";
+	$gameout .= "<tr>";
+	$gameout .= "<td bgcolor='$clr'>".$t1plow."&nbsp;/&nbsp;".$t1ping."&nbsp;/&nbsp;".$t1phigh."</td>";
+	$gameout .= "<td bgcolor='$clr'><b><a href='?a=detailsTeam&amp;tourney_id=".$tid."&amp;team_id=".$t1id."'>".$t1name."</a></b></td><td bgcolor='$clr'>".$t1score."</td><td bgcolor='$clr'>".$t1players."</td>";		
+	$gameout .= "</tr>";
+}
+$gameout .= "</table><p>";
+
+//Display player pings/scores
+$clr = "#999999";
+$gameout .= "<table cellpadding=3 cellspacing=0 border=1><tr>";
+$gameout .= "<th bgcolor='$clr'>Ping</th><th bgcolor='$clr'>Score</th><th bgcolor='$clr'>Player</th><th bgcolor='$clr'>Team</th></tr>";
+if ($t1score >= $t2score) 
+{
+	$count = 0;
+	foreach($t1names as $name) {
+		$count++;
+		$clr = "#808080";
+		$gameout .= "<tr>";
+		$gameout .= "<td bgcolor='$clr'>".$t1pings[$count]."</td><td bgcolor='$clr'>".$t1scores[$count]."</td>";
+		$gameout .= "<td bgcolor='$clr'><a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=".$t1id."&amp;player_id=".$t1pid[$count]."'>".$t1names[$count]."</a></td><td bgcolor='$clr'>".$t1name."</td>";		
+		$gameout .= "</tr>";
+	}
+	$count = 0;
+	foreach($t2names as $name) {
+		$count++;
+		$clr = "#CCCCCC";
+		$gameout .= "<tr>";
+		$gameout .= "<td bgcolor='$clr'>".$t2pings[$count]."</td><td bgcolor='$clr'>".$t2scores[$count]."</td>";
+		$gameout .= "<td bgcolor='$clr'><a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=".$t2id."&amp;player_id=".$t2pid[$count]."'>".$t2names[$count]."</a></td><td bgcolor='$clr'>".$t2name."</td>";		
+		$gameout .= "</tr>";
+	}
+} else 
+{	
+	$count = 0;
+	foreach($t2names as $name) {
+		$count++;
+		$clr = "#808080";
+		$gameout .= "<tr>";
+		$gameout .= "<td bgcolor='$clr'>".$t2pings[$count]."</td><td bgcolor='$clr'>".$t2scores[$count]."</td>";
+		$gameout .= "<td bgcolor='$clr'><a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=".$t2id."&amp;player_id=".$t2pid[$count]."'>".$t2names[$count]."</a></td><td bgcolor='$clr'>".$t2name."</td>";		
+		$gameout .= "</tr>";
+	}
+	$count = 0;
+	foreach($t1names as $name) {	
+		$count++;
+		$clr = "#CCCCCC";
+		$gameout .= "<tr>";
+		$gameout .= "<td bgcolor='$clr'>".$t1pings[$count]."</td><td bgcolor='$clr'>".$t1scores[$count]."</td>";
+		$gameout .= "<td bgcolor='$clr'><a href='?a=detailsPlayer&amp;tourney_id=" . $tid . "&amp;team_id=".$t1id."&amp;player_id=".$t1pid[$count]."'>".$t1names[$count]."</a></td><td bgcolor='$clr'>".$t1name."</td>";		
+		$gameout .= "</tr>";
+	}
+}
+
 $gameout .= "</table><p>";
 
 
 
+// On to the graphs
 
 if (array_key_exists(util::TEAM_SCORE_GRAPH_LARGE, $files))
 {
