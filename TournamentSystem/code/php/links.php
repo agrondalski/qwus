@@ -6,7 +6,6 @@
 	<TD>
 		<A href="http://www.quakeworld.nu" TARGET="_blank">quakeworld.nu</A> - [Temporarily Down] European quakeworld community<BR>
                 <A href="http://www.quakeworld.ru" TARGET="_blank">quakeworld.ru</A> - Russian quakeworld community<BR>
-		<A href="http://www.besmella-quake.com" TARGET="_blank">besmella-quake</A> - Quakeworld news<BR>
                 <A href="http://www.quakebrasil.com" TARGET="_blank">quakebrasil.com</A> - Brazilian quakeworld community<BR>
                 <A href="http://www.quakeservers.net" TARGET="_blank">quakeservers.net</A> - Quakeworld Server Listings<BR>
 	</TD>
@@ -33,7 +32,8 @@
 </TR>
 <TR>
 	<TD>
-		<A href="http://www.nqr.nu" TARGET="_blank">Nations Quake Rank</A> [Temporarily Down]<BR>
+		<A href="http://nqr-network.com" TARGET="_blank">Nations Quake Rank</A><BR>
+                <A href="http://qw.fragzone.com/eql/" TARGET="_blank">European Quake League</A><BR>
 		<A href="http://www.challenge-smackdown.com" TARGET="_blank">Challenge Smackdown</A><BR>	
 
                 <A href="http://tourneys.qwplayers.org" TARGET="_blank">NA 1on1</A><BR>
