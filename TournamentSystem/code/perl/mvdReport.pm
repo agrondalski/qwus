@@ -39,6 +39,7 @@ my $self = {};
 	$self->{graphTeams} = [];
 	$self->{players} = {};
 	$self->{mvd} = "";
+	$self->{funchash} = "";
 	bless ($self, $class);
 	return $self;
 }
@@ -101,6 +102,7 @@ my $r = 0;
 my($oldString,$oldString1,$oldString2,$oldString3, $nextString);
 my @strings = @{$self->{mvdStrings}};
 $self->{mvdStrings} = ""; #write unset functions
+my $funcs = initFuncHash();
 
 foreach my $string (@strings)
 {
@@ -118,77 +120,105 @@ foreach my $string (@strings)
 	print "time $1\tstring\t$string\n";
 	}
 	elsif($string =~ /^\'s\s(\w+)/){
-  	
+  	$fraggee = "player1";#$self->findPlayer($oldString2);
+	$fragger = "player2";#$self->findPlayer($oldString);
+    $funcs->{$1}->($fraggee,$fragger);
 	}	
 	elsif($string =~ /^(\w.+)\s(\w+).*?(\w+)\'s\s(\w*)/){
-	
-	}
+	$fragger = "player1";#$self->findPlayer($1);
+	$fraggee = "player2";#$self->findPlayer($3);
+    $funcs->{$2}->($fraggee,$fragger,$4);
+	}	
 	elsif($string =~ /^(\w+)\swas\s(\w+)\sby\s(\w+)/){
+	$fragger = "player1";#$self->findPlayer($1);
+	$fraggee = "player2";#$self->findPlayer($3);
+	$funcs->{$3}->($fraggee,$fragger);
+	}	
 	
-	}
 	elsif($string =~ /^\swas\s(\w+)\sby/){
-	
+	$nextString = $strings[$stringCounter + 1];
+    chomp($nextString);
+   
+    $fraggee = "player1";#$self->findPlayer($oldString);
+	$fragger = "player2";#$self->findPlayer($nextString);
+   	$funcs->{$1}->($fraggee,$fragger);
 	}
 	elsif($string =~ /^\s(tries|discharges|visits|burst|turned|fell|suicides|captured|killed|returned|got|defends|lost the|gets)/){
-	
+	$fraggee = "player1";#$self->findPlayer($oldString);
+    $funcs->{$1}->($fraggee,$fragger);
 	}
 	
+	$oldString3 = $oldString2;
+	$oldString2 = $oldString1;
+  	$oldString1 = $oldString;
+  	$oldString = $string;
+  chomp($oldString);
 }
 die;
 }
 sub initFuncHash
 {
 #replace 1's with functions
-my %func = (	'rides' 	=> 1,
-				'accepts'	=> 1,
-				'chewed'	=> 1,
-				'ate'		=> 1,
-				'squishes'  => 1,
-				'rips'		=> 1,
-				'eats'		=> 1,
-				'smeared'	=> 1,
-				'brutalized'=> 1,
-				'grenade'	=> 1,
-				'rocket'	=> 1,
-				'punctured'	=> 1,
-				'nailed'	=> 1,
-				'ax-murdered'=> 1,
-				'squished'	=> 1,
-				'bored'		=> 1,
-				'cratered'	=> 1,
-				'sleeps'	=> 1,
-				'sucks'		=> 1,
-				'gulped'	=> 1,
-				'cant'		=> 1,
-				'tried'		=> 1,
-				'died'		=> 1,
-				'telefragged'=> 1,
-				'loses'		=> 1,
-				'mows'		=> 1,
-				'checks'	=> 1,
-				'changed'	=> 1,
-				'time'		=> 1,
-				'tries'		=> 1,
-				'discharges'=> 1,
-				'hooked'	=> 1,
-				'disemboweled'=> 1,
-				'visits'	=> 1,
-				'burst'		=> 1,
-				'turned'	=> 1,
-				'fell'		=> 1,
-				'spiked'	=> 1,
-				'suicides'	=> 1,
-				'captured'	=> 1,
-				'killed'	=> 1,
-				'returned'	=> 1,
-				'got'		=> 1,
-				'defends'	=> 1,
-				'flag'		=> 1,
-				'lost'		=> 1
+my %func = (	'rides' 	=> \&RL,
+				'accepts'	=> \&LG,
+				'chewed'	=> \&SG,
+				'ate'		=> \&SSG,
+				'squishes'  => \&suicide,
+				'rips'		=> \&RL,
+				'eats'		=> \&GL,
+				'smeared'	=> \&RL,
+				'brutalized'=> \&GL,
+				'grenade'	=> \&GL,
+				'rocket'	=> \&RL,
+				'punctured'	=> \&NG,
+				'nailed'	=> \&NG,
+				'ax-murdered'=> \&AX,
+				'squished'	=> \&suicide,
+				'bored'		=> \&suicide,
+				'cratered'	=> \&suicide,
+				'sleeps'	=> \&suicide,
+				'sucks'		=> \&suicide,
+				'gulped'	=> \&suicide,
+				'cant'		=> \&suicide,
+				'tried'		=> \&suicide,
+				'died'		=> \&suicide,
+				'telefragged'=> \&tele,
+				'loses'		=> \&RL,
+				'mows'		=> \&RL,
+				'checks'	=> \&RL,
+				'changed'	=> \&RL,
+				'time'		=> \&RL,
+				'tries'		=> \&RL,
+				'discharges'=> \&RL,
+				'hooked'	=> \&RL,
+				'disemboweled'=> \&RL,
+				'visits'	=> \&RL,
+				'burst'		=> \&RL,
+				'turned'	=> \&RL,
+				'fell'		=> \&RL,
+				'spiked'	=> \&RL,
+				'suicides'	=> \&RL,
+				'captured'	=> \&RL,
+				'killed'	=> \&RL,
+				'returned'	=> \&RL,
+				'got'		=> \&RL,
+				'defends'	=> \&RL,
+				'flag'		=> \&RL,
+				'lost'		=> \&RL
 				);
 				
 return \%func;
 }
+sub RL{}
+sub GL{}
+sub LG{}
+sub suicide{}
+sub NG{}
+sub AX{}
+sub tele{}
+sub SSG{}
+sub SG{}
+
 sub parseStrings
 {
 my $self = shift;	

@@ -15,7 +15,7 @@ use Benchmark;
 use CGI qw/:standard/;
 use mvdReport;
 
-my $DEBUG = 0;
+my $DEBUG = 1;
 
 my $mvd = shift(@ARGV);
 my($tourney_id, $division_id, $match_id, $approved, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
@@ -67,7 +67,7 @@ $mvdRep->{teamOnePlayers} = $teamOnePlayers;
 $mvdRep->{teamTwoPlayers} = $teamTwoPlayers;
 	
 $mvdRep->mvdtoStrings($mvd);
-$mvdRep->parseStrings();
+$mvdRep->parseStrings2();
 
 #
 #if ($DEBUG)
