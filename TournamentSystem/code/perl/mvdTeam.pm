@@ -219,7 +219,7 @@ sub captures
 
 sub outputStatsHeader
 {
-  print "\t<input type='hidden' name='teamStats' value'";
+  print "\t<input type='hidden' name='teamStats' value='";
   print "Name\\\\";
   print "Matched\\\\";
   print "Score\\\\";
