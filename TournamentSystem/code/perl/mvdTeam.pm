@@ -22,6 +22,10 @@ sub new
   $self->{RED_ARMORS} = 0;
   $self->{DAMAGE_TAKEN} = 0;
   $self->{DAMAGE_GIVEN} = 0;
+  $self->{DIRECT_ROCKETS} = 0;
+  $self->{LG_PERCENT} = 0;
+  $self->{SG_PERCENT} = 0;
+  $self->{SSG_PERCENT} = 0;
   bless ($self, $class);
   return $self;
 }
@@ -115,6 +119,34 @@ sub damageGiven
   my $self = shift;
   if (@_) { $self->{DAMAGE_GIVEN} = shift }
   return $self->{DAMAGE_GIVEN};
+}
+
+sub directRockets
+{
+  my $self = shift;
+  if (@_) { $self->{DIRECT_ROCKETS} = shift }
+  return $self->{DIRECT_ROCKETS};
+}
+
+sub lgPercent
+{
+  my $self = shift;
+  if (@_) { $self->{LG_PERCENT} = shift }
+  return $self->{LG_PERCENT};
+}
+
+sub sgPercent
+{
+  my $self = shift;
+  if (@_) { $self->{SG_PERCENT} = shift }
+  return $self->{SG_PERCENT};
+}
+
+sub ssgPercent
+{
+  my $self = shift;
+  if (@_) { $self->{SSG_PERCENT} = shift }
+  return $self->{SSG_PERCENT};
 }
 
 sub pushScore

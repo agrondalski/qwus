@@ -11,3 +11,17 @@ perl todo:
  team stats (end of mvd) -- in progress by ult
 
  player minutes played ( * left the game) could be seconds for ctf
+
+ ask dew about global recompute possibility (or maybe just per tourney)
+ can we keep screenshots if recomputing?
+
+ optimize convertAscii.sed
+
+ cleanup pie chart output.  make piechart filename an actual player member
+
+ ctf line graphs could look better.. currently points are only marked 
+ every minute even though we store them per second
+
+ all line graphs could be improved by better configuration of y values.
+ just cause 1 player momentarily drops to -1 doesnt mean we need to add a -50 
+ tick mark adding a bunch of white space at bottom etc
