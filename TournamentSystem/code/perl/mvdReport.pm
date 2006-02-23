@@ -89,7 +89,106 @@ $self->{mvdStrings} = \@strings;
 return 1;
 }
 
+sub parseStrings2{
+my $self = shift;
+my $fraggee;
+my $fragger;
+my $stringCounter = -1;
+my $team;
+my $player;
+print "Parsing Strings.. v2\t";
+my $r = 0;
+my($oldString,$oldString1,$oldString2,$oldString3, $nextString);
+my @strings = @{$self->{mvdStrings}};
+$self->{mvdStrings} = ""; #write unset functions
 
+foreach my $string (@strings)
+{
+  $stringCounter++;
+ 	 chomp($string);
+	 if (length($string) < 8)
+  	{	 
+   	 1;
+  	}
+  	elsif ($string =~ /^\[SPEC\](.*)/)
+  	{
+   	 next;
+  	}
+  	elsif($string =~ /^(\d+\:*\d*).*?left$/){
+	print "time $1\tstring\t$string\n";
+	}
+	elsif($string =~ /^\'s\s(\w+)/){
+  	
+	}	
+	elsif($string =~ /^(\w.+)\s(\w+).*?(\w+)\'s\s(\w*)/){
+	
+	}
+	elsif($string =~ /^(\w+)\swas\s(\w+)\sby\s(\w+)/){
+	
+	}
+	elsif($string =~ /^\swas\s(\w+)\sby/){
+	
+	}
+	elsif($string =~ /^\s(tries|discharges|visits|burst|turned|fell|suicides|captured|killed|returned|got|defends|lost the|gets)/){
+	
+	}
+	
+}
+die;
+}
+sub initFuncHash
+{
+#replace 1's with functions
+my %func = (	'rides' 	=> 1,
+				'accepts'	=> 1,
+				'chewed'	=> 1,
+				'ate'		=> 1,
+				'squishes'  => 1,
+				'rips'		=> 1,
+				'eats'		=> 1,
+				'smeared'	=> 1,
+				'brutalized'=> 1,
+				'grenade'	=> 1,
+				'rocket'	=> 1,
+				'punctured'	=> 1,
+				'nailed'	=> 1,
+				'ax-murdered'=> 1,
+				'squished'	=> 1,
+				'bored'		=> 1,
+				'cratered'	=> 1,
+				'sleeps'	=> 1,
+				'sucks'		=> 1,
+				'gulped'	=> 1,
+				'cant'		=> 1,
+				'tried'		=> 1,
+				'died'		=> 1,
+				'telefragged'=> 1,
+				'loses'		=> 1,
+				'mows'		=> 1,
+				'checks'	=> 1,
+				'changed'	=> 1,
+				'time'		=> 1,
+				'tries'		=> 1,
+				'discharges'=> 1,
+				'hooked'	=> 1,
+				'disemboweled'=> 1,
+				'visits'	=> 1,
+				'burst'		=> 1,
+				'turned'	=> 1,
+				'fell'		=> 1,
+				'spiked'	=> 1,
+				'suicides'	=> 1,
+				'captured'	=> 1,
+				'killed'	=> 1,
+				'returned'	=> 1,
+				'got'		=> 1,
+				'defends'	=> 1,
+				'flag'		=> 1,
+				'lost'		=> 1
+				);
+				
+return \%func;
+}
 sub parseStrings
 {
 my $self = shift;	
