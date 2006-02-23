@@ -8,8 +8,6 @@ perl todo:
 
  bring ktpro stats up to par with pure ctf
 
- team stats (end of mvd) -- in progress by ult
-
  player minutes played ( * left the game) could be seconds for ctf
 
  ask dew about global recompute possibility (or maybe just per tourney)

@@ -254,6 +254,10 @@ sub outputStatsHeader
   print "Green Armors\\\\";
   print "Yellow Armors\\\\";
   print "Red Armors\\\\";
+  print "Direct Rockets\\\\";
+  print "LG Accuracy\\\\";
+  print "SG Accuracy\\\\";
+  print "SSG Accuracy\\\\";
   print "Damage Taken\\\\";
   print "Damage Given";
   print "'>\n";
@@ -273,6 +277,10 @@ sub outputStats
   print $self->greenArmors . "\\\\";
   print $self->yellowArmors . "\\\\";
   print $self->redArmors . "\\\\";
+  print $self->directRockets . "\\\\";
+  print $self->lgPercent . "\\\\";
+  print $self->sgPercent . "\\\\";
+  print $self->ssgPercent . "\\\\";
   print $self->damageTaken . "\\\\";
   print $self->damageGiven;
   print "'>\n";

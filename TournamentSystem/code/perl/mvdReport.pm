@@ -856,6 +856,57 @@ elsif ($string =~ /^(.*) rips (.*)/)
 	chomp($previousString);
 	$team = $self->findTeam($previousString);
       }
+      elsif ($strings[$i] =~ /^rl/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+	  $team->directRockets($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^lg/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+          if ($strings[$i + 2] =~ /^\./)
+          {
+	    $value .= "." . $strings[$i + 3];
+            chomp($value);
+          }
+	  $team->lgPercent($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^sg/)
+      {
+        if (defined($team))
+        {
+          $value = $strings[$i + 1];
+	  chomp($value);
+          if ($strings[$i + 2] =~ /^\./)
+          {
+	    $value .= "." . $strings[$i + 3];
+	    chomp($value);
+          }
+	  $team->sgPercent($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^ssg/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+          if ($strings[$i + 2] =~ /^\./)
+          {
+	    $value .= "." . $strings[$i + 3];
+	    chomp($value);
+          }
+	  $team->ssgPercent($value);
+        }
+      }
       elsif ($strings[$i] =~ /^Q:/)
       {
         if (defined($team))
