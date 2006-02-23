@@ -10,8 +10,7 @@ sub new
   my $self = {};
   $self->{NAME} = undef;
   $self->{TEAM} = undef;
-  $self->{PING} = 0;#undef;
-  $self->{APPROVED} = 0;
+  $self->{PING} = 0;
   $self->{SCORE_GRAPH} = [];
   $self->{MINUTES_PLAYED} = 0;
   $self->{CURRENTLY_PLAYING} = 1;
@@ -80,13 +79,6 @@ sub ping
   my $self = shift;
   if (@_) { $self->{PING} = shift }
   return $self->{PING};
-}
-
-sub approved
-{
-  my $self = shift;
-  if (@_) { $self->{APPROVED} = shift }
-  return $self->{APPROVED};
 }
 
 sub minutesPlayed
@@ -606,7 +598,6 @@ sub outputStatsHeader
 {
   print "\t<input type='hidden' name='PlayerStats' value='";
   print "Name\\\\";
-  print "Matched\\\\";
   print "Ping\\\\";
   print "Ax Frags\\\\";
   print "Ax Deaths\\\\";
@@ -669,7 +660,6 @@ sub outputStats
   my $self = shift;
   my $self2 =shift;
   print $self->name . "\\\\";
-  print $self->approved . "\\\\";
   print $self->ping . "\\\\";
   print $self->axFrags . "\\\\";
   print $self->axDeaths . "\\\\";

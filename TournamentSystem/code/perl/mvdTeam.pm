@@ -9,7 +9,6 @@ sub new
   my $class = shift;
   my $self = {};
   $self->{NAME} = undef;
-  $self->{APPROVED} = 0;
   $self->{PLAYERS} = [];
   $self->{COLOR} = 0;
   $self->{MINUTES_PLAYED} = 0;
@@ -32,13 +31,6 @@ sub name
   my $self = shift;
   if (@_) { $self->{NAME} = shift }
   return $self->{NAME};
-}
-
-sub approved
-{
-  my $self = shift;
-  if (@_) { $self->{APPROVED} = shift }
-  return $self->{APPROVED};
 }
 
 sub color
@@ -221,7 +213,6 @@ sub outputStatsHeader
 {
   print "\t<input type='hidden' name='teamStats' value='";
   print "Name\\\\";
-  print "Matched\\\\";
   print "Score\\\\";
   print "MinutesPlayed\\\\";
   print "MinutesWithLead\\\\";
@@ -241,7 +232,6 @@ sub outputStats
   my $self = shift;
   my $self2 = shift;
   print $self->name . "\\\\";
-  print $self->approved . "\\\\";
   print $self->points($self2) . "\\\\";
   print $self->minutesPlayed . "\\\\";
   print $self->minutesWithLead . "\\\\";

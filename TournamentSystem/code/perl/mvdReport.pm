@@ -984,92 +984,6 @@ sub findTeamNoCreate
   return undef;
 }
 
-sub teamMatchup
-{
-  my $self = shift;
-  my $teamOneAbbr = $self->{teamOneAbbr};
-  my $teamTwoAbbr = $self->{teamTwoAbbr};
-  my $teamOneFound = 0;
-  my $teamTwoFound = 0; 
-  my @teams = @{$self->{teams}};
-  #die "$teamOneAbbr $teamTwoAbbr\n";
-  # first lets try to find perfect matches (minus case sensitivity)
-  foreach my $team (@teams)
-  {
-    my $name = $team->name;
-    #print "|$name|\n|$teamOneAbbr|\n|$teamTwoAbbr|\n\n";
-    if ($teamOneAbbr =~ /^$name$/i && $name =~ /^$teamOneAbbr$/i)
-    {
-      $team->approved(1);
-      $teamOneFound = 1;
-    }
-    elsif ($teamTwoAbbr =~ /^$name$/i && $name =~ /^$teamTwoAbbr$/i)
-    {
-      $team->approved(1);
-      $teamTwoFound = 1;
-    }
-  }  
-  
-  # now for the non perfect matches
-  foreach my $team (@teams)
-  {
-    my $name = $team->name;
-    if ($team->approved() == 0)
-    {
-      if ($teamOneFound == 0)
-      {
-        if ($teamOneAbbr =~ /$name/i || $name =~ /$teamOneAbbr/i)
-        {
-          $team->approved(1);
-          $team->name($teamOneAbbr);
-          $teamOneFound = 1;
-        }
-      }
-      if ($teamTwoFound == 0)
-      {
-        if ($teamTwoAbbr =~ /$name/i || $name =~ /$teamTwoAbbr/i)
-        {
-          $team->approved(1);
-          $team->name($teamTwoAbbr);
-          $teamTwoFound = 1;
-        }
-      }
-    }
-  }
-  if ($teamOneFound + $teamTwoFound == 2) { return; } #awesome!
-  
-  #print "total teams: $teamCount\n";  
-  if ($teamOneFound + $teamTwoFound == 1 && @teams == 2) 
-  # well we got 1 of 2 so we can assume the unknown is #2
-  {
-    my $lastTeam = undef;
-    foreach my $team (@teams)
-    {
-      $lastTeam = $team;
-      if ($team->approved == 0) { last; }
-    }
-    if ($lastTeam->approved == 0) # should always be true here, but who knows
-    {
-      if ($teamOneFound == 0)
-      {
-	$lastTeam->name($teamOneAbbr);
-        $lastTeam->approved(1);
-        $teamOneFound = 1;
-      }
-      else
-      {
-	$lastTeam->name($teamTwoAbbr);
-        $lastTeam->approved(1);
-        $teamTwoFound = 1; 
-      }
-    }
-  }
-  else #Doh 
-  {
-#    print "no match\n";
-  }
-}
-
 sub outputForm
 {
 	my $self = shift;
@@ -1097,7 +1011,7 @@ sub outputForm
    if (@{$teams} > 1 && (keys %{$players} > 0))
    {
      $self->outputPlayerPieCharts();
-     $self->teamMatchup();
+#     $self->teamMatchup();
      
      Team::outputStatsHeader();
      my $teamNumber = 1;   
