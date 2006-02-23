@@ -571,7 +571,7 @@ class match
 	    {
 	      $team1_wins++ ;
 	    }
-	  else
+	  elseif ($g->getValue('team1_score')<$g->getValue('team2_score'))
 	    {
 	      $team2_wins++ ;
 	    }

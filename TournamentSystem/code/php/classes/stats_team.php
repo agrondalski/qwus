@@ -443,7 +443,7 @@ class stats_team
 	      $games_won += 1 ;
 	      $match_maps_won += 1 ;
 	    }
-	  else
+	  elseif ($row[2]<$row[3])
 	    {
 	      $games_lost += 1 ;
 	      $match_maps_lost += 1 ;

@@ -358,7 +358,7 @@ class stats
 		{
 		  $games_won++ ;
 		}
-	      else
+	      elseif ($row[10]<$row[11])
 		{
 		  $games_lost++ ;
 		}
@@ -369,7 +369,7 @@ class stats
 		{
 		  $games_won++ ;
 		}
-	      else
+	      if ($row[10]>$row[11])
 		{
 		  $games_lost++ ;
 		}
