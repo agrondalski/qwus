@@ -873,8 +873,13 @@ elsif ($string =~ /^(.*) rips (.*)/)
 	  chomp($value);
           if ($strings[$i + 2] =~ /^\./)
           {
-	    $value .= "." . $strings[$i + 3];
+	    $value .= $strings[$i + 2];
             chomp($value);
+            if ($strings[$i + 3] !~ /^\%/)
+            {
+	      $value .= $strings[$i + 3];
+	      chomp($value);
+            }
           }
 	  $team->lgPercent($value);
         }
@@ -887,8 +892,13 @@ elsif ($string =~ /^(.*) rips (.*)/)
 	  chomp($value);
           if ($strings[$i + 2] =~ /^\./)
           {
-	    $value .= "." . $strings[$i + 3];
+	    $value .= $strings[$i + 2];
 	    chomp($value);
+            if ($strings[$i + 3] !~ /^\%/)
+            {
+	      $value .= $strings[$i + 3];
+              chomp($value);
+            }
           }
 	  $team->sgPercent($value);
         }
@@ -901,8 +911,13 @@ elsif ($string =~ /^(.*) rips (.*)/)
 	  chomp($value);
           if ($strings[$i + 2] =~ /^\./)
           {
-	    $value .= "." . $strings[$i + 3];
+	    $value .= $strings[$i + 2];
 	    chomp($value);
+            if ($strings[$i + 3] !~ /^\%/)
+            {
+	      $value .= $strings[$i + 3];
+              chomp($value);
+            }
           }
 	  $team->ssgPercent($value);
         }
