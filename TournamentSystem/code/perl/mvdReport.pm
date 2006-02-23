@@ -844,6 +844,94 @@ elsif ($string =~ /^(.*) rips (.*)/)
     $self->{teamOneName} = $1;
     $self->{teamTwoName} = $3;
   }
+  elsif ($string =~ /armors, damage:/) #ktpro stats
+  {
+    my $previousString = "";
+    my $value = 0;
+    my $team = undef;
+    for (my $i = $stringCounter + 2; $strings[$i] !~ /Player statistics/; $i++)
+    {
+      if ($strings[$i] =~ /^\]:/)
+      {
+	chomp($previousString);
+	$team = $self->findTeam($previousString);
+      }
+      elsif ($strings[$i] =~ /^Q:/)
+      {
+        if (defined($team))
+        {
+          $value = $strings[$i + 1];
+          chomp($value);
+          $team->quads($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^P:/)
+      {
+        if (defined($team))
+        {
+          $value = $strings[$i + 1];
+          chomp($value);
+          $team->pents($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^R:/)
+      {
+        if (defined($team))
+        {
+          $value = $strings[$i + 1];
+          chomp($value);
+          $team->rings($value);
+        }
+      }  
+      elsif ($strings[$i] =~ /^ga:/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+	  $team->greenArmors($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^ya:/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+	  $team->yellowArmors($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^ra:/)
+      {
+	if (defined($team)) 
+        {
+          $value = $strings[$i + 1];
+          chomp($value); 
+          $team->redArmors($value);
+        }
+      }
+      elsif ($strings[$i] =~ /^Given:/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+	  $team->damageGiven($value);
+        }
+      }
+      elsif ($strings[$i] =~ /Taken:/)
+      {
+        if (defined($team))
+        {
+	  $value = $strings[$i + 1];
+	  chomp($value);
+          $team->damageTaken($value);
+        }
+      }
+      print $strings[$i];
+      $previousString = $strings[$i];
+    }
+  }
   #########################################################################
   #########################################################################
 # once we reach this point the match is over and no good data remains
