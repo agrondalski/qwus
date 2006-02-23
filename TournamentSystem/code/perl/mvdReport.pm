@@ -1000,19 +1000,12 @@ sub outputForm
      $self->outputPlayerPieCharts();
      $self->teamMatchup();
      
-     print "\t<input type='hidden' name='teamStats' value='";
-     print "Name\\\\Matched\\\\Score\\\\MinutesPlayed\\\\MinutesWithLead'>\n";
-
-     my $teamNumber = 1;
-     
+     Team::outputStatsHeader();
+     my $teamNumber = 1;   
      foreach my $team (@{$teams})
-     {
-       my $a = $team->name; 
-       my $b = $team->approved; 
-       my $c = $team->points($self); 
-       my $d = $team->minutesPlayed; 
-       my $e = $team->minutesWithLead;
-       print "\t<input type='hidden' name='team" . $teamNumber . "' value='$a\\\\$b\\\\$c\\\\$d\\\\$e'>\n";   
+     { 
+       print "\t<input type='hidden' name='team" . $teamNumber . "' value='";
+       $team->outputStats($self);  
        my @tPlayers = $team->players;
        print "\t<input type='hidden' name='team" . $teamNumber . "players' value='";
        my $playerC = @tPlayers;
@@ -1048,9 +1041,9 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-   print "<script>\n";
-   print "document.stats.submit();\n";
-   print "</script>\n";
+#   print "<script>\n";
+#   print "document.stats.submit();\n";
+#   print "</script>\n";
 }
 #
 sub outputPlayerScoreGraph
