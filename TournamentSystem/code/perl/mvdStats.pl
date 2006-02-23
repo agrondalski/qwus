@@ -1,16 +1,5 @@
 #!/usr/bin/perl -w
 use strict;
-
-# todo:
-# add real team name in addition to red\blue to graphs for ctf
-# insane demo support for non tournament games--Started--refer from demoStats
-# can dew support undef values?
-# check ctf ax frags
-# improve regexs
-# bring ktpro stats up to par with pure ctf
-# team stats (end of mvd)
-# player minutes played ( * left the game)
-
 use Benchmark;
 use CGI qw/:standard/;
 use mvdReport;

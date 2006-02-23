@@ -1,0 +1,13 @@
+perl todo:
+
+ add real team name in addition to red\blue to graphs for ctf
+
+ insane demo support for non tournament games--Started--refer from demoStats
+
+ improve regexs\parsing  -- in progress by Piano
+
+ bring ktpro stats up to par with pure ctf
+
+ team stats (end of mvd) -- in progress by ult
+
+ player minutes played ( * left the game) could be seconds for ctf
