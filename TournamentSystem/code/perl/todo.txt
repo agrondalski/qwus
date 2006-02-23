@@ -23,3 +23,6 @@ perl todo:
  all line graphs could be improved by better configuration of y values.
  just cause 1 player momentarily drops to -1 doesnt mean we need to add a -50 
  tick mark adding a bunch of white space at bottom etc
+
+ rather than choking on graph creation if filename is already used 
+ (and owned by someone else) make a new filename..

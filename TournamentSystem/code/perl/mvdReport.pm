@@ -979,7 +979,6 @@ elsif ($string =~ /^(.*) rips (.*)/)
           $team->damageTaken($value);
         }
       }
-      print $strings[$i];
       $previousString = $strings[$i];
     }
   }
@@ -1180,8 +1179,6 @@ sub outputForm
    if (@{$teams} > 1 && (keys %{$players} > 0))
    {
      $self->outputPlayerPieCharts();
-#     $self->teamMatchup();
-     
      Team::outputStatsHeader();
      my $teamNumber = 1;   
      foreach my $team (@{$teams})
