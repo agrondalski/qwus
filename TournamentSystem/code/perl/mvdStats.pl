@@ -7,7 +7,7 @@ use mvdReport;
 my $DEBUG = 0;
 
 my $mvd = shift(@ARGV);
-my($tourney_id, $division_id, $match_id, $approved, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
+my($tourney_id, $division_id, $match_id, $approved, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers,$screenshot_url);
 my $cgi;
 if (!$mvd eq "")
 {
@@ -35,6 +35,7 @@ else
     $teamTwoAbbr = $cgi->param('team2');
     $teamOnePlayers = $cgi->param('team1players');
     $teamTwoPlayers = $cgi->param('team2players');
+    $screenshot_url = $cgi->param('screenshot_url');
   }
   else { exit; }
 }
@@ -57,16 +58,6 @@ $mvdRep->{teamTwoPlayers} = $teamTwoPlayers;
 	
 $mvdRep->mvdtoStrings($mvd);
 $mvdRep->parseStrings();
-
-#
-#if ($DEBUG)
-#{
-#  foreach $team (@teams)
-#  {
-#    print $team->name . "\n";
-#    $team->playerList();
-#  }
-#}
 $mvdRep->calculateTeamColors();
 $mvdRep->outputForm();
 exit;

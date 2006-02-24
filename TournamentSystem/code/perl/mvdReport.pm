@@ -22,6 +22,7 @@ my $self = {};
 	$self->{division_id} = ""; 
 	$self->{match_id} = ""; 
 	$self->{approved} = ""; 
+        $self->{screenshot_url} = "";
 	$self->{teamOneAbbr} = ""; 
 	$self->{teamTwoAbbr} = "";
 	$self->{teamOnePlayers} = "";
@@ -1242,6 +1243,7 @@ sub outputForm
    	my $match_id = $self->{match_id};
    	my $approved = $self->{approved};
    	my $mvd = $self->{mvd};
+        my $screenshot_url = $self->{screenshot_url};
    	my $map = $self->{map};
 	my $tempDir = $self->{tempDir};
    print "Generating Images and Output..";
@@ -1253,6 +1255,7 @@ sub outputForm
    print "\t<input type='hidden' name='approved' value='$approved'>\n";
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
+   print "\t<input type='hidden' name='screenshot_url' value='$screenshot_url'>\n";
 
    if (@{$teams} > 1 && (keys %{$players} > 0))
    {
