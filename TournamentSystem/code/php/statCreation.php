@@ -19,6 +19,7 @@ try
   try
     {
       $m->addGameWithStats(array('filename'=>$_REQUEST['filename'],
+				 'screenshot_url'=>$_REQUEST['screenshot_url'],
 				 'map'=>$_REQUEST['map'],
 				 'teamStats'=>$_REQUEST['teamStats'],
 				 'team1'=>$_REQUEST['team1'],
@@ -37,6 +38,7 @@ try
   catch (Exception $e)
     {
       echo 'Unable to Add Game<br>';
+      print $e;
     }
   
   echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved&amp;approved_step=1'>Report Match Page</a>";

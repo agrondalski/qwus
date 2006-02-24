@@ -36,6 +36,17 @@ try
       $fail = true ;
     }
 
+  if (!$fail && array_key_exists(util::SCREENSHOT, $files))
+    {
+      $ss_file   = basename($files[util::SCREENSHOT]->getValue('url')) ;
+      $ss_uploadfile = util::UPLOAD_DIR . $ss_file ;
+
+      if (!copy($t->getTourneyRoot() . util::SLASH . $g->getFileDirectory() . util::SLASH . $ss_file, $ss_uploadfile))
+	{
+	  $fail = true ;
+	}
+    }
+
   if (!$fail)
     {
       $approved = $m->getValue('approved') ;
@@ -50,6 +61,7 @@ try
       echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
+      echo "<input type='hidden' name='screenshot_url' value ='$ss_uploadfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
