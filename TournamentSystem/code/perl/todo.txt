@@ -26,3 +26,5 @@ perl todo:
 
  rather than choking on graph creation if filename is already used 
  (and owned by someone else) make a new filename..
+
+ lastest version of gd::graph breaks our pie charts.. their problem or ours?

@@ -13,8 +13,8 @@ my $class = shift;
 my $self = {};
 	$self->{teamOneScore} = 0;
 	$self->{teamTwoScore} = 0;
-	$self->{teamOneName} = "red";
-	$self->{teamTwoName} = "blue";
+	$self->{teamOneName} = "";
+	$self->{teamTwoName} = "";
 	$self->{tempDir} = "/tmp/";
 	$self->{oldSeconds} = 0;
 	$self->{oldMinutes} = 0;
@@ -771,6 +771,33 @@ elsif ($string =~ /^(.*) rips (.*)/)
   elsif ($string =~ /^(.*) min left$/) #ktpro timer
   {
     push(@{$self->{graphTime}}, $1);
+    
+    # duel support
+    if (values %{$self->{players}} == 2)
+    {
+      if ($self->{teamOneName} eq "" && $self->{teamTwoName} eq "")
+      {
+        my $i = 1;
+        foreach $player (values %{$self->{players}})
+        {
+          if ($i++ == 1)
+          {
+	    $self->{teamOneName} = $player->name;
+          }
+          else
+          {
+	    $self->{teamTwoName} = $player->name;
+          }
+	  $team = $self->findTeam($player->team->name);
+          $team->name($player->name);
+        }
+      }
+      $team = $self->findTeam($self->{teamOneName});
+      $self->{teamOneScore} = 
+       $self->findTeam($self->{teamOneName})->points($self);
+      $self->{teamTwoScore} = 
+       $self->findTeam($self->{teamTwoName})->points($self);
+    }
     foreach $team (@{$self->{teams}})
     {
       if ($team->name eq $self->{teamOneName}) { $team->pushScore($self->{teamOneScore}); }
@@ -844,14 +871,14 @@ elsif ($string =~ /^(.*) rips (.*)/)
     $self->{teamOneName} = $1;
     $self->{teamTwoName} = $3;
   }
-  elsif ($string =~ /armors, damage:/) #ktpro stats
+  elsif ($string =~ /^The match is over/) #ktpro stats
   {
     my $previousString = "";
     my $value = 0;
     my $team = undef;
-    for (my $i = $stringCounter + 2; $strings[$i] !~ /Player statistics/; $i++)
+    for (my $i = $stringCounter + 5; $strings[$i] !~ /efficiency/i; $i++)
     {
-      if ($strings[$i] =~ /^\]:/)
+      if ($strings[$i] =~ /^\]:/ || $strings[$i] =~ /^:/)
       {
 	chomp($previousString);
 	$team = $self->findTeam($previousString);
@@ -949,12 +976,15 @@ elsif ($string =~ /^(.*) rips (.*)/)
           $team->rings($value);
         }
       }  
-      elsif ($strings[$i] =~ /^ga:/)
+      elsif ($strings[$i] =~ /^ga:(.*)/)
       {
         if (defined($team))
         {
-	  $value = $strings[$i + 1];
-	  chomp($value);
+	  if ($1 !~ /\d/)
+          {
+	    $value = $strings[$i + 1];
+	  } else { $value = ($strings[$i] =~ /^ga:(.*)\w*/); }
+          chomp($value);
 	  $team->greenArmors($value);
         }
       }
@@ -1024,6 +1054,8 @@ else
   #pure ctf
   my $redTeam = $self->findTeam("red");
   my $blueTeam = $self->findTeam("blue");
+  $self->{teamOneName} = "red";
+  $self->{teamTwoName} = "blue";
   $redTeam->popScore; $redTeam->pushScore($redTeam->points($self));
   $blueTeam->popScore; $blueTeam->pushScore($blueTeam->points($self));
   $self->CleanUpScores();
