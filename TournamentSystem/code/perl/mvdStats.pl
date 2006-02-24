@@ -55,7 +55,7 @@ $mvdRep->{teamOneAbbr} = $teamOneAbbr;
 $mvdRep->{teamTwoAbbr} = $teamTwoAbbr;
 $mvdRep->{teamOnePlayers} = $teamOnePlayers;
 $mvdRep->{teamTwoPlayers} = $teamTwoPlayers;
-	
+$mvdRep->{screenshot_url} = $screenshot_url;	
 $mvdRep->mvdtoStrings($mvd);
 $mvdRep->parseStrings();
 $mvdRep->calculateTeamColors();
