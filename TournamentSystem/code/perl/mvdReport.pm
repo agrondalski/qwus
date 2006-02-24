@@ -871,7 +871,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
     $self->{teamOneName} = $1;
     $self->{teamTwoName} = $3;
   }
-  elsif ($string =~ /^The match is over/) #ktpro stats
+  elsif ($string =~ /^The match is over/) #ktpro stats #piano is going to cry
   {
     my $previousString = "";
     my $value = 0;
@@ -888,6 +888,7 @@ elsif ($string =~ /^(.*) rips (.*)/)
         if (defined($team))
         {
 	  $value = $strings[$i + 1];
+	  $value =~ s/\s+$//;
 	  chomp($value);
 	  $team->directRockets($value);
         }
@@ -983,43 +984,74 @@ elsif ($string =~ /^(.*) rips (.*)/)
 	  if ($1 !~ /\d/)
           {
 	    $value = $strings[$i + 1];
-	  } else { $value = ($strings[$i] =~ /^ga:(.*)\w*/); }
+	  } 
+          else 
+          { 
+            $strings[$i] =~ /^ga:(.*) /; 
+            $value = $1; 
+	  }
           chomp($value);
 	  $team->greenArmors($value);
         }
       }
-      elsif ($strings[$i] =~ /^ya:/)
+      elsif ($strings[$i] =~ /^ya:(.*)/)
       {
         if (defined($team))
         {
-	  $value = $strings[$i + 1];
+          if ($1 !~ /\d/)
+          {
+	    $value = $strings[$i + 1];
+	  }
+          else
+          {
+	    $strings[$i] =~ /^ya:(.*) /;
+	    $value = $1;
+          }
 	  chomp($value);
 	  $team->yellowArmors($value);
         }
       }
-      elsif ($strings[$i] =~ /^ra:/)
+      elsif ($strings[$i] =~ /^ra:(.*)/)
       {
 	if (defined($team)) 
         {
-          $value = $strings[$i + 1];
+          if ($1 !~ /\d/)
+          {
+            $value = $strings[$i + 1];
+	  }
+          else
+          {
+	    $strings[$i] =~ /^ra:(.*)/;
+	    $value = $1;
+	  }
           chomp($value); 
           $team->redArmors($value);
         }
       }
-      elsif ($strings[$i] =~ /^Given:/)
+      elsif ($strings[$i] =~ /^Given:(.*)/)
       {
+	$value = $1;
         if (defined($team))
         {
-	  $value = $strings[$i + 1];
+          if ($strings[$i + 1] !~ /endgame/i)
+          {
+	    $value = $strings[$i + 1];
+	  }
+	  $value =~ s/\s+$//;
 	  chomp($value);
 	  $team->damageGiven($value);
         }
       }
-      elsif ($strings[$i] =~ /Taken:/)
+      elsif ($strings[$i] =~ /Taken:(.*)/)
       {
+	$value = $1;
         if (defined($team))
         {
-	  $value = $strings[$i + 1];
+          if ($strings[$i + 1] !~ /Given/)
+          {
+	    $value = $strings[$i + 1];
+          }
+          $value =~ s/\s+$//;
 	  chomp($value);
           $team->damageTaken($value);
         }
@@ -1148,7 +1180,6 @@ sub findPlayer
 	my $self = shift;
 	my($playerName) = shift;
   	#if(!defined($playerName)){return undef;}
-#	$playerName =~ s/ /\_/g;
   	foreach my $player (values %{$self->{players}})
   	{
     		if ($player->name() eq $playerName) { return $player; }    
