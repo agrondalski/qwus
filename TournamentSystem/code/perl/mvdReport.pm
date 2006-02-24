@@ -1148,7 +1148,7 @@ sub findPlayer
 	my $self = shift;
 	my($playerName) = shift;
   	#if(!defined($playerName)){return undef;}
-	$playerName =~ s/ /\_/g;
+#	$playerName =~ s/ /\_/g;
   	foreach my $player (values %{$self->{players}})
   	{
     		if ($player->name() eq $playerName) { return $player; }    
