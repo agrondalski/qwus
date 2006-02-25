@@ -47,7 +47,13 @@ if ($DEBUG)
 
 my $mvdRep = mvdReport->new();
 
-$mvdRep->{tempDir}        = '/tmp/';
+my $seconds = `date +%s`;
+chomp($seconds);
+my $tempDir = "/tmp/" . $seconds;
+my $shell = `mkdir $tempDir`;
+$tempDir .= "/";
+
+$mvdRep->{tempDir}        = $tempDir;
 $mvdRep->{teamOneAbbr}    = $teamOneAbbr; 
 $mvdRep->{teamTwoAbbr}    = $teamTwoAbbr;
 $mvdRep->{teamOnePlayers} = $teamOnePlayers;
