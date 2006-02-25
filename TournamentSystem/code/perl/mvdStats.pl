@@ -1,14 +1,13 @@
 #!/usr/bin/perl -w
 use strict;
-use Benchmark;
 use CGI qw/:standard/;
 use mvdReport;
 
 my $DEBUG = 0;
-
 my $mvd = shift(@ARGV);
 my($pass_thru, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
 my $cgi;
+
 if (!$mvd eq "")
 {
   $DEBUG = 1;
@@ -32,21 +31,29 @@ else
     $teamTwoPlayers = $cgi->param('team2players');
     $pass_thru = $cgi->param('pass_thru');
   }
-  else { exit; }
+  else 
+  {
+    print "Invalid referer: $referer<br>\n"; 
+    exit; 
+  }
 }
-if($DEBUG){
-($pass_thru,$teamOneAbbr,$teamTwoAbbr) = ("","","");
-$teamOnePlayers = [];
-$teamTwoPlayers = [];
+
+if ($DEBUG)
+{
+  ($pass_thru, $teamOneAbbr, $teamTwoAbbr) = ("", "", "");
+  $teamOnePlayers = [];
+  $teamTwoPlayers = [];
 }
+
 my $mvdRep = mvdReport->new();
 
-$mvdRep->{tempDir} = '/tmp/';
-$mvdRep->{teamOneAbbr} = $teamOneAbbr; 
-$mvdRep->{teamTwoAbbr} = $teamTwoAbbr;
+$mvdRep->{tempDir}        = '/tmp/';
+$mvdRep->{teamOneAbbr}    = $teamOneAbbr; 
+$mvdRep->{teamTwoAbbr}    = $teamTwoAbbr;
 $mvdRep->{teamOnePlayers} = $teamOnePlayers;
 $mvdRep->{teamTwoPlayers} = $teamTwoPlayers;
-$mvdRep->{pass_thru} = $pass_thru;	
+$mvdRep->{pass_thru}      = $pass_thru;	
+
 $mvdRep->mvdtoStrings($mvd);
 $mvdRep->parseStrings();
 $mvdRep->calculateTeamColors();
