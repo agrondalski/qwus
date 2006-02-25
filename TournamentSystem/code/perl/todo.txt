@@ -11,7 +11,6 @@ perl todo:
  player minutes played ( * left the game) could be seconds for ctf
 
  ask dew about global recompute possibility (or maybe just per tourney)
- can we keep screenshots if recomputing?
 
  optimize convertAscii.sed
 
@@ -28,3 +27,17 @@ perl todo:
  (and owned by someone else) make a new filename..
 
  lastest version of gd::graph breaks our pie charts.. their problem or ours?
+
+ points on standings need updated for non best of 3 games
+
+ if multiple divisions the standing tables do not align
+
+ admin team signup funcionality
+
+ improve admin interface
+
+ better support for 1v1?  auto add a player with same name as team if 1v1?
+
+ zipfile support (have to list contents and grab filename?)
+
+  
