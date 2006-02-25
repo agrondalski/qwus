@@ -517,11 +517,14 @@ class match
 	  $g->addFile(array('file_desc'=>util::PLAYER_SCORE_GRAPH, 'url'=>$html_root_dir . util::SLASH . $new_psg_name)) ;
 	}
 
-      $pinfo = pathinfo($a['screenshot_url']) ;
-      $new_ss_name = $pinfo['basename'] ;
-      if (rename($a['screenshot_url'], $dest_root_dir . util::SLASH . $new_ss_name))      
+      if (!util::isNull($a['screenshot_url']))
 	{
-	  $g->addFile(array('file_desc'=>util::SCREENSHOT, 'url'=>$html_root_dir . util::SLASH . $new_ss_name)) ;
+	  $pinfo = pathinfo($a['screenshot_url']) ;
+	  $new_ss_name = $pinfo['basename'] ;
+	  if (rename($a['screenshot_url'], $dest_root_dir . util::SLASH . $new_ss_name))      
+	    {
+	      $g->addFile(array('file_desc'=>util::SCREENSHOT, 'url'=>$html_root_dir . util::SLASH . $new_ss_name)) ;
+	    }
 	}
 
       $this->syncMatchInfo() ;
