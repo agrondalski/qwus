@@ -7,7 +7,7 @@ use mvdReport;
 my $DEBUG = 0;
 
 my $mvd = shift(@ARGV);
-my($tourney_id, $division_id, $match_id, $approved, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers,$screenshot_url);
+my($pass_thu, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
 my $cgi;
 if (!$mvd eq "")
 {
@@ -26,36 +26,28 @@ else
   }
   elsif ($referer =~ /reportMatch/ || $referer =~ /recomputeGame/)
   {
-    $tourney_id = $cgi->param('tourney_id');
-    $division_id = $cgi->param('division_id');
-    $match_id = $cgi->param('match_id');
-    $approved = $cgi->param('approved');
     $mvd = $cgi->param('filename');
     $teamOneAbbr = $cgi->param('team1');
     $teamTwoAbbr = $cgi->param('team2');
     $teamOnePlayers = $cgi->param('team1players');
     $teamTwoPlayers = $cgi->param('team2players');
-    $screenshot_url = $cgi->param('screenshot_url');
+    $pass_thru = $cgi->param('pass_thru');
   }
   else { exit; }
 }
 if($DEBUG){
-($tourney_id, $division_id, $match_id,$approved,$teamOneAbbr,$teamTwoAbbr) = ("CTF2006","A","320","1","","");
+($teamOneAbbr,$teamTwoAbbr) = ("","");
 $teamOnePlayers = [];
 $teamTwoPlayers = [];
 }
 my $mvdRep = mvdReport->new();
 
 $mvdRep->{tempDir} = '/tmp/';
-$mvdRep->{tourney_id} = $tourney_id; 
-$mvdRep->{division_id} = $division_id; 
-$mvdRep->{match_id} = $match_id; 
-$mvdRep->{approved} = $approved; 
 $mvdRep->{teamOneAbbr} = $teamOneAbbr; 
 $mvdRep->{teamTwoAbbr} = $teamTwoAbbr;
 $mvdRep->{teamOnePlayers} = $teamOnePlayers;
 $mvdRep->{teamTwoPlayers} = $teamTwoPlayers;
-$mvdRep->{screenshot_url} = $screenshot_url;	
+$mvdRep->{pass_thru} = $pass_thru;	
 $mvdRep->mvdtoStrings($mvd);
 $mvdRep->parseStrings();
 $mvdRep->calculateTeamColors();

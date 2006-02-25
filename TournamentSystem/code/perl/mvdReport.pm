@@ -18,11 +18,7 @@ my $self = {};
 	$self->{tempDir} = "/tmp/";
 	$self->{oldSeconds} = 0;
 	$self->{oldMinutes} = 0;
-	$self->{tourney_id} = ""; 
-	$self->{division_id} = ""; 
-	$self->{match_id} = ""; 
-	$self->{approved} = ""; 
-        $self->{screenshot_url} = "";
+        $self->{pass_thru} = "";
 	$self->{teamOneAbbr} = ""; 
 	$self->{teamTwoAbbr} = "";
 	$self->{teamOnePlayers} = "";
@@ -1238,12 +1234,8 @@ sub outputForm
   	my $teams = $self->{teams};
    	my $teamOneAbbr = $self->{teamOneAbbr};
    	my $teamTwoAbbr = $self->{teamTwoAbbr};
-   	my $tourney_id = $self->{tourney_id};
-   	my $division_id = $self->{division_id};
-   	my $match_id = $self->{match_id};
-   	my $approved = $self->{approved};
-   	my $mvd = $self->{mvd};
-        my $screenshot_url = $self->{screenshot_url};
+      	my $mvd = $self->{mvd};
+        my $pass_thru = $self->{pass_thru};
    	my $map = $self->{map};
 	my $tempDir = $self->{tempDir};
    print "Generating Images and Output..";
@@ -1255,7 +1247,7 @@ sub outputForm
    print "\t<input type='hidden' name='approved' value='$approved'>\n";
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
-   print "\t<input type='hidden' name='screenshot_url' value='$screenshot_url'>\n";
+   print "\t<input type='hidden' name='pass_thru' value='$pass_thru'>\n";
 
    if (@{$teams} > 1 && (keys %{$players} > 0))
    {
