@@ -7,7 +7,7 @@ use mvdReport;
 my $DEBUG = 0;
 
 my $mvd = shift(@ARGV);
-my($pass_thu, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
+my($pass_thru, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
 my $cgi;
 if (!$mvd eq "")
 {
@@ -22,7 +22,6 @@ else
   if ($referer =~ /demoStats/)
   {
     $mvd = $cgi->param('filename');
-    $tourney_id = -1;
   }
   elsif ($referer =~ /reportMatch/ || $referer =~ /recomputeGame/)
   {

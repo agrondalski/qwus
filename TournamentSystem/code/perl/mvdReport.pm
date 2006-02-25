@@ -1241,10 +1241,6 @@ sub outputForm
    print "Generating Images and Output..";
    print "\n";
    print "<form action='../?a=statCreation' method=post name='stats'>\n";
-   print "\t<input type='hidden' name='tourney_id' value='$tourney_id'>\n";
-   print "\t<input type='hidden' name='division_id' value='$division_id'>\n";
-   print "\t<input type='hidden' name='match_id' value='$match_id'>\n";
-   print "\t<input type='hidden' name='approved' value='$approved'>\n";
    print "\t<input type='hidden' name='filename' value='$mvd'>\n";
    print "\t<input type='hidden' name='map' value='$map'>\n";
    print "\t<input type='hidden' name='pass_thru' value='$pass_thru'>\n";
