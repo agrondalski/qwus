@@ -3,14 +3,14 @@ use strict;
 use CGI qw/:standard/;
 use mvdReport;
 
-my $DEBUG = 0;
+my $DEBUG = 1;
 my $mvd = shift(@ARGV);
 my($pass_thru, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
 my $cgi;
 
 if (!$mvd eq "")
 {
-  $DEBUG = 1;
+  $DEBUG = 0;
   print "-- Debug Enabled --\n";
 }
 else
