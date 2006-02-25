@@ -5,7 +5,7 @@ require_once 'login.php' ;
 try
 {
   $m_recompute = 0 ;
-  $max_tid = $_REQUEST['max_gid'] ;
+  $max_tid = $_REQUEST['max_tid'] ;
   $max_gid = $_REQUEST['max_gid'] ;
   $done = false ;
 

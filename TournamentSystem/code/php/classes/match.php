@@ -182,6 +182,8 @@ class match
 
   public function addGameWithStats($a)
     {
+      try
+	{
       if (!is_array($a))
 	{
 	  return ;
@@ -528,6 +530,17 @@ class match
 	}
 
       $this->syncMatchInfo() ;
+	}
+      catch(Exception $e)
+	{
+	  if (!util::isNull($g))
+	    {
+	      $g->deleteAll() ;
+	    }
+
+	  throw $e;
+	}
+
     }
 
   public function addComment($a)

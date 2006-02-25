@@ -70,10 +70,11 @@ try
       return ;
     }
 
+  $done   = true ;
   $next_t = new tourney(array('tourney_id'=>$tid)) ;
-  $games = $next_t->getGames(array('game_id', SORT_ASC)) ;
-  $next_game = $games[0] ;
-  $done = true ;
+  $games  = $next_t->getGames(array('game_id', SORT_ASC)) ;
+
+  $next_game  = $games[0] ;
 
   if ((util::isNull($next_game) || $next_game->getValue('game_id') > $max_gid))
     {
@@ -103,12 +104,15 @@ try
 
   if (!$done)
     {
+      $next_match = $next_game->getMatch() ;
+      $next_d     = $next_match->getDivision() ;
+
       // Post to mvdStats.pl page
       echo "<form action='?a=recomputeGame' method=post name=stats>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<input type='hidden' name='tourney_id' value='" . $next_t->getValue('tourney_id') . "'>";
-      echo "<input type='hidden' name='division_id' value='" . $division_id . "'>";
-      echo "<input type='hidden' name='match_id' value='" . $match_id . "'>";
+      echo "<input type='hidden' name='division_id' value='" . $next_d->getValue('division_id') . "'>";
+      echo "<input type='hidden' name='match_id' value='" . $next_match->getValue('match_id') . "'>";
       echo "<input type='hidden' name='game_id' value='" . $next_game->getValue('game_id') . "'>";
       echo "<input type='hidden' name='max_tid' value='" . $max_tid . "'>";
       echo "<input type='hidden' name='max_gid' value='" . $max_gid . "'>";
