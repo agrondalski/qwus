@@ -314,7 +314,7 @@ try
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
 
-      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\0' ;
+      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\\\\\\\\\0' ;
 
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post>";
@@ -356,7 +356,7 @@ try
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
 
-      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\0' ;
+      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\\\\\\\\\0' ;
 
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post>";
