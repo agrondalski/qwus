@@ -15,7 +15,7 @@ try
 
       echo "<tr>";
       echo "<td><a href='?a=selectTourney'>Select Tourney</a></td>";
-      echo "<td>&nbsp;</td>";
+      echo "<td>&nbsp;</td>" ;
       echo "</tr>";
 
       if ($p->isSuperAdmin())
@@ -39,6 +39,10 @@ try
 	  echo "<tr>";
 	  echo "<td><a href='?a=manageMap'>Create Map</a></td>";
 	  echo "<td><a href='?a=listMaps'>Manage Maps</a></td>";
+	  echo "</tr>";
+	  echo "<tr>";
+	  echo "<td><a href='?a=recomputeGame&all=1'>Recompute Matches</a></td>";
+	  echo "<td>&nbsp;</td>" ;
 	  echo "</tr>";
 	}
 

@@ -4,8 +4,58 @@ require_once 'login.php' ;
 
 try
 {
+  /*
+  if ($_REQUEST['all']==1)
+    {
+      if (util::isNull($_REQUEST['tourney_id']))
+	{
+	  $global_recompute = true ;
+	}
+      else
+	{
+	  $tourney_recompute = true ;
+	}
+    }
+
+  if (!$global_recompute)
+    {
+      $tid = $_REQUEST['tourney_id'];
+      $t = new tourney(array('tourney_id'=>$tid));
+    }
+  */
+
   $tid = $_REQUEST['tourney_id'];
   $t = new tourney(array('tourney_id'=>$tid));
+
+  try
+  {
+    $p = new player(array('player_id'=>$_SESSION['user_id']));
+  }
+  catch(Exception $e) {}
+  
+  if (!$p->isSuperAdmin() && (util::isNull($t) || !$p->isTourneyAdmin($t->getValue('tourney_id'))))
+  {
+      util::throwException('not authorized') ;
+  }
+
+  /*  
+  if ($global_recompute)
+    {
+      $tours = tourney::getAllTourneys() ;
+      $max_tid = 0 ;
+
+      foreach($$tours as $tour)
+	{
+	  if ($tour->getValue('tourney_id')>$max_tid)
+	    {
+	      $max_tid = $tour->getValue('tourney_id') ;
+	    }
+	}
+
+      $psss_thru = '\\max_tourney_id=' . $max_tid . '\\' ;
+    }
+  */
+
 
   $division_id = $_REQUEST['division_id'];
   $div = new division(array('division_id'=>$division_id));
@@ -52,18 +102,16 @@ try
       $approved = $m->getValue('approved') ;
       $g->deleteAll() ;
 
+      $pass_thru = '\\\\' . $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\' . $ss_uploadfile . '\\\\' . $pass_thru;
+
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Recompute Game</b></td>";
-      echo "<input type='hidden' name='tourney_id' value='$tid'>";
-      echo "<input type='hidden' name='division_id' value='$division_id'>";
-      echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
-      echo "<input type='hidden' name='screenshot_url' value ='$ss_uploadfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
+      echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
       echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
       echo "</table></form>";

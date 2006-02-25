@@ -44,7 +44,7 @@ try
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
-      echo "<td>&nbsp;</td>";
+      echo "<td><a href='?a=recomputeGame&tourney_id=$tid&all=1'>Recompute Matches</a></td>";
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";

@@ -4,10 +4,13 @@ require_once 'login.php';
 
 try
 {
-  $tid             = $_REQUEST['tourney_id'];
-  $division_id     = $_REQUEST['division_id'];
-  $match_id        = $_REQUEST['match_id'];
-  $approved        = $_REQUEST['approved'];
+  $vars = explode('\\\\', $_REQUEST['pass_thru']) ;
+
+  $tid          = $vars[1] ;
+  $division_id  = $vars[2] ;
+  $match_id     = $vars[3] ;
+  $approved     = $vars[4] ;
+  $ss_url       = $vars[5] ;
 
   $m = new match(array('match_id'=>$match_id)) ;
 
@@ -19,7 +22,7 @@ try
   try
     {
       $m->addGameWithStats(array('filename'=>$_REQUEST['filename'],
-				 'screenshot_url'=>$_REQUEST['screenshot_url'],
+				 'screenshot_url'=>$ss_url,
 				 'map'=>$_REQUEST['map'],
 				 'teamStats'=>$_REQUEST['teamStats'],
 				 'team1'=>$_REQUEST['team1'],

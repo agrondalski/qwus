@@ -234,7 +234,7 @@ try
       echo "<hr>";
       echo "<h2>Add Game Data</h2>";
       
-      // Post to mvdStats.pl page
+      // Post to reportMatch.pl page
       echo "<form action='?a=reportMatch' enctype='multipart/form-data' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Add game MVD:</b></td>";
@@ -279,7 +279,6 @@ try
   // *** PART 5
   if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
-      print 6;
       $uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);
 
       if (is_uploaded_file($_FILES['filename']['tmp_name']))
@@ -315,17 +314,16 @@ try
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
 
+      $pass_thru = '\\\\' . $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\' ;
+
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Make it happen:</b></td>";
-      echo "<input type='hidden' name='tourney_id' value='$tid'>";
-      echo "<input type='hidden' name='division_id' value='$division_id'>";
-      echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
+      echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
       echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
       echo "</table></form>";
@@ -358,17 +356,16 @@ try
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
 
+      $pass_thru = '\\\\' . $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\' ;
+
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Make it happen:</b></td>";
-      echo "<input type='hidden' name='tourney_id' value='$tid'>";
-      echo "<input type='hidden' name='division_id' value='$division_id'>";
-      echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$localfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
+      echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
       echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
       echo "</table></form>";
