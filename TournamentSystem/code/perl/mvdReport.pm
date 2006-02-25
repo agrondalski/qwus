@@ -70,9 +70,16 @@ if ($mvd =~ /(.*)\.qwd$/)
 if ($mvd !~ /(.*)\.mvd$/)
 {
   $mvd = "";
-  print "Error: Invalid MVD (possibly zipped?)<br>";
+  print "Error: Invalid MVD (possibly zipped?)<br>\n";
   exit();
 }
+
+if (! -r $mvd)
+{
+  print "Error: $mvd is not readable<br>\n";
+  exit();
+}
+
 my $tempMvd = $mvd . ".tmp";
 print "Converting ascii..\t";
 my $shell = `sed -f convertAscii.sed "$mvd" > "$tempMvd"`;

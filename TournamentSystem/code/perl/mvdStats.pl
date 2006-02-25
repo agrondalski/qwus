@@ -35,7 +35,7 @@ else
   else { exit; }
 }
 if($DEBUG){
-($teamOneAbbr,$teamTwoAbbr) = ("","");
+($pass_thru,$teamOneAbbr,$teamTwoAbbr) = ("","","");
 $teamOnePlayers = [];
 $teamTwoPlayers = [];
 }
