@@ -327,6 +327,40 @@ class tourney
       return $arr ;
     }
 
+  public function getUnsignedUpTeams($a)
+    {
+      $sql_str = sprintf("select * from team where team_id not in(select team_id from tourney_info ti where ti.tourney_id=%d)", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new team(array('team_id'=>$row['team_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getUnassignedTeams($a)
     {
       $sql_str = sprintf("select * from tourney_info ti where ti.tourney_id=%d and division_id is null", $this->tourney_id) ;

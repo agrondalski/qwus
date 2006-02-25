@@ -35,20 +35,25 @@ try
       echo "<td><a href='?a=listNews&tourney_id=$tid'>Manage News</a></td>";
       echo "</tr>";
       echo "<tr>";
-      echo "<td><a href='?a=assignTeamsToDiv&tourney_id=$tid'>Assign Teams to a Division</a></td>";
+      echo "<td><a href='?a=assignTeamsToTourney&tourney_id=$tid'>Assign Teams to Tourney</a></td>";
       echo "<td><a href='?a=manageSchedule&tourney_id=$tid'>Manage Schedule</a></td>";
       echo "</tr>";
       echo "<tr>";
-      echo "<td><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
+      echo "<td><a href='?a=assignTeamsToDiv&tourney_id=$tid'>Assign Teams to a Division</a></td>";
       echo "<td><a href='?a=reportMatch&tourney_id=$tid'>Report Match</a></td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td><a href='?a=assignPlayersToTeam&tourney_id=$tid'>Assign Players to a Team</a></td>";
+      echo "<td>&nbsp;</td>";
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";
       echo "<td>&nbsp;</td>";
-      echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignAdminsToTourney&tourney_id=$tid'>Assign Admins to Tourney</a></td>";
       echo "<td>:O</td>";
+      echo "<tr>";
+
       echo "</tr>";
       echo "</table>";
     }

@@ -134,7 +134,7 @@ class util
 
   public static function nvl($v1, $v2)
     {
-      if (!isset($v1))
+      if (!isset($v1) || util::isNull($v1))
 	{
 	  return $v2 ;
 	}
