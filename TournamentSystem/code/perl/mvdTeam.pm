@@ -6,26 +6,26 @@ use strict;
 package Team;
 sub new
 {
-  my $class = shift;
-  my $self = {};
-  $self->{NAME} = undef;
-  $self->{PLAYERS} = [];
-  $self->{COLOR} = 0;
-  $self->{MINUTES_PLAYED} = 0;
+  my $class                  = shift;
+  my $self                   = {};
+  $self->{NAME}              = undef;
+  $self->{PLAYERS}           = [];
+  $self->{COLOR}             = 0;
+  $self->{MINUTES_PLAYED}    = 0;
   $self->{MINUTES_WITH_LEAD} = 0;
-  $self->{SCORE_GRAPH} = [];
-  $self->{QUADS} = 0;
-  $self->{PENTS} = 0;
-  $self->{RINGS} = 0;
-  $self->{GREEN_ARMORS} = 0;
-  $self->{YELLOW_ARMORS} = 0;
-  $self->{RED_ARMORS} = 0;
-  $self->{DAMAGE_TAKEN} = 0;
-  $self->{DAMAGE_GIVEN} = 0;
-  $self->{DIRECT_ROCKETS} = 0;
-  $self->{LG_PERCENT} = 0;
-  $self->{SG_PERCENT} = 0;
-  $self->{SSG_PERCENT} = 0;
+  $self->{SCORE_GRAPH}       = [];
+  $self->{QUADS}             = 0;
+  $self->{PENTS}             = 0;
+  $self->{RINGS}             = 0;
+  $self->{GREEN_ARMORS}      = 0;
+  $self->{YELLOW_ARMORS}     = 0;
+  $self->{RED_ARMORS}        = 0;
+  $self->{DAMAGE_TAKEN}      = 0;
+  $self->{DAMAGE_GIVEN}      = 0;
+  $self->{DIRECT_ROCKETS}    = 0;
+  $self->{LG_PERCENT}        = 0;
+  $self->{SG_PERCENT}        = 0;
+  $self->{SSG_PERCENT}       = 0;
   bless ($self, $class);
   return $self;
 }
@@ -170,7 +170,6 @@ sub getScoreArray
   return @{$self->{SCORE_GRAPH}};
 }
 
-# might need some error checking here
 sub removePlayer
 {
   my $self = shift;
@@ -215,11 +214,9 @@ sub points
 {
   my $self = shift;
   my $players = shift;
-  #int "$players\n";die;
   my $points = 0;
   foreach my $player ($self->players)
   {
-   
     $player = $players->findPlayer($player);
     $points += $player->points($players);
   }
@@ -234,7 +231,6 @@ sub captures
   my $caps = 0;
   foreach my $player ($self->players)
   {
-#    print "$player\n";die;
     $player = $players->findPlayer($player);
     $caps += $player->captures;
   }

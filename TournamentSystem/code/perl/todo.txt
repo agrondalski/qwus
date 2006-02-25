@@ -23,9 +23,6 @@ perl todo:
  just cause 1 player momentarily drops to -1 doesnt mean we need to add a -50 
  tick mark adding a bunch of white space at bottom etc
 
- rather than choking on graph creation if filename is already used 
- (and owned by someone else) make a new filename..
-
  lastest version of gd::graph breaks our pie charts.. their problem or ours?
 
  points on standings need updated for non best of 3 games

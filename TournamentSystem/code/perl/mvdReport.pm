@@ -287,23 +287,25 @@ foreach my $string (@strings)
   elsif ($string =~ m/\\name\\/)
   {
     my $name = $';
+    # Dont bother with spectators
+    if ($string =~ m/\\*spectator\\/i)
+    {
+      my $spec = $';
+      while ($spec =~ /(.*)\\/) { $spec = $1; }
+      $spec =~ s/\s+$//;
+      if ($spec > 0) { next; }      
+    }
+
+    while ($name =~ /(.*)\\/) { $name = $1; }
+    $name =~ s/\s+$//;
+    $player = $self->findPlayer($name); 
+
     if ($string =~ m/\\team\\/)
     {
       $team = $';
- # Dont bother with spectators
-      if ($string =~ m/\\*spectator\\/i)
-      {
-        my $spec = $';
-        while ($spec =~ /(.*)\\/) { $spec = $1; }
-        $spec =~ s/\s+$//;
-        if ($spec > 0) { next; }      
-      }
-      while ($team =~ /(.*)\\/) { $team = $1; }
-      while ($name =~ /(.*)\\/) { $name = $1; }
-      $name =~ s/\s+$//;
+      while ($team =~ /(.*)\\/) { $team = $1; } 
       $team =~ s/\s+$//;
-      
-      $player = $self->findPlayer($name); 
+       
       # should prevent player rejoining game on different team
       if (!defined($player->team))
       {
@@ -314,35 +316,40 @@ foreach my $string (@strings)
           $player->team($team);
         }
         else
-        {
-	   
-	   $team = $self->findTeamNoCreate($team);
-           if (defined($team))
-           {
-	      $team->addPlayer($name);
-              $player->team($team);
-           }
-           else
-           {
-	      next;
-           }
+        {	   
+          $team = $self->findTeamNoCreate($team);
+          if (defined($team))
+          {
+            $team->addPlayer($name);
+            $player->team($team);
+          }
+          else
+          {
+            next;
+          }
         }
       }
-      if ($string =~ m/\\bottomcolor\\/)
-      {
-        my $bottomColor = $';
-        while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
-        $bottomColor =~ s/\s+$//;
-        $player->bottomColor($bottomColor);
-      }
-      if ($string =~ m/\\topcolor\\/)
-      {
-        my $topColor = $';
-        while ($topColor =~ /(.*)\\/) { $topColor = $1; }
-        $topColor =~ s/\s+$//;
-        $player->topColor($topColor);
-      }
-    }    
+    }
+    else 
+    {
+      $team = $self->findTeam("unknown");
+      $team->addPlayer($name);
+      $player->team($team);   
+    }
+    if ($string =~ m/\\bottomcolor\\/)
+    {
+      my $bottomColor = $';
+      while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
+      $bottomColor =~ s/\s+$//;
+      $player->bottomColor($bottomColor);
+    }
+    if ($string =~ m/\\topcolor\\/)
+    {
+      my $topColor = $';
+      while ($topColor =~ /(.*)\\/) { $topColor = $1; }
+      $topColor =~ s/\s+$//;
+      $player->topColor($topColor);
+    } 
   }
   elsif ($string =~ /^(.*) changed name to (.*)$/)
   {
@@ -1368,23 +1375,25 @@ elsif ($string =~ /^(.*) rips (.*)/)
   elsif ($string =~ m/\\name\\/)
   {
     my $name = $';
+    # Dont bother with spectators
+    if ($string =~ m/\\*spectator\\/i)
+    {
+      my $spec = $';
+      while ($spec =~ /(.*)\\/) { $spec = $1; }
+      $spec =~ s/\s+$//;
+      if ($spec > 0) { next; }      
+    }
+    
+    while ($name =~ /(.*)\\/) { $name = $1; }
+    $name =~ s/\s+$//;
+    $player = $self->findPlayer($name);
+ 
     if ($string =~ m/\\team\\/)
     {
       $team = $';
- # Dont bother with spectators
-      if ($string =~ m/\\*spectator\\/i)
-      {
-        my $spec = $';
-        while ($spec =~ /(.*)\\/) { $spec = $1; }
-        $spec =~ s/\s+$//;
-        if ($spec > 0) { next; }      
-      }
       while ($team =~ /(.*)\\/) { $team = $1; }
-      while ($name =~ /(.*)\\/) { $name = $1; }
-      $name =~ s/\s+$//;
       $team =~ s/\s+$//;
-      
-      $player = $self->findPlayer($name); 
+          
       # should prevent player rejoining game on different team
       if (!defined($player->team))
       {
@@ -1395,34 +1404,39 @@ elsif ($string =~ /^(.*) rips (.*)/)
           $player->team($team);
         }
         else
-        {
-	   
-	   $team = $self->findTeamNoCreate($team);
-           if (defined($team))
-           {
-	      $team->addPlayer($name);
-              $player->team($team);
-           }
-           else
-           {
-	      next;
-           }
+        {   
+          $team = $self->findTeamNoCreate($team);
+          if (defined($team))
+          {
+            $team->addPlayer($name);
+            $player->team($team);
+          }
+          else
+          {
+            next;
+          }
         }
       }
-      if ($string =~ m/\\bottomcolor\\/)
-      {
-        my $bottomColor = $';
-        while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
-        $bottomColor =~ s/\s+$//;
-        $player->bottomColor($bottomColor);
-      }
-      if ($string =~ m/\\topcolor\\/)
-      {
-        my $topColor = $';
-        while ($topColor =~ /(.*)\\/) { $topColor = $1; }
-        $topColor =~ s/\s+$//;
-        $player->topColor($topColor);
-      }
+    }
+    else
+    {
+      $team = $self->findTeam("unknown");
+      $team->addPlayer($name);
+      $player->team($team);
+    }
+    if ($string =~ m/\\bottomcolor\\/)
+    {
+      my $bottomColor = $';
+      while ($bottomColor =~ /(.*)\\/) { $bottomColor = $1; }
+      $bottomColor =~ s/\s+$//;
+      $player->bottomColor($bottomColor);
+    }
+    if ($string =~ m/\\topcolor\\/)
+    {
+      my $topColor = $';
+      while ($topColor =~ /(.*)\\/) { $topColor = $1; }
+      $topColor =~ s/\s+$//;
+      $player->topColor($topColor);
     }    
   }
   elsif ($string =~ /^(.*) changed name to (.*)$/)
