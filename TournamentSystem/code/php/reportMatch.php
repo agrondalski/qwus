@@ -32,7 +32,6 @@ try
 
   $division_id = $_REQUEST['division_id'];
   $match_id    = $_REQUEST['match_id'];
-  $fileform    = $_REQUEST['fileform'];
 
   if ($_REQUEST['approved_step'])
     {
@@ -245,10 +244,26 @@ try
       echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='approved_step' value='1'>";
       echo "<input type='hidden' name='MAX_FILE_SIZE' value='9999999'/>";
-      echo "<input type='hidden' name='fileform' value='1'>";
       echo "<td><input type='file' name='filename'></td>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
       echo "</form>";
+
+      // Get a file from the local file server
+      if ($p->isSuperAdmin())
+	{
+	  echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
+	  echo "<form action='?a=reportMatch' method=post>";
+	  echo "<tr><td><b>Add local file:</b></td>";
+	  echo "<input type='hidden' name='tourney_id' value='$tid'>";
+	  echo "<input type='hidden' name='division_id' value='$division_id'>";
+	  echo "<input type='hidden' name='match_id' value='$match_id'>";
+	  echo "<input type='hidden' name='approved' value='$approved'>";
+	  echo "<input type='hidden' name='approved_step' value='1'>";
+	  echo "<input type='hidden' name='local_file' value='1'>";
+	  echo "<td><input type='text'   name='filename' maxlength='250' value='' size='25'></td>";
+	  echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
+	  echo "</form>";
+	}
       
       // Post to reportGames
       echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
@@ -260,16 +275,16 @@ try
       echo "<td><input type='submit' value='Okay' name='B1' class='button'></td></tr>";
       echo "</table></form>";
     }
+
   // *** PART 5
   if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
+      print 6;
       $uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);
 
       if (is_uploaded_file($_FILES['filename']['tmp_name']))
 	{
 	  echo "File ". $_FILES['filename']['name'] ." uploaded.\n";
-	  //echo "Displaying contents\n";
-	  //readfile($_FILES['filename']['tmp_name']);
 	}
       else
 	{
@@ -280,7 +295,7 @@ try
       if(!preg_match("/.gz$|.mvd$/i", $_FILES['filename']['name'])) 
 	{
 	  echo("You cannot upload this type of file.  It must be an <b>mvd or gz</b> file.");
-	  exit();
+	  util::throwException('invalid file') ;
 	}
 
       if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
@@ -290,6 +305,7 @@ try
       else 
 	{
 	  echo "Moving the file Failed!\n";
+	  util::throwException('file move failed') ;
 	}
 		
       $m = new match(array('match_id'=>$match_id));
@@ -308,6 +324,49 @@ try
       echo "<input type='hidden' name='match_id' value='$match_id'>";
       echo "<input type='hidden' name='approved' value='$approved'>";
       echo "<input type='hidden' name='filename' value ='$uploadfile'>";
+      echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
+      echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
+      echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
+      echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
+      echo "</table></form>";
+    }
+
+  if ($_REQUEST['local_file']==1 && $p->isSuperAdmin())
+    {
+      $localfile = util::UPLOAD_DIR . basename($_REQUEST['filename']) ;
+
+      if(!preg_match("/.gz$|.mvd$/i", $localfile))
+	{
+	  echo("You cannot upload this type of file.  It must be an <b>mvd or gz</b> file.");
+	  util::throwException('invalid file') ;
+	}
+
+      if (copy($_REQUEST['filename'], $localfile))
+	{
+	  echo "File was successfully moved for processing.\n";
+	} 
+      else 
+	{
+	  echo "Moving the file Failed!\n";
+	  util::throwException('file move failed') ;
+	}
+		
+      $m = new match(array('match_id'=>$match_id));
+      $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
+      $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+
+      echo "<hr>";
+      echo "<h2>Process your Demo</h2>";
+
+      // Post to mvdStats.pl page
+      echo "<form action='./perl/mvdStats.pl' method=post>";
+      echo "<table border=0 cellpadding=4 cellspacing=0>";
+      echo "<tr><td><b>Make it happen:</b></td>";
+      echo "<input type='hidden' name='tourney_id' value='$tid'>";
+      echo "<input type='hidden' name='division_id' value='$division_id'>";
+      echo "<input type='hidden' name='match_id' value='$match_id'>";
+      echo "<input type='hidden' name='approved' value='$approved'>";
+      echo "<input type='hidden' name='filename' value ='$localfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
       echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";

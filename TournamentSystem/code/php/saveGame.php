@@ -98,7 +98,7 @@ try
 	  if(!preg_match('/\\.(jpg|png|gif)$/i', $_FILES['filename']['name']))
 	    {
 	      echo("You cannot upload this type of file.  It must be a <b>png, jpg, or gif</b> file.");
-	      exit();
+	      util::throwException('invalid file') ;
 	    }
 
 	  if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
@@ -108,6 +108,7 @@ try
 	  else 
 	    {
 	      echo "Moving the file Failed!<br>\n";			
+	      util::throwException('file move failed') ;
 	    }
 	  
 	  //resize to 320x200
