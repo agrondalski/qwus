@@ -215,14 +215,34 @@ class tourney
       $p = new poll($a) ;
     }
 
-  public static function getAllTourneys()
+  public static function getAllTourneys($a)
     {
       $sql_str = sprintf('select t.tourney_id from tourney t') ;
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
-      while ($row=mysql_fetch_row($result))
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
 	{
-	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new tourney(array('tourney_id'=>$row['tourney_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new tourney(array('tourney_id'=>$row['tourney_id'])) ;
+	    }
 	}
 
       mysql_free_result($result) ;
@@ -286,6 +306,42 @@ class tourney
 	  foreach($sorted_arr as $row)
 	    {
 	      $arr[] = new division(array('division_id'=>$row['division_id'])) ;
+	    }
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
+  public function getGames($a)
+    {
+      $sql_str = sprintf("select g.* from division d, match_schedule ms, match_table m, game g
+                          where d.tourney_id=%d and d.division_id=ms.division_id and
+                                ms.schedule_id=m.schedule_id and m.match_id=g.match_id", $this->tourney_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
+
+      while ($row=mysql_fetch_assoc($result))
+	{
+	  if ($sort)
+	    {
+	      $arr[] = $row ;
+	    }
+	  else
+	    {
+	      $arr[] = new game(array('game_id'=>$row['game_id'])) ;
+	    }
+	}
+
+      if ($sort)
+	{
+	  $sorted_arr = util::row_sort($arr, $a) ;
+
+	  $arr = array() ;
+	  foreach($sorted_arr as $row)
+	    {
+	      $arr[] = new game(array('game_id'=>$row['game_id'])) ;
 	    }
 	}
 

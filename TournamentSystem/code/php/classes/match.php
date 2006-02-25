@@ -648,6 +648,21 @@ class match
       return $arr ;
     }
 
+  public function getDivision()
+    {
+      $sql_str = sprintf("select ms.division_id from match_table m, match_schedule ms
+                          where m.match_id=%d and m.schedule_id=ms.schedule_id", $this->match_id) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      if ($row=mysql_fetch_row($result))
+	{
+	  $arr = new division(array('division_id'=>$row[0])) ;
+	}
+
+      mysql_free_result($result) ;
+      return $arr ;
+    }
+
   public function getTeams()
     {
       return array(new team(array('team_id'=>$this->team1_id)), new team(array('team_id'=>$this->team2_id))) ;
