@@ -22,7 +22,8 @@ else
   {
     $mvd = $cgi->param('filename');
   }
-  elsif ($referer =~ /reportMatch/ || $referer =~ /recomputeGame/)
+  elsif ($referer =~ /reportMatch/ || $referer =~ /recomputeGame/
+                                   || $referer =~ /statCreation/)
   {
     $mvd = $cgi->param('filename');
     $teamOneAbbr = $cgi->param('team1');
