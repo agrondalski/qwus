@@ -3,7 +3,7 @@ use strict;
 use CGI qw/:standard/;
 use mvdReport;
 
-my $DEBUG = 1;
+my $DEBUG = 0;
 my $mvd = shift(@ARGV);
 my($pass_thru, $teamOneAbbr, $teamTwoAbbr,$teamOnePlayers,$teamTwoPlayers);
 my $cgi;
