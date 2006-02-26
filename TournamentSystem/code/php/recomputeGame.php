@@ -12,15 +12,16 @@ try
   if ($_REQUEST['all']==1)
     {
       $tourney_recompute = true ;
-      $m_recompute = 1 ;
 
       if (util::isNull($_REQUEST['tourney_id']))
 	{
 	  $global_recompute = true ;
+	  $m_recompute = 1 ;
 	}
       else
 	{
 	  $global_recompute = false ;
+	  $m_recompute = 2 ;
 	}
     }
   else
@@ -136,11 +137,12 @@ try
       if (util::isNull($max_gid))
 	{
 	  $pass_thru = $pass_thru . $g->getValue('game_id') . '\\\\' ;
+	  $m_recompute = 3 ;
 	}
       else
 	{
 	  $pass_thru = $pass_thru . $max_gid . '\\\\' ;
-	  $m_recompute = 1 ;
+	  $m_recompute = $_REQUEST['m_recompute'] ;
 	}
     }
 
@@ -180,10 +182,11 @@ try
 
   if (!$fail)
     {
-      $approved = $m->getValue('approved') ;
+      $approved   = $m->getValue('approved') ;
+      $match_date = $m->getValue('match_date') ;
       $g->deleteAll() ;
 
-      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\' . $ss_uploadfile . '\\\\' . $pass_thru . $m_recompute ;
+      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\' . $match_date . '\\\\' . $ss_uploadfile . '\\\\' . $pass_thru . $m_recompute ;
 
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post name=stats>";

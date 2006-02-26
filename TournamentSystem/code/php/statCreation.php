@@ -1,7 +1,7 @@
 <?php
 
 $vars = explode('\\\\', $_REQUEST['pass_thru']) ;
-if (count($vars)<8)
+if (count($vars)<9)
 {
   util::throwException('wrong number of parameters passed in') ;
 }
@@ -10,10 +10,11 @@ $tid          = $vars[0] ;
 $division_id  = $vars[1] ;
 $match_id     = $vars[2] ;
 $approved     = $vars[3] ;
-$ss_url       = $vars[4] ;
-$max_tid      = $vars[5] ;
-$max_gid      = $vars[6] ;
-$m_recompute  = $vars[7] ;
+$match_date   = $vars[4] ;
+$ss_url       = $vars[5] ;
+$max_tid      = $vars[6] ;
+$max_gid      = $vars[7] ;
+$m_recompute  = $vars[8] ;
 $_REQUEST['tourney_id'] = $tid ;
 
 require 'includes.php';
@@ -45,6 +46,11 @@ try
 				 'team1players'=>$_REQUEST['team1players'],
 				 'team2players'=>$_REQUEST['team2players']));
 
+      if (!util::isNull($match_date))
+	{
+	  $m->update('match_date', $match_date) ;
+	}
+
       echo "<b>Success!</b><br><br>";
 
       if (!util::isNull($_REQUEST['team_score_graph_small']))
@@ -53,7 +59,7 @@ try
 	  util::delete_files($tmp_dir) ;
 	}
 
-      if ($m_recompute==0)
+      if ($m_recompute!=1 && m_recompute!=2)
 	{
 	  echo "Game was added, click this link to add another game.";
 	}
@@ -64,7 +70,7 @@ try
       $error = true ;
     }
 
-  if ($m_recompute==0)
+  if ($m_recompute!=1 && m_recompute!=2)
     {
       echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved&amp;approved_step=1'>Report Match Page</a>";
       return ;
@@ -116,6 +122,7 @@ try
       echo "<input type='hidden' name='game_id' value='" . $next_game->getValue('game_id') . "'>";
       echo "<input type='hidden' name='max_tid' value='" . $max_tid . "'>";
       echo "<input type='hidden' name='max_gid' value='" . $max_gid . "'>";
+      echo "<input type='hidden' name='m_recompute' value='" . $m_recompute . "'>";
       echo "<td><input type='submit' value='Continue' name='B1' class='button'></td>";
       echo "</table></form>";
 
@@ -126,7 +133,7 @@ try
 	  echo "</script>\n";
 	}
     }
-  elseif ($m_recompute=1)
+  elseif ($m_recompute==1 || $m_recompute=2)
     {
       echo "<BR><b>All games successfully recomputed.!</b><br><br>";
     }
