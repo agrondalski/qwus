@@ -21,7 +21,25 @@ try
 
   $mode = $_REQUEST['mode'];
 
-  if ($mode=="delete")
+  if ($mode=="edit")
+    {
+      try
+	{
+	  $match_id = $_POST['match_id'];
+	  $m = new match(array('match_id'=>$match_id));
+
+	  $m->update('approved',$_POST['approved']);
+	  $m->update('match_date',$_POST['match_date']);
+
+	  $msg = "<br>Match updated!<br>";
+	}
+      catch (Exception $e)
+	{
+	  $msg = "<br>Error modifying!<br>";
+	}
+    }
+
+  elseif ($mode=="delete")
     {
       $match_id = $_REQUEST['match_id'];
       $m = new match(array('match_id'=>$match_id));
