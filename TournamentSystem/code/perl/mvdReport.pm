@@ -409,6 +409,8 @@ foreach my $string (@strings)
   {
     my $minutes = $1; 
     my $seconds = $2;
+    if (length($minutes) > 2 || length($seconds) > 2) { next; }
+
     my $oldMinutes = $self->{oldMinutes};
     my $oldSeconds = $self->{oldSeconds};
     while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
@@ -1497,6 +1499,8 @@ elsif ($string =~ /^(.*) rips (.*)/)
   {
     my $minutes = $1; 
     my $seconds = $2;
+    if (length($minutes) > 2 || length($seconds) > 2) { next; }
+
     my $oldMinutes = $self->{oldMinutes};
     my $oldSeconds = $self->{oldSeconds};
     while ($minutes =~ /^0(.*)/) { $minutes = $1; }    
