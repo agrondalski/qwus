@@ -49,13 +49,28 @@ class util
   const SELF_KILLS   = 'Self Kills';
   const TEAM_KILLS   = 'Team Kills';
   const FRAG_STREAK  = 'Frag Streak';
+  // Team Only Stats
+  const LG_ACCURACY 	= 'LG Accuracy';				 
+  const DIRECT_ROCKETS	= 'Direct Rockets';				 
+  const SSG_ACCURACY	= 'SSG Accuracy';				 
+  const SG_ACCURACY 	= 'SG Accuracy'; 				   								
+  const QUADS 			= 'Quads'; 				 
+  const PENTS 			= 'Pents'; 					 
+  const RINGS 			= 'Rings'; 						   								
+  const RED_ARMORS		= 'Red Armors';				 
+  const YELLOW_ARMORS 	= 'Yellow Armors'; 				 
+  const GREEN_ARMORS	= 'Green Armors';				   								
+  const DAMAGE_GIVEN	= 'Damage Given';				 
+  const DAMAGE_TAKEN	= 'Damage Taken';				   								
+  const MINUTESPLAYED 	= 'MinutesPlayed'; 				 
+  const MINUTESWITHLEAD = 'MinutesWithLead';	
 
   // QWCTF Stats
-  const CAPTURES	=  'Captures';
+  const CAPTURES	    =  'Captures';
   const CAPTURE_TIMES   =  'Capture Times' ;
   const CARRIER_DEFENDS =  'Carrier Defends';
   const FLAG_DEFENDS 	=  'Flag Defends';
-  const FLAG_DROPS	=  'Flag Drops';
+  const FLAG_DROPS	    =  'Flag Drops';
   const FLAG_RETURNS 	=  'Flag Returns';
   const FRAG_ASSISTS 	=  'Frag Assists';
   const RETURN_ASSISTS 	=  'Return Assists';
