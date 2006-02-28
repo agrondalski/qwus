@@ -1764,6 +1764,16 @@ if (@{$self->{graphTime}} != 0 && $self->{graphTime}[@{$self->{graphTime}} - 1] 
 {
   #kt pro
   push(@{$self->{graphTime}}, 0);
+  
+  if (values %{$self->{players}} == 2)
+  {
+    $team = $self->findTeam($self->{teamOneName});
+    $self->{teamOneScore} = 
+      $self->findTeam($self->{teamOneName})->points($self);
+    $self->{teamTwoScore} = 
+     $self->findTeam($self->{teamTwoName})->points($self);
+  }
+
   push(@{$self->{graphTeamOneScore}}, $self->{teamOneScore});
   push(@{$self->{graphTeamTwoScore}}, $self->{teamTwoScore});
 }
