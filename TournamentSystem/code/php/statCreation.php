@@ -59,7 +59,7 @@ try
 	  util::delete_files($tmp_dir) ;
 	}
 
-      if ($m_recompute!=1 && m_recompute!=2)
+      if ($m_recompute!=1 && $m_recompute!=2)
 	{
 	  echo "Game was added, click this link to add another game.";
 	}
@@ -70,7 +70,7 @@ try
       $error = true ;
     }
 
-  if ($m_recompute!=1 && m_recompute!=2)
+  if ($m_recompute!=1 && $m_recompute!=2)
     {
       echo "<br><br><a href='?a=reportMatch&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;approved=$approved&amp;approved_step=1'>Report Match Page</a>";
       return ;
@@ -133,7 +133,7 @@ try
 	  echo "</script>\n";
 	}
     }
-  elseif ($m_recompute==1 || $m_recompute=2)
+  elseif ($m_recompute==1 || $m_recompute==2)
     {
       echo "<BR><b>All games successfully recomputed.!</b><br><br>";
     }
