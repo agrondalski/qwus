@@ -182,11 +182,12 @@ try
 
   if (!$fail)
     {
+      $game_id    = $g->getValue('game_id') ;
       $approved   = $m->getValue('approved') ;
       $match_date = $m->getValue('match_date') ;
       $g->deleteAll() ;
 
-      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\' . $match_date . '\\\\' . $ss_uploadfile . '\\\\' . $pass_thru . $m_recompute ;
+      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\' . $match_date . '\\\\' . $game_id . '\\\\' . $ss_uploadfile . '\\\\' . $pass_thru . $m_recompute ;
 
       // Post to mvdStats.pl page
       echo "<form action='./perl/mvdStats.pl' method=post name=stats>";

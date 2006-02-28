@@ -296,6 +296,23 @@ class game
       return true ;
     }
 
+  public function hasDemo()
+    {
+      $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
+
+      $sql_str = sprintf("select f.* from file_table f where f.id=%d and f.file_type='%s' and f.file_desc='%s'", $this->game_id, $ftype, util::MVD_DEMO) ;
+      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+
+      $retval = false ;
+      if ($row=mysql_fetch_assoc($result))
+	{
+	  $retval = true ;
+	}
+
+      mysql_free_result($result) ;
+      return $retval ;
+    }
+
   public function getScreenshot($fileloc)
     {
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;

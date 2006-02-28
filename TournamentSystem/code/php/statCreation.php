@@ -1,7 +1,7 @@
 <?php
 
 $vars = explode('\\\\', $_REQUEST['pass_thru']) ;
-if (count($vars)<9)
+if (count($vars)<10)
 {
   util::throwException('wrong number of parameters passed in') ;
 }
@@ -11,10 +11,11 @@ $division_id  = $vars[1] ;
 $match_id     = $vars[2] ;
 $approved     = $vars[3] ;
 $match_date   = $vars[4] ;
-$ss_url       = $vars[5] ;
-$max_tid      = $vars[6] ;
-$max_gid      = $vars[7] ;
-$m_recompute  = $vars[8] ;
+$game_id      = $vars[5] ;
+$ss_url       = $vars[6] ;
+$max_tid      = $vars[7] ;
+$max_gid      = $vars[8] ;
+$m_recompute  = $vars[9] ;
 $_REQUEST['tourney_id'] = $tid ;
 
 require 'includes.php';
@@ -76,29 +77,50 @@ try
       return ;
     }
 
+  // Find the next game to recompute.  Make sure it has a demo.
   $done   = true ;
   $next_t = new tourney(array('tourney_id'=>$tid)) ;
   $games  = $next_t->getGames(array('game_id', SORT_ASC)) ;
 
-  $next_game  = $games[0] ;
+  $g_cnt = 0 ;
+  while ($g_cnt<count($games))
+    {
+      $next_game = $games[$g_cnt++] ;
+
+      if ($next_game->getValue('game_id')>$game_id && $next_game->getValue('game_id')<=$max_gid && $next_game->hasDemo())
+	{
+	  break ;
+	}
+
+      $next_game = null ;
+    }
 
   if ((util::isNull($next_game) || $next_game->getValue('game_id') > $max_gid))
     {
       $tours = tourney::getAllTourneys(array('tourney_id', SORT_ASC)) ;
-      $cnt = 0 ;
+      $t_cnt = 0 ;
 
-      while($done && $cnt<(count($tours)))
+      while($done && $t_cnt<(count($tours)))
 	{
-	  $next_t = $tours[$cnt++] ;
+	  $next_t = $tours[$t_cnt++] ;
 
-	  if ($next_t->getValue('tourney_id')<=$max_tid && $next_t->getValue('tourney_id') > $tid)
+	  if ( $next_t->getValue('tourney_id') > $tid && $next_t->getValue('tourney_id')<=$max_tid)
 	    {
 	      $games = $next_t->getGames(array('game_id', SORT_ASC)) ;
-	      if (count($games)!=0)
+
+	      $g_cnt = 0 ;
+	      while ($g_cnt<count($games))
 		{
-		  $done = false ;
-		  $next_game = $games[0] ;
-		  $max_gid = $games[count($games)-1]->getValue('game_id') ;
+		  $next_game = $games[$g_cnt++] ;
+		  
+		  if ($next_game->hasDemo())
+		    {
+		      $done = false ;
+		      $max_gid = $games[count($games)-1]->getValue('game_id') ;
+		      break ;
+		    }
+
+		  $next_game = null ;
 		}
 	    }
 	}
