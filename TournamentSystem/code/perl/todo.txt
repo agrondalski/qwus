@@ -10,8 +10,6 @@ perl todo:
 
  player minutes played ( * left the game) could be seconds for ctf
 
- ask dew about global recompute possibility (or maybe just per tourney)
-
  optimize convertAscii.sed
 
  cleanup pie chart output.  make piechart filename an actual player member
@@ -37,4 +35,6 @@ perl todo:
 
  zipfile support (have to list contents and grab filename?)
 
-  
+ real playoff functionality
+
+ do disconnected players still work right after adding duel support?

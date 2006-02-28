@@ -2177,7 +2177,7 @@ sub complementColor
 
 sub calculateTeamColors
 {
-my $self = shift;
+  my $self = shift;
   my $teams = $self->{teams};
   foreach my $team (@{$teams})
   {
@@ -2186,7 +2186,10 @@ my $self = shift;
     foreach my $player (@teamPlayers)
     {
       $player = $self->findPlayer($player);
-      push(@colors, $player->bottomColor);
+      if (defined($player->bottomColor)) 
+      {
+	push(@colors, $player->bottomColor);
+      }
     }
     @colors = reverse(sort(@colors));
     my($modeColor,$modeCount,$currentColor,$currentCount) = (0,0,0,0);
