@@ -14,7 +14,7 @@ use CGI qw/:standard/;
 #    $teamTwoPlayers = $cgi->param('team2players');
 
 #playerscoregraph
-my $cgi;
+my $cgi = new CGI;
 my $graphlabels = $cgi->param('graphlabels');#"1,2,3";
 my $datapoints = $cgi->param('datapoints');#"10,20,50;5,5,40;8,27,39";
 my $datalabels = $cgi->param('datalabels');#"Larry,Moe,Curly";
