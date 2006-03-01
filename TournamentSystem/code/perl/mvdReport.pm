@@ -169,10 +169,10 @@ foreach my $string (@strings)
 		}
 		else{print "doesnt exist $1\tString $string\n";}
 	}
-	elsif($string =~ /^\s(tries|discharges|visits|burst|turned|fell|suicides)/){
+	elsif($string =~ /^\s(tries|discharges|visits|burst|turned|fell|suicides|returned|got|defends|lost|gets)\s(.*?)/){
 	$fraggee = $self->findPlayer($oldString);
 		if (exists($funcs->{$1})){
-    		$funcs->{$1}->($fraggee,$fragger);
+    		$funcs->{$1}->($fraggee,$2);
 		}
 		else{print "doesnt exist $1\tString $string\n";}
 	}
@@ -207,37 +207,7 @@ foreach my $string (@strings)
       		$fragger->carrierFragsNoBonus($fragger->carrierFragsNoBonus() + 1);
     		}
  	}
-	elsif ($string =~ /^ returned the/)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-   	$fragger->flagReturns($fragger->flagReturns() + 1);
-  	}
-	elsif ($string =~ /^ got the /)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-    	$fragger->flagPickups($fragger->flagPickups() + 1);
-  	}
-	elsif ($string =~ /^ defends the/)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-    	$fragger->flagDefends($fragger->flagDefends() + 1);
-  	}
-  	
-  	elsif ($string =~ /^ lost the/)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-    	$fragger->flagDrops($fragger->flagDrops() + 1);
-  	}
-	elsif ($string =~ /^ gets an assist for returning his flag/)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-    	$fragger->returnAssists($fragger->returnAssists() + 1);
-  	}
-  	elsif ($string =~ /^ gets an assist for fragging/)
-  	{
-    	$fragger = $self->findPlayer($oldString);
-    	$fragger->fragAssists($fragger->fragAssists() + 1);
-  	}
+	
   	elsif ($string =~ /^ was telefragged by his teammate/) 
   	{
     # this seems to have no effect on score in ktpro ??
@@ -740,37 +710,37 @@ for (my $i = 0; $i <= $time; $i++)
 sub initFuncHash
 {
 #replace 1's with functions
-my %func = (	'rides' 	=> \&RL,
-				'accepts'	=> \&LG,
-				'chewed'	=> \&SG,
-				'ate'		=> \&SSG,
-				'squishes'  	=> \&SQUISH,
-				'rips'		=> \&RL,
-				'eats'		=> \&GL,
-				'smeared'	=> \&RL,
-				'brutalized'	=> \&RL,
-				'grenade'	=> \&GL,
-				'rocket'	=> \&RL,
-				'punctured'	=> \&SNG,
-				'nailed'	=> \&NG,
-				'ax-murdered'	=> \&AX,
-				#'squished'	=> \&BORED,
-				'bored'		=> \&BORED,
-				'cratered'	=> \&BORED,
-				'sleeps'	=> \&BORED,
-				'sucks'		=> \&BORED,
-				'gulped'	=> \&BORED,
-				'cant'		=> \&BORED,
-				'tried'		=> \&BORED,
-				'died'		=> \&BORED,
-				'tries'		=> \&BORED,
-				'discharges'	=> \&BORED,
-				'visits'	=> \&BORED,
-				'burst'		=> \&BORED,
-				'turned'	=> \&BORED,
-				'fell'		=> \&BORED,
-				'spiked'	=> \&BORED,
-				'suicides'	=> \&BORED,
+my %func = (			'rides' 	=> \&RL,#
+				'accepts'	=> \&LG,#2
+				'chewed'	=> \&SG,#
+				'ate'		=> \&SSG,#
+				'squishes'  	=> \&SQUISH,#
+				'rips'		=> \&RL,#
+				'eats'		=> \&GL,#
+				'smeared'	=> \&RL,#
+				'brutalized'	=> \&RL,#
+				'grenade'	=> \&GL,#
+				'rocket'	=> \&RL,#
+				'punctured'	=> \&SNG,#
+				'nailed'	=> \&NG,#
+				'ax-murdered'	=> \&AX,#
+				'squished'	=> \&TK,
+				'bored'		=> \&rocketBORE,
+				'cratered'	=> \&fallBORE,
+				'sleeps'	=> \&waterBORE,
+				'sucks'		=> \&waterBORE,
+				'gulped'	=> \&slimeBORE,
+				'cant'		=> \&slimeBORE,
+				'tried'		=> \&miscBORE,
+				'died'		=> \&miscBORE,
+				'tries'		=> \&grenadeBORE,
+				'discharges'	=> \&dischargeBORE,
+				'visits'	=> \&lavaBORE,
+				'burst'		=> \&lavaBORE,
+				'turned'	=> \&lavaBORE,
+				'fell'		=> \&fallBORE,
+				'spiked'	=> \&miscBORE,
+				'suicides'	=> \&suicideBORE,
 				'telefragged'	=> \&TELEFRAG,
 				'loses'		=> \&RL,
 				'mows'		=> \&TK,
@@ -783,26 +753,76 @@ my %func = (	'rides' 	=> \&RL,
 				'disemboweled'	=> \&GD,
 				#'captured'	=> \&RL,
 #				'killed'	=> \&RL,
-#				'returned'	=> \&RL,
-#				'got'		=> \&RL,
-#				'defends'	=> \&RL,
+				'returned'	=> \&RL,
+				'got'		=> \&RL,
+				'defends'	=> \&RL,
 #				'flag'		=> \&RL,
-#				'lost'		=> \&RL,
-#				'Quad'		=> \&RL,
-#				'flag'		=> \&RL, 
+				'lost'		=> \&RL,
 				'destroyed'	=> \&RL,
 				'shaft'		=> \&LG,
 				'gibbed'	=> \&RGL,
 				#'discharge'	=> \&LG,
 				'buckshot'	=> \&SSG,
-				'pineapple'	=> \&GL
-				#'gets'		=> \&LG,
+				'pineapple'	=> \&GL,
+				'gets'		=> \&LG,
 				);
 				
 return \%func;
 }
+sub flagReturn{
+my $fragger = shift;
+$fragger->flagReturns($fragger->flagReturns() + 1);
+}
+sub flagPickup{
+my $fragger = shift;
+$fragger->flagPickups($fragger->flagPickups() + 1);
+}  	
+sub flagDefend{
+my $fragger = shift;
+$fragger->flagPickups($fragger->flagPickups() + 1);
+}
+sub flagDrop{
+my $fragger = shift;
+$fragger->flagPickups($fragger->flagPickups() + 1);
+}
+sub flagReturnAssist{
+my $fragger = shift;
+$fragger->flagPickups($fragger->flagPickups() + 1);
+}
+sub fragAssist{
+my $fragger = shift;
+$fragger->flagPickups($fragger->flagPickups() + 1);
+}
+sub lost {
+my $fragger = shift;
+my $string = shift;
+if(defined($string) && $string =~ /^the.*?flag/){
+flagDrop($fragger);
+}
+}
+sub gets {
+my $fragger = shift;
+my $string = shift;
+if($string =~ /an.*?returning/){
+flagReturnAssist($fragger);
+}
+elsif($string =~ /an.*?fragging/){
+fragAssist($fragger);
+}
+}  	
+ 	
 sub RGL{
-
+my $fraggee = shift;
+my $fragger = shift;
+my $weapon = shift;
+if($weapon =~/grenade/){
+$fraggee->grenadeDeaths($fraggee->grenadeDeaths() + 1);
+$fragger->grenadeFrags($fragger->grenadeFrags() + 1);
+}
+elsif($weapon =~/rocket/){
+$fraggee->rocketDeaths($fraggee->rocketDeaths() + 1);
+$fragger->rocketFrags($fragger->rocketFrags() + 1);
+}
 } 
 sub RL{
 my $fraggee = shift;
@@ -880,17 +900,45 @@ my $fragger = shift;
 $fraggee->squishDeaths($fraggee->squishDeaths() + 1);
 $fragger->squishFrags($fragger->squishFrags() + 1);
 }
-sub BORE{
-#$fraggee->rocketBores($fraggee->rocketBores() + 1);
-#$fraggee->grenadeBores($fraggee->grenadeBores() + 1);
-#$fraggee->dischargeBores($fraggee->dischargeBores() + 1);
-#$fraggee->lavaBores($fraggee->lavaBores() + 1);
-#$fraggee->squishBores($fraggee->squishBores() + 1);
-#$fraggee->fallBores($fraggee->fallBores() + 1);
-#$fraggee->waterBores($fraggee->waterBores() + 1);
-#$fraggee->slimeBores($fraggee->slimeBores() + 1);
-#$fraggee->miscBores($fraggee->miscBores() + 2);
-#$fraggee->miscBores($fraggee->miscBores() + 1);
+sub rocketBORE{
+my $fraggee = shift;
+$fraggee->rocketBores($fraggee->rocketBores() + 1);
+}
+sub grenadeBORE{
+my $fraggee = shift;
+$fraggee->grenadeBores($fraggee->grenadeBores() + 1);
+}
+sub dischargeBORE{
+my $fraggee = shift;
+$fraggee->dischargeBores($fraggee->dischargeBores() + 1);
+}
+sub lavaBORE{
+my $fraggee = shift;
+$fraggee->lavaBores($fraggee->lavaBores() + 1);
+}
+sub squishBORE{
+my $fraggee = shift;
+$fraggee->squishBores($fraggee->squishBores() + 1);
+}
+sub fallBORE{
+my $fraggee = shift;
+$fraggee->fallBores($fraggee->fallBores() + 1);
+}
+sub wallBORE{
+my $fraggee = shift;
+$fraggee->waterBores($fraggee->waterBores() + 1);
+}
+sub slimeBORE{
+my $fraggee = shift;
+$fraggee->slimeBores($fraggee->slimeBores() + 1);
+}
+sub suicideBORE{
+my $fraggee = shift;
+$fraggee->miscBores($fraggee->miscBores() + 2);
+}
+sub miscBORE{
+my $fraggee = shift;
+$fraggee->miscBores($fraggee->miscBores() + 1);
 }
 sub TK{
 my $fragger = shift;
