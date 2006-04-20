@@ -202,7 +202,7 @@ class player
 
   public static function getPlayersWithColumns()
     {
-      $sql_str = sprintf('select p.player_id from player p where hasColumn=1') ;
+      $sql_str = sprintf("select p.player_id, MAX(n.news_date) from player p, news n where p.hasColumn=1 and p.player_id=n.writer_id and n.news_type='Column' group by p.player_id order by n.news_date desc");
       $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       while ($row=mysql_fetch_row($result))

@@ -59,7 +59,7 @@ try
   // add new
   else
     {
-      if ($tm->hasPlayer($tid, $player_id) == false && ($t->getValue('status')==tourney::STATUS_SIGNUPS || !util::isLoggedInAsTeam()))
+      if ($tm->hasPlayer($tid, $player_id) == false && ($t->getValue('status')=='Signups' || !util::isLoggedInAsTeam()))
 	{
 	  try
 	    {

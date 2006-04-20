@@ -31,11 +31,13 @@ try
 			       'irc_channel'=>$_POST['irc_channel'],
 			       'location_id'=>$_POST['location_id'],
 			       'password'=>$pw,
-			       'approved'=>0));
+			       'approved'=>1));
 
-	  $msg = "<b>New team created!</b><p>You can login with your team once you receive an email that your team was approved by an admin.";
+	  $msg = "<b>New team created!</b><p>You can now login to <b>quakeworld.us</b> with your team.";
 	  $msg .= "&nbsp;&nbsp;Once logged in you should be able to sign up for tournaments, create players, and assign players to your team.";
-	  $msg .= "&nbsp;&nbsp;Thank you for registering!";
+      $msg .= "&nbsp;&nbsp;If a player already exists in the qw.us system, you don't need to create that player again, just assign them to ";
+      $msg .= "your team roster for your league.";
+      $msg .= "&nbsp;&nbsp;Thank you for registering!";
 	}
     }
   catch (Exception $e)

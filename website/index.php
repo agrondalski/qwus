@@ -145,11 +145,11 @@ catch(Exception $e) {}
 				for ($i=0; $i<count($columns); $i++)
 				{
 				  $w = $columns[$i] ;
-				  $d = $w->getLastNewsColumnDate() ;
-				  $name = '<SMALL>' . substr($w->getValue("name") . ' ' . substr($d,5), 0, 15) . '</SMALL>' ;
-
+				  $d = $w->getLastNewsColumnDate();
+				  $d2 = substr($d,5);
+				  $name = '<SMALL>'.$d2.' '.$w->getValue("name").'</SMALL>' ;
 				  print '<TR id="column' . $i. '" class=submenu>
-                                             <TD><a href="?a=home&amp;column=' . $w->getValue("name") . '"><img src="img/red.gif" alt="">' . $name . '</a></TD>
+                                             <TD nowrap><a href="?a=home&amp;column=' . $w->getValue("name") . '">' . $name . '</a></TD>
 					</TR>';
 				}
 				?>
@@ -163,13 +163,37 @@ catch(Exception $e) {}
 				</TR>
 				
 				<TR>
-					<TD><a href="?a=home&amp;tourney_id=1">NA NQR 2</a></TD>
+					<TD><A href="#">Leagues</A></TD>
+				</TR>
+
+				<TR>
+					<TD><a href="?a=home&amp;tourney_id=6"><SMALL>PIC III</SMALL></a></TD>
+				</TR>
+
+				<TR>
+					<TD><a href="?a=home&amp;tourney_id=1"><SMALL>NA NQR 2</SMALL></a></TD>
+				</TR>
+
+				<TR>
+					<TD><a href="?a=home&amp;tourney_id=2"><SMALL>Rampage CTF 06</SMALL></a></TD>
 				</TR>
 				
 				<TR>
-					<TD><a href="?a=home&amp;tourney_id=2">Rampage CTF</a></TD>
+					<TD><a href="?a=home&amp;tourney_id=4"><SMALL>Rampage CTF 05</SMALL></a></TD>
 				</TR>
 				
+				<?php
+					#foreach (tourney::getAllTourneys() as $t)
+					#{
+					#	if ($p->isSuperAdmin() || $p->isTourneyAdmin($t->getValue('tourney_id')))
+					#	{
+					#		echo '<tr class=submenu id="tourney'.$i'">';
+					#		echo "<td nowrap class=submenu><a href='?a=home&amp;tourney_id=".$t->getValue('tourney_id')."'><SMALL>" . $t->getValue('name') . "</SMALL></a></td>\n";
+					#		echo "</tr>\n";
+					#	}
+					#}
+				?>
+								
 				<TR>
 					<TD class="menuBreak"></TD>
 				</TR>

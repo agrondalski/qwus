@@ -68,6 +68,9 @@ try
       echo "<tr><td><a href='?a=manageTeam&amp;mode=edit&amp;team_id=" . $_SESSION['team_id'] . "'> Manage Team</a></td>";
       echo "<td><a href='?a=managePlayer'>Create Player</a></td></tr>";
       echo "</tr></table>" ;
+      echo "<p>Click <i>Select Tourney</i> to sign up for leagues/tourneys and Assign existing players to your league rosters.  If a player has been in a tourney at quakeworld.us ";
+      echo "before, you do NOT need to re-add them.  Simply Assign them to your team roster (for the correct league).  If you need to create new players, use ";
+      echo "the <i>Create Player</i> link. ";
     }
 }
 catch(Exception $e) {}
