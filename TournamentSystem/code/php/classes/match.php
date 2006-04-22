@@ -281,14 +281,13 @@ class match
 	  $team2_stats[$h] = $team2_stats_arr[$cnt] ;
 	}
 
+      /*
       $teamMatch = util::stringMatch(array($team1_stats['Name'], $team2_stats['Name']),
 				     array($team1->getValue('name_abbr'), $team2->getValue('name_abbr'))) ;
+      */
 
-      if ($this->getTourney()->getGameType()->getValue('name') == 'qwctf')
-	{
-	  $teamMatch = util::matchTeamsByPlayers($team1, $team2, array($team1_stats['Name'], $team2_stats['Name']),
-						 $team1_game_players, $team2_game_players, $t->getValue('tourney_id')) ;
-	}
+      $teamMatch = util::matchTeamsByPlayers($team1, $team2, array($team1_stats['Name'], $team2_stats['Name']),
+					     $team1_game_players, $team2_game_players, $t->getValue('tourney_id')) ;
 
       // If needed swap the teams
       if ($teamMatch[$team1_stats['Name']] == $team2->getValue('name_abbr'))
