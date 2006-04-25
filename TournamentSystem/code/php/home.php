@@ -129,7 +129,7 @@ if (!$column)
   // General News
   if ($morenews)
     {
-      $bottom = '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .'</P>' ;
+      $bottom = '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .' - <a href="?a=newsarchive">News Archive</a></P>' ;
     }
 
   // Archive News
@@ -143,7 +143,7 @@ else
   // Column
   if ($printed>0)
     {
-      //$bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
+       $bottom = '<P><a href="?a=newsarchive&amp;column='.$_GET['column'].'">Column Archive</a>';//$bottom = '<P><A href="?a=newsarchive&amp;column=' .  $_GET['column'] . '">column archive</A></P>' ;
     }
   else
     {

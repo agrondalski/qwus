@@ -4,7 +4,8 @@
 </TR>
 <TR>
 	<TD>
-		<A href="http://www.quakeworld.nu" TARGET="_blank">quakeworld.nu</A> - [Temporarily Down] European quakeworld community<BR>
+		<A href="http://www.quakeworld.nu" TARGET="_blank">quakeworld.nu</A> - European quakeworld community<BR>
+		<A href="http://www.besmella-quake.com" TARGET="_blank">besmella-quake.com</A> - Quakeworld news & community<BR>
                 <A href="http://www.quakeworld.ru" TARGET="_blank">quakeworld.ru</A> - Russian quakeworld community<BR>
                 <A href="http://www.quakebrasil.com" TARGET="_blank">quakebrasil.com</A> - Brazilian quakeworld community<BR>
                 <A href="http://www.quakeservers.net" TARGET="_blank">quakeservers.net</A> - Quakeworld Server Listings<BR>
