@@ -24,11 +24,14 @@ try
       util::throwException('not authorized') ;
     }
 
-  if (!util::isNull($tm))
-    {
-      echo '<br>Matches currently have to be reported by an admin.' ;
-      util::throwException('not authorized') ;
-    }
+  //
+  // This is commented out so teams have the right to report matches
+  //
+  //if (!util::isNull($tm))
+  //  {
+  //    echo '<br>Matches currently have to be reported by an admin.' ;
+  //    util::throwException('not authorized') ;
+  //  }
 
   $division_id = $_REQUEST['division_id'];
   $match_id    = $_REQUEST['match_id'];

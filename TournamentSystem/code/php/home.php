@@ -129,7 +129,13 @@ if (!$column)
   // General News
   if ($morenews)
     {
-      $bottom = '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .' - <a href="?a=newsarchive">News Archive</a></P>' ;
+		if (!util::isNull($_REQUEST['tourney_id']))
+		{
+		  $l = '&amp;tourney_id=' . $_REQUEST['tourney_id'] ;
+		} else {
+		  $l = '';
+		}
+	  $bottom = '<P class="gray">viewing news ' . $c . '-' . $printed . ' of ' . $count .' - <a href="?a=newsarchive'.$l.'">News Archive</a></P>' ;
     }
 
   // Archive News
