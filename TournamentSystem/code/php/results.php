@@ -44,7 +44,7 @@ foreach ($t->getDivisions() as $div)
 	    }
 	  else
 	    {
-	      echo "<td>&nbsp;" ;
+	      echo "<td>" ;
 	    }
 
 	  if ($wid == $m->getValue('team1_id') && $m->getValue('approved'))

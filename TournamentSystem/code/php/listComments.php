@@ -57,7 +57,7 @@ try
   echo "</td></tr>";
   echo "</table>" ;
   echo "</form>" ;
-  echo "<small>(Abuse of comments can get you banned!)</small>";
+  echo "<small><br>Use [b]text[/b] for bold and [p] for new paragraphs.<br>(Abuse of comments can get you banned!)</small>";
 }
 catch (Exception $e) {}
 ?>

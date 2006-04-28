@@ -136,7 +136,7 @@ foreach ($tm->getMatches($tid) as $m)
     }
   else
     {
-      echo "<td>&nbsp;" ;
+      echo "<td>" ;
     }
 
   if ($wid == $m->getValue('team1_id') && $m->getValue('approved'))

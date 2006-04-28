@@ -152,7 +152,11 @@ try
   echo "<option value='frags'  $fsel>Frag Stats";
   echo "<option value='deaths' $dsel>Death Stats";
   echo "<option value='bores'  $bsel>Bore Stats";
-  echo "<option value='ctf'  $csel>CTF Stats";
+  
+  // ONLY if this game_type is CTF, show the CTF option
+  if ($t->getValue('game_type_id') == 2) {
+   	echo "<option value='ctf'  $csel>CTF Stats";
+  }
   echo "</select></td><td>&nbsp;&nbsp;</td>";
 
   // Pick a map if you like
