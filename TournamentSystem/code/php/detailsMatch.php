@@ -25,6 +25,7 @@ $m = new match(array('match_id'=>$match_id));
 
 if (!$m->getValue('approved') && (util::isNull($p) || (!$p->isSuperAdmin() && !$p->isTourneyAdmin($t->getValue('tourney_id')))))
 {
+  echo "Match has not been approved by an admin yet.";
   util::throwException('Match has not been approved yet') ;
 }
 

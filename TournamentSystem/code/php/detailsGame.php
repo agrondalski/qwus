@@ -36,6 +36,7 @@ catch(Exception $e) {}
 
 if (!$m->getValue('approved') && (util::isNull($p) || (!$p->isSuperAdmin() && !$p->isTourneyAdmin($t->getValue('tourney_id')))))
 {
+  echo "Match has not been approved by an admin yet - Game not viewable.";
   util::throwException('Game has not been approved yet') ;
 }
 

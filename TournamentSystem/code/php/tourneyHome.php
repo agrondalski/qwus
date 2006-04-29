@@ -48,7 +48,7 @@ try
       echo "</tr>";
       echo "<tr>";
       echo "<td><a href='?a=assignMapsToTourney&tourney_id=$tid'>Assign Maps to Tourney</a></td>";
-      echo "<td>&nbsp;</td>";
+      echo "<td><a href='?a=matchStatus&tourney_id=$tid'>Match Status Page</a></td>";
       echo "<tr>";
       echo "<td><a href='?a=assignAdminsToTourney&tourney_id=$tid'>Assign Admins to Tourney</a></td>";
       echo "<td>:O</td>";
