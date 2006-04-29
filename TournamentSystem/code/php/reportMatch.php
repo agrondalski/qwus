@@ -71,15 +71,11 @@ try
   
   // DEBUG
   
-  echo 'files'.$_FILES['filename']['size']."<br>";
-  echo 'approved'.$approved."<br>";
-  echo 'match_id'.$match_id."<br>";
-  echo 'div'.$div."<br>";
-  
-  
-  
-  
-  
+  //echo 'files'.$_FILES['filename']['size']."<br>";
+  //echo 'approved'.$approved."<br>";
+  //echo 'match_id'.$match_id."<br>";
+  //echo 'div'.$div."<br>";
+
   // END DEBUG  
 
   // *** PART 1
