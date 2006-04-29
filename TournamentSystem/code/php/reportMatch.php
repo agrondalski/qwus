@@ -68,6 +68,19 @@ try
     }
   
   echo "<br>";
+  
+  // DEBUG
+  
+  echo 'files'.$_FILES['filename']['size']."<br>";
+  echo 'approved'.$approved."<br>";
+  echo 'match_id'.$match_id."<br>";
+  echo 'div'.$div."<br>";
+  
+  
+  
+  
+  
+  // END DEBUG  
 
   // *** PART 1
   echo "<h2>Report a Match</h2>";
@@ -252,21 +265,31 @@ try
       echo "</form>";
 
       // Get a file from the local file server
-      if ($p->isSuperAdmin())
-	{
-	  echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
-	  echo "<form action='?a=reportMatch' method=post>";
-	  echo "<tr><td><b>Add local file:</b></td>";
-	  echo "<input type='hidden' name='tourney_id' value='$tid'>";
-	  echo "<input type='hidden' name='division_id' value='$division_id'>";
-	  echo "<input type='hidden' name='match_id' value='$match_id'>";
-	  echo "<input type='hidden' name='approved' value='$approved'>";
-	  echo "<input type='hidden' name='approved_step' value='1'>";
-	  echo "<input type='hidden' name='local_file' value='1'>";
-	  echo "<td><input type='text'   name='filename' maxlength='250' value='' size='25'></td>";
-	  echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
-	  echo "</form>";
-	}
+  try 
+    {
+    	if (!util::isLoggedInAsTeam())
+		{
+			if ($p->isSuperAdmin())
+			{
+			  echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
+			  echo "<form action='?a=reportMatch' method=post>";
+			  echo "<tr><td><b>Add local file:</b></td>";
+			  echo "<input type='hidden' name='tourney_id' value='$tid'>";
+			  echo "<input type='hidden' name='division_id' value='$division_id'>";
+			  echo "<input type='hidden' name='match_id' value='$match_id'>";
+			  echo "<input type='hidden' name='approved' value='$approved'>";
+			  echo "<input type='hidden' name='approved_step' value='1'>";
+			  echo "<input type='hidden' name='local_file' value='1'>";
+			  echo "<td><input type='text'   name='filename' maxlength='250' value='' size='25'></td>";
+			  echo "<td><input type='submit' value='Submit' name='B1' class='button'></td></tr>";
+			  echo "</form>";
+			}
+		}
+	} 
+	catch (Exception $e) 
+    {
+      // Craps out when logged in as a team for some reason :/
+    }
       
       // Post to reportGames
       echo "<tr><td colspan=3 align=center><b>OR</b></td></tr>";
@@ -280,6 +303,7 @@ try
     }
 
   // *** PART 5
+  //if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
   if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
     {
       $uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);

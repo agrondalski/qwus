@@ -33,7 +33,11 @@ try
   echo "<br><b>Current Games:</b><br>";
   echo "<table border=1 cellpadding=2 cellspacing=0>\n";
   echo "<th>Map</th><th>",$t1->getValue('name_abbr')," Score</th><th>",$t2->getValue('name_abbr')," Score</th>";
-  echo "<th>Edit</th><th>Delete</th><th>Recompute</th><th>Game Details</th>";
+  echo "<th>Edit</th><th>Delete</th>";
+  if (!util::isLoggedInAsTeam()) {
+  	echo "<th>Recompute</th>";
+  }
+  echo "<th>Game Details</th>";
 
   foreach ($m->getGames() as $g)
     {
@@ -46,10 +50,11 @@ try
       echo "Edit</a></td>";
       echo "<td><a href='?a=saveGame&amp;tourney_id=$tid&amp;mode=delete&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
       echo "Delete</a></td>";
-      echo "<td><a href='?a=recomputeGame&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
-      echo "Recompute</a></td>";
+      if (!util::isLoggedInAsTeam()) {
+      	echo "<td><a href='?a=recomputeGame&amp;tourney_id=$tid&amp;division_id=$division_id&amp;match_id=$match_id&amp;game_id=",$g->getValue('game_id'),"'>";
+        echo "Recompute</a></td>";
+      }
       echo "<td><a href='?a=detailsGame&amp;tourney_id=" . $t->getValue('tourney_id') . "&amp;division_id=$division_id&amp;match_id=" . $m->getValue('match_id'). "&amp;game_id=" . $g->getValue('game_id') . "'>Details</a><p></td>";
-
       echo "\t</tr>\n";
     }
   echo "</table>\n";
