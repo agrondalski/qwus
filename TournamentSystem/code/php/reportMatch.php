@@ -24,15 +24,6 @@ try
       util::throwException('not authorized') ;
     }
 
-  //
-  // This is commented out so teams have the right to report matches
-  //
-  //if (!util::isNull($tm))
-  //  {
-  //    echo '<br>Matches currently have to be reported by an admin.' ;
-  //    util::throwException('not authorized') ;
-  //  }
-
   $division_id = $_REQUEST['division_id'];
   $match_id    = $_REQUEST['match_id'];
 
@@ -202,6 +193,7 @@ try
 	}
 
       echo "<h2>Match Details</h2>";
+      echo "<p>Your match must be approved by an admin after you've submitted your MVD's and Screenshot's.  Click 'Okay' to continue.</p>";
       echo "<form action='?a=reportMatch' method=post>";
       echo "<table border=0 cellpadding=2 cellspacing=0>";
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
@@ -245,7 +237,7 @@ try
 	}
       echo "<hr>";
       echo "<h2>Add Game Data</h2>";
-      
+      echo "<p>This step allows you to upload MVD files invididually (*.mvd or *.gz or *.bz2).  After completing the upload, you still need to <b>'Process your demo'</b> by clicking Submit for <b>EACH game Uploaded!</b> at the bottom of the page.</p>";
       // Post to reportMatch.pl page
       echo "<form action='?a=reportMatch' enctype='multipart/form-data' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
@@ -293,7 +285,7 @@ try
       echo "<input type='hidden' name='tourney_id' value='$tid'>";
       echo "<input type='hidden' name='division_id' value='$division_id'>";
       echo "<input type='hidden' name='match_id' value='$match_id'>";
-      echo "<tr><td nowrap colspan=2><b>Manually add a game:</b></td>";
+      echo "<tr><td nowrap colspan=2><b>Add Screenshots / Manually Add a game / Fix Scores:</b></td>";
       echo "<td><input type='submit' value='Okay' name='B1' class='button'></td></tr>";
       echo "</table></form>";
     }
@@ -322,7 +314,7 @@ try
 
       if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
 	{
-	  echo "File was successfully moved for processing.\n";
+	  echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
 	} 
       else 
 	{
@@ -336,20 +328,20 @@ try
 
       echo "<hr>";
       echo "<h2>Process your Demo</h2>";
-
+	  echo "<p>Your MVD is not in the system until you Process it here.  Click Submit.</p>";
       $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\\\\\\\\\\\\\\\\\0' ;
 
       // Post to mvdStats.pl page
-      echo "<form action='./perl/mvdStats.pl' method=post>";
+	  echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Make it happen:</b></td>";
-      echo "<input type='hidden' name='filename' value ='$uploadfile'>";
+      echo "<td><input type='hidden' name='filename' value ='$localfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
-      echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
-      echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
+      echo "<input type='submit' value='Submit' name='B1' class='button'></td></tr>";
       echo "</table></form>";
+      echo "<p>Please be patient, this process could take a few seconds.</p>";
     }
 
   if ($_REQUEST['local_file']==1 && $p->isSuperAdmin())
@@ -364,7 +356,7 @@ try
 
       if (copy($_REQUEST['filename'], $localfile))
 	{
-	  echo "File was successfully moved for processing.\n";
+	  echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
 	} 
       else 
 	{
@@ -385,13 +377,13 @@ try
       echo "<form action='./perl/mvdStats.pl' method=post>";
       echo "<table border=0 cellpadding=4 cellspacing=0>";
       echo "<tr><td><b>Make it happen:</b></td>";
-      echo "<input type='hidden' name='filename' value ='$localfile'>";
+      echo "<td><input type='hidden' name='filename' value ='$localfile'>";
       echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
       echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
-      echo "<td><input type='submit' value='Submit' name='B1' class='button'></td>";
-      echo "<td>Please be patient, this process could take a few seconds.</td></tr>";
+      echo "<input type='submit' value='Submit' name='B1' class='button'></td></tr>";
       echo "</table></form>";
+      echo "<p>Please be patient, this process could take a few seconds.</p>";
     }
 }
 catch (Exception $e) {}

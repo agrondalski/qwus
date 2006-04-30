@@ -95,6 +95,7 @@ try
   echo "</p></font>";
 
   echo "</form>" ;
+  echo "<p>Click 'EDIT' on a game to be able to upload a Screenshot.</p>";
     
   if ($mode == "edit")
     {

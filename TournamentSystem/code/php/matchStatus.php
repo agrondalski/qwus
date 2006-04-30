@@ -42,7 +42,12 @@ $t = new tourney(array('tourney_id'=>$tid));
 								$clr = "#C0C0C0";
 							}
 
-						echo "<tr bgcolor='$clr'>";
+						if (count($m->getGames())>0) {
+							echo "<tr bgcolor='#999999'>";
+						} else {
+							echo "<tr bgcolor='$clr'>";
+						}
+						
 
 						$teams = $m->getTeams() ;
 						$t1 = $teams[0] ;
