@@ -291,78 +291,81 @@ try
     }
 
   // *** PART 5
-  //if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
+  
+  // Uploaded an MVD/GZ/BZ2 -> Now create the form to process the file
+  
   if (($_FILES['filename']['size'] != 0) && (!util::isNull($approved)) && (!util::isNull($match_id)) && (!util::isNull($div)))
-    {
-      $uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);
+		{
+			$uploadfile = util::UPLOAD_DIR . basename($_FILES['filename']['name']);
 
-      if (is_uploaded_file($_FILES['filename']['tmp_name']))
-	{
-	  echo "File ". $_FILES['filename']['name'] ." uploaded.\n";
-	}
-      else
-	{
-	  echo "File Error on upload: ";
-	  echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
-	}
-		
-      if(!preg_match("/.gz$|.mvd$/i", $_FILES['filename']['name'])) 
-	{
-	  echo("You cannot upload this type of file.  It must be an <b>mvd or gz</b> file.");
-	  util::throwException('invalid file') ;
-	}
+			if (is_uploaded_file($_FILES['filename']['tmp_name']))
+			{
+				echo "File ". $_FILES['filename']['name'] ." uploaded.\n";
+			}
+			else
+			{
+				echo "File Error on upload: ";
+				echo "filename '". $_FILES['filename']['tmp_name'] . "'.";
+			}
 
-      if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
-	{
-	  echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
-	} 
-      else 
-	{
-	  echo "Moving the file Failed!\n";
-	  util::throwException('file move failed') ;
-	}
-		
-      $m = new match(array('match_id'=>$match_id));
-      $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
-      $t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+			if(!preg_match("/.gz$|.mvd$|.bz2$/i", $_FILES['filename']['name'])) 
+			{
+				echo("You cannot upload this type of file.  It must be an <b>mvd, gz or bz2</b> file.");
+				util::throwException('invalid file') ;
+			}
 
-      echo "<hr>";
-      echo "<h2>Process your Demo</h2>";
-	  echo "<p>Your MVD is not in the system until you Process it here.  Click Submit.</p>";
-      $pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\\\\\\\\\\\\\\\\\0' ;
+			if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile))
+			{
+				echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
+			} 
+			else 
+			{
+				echo "Moving the file Failed!\n";
+				util::throwException('file move failed') ;
+			}
 
-      // Post to mvdStats.pl page
-	  echo "<form action='./perl/mvdStats.pl' method=post>";
-      echo "<table border=0 cellpadding=4 cellspacing=0>";
-      echo "<tr><td><b>Make it happen:</b></td>";
-      echo "<td><input type='hidden' name='filename' value ='$localfile'>";
-      echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
-      echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
-      echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
-      echo "<input type='submit' value='Submit' name='B1' class='button'></td></tr>";
-      echo "</table></form>";
-      echo "<p>Please be patient, this process could take a few seconds.</p>";
+			$m = new match(array('match_id'=>$match_id));
+			$t1 = new team(array('team_id'=>$m->getValue('team1_id')));
+			$t2 = new team(array('team_id'=>$m->getValue('team2_id')));
+
+			echo "<hr>";
+			echo "<h2>Process your Demo</h2>";
+			echo "<p>Your MVD is not in the system until you Process it here.  Click Submit.</p>";
+			$pass_thru = $tid . '\\\\' . $division_id . '\\\\' . $match_id . '\\\\' . $approved . '\\\\\\\\\\\\\\\\\\\\\\\\0' ;
+
+			// Post to mvdStats.pl page
+			echo "<form action='./perl/mvdStats.pl' method=post>";
+			echo "<table border=0 cellpadding=4 cellspacing=0>";
+			echo "<tr><td><b>Make it happen:</b></td>";
+			echo "<td><input type='hidden' name='filename' value ='$uploadfile'>";
+			echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
+			echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
+			echo "<input type='hidden' name='pass_thru' value ='$pass_thru'>";
+			echo "<input type='submit' value='Submit' name='B1' class='button'></td></tr>";
+			echo "</table></form>";
+			echo "<p>Please be patient, this process could take a few seconds.</p>";
     }
 
+  // LOCAL FILE UPLOAD
   if ($_REQUEST['local_file']==1 && $p->isSuperAdmin())
     {
       $localfile = util::UPLOAD_DIR . basename($_REQUEST['filename']) ;
 
-      if(!preg_match("/.gz$|.mvd$/i", $localfile))
-	{
-	  echo("You cannot upload this type of file.  It must be an <b>mvd or gz</b> file.");
-	  util::throwException('invalid file') ;
-	}
+      if(!preg_match("/.gz$|.mvd$|.bz2$/i", $localfile))
+			{
+				echo("You cannot upload this type of file.  It must be an <b>mvd, gz or bz2</b> file.");
+				util::throwException('invalid file') ;
+			}
 
       if (copy($_REQUEST['filename'], $localfile))
-	{
-	  echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
-	} 
-      else 
-	{
-	  echo "Moving the file Failed!\n";
-	  util::throwException('file move failed') ;
-	}
+			{
+				echo "File was successfully uploaded.  Process the file at the bottom of the page.\n";
+			} 
+					else 
+			{
+				echo "Moving the file Failed!\n";
+				util::throwException('file move failed') ;
+			}
 		
       $m = new match(array('match_id'=>$match_id));
       $t1 = new team(array('team_id'=>$m->getValue('team1_id')));
