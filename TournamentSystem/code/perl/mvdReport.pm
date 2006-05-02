@@ -2036,9 +2036,9 @@ sub outputForm
   
    print "\t<input type='submit' value='Continue' name='B1' class='button'>\n";
    print "</form>\n";
-#   print "<script>\n";
-#   print "document.stats.submit();\n";
-#   print "</script>\n";
+   print "<script>\n";
+   print "document.stats.submit();\n";
+   print "</script>\n";
 }
 #
 sub outputPlayerScoreGraph
