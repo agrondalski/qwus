@@ -35,4 +35,8 @@ $shell = `cp -f /usr/www/svn/website/index.php /var/www/html`;
 
 $shell = `cp -f /usr/www/svn/website/css/default.css /var/www/html/css`;
 
+$shell = `cp -f /usr/www/svn/website/img/*.jpg /var/www/html/img`;
+
+$shell = `cp -f /usr/www/svn/website/png/*.png /var/www/html/img`;
+
 $shell = `mv /var/www/html/php/oldDbConnect.php /var/www/html/php/dbConnect.php`;
