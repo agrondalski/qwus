@@ -337,7 +337,7 @@ try
 			echo "<form action='./perl/mvdStats.pl' method=post>";
 			echo "<table border=0 cellpadding=4 cellspacing=0>";
 			echo "<tr><td><b>Make it happen:</b></td>";
-			echo "<td><input type='hidden' name='filename' value='".$uploadfile>."'>";
+			echo "<td><input type='hidden' name='filename' value='".$uploadfile."'>";
 			echo "<input type='hidden' name='team1' value='",$t1->getValue('name_abbr'),"'>";
 			echo "<input type='hidden' name='team2' value='",$t2->getValue('name_abbr'),"'>";
 			echo "<input type='hidden' name='pass_thru' value='".$pass_thru."'>";
