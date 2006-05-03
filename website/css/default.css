@@ -37,7 +37,7 @@ small {color:#999; font-size: 11px; text-align:right; padding:6px 2px 0px 5px;}
 img {border: none;}
 
 .bottom a {color: #FFF; font-weight: bold; text-decoration: underline;}
-.bottom td {height: 30px; background: #FF0000; padding: 0px 10px 0px 10px; vertical-align: middle; color: #FFF; font-weight: bold;}
+.bottom td {height: 30px; width: 680px; background: url(../img/bottom.jpg) #FF0000 no-repeat center; padding: 0px 10px 0px 10px; vertical-align: middle; color: #FFF; font-weight: bold;}
 
 .content {width: 572px; padding: 8px 5px 8px 10px; color: #222222;}
 

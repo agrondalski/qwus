@@ -165,7 +165,11 @@ catch(Exception $e) {}
 				<TR>
 					<TD><A href="#">Leagues</A></TD>
 				</TR>
-
+				
+				<TR>
+					<TD><a href="?a=home&amp;tourney_id=3"><SMALL>Vendetta 2</SMALL></a></TD>
+				</TR>
+				
 				<TR>
 					<TD><a href="?a=home&amp;tourney_id=6"><SMALL>PIC III</SMALL></a></TD>
 				</TR>
