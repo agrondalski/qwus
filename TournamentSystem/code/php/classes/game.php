@@ -199,7 +199,7 @@ class game
       return $arr ;
     }
 
-  public function getStatsByTeam($a, $team_id, $stat_name)
+  public function getStatsByTeam($a, $team_id, $stat_name = NULL)
     {
       $team_id = team::validateColumn($team_id, 'team_id') ;
 
@@ -250,7 +250,7 @@ class game
       $s = new stats($a) ;
     }
 
-  public function getPlayerStats($a)
+  public function getPlayerStats($a = NULL)
     {
       $d = $this->getDivision() ;
       $stats = stats::getPlayerStats(array('game_id'=>$this->game_id, 'division_id'=>$d->getValue('division_id'))) ;
@@ -258,7 +258,7 @@ class game
       return util::row_sort($stats, $a) ;
     }
 
-  public function getTeamStats($a)
+  public function getTeamStats($a = NULL)
     {
       $d = $this->getDivision() ;
       $stats = stats_team::getTeamStats(array('game_id'=>$this->game_id, 'division_id'=>$d->getValue('division_id'))) ;
