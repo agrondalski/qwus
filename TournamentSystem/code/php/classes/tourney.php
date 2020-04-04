@@ -222,7 +222,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -286,7 +286,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -322,7 +322,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -356,7 +356,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -390,7 +390,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -424,7 +424,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -458,7 +458,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -492,7 +492,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -527,7 +527,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -578,7 +578,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -612,7 +612,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -668,7 +668,7 @@ class tourney
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
