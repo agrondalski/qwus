@@ -38,14 +38,14 @@ class news
                          "values(%d, '%s', %s, '%s', '%s', '%s')",
 			 $this->writer_id, $this->news_type, util::nvl($this->id, 'null'), $this->subject, $this->news_date, $this->text) ;
 
-      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->news_id = mysql_insert_id() ;
     }
 
   private function getNewsInfo()
     {
       $sql_str = sprintf("select writer_id, news_type, id, subject, news_date, text from news where news_id=%d", $this->news_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -200,7 +200,7 @@ class news
   public static function getNews($a, $l)
     {
       $sql_str = sprintf("select n.* from news n where news_type='News'") ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
@@ -239,7 +239,7 @@ class news
   public static function getNewsCount()
     {
       $sql_str = sprintf("select count(*) from news n where news_type='News'") ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       if ($row = mysql_fetch_row($result))
 	{
@@ -287,7 +287,7 @@ class news
   public function getComments()
     {
       $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -301,7 +301,7 @@ class news
   public function getCommentCount()
     {
       $sql_str = sprintf("select count(*) from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       if ($row = mysql_fetch_row($result))
 	{
@@ -346,14 +346,14 @@ class news
 	  $sql_str = sprintf("update news set %s='%s' where news_id=%d", $col, $this->$col, $this->news_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from news where news_id=%d", $this->news_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
     }
 }
 ?>

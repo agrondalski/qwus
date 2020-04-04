@@ -31,14 +31,14 @@ class match_schedule
                          "values(%d, '%s', '%s')",
                          $this->division_id, $this->name, $this->deadline) ;
 
-      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->schedule_id = mysql_insert_id() ;
     }
 
   private function getMatchScheduleInfo()
     {
       $sql_str = sprintf("select division_id, name, deadline from match_schedule where schedule_id=%d", $this->schedule_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -153,7 +153,7 @@ class match_schedule
 	  $team_id = team::validateColumn($team_id, 'team_id') ;
 	  $sql_str = sprintf("select m.match_id from match_table m where m.schedule_id=%d and (team1_id=%d or team2_id=%d)", $this->schedule_id, $team_id, $team_id) ;
 	}
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -189,14 +189,14 @@ class match_schedule
 	  $sql_str = sprintf("update match_schedule set %s='%s' where schedule_id=%d", $col, $this->$col, $this->schedule_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from match_schedule where schedule_id=%d", $this->schedule_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
     }
 }
 ?>

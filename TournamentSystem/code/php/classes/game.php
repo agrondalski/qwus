@@ -32,14 +32,14 @@ class game
                          "values(%d, %d, %d, %d)",
 			 $this->match_id, $this->map_id, $this->team1_score, $this->team2_score) ;
 
-      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->game_id = mysql_insert_id() ;
     }
 
   private function getGameInfo()
     {
       $sql_str = sprintf("select match_id, map_id, team1_score, team2_score from game where game_id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -168,7 +168,7 @@ class game
 	  $stat_name = stat::validateColumn($stat_name, 'stat_name') ;
 	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d and s.stat_name='%s'", $this->game_id, $stat_name) ;
 	}
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
@@ -213,7 +213,7 @@ class game
 	  $sql_str = sprintf("select s.* from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s'", $this->game_id, $team_id, $stat_name) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
@@ -301,7 +301,7 @@ class game
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
 
       $sql_str = sprintf("select f.* from file_table f where f.id=%d and f.file_type='%s' and f.file_desc='%s'", $this->game_id, $ftype, util::MVD_DEMO) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       $retval = false ;
       if ($row=mysql_fetch_assoc($result))
@@ -319,7 +319,7 @@ class game
 
       $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s' and f.file_desc='%s'",
 			 $this->game_id, $ftype, util::SCREENSHOT) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       if ($row=mysql_fetch_row($result))
 	{
@@ -371,7 +371,7 @@ class game
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
 
       $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s'", $this->game_id, $ftype) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -405,7 +405,7 @@ class game
       $team_id = team::validateColumn($team_id, 'team_id') ;
 
       $sql_str = sprintf("select s.player_id from stats s where s.game_id=%d and s.team_id=%d and s.stat_name='%s' order by value desc", $this->game_id, $team_id, util::SCORE) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -467,14 +467,14 @@ class game
 	  $sql_str = sprintf("update game set %s='%s' where game_id=%d", $col, $this->$col, $this->game_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
     }
 
   public function deleteAll()
@@ -520,16 +520,16 @@ class game
 	}
 
       $sql_str = sprintf("delete from stats where game_id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
 
       $sql_str = sprintf("delete from stats_team where game_id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
 
       $sql_str = sprintf("delete from file_table where id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
 
       $sql_str = sprintf("delete from game where game_id=%d", $this->game_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
 
       $m->syncMatchInfo() ;
     }

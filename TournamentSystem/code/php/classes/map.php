@@ -31,14 +31,14 @@ class map
                          "values('%s', '%s', '%s')",
 			 $this->map_name, $this->map_abbr, $this->game_type_id) ;
 
-      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->map_id = mysql_insert_id() ;
     }
 
   private function getMapsInfo()
     {
       $sql_str = sprintf("select map_name, map_abbr, game_type_id from maps where map_id=%d", $this->map_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -133,7 +133,7 @@ class map
   public static function getAllMaps()
     {
       $sql_str = sprintf('select m.map_id from maps m') ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -147,7 +147,7 @@ class map
   public function getGames()
     {
       $sql_str = sprintf("select g.game_id from game g where g.map_id=%d", $this->map_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -177,14 +177,14 @@ class map
 	  $sql_str = sprintf("update maps set %s='%s' where map_id=%d", $col, $this->$col, $this->map_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from maps where map_id=%d", $this->map_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
+      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
     }
 }
 ?>
