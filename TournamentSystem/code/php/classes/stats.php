@@ -31,13 +31,13 @@ class stats
       $sql_str = sprintf("insert into stats(player_id, game_id, stat_name, team_id, value)" .
                          "values(%d, %d, '%s', %d, %d)",
 			 $this->player_id, $this->game_id, $this->stat_name, $this->team_id, $this->value) ;
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
     }
 
   private function getStatsInfo()
     {
       $sql_str = sprintf("select player_id, game_id, team_id, stat_name, value from stats where stat_id=%d", $this->stat_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -276,7 +276,7 @@ class stats
                               order by p.player_id, s.match_id",
 			     util::SCORE, util::SCORE, $player_query_s, $map_query_g, $player_query_p) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       $arr = array() ;
       $old_player = -1 ;
@@ -425,7 +425,7 @@ class stats
                                 where s.stat_name!='%sX' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
 			       util::SCORE, $player_query_s, $map_query_g) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       while ($row = mysql_fetch_row($result))
 	{
@@ -503,14 +503,14 @@ class stats
 	  $sql_str = sprintf("update stats set %s='%s' where stat_id=%d", $col, $this->$col, $this->stat_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from stats where stat_id", $this->stat_id, $this->game_id, $this->stat_name) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
     }
 }
 ?>

@@ -33,14 +33,14 @@ class log_entry
                          "values('%s', '%s', '%s', '%s', '%s')",
 			 $this->type, $this->str, $this->logged_ip, $this->log_date, $this->log_time) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->log_id = mysql_insert_id() ;
     }
 
   private function getLogEntryInfo()
     {
       $sql_str = sprintf("select type, str, logged_ip, log_date, log_time from log_table where log_id=%d", $this->log_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -183,14 +183,14 @@ class log_entry
 	  $sql_str = sprintf("update log_table set %s='%s' where log_id=%d", $col, $this->$col, $this->log_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from log_table where log_id=%d", $this->log_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>

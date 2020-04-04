@@ -45,14 +45,14 @@ class comment
                          "values('%s', '%s', '%s', %s, '%s', '%s', '%s')",
 			 $this->name, $this->comment_type, $this->comment_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->comment_id = mysql_insert_id() ;
     }
 
   private function getCommentInfo()
     {
       $sql_str = sprintf("select name, comment_type, id, comment_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -224,7 +224,7 @@ class comment
   private function getLastCommentTime()
     {
       $sql_str = sprintf("select min(time_to_sec(timediff(concat(curdate(), ' ', curtime()), concat(comment_date, ' ', comment_time)))) from comments where comment_ip='%s'", $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       
       if ($row = mysql_fetch_row($result))
 	{
@@ -247,7 +247,7 @@ class comment
                           from comments
                           where id=%d and comment_type='%s' and comment_ip='%s'",
 			 $cid, $ctype, $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       
       if ($row = mysql_fetch_row($result))
 	{
@@ -290,14 +290,14 @@ class comment
 	  $sql_str = sprintf("update comments set %s='%s' where comment_id=%d", $col, $this->$col, $this->comment_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
     }
 }
 ?>
