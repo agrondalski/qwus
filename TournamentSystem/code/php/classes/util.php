@@ -142,7 +142,7 @@ class util
 	  return null ;
 	}
 
-      return mysql_real_escape_string($s) ;
+      return mysqli_real_escape_string($GLOBALS['link'], $s) ;
     }
 
   public static function nvl($v1, $v2)
