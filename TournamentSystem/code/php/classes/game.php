@@ -157,7 +157,7 @@ class game
 	}
     }
 
-  public function getStats($a, $stat_name)
+  public function getStats($a = NULL, $stat_name = NULL)
     {
       if (util::isNull($stat_name))
 	{
