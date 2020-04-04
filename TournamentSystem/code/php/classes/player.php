@@ -50,14 +50,14 @@ class player
                          "values('%s', %d, %d, '%s', %d)",
 			 $this->name, $this->superAdmin, $this->location_id, $this->password, $this->hasColumn) ;
 
-      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->player_id = mysql_insert_id() ;
     }
 
   private function getPlayerInfo()
     {
       $sql_str = sprintf("select name, superAdmin, location_id, password, hasColumn from player where player_id=%d", $this->player_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       if (mysqli_num_rows($result)!=1)
 	{
@@ -159,7 +159,7 @@ class player
   private function getPlayerInfoByName()
     {
       $sql_str = sprintf("select player_id, superAdmin, location_id, password, hasColumn from player where name='%s'", $this->name) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       if (mysqli_num_rows($result)!=1)
 	{
@@ -182,7 +182,7 @@ class player
   public static function getAllPlayers()
     {
       $sql_str = sprintf('select p.player_id from player p') ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       while ($row=mysqli_fetch_row($result))
 	{
@@ -203,7 +203,7 @@ class player
   public static function getPlayersWithColumns()
     {
       $sql_str = sprintf("select p.player_id, MAX(n.news_date) as mx from player p, news n where p.hasColumn=1 and p.player_id=n.writer_id and n.news_type='Column' group by p.player_id order by mx desc");
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       while ($row=mysqli_fetch_row($result))
 	{
@@ -237,7 +237,7 @@ class player
       $tid = tourney::validateColumn($tid, 'tourney_id') ;
 
       $sql_str = sprintf("select count(*) from tourney_admins ta where ta.tourney_id=%d and ta.player_id=%d", $tid, $this->player_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
       
       if ($row = mysqli_fetch_row($result))
 	{
@@ -265,7 +265,7 @@ class player
   public static function columnCount()
     {
       $sql_str = sprintf("select count(*) from player p where hasColumn=true") ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       if ($row = mysqli_fetch_row($result))
 	{
@@ -289,7 +289,7 @@ class player
                             and (m.team1_id=t.team_id or m.team2_id=t.team_id) and t.team_id!=s.team_id
                           order by m.match_date desc, m.match_id desc, g.game_id desc",
 			 $this->player_id, util::SCORE, $tid) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       while ($row=mysqli_fetch_row($result))
 	{
@@ -311,7 +311,7 @@ class player
   public function getNewsColumns($a, $l)
     {
       $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column'", $this->player_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
@@ -350,7 +350,7 @@ class player
   public function getLastNewsColumnDate()
     {
       $sql_str = sprintf("select news_date from news n where n.writer_id=%d and n.news_type='Column' order by news_date desc, news_id desc", $this->player_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       if ($row = mysqli_fetch_row($result))
 	{
@@ -372,7 +372,7 @@ class player
       $sql_str = sprintf("select pi.team_id
                           from player_info pi
                           where pi.player_id=%d and pi.tourney_id=%d", $this->player_id, $tid) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       if ($row = mysqli_fetch_row($result))
 	{
@@ -391,7 +391,7 @@ class player
       $sql_str = sprintf("select ti.division_id
                           from player_info pi, tourney_info ti
                           where pi.player_id=%d and pi.tourney_id=%d and pi.team_id=ti.team_id and ti.tourney_id=pi.tourney_id", $this->player_id, $tid) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       if ($row = mysqli_fetch_row($result))
 	{
@@ -463,14 +463,14 @@ class player
 	  $sql_str = sprintf("update player set %s='%s' where player_id=%d", $col, $this->$col, $this->player_id) ;
 	}
 
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from player where player_id=%d", $this->player_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));      
     }
 }
 ?>

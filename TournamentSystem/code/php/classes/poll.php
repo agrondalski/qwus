@@ -36,14 +36,14 @@ class poll
                          "values('%s', '%s', %s, %d)",
 			 $this->topic, $this->poll_type, util::nvl($this->id, 'null'), $this->isCurrent) ;
 
-      $result = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
       $this->poll_id = mysql_insert_id() ;
     }
 
   private function getPollInfo()
     {
       $sql_str = sprintf("select topic, poll_type, id, isCurrent from poll where poll_id=%d", $this->poll_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       if (mysqli_num_rows($result)!=1)
 	{
@@ -184,7 +184,7 @@ class poll
       $ptop = $this->validateColumn($popt, 'poll_option') ;
 
       $sql_str = sprintf("select max(option_id) from poll_options po where po.poll_id=%d", $this->poll_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $oid = 1 ;
       if ($row=mysqli_fetch_row($result))
@@ -196,7 +196,7 @@ class poll
 	}
 
       $sql_str = sprintf("insert into poll_options(poll_id, option_id, poll_option, votes) values(%d, %d, '%s', 0)", $this->poll_id, $oid, $popt) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
     }
 
   public function incPollOption($oid)
@@ -204,7 +204,7 @@ class poll
       $oid = $this->validateColumn($oid, 'option_id') ;
 
       $sql_str = sprintf("select 1 from poll_votes pv where pv.poll_id=%d and vote_ip='%s'", $this->poll_id, $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       if (!($row==mysqli_fetch_row($result)))
 	{
@@ -212,16 +212,16 @@ class poll
 	}
 
       $sql_str = sprintf("insert into poll_votes(poll_id, vote_ip) values(%d, '%s')", $this->poll_id, $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $sql_str = sprintf("update poll_options po set votes=votes+1 where po.poll_id=%d and po.option_id=%d", $this->poll_id, $oid) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
     }
 
   public function getPollOptions()
     {
       $sql_str = sprintf("select sum(votes) from poll_options po where po.poll_id=%d", $this->poll_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       if ($row=mysqli_fetch_row($result))
 	{
@@ -232,7 +232,7 @@ class poll
 	}
 
       $sql_str = sprintf("select option_id, poll_option, votes from poll p, poll_options po where p.poll_id=%d and p.poll_id=po.poll_id", $this->poll_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       while ($row=mysqli_fetch_row($result))
 	{
@@ -262,14 +262,14 @@ class poll
 	  $sql_str = sprintf("update poll set %s='%s' where poll_id=%d", $col, $this->$col, $this->poll_id) ;
 	}
 
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from poll where poll_id=%d", $this->poll_id) ;
-      $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));      
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));      
     }
 }
 ?>
