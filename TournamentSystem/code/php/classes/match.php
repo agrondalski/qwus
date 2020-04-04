@@ -41,7 +41,7 @@ class match
   private function getMatchInfo()
     {
       $sql_str = sprintf("select schedule_id, team1_id, team2_id, winning_team_id, approved, match_date from match_table where match_id=%d", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -571,7 +571,7 @@ class match
   public function getComments()
     {
       $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='MATCH' and c.id=%d order by comment_date, comment_time", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -618,7 +618,7 @@ class match
   public function getGames()
     {
       $sql_str = sprintf("select g.game_id from game g where g.match_id=%d", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -634,7 +634,7 @@ class match
       $ftype = file::validateColumn(file::TYPE_GAME, 'file_type') ;
 
       $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
 
       while ($row=mysql_fetch_row($result))
 	{
@@ -649,7 +649,7 @@ class match
     {
       $sql_str = sprintf("select d.tourney_id from match_table m, match_schedule ms, division d
                           where m.match_id=%d and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
 
       if ($row=mysql_fetch_row($result))
 	{
@@ -664,7 +664,7 @@ class match
     {
       $sql_str = sprintf("select ms.division_id from match_table m, match_schedule ms
                           where m.match_id=%d and m.schedule_id=ms.schedule_id", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($link));
 
       if ($row=mysql_fetch_row($result))
 	{
@@ -718,14 +718,14 @@ class match
 	  $sql_str = sprintf("update match_table set %s='%s' where match_id=%d", $col, $this->$col, $this->match_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from match_table where match_id=%d", $this->match_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
     }
 }
 ?>

@@ -42,7 +42,7 @@ class file
   private function getFileInfo()
     {
       $sql_str = sprintf("select file_type, id, file_desc, url from file_table where file_id=%d", $this->file_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
 
       if (mysql_num_rows($result)!=1)
 	{
@@ -177,14 +177,14 @@ class file
 	  $sql_str = sprintf("update file set %s='%s' where file_id=%d", $col, $this->$col, $this->file_id) ;
 	}
 
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from file_table where file_id=%d", $this->file_id) ;
-      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($link, $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($link));      
     }
 }
 ?>
