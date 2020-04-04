@@ -142,7 +142,7 @@ class match_schedule
       return new division(array('division_id'=>$this->division_id)) ;
     }
 
-  public function getMatches($team_id)
+  public function getMatches($team_id = NULL)
     {
       if (util::isNull($team_id))
 	{
