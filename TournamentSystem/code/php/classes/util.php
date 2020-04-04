@@ -91,8 +91,6 @@ class util
   const SCORE_PER_GAME  = 'Score_Per_Game';
   const FRAGS_PER_GAME  = 'Frags_Per_Game';
   const SCORE_DIFF      = 'Score_Diff' ;
-  const MINUTESPLAYED   = 'MinutesPlayed' ;
-  const MINUTESWITHLEAD = 'MinutesWithLead' ;
 
   const WINNING_STREAK     = 'Winning_Streak' ;
   const LOSING_STREAK      = 'Losing_Streak' ;
