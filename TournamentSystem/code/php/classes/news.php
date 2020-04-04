@@ -47,12 +47,12 @@ class news
       $sql_str = sprintf("select writer_id, news_type, id, subject, news_date, text from news where news_id=%d", $this->news_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->writer_id   = $row[0] ;
       $this->news_tyoe   = $row[1] ;
@@ -61,7 +61,7 @@ class news
       $this->news_date   = $row[4] ; 
       $this->text        = $row[5] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -232,7 +232,7 @@ class news
 	  $arr = array_slice($arr, 0, $l['limit']) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -241,14 +241,14 @@ class news
       $sql_str = sprintf("select count(*) from news n where news_type='News'") ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return $row[0] ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }
@@ -289,12 +289,12 @@ class news
       $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new comment(array('comment_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -303,14 +303,14 @@ class news
       $sql_str = sprintf("select count(*) from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return $row[0] ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }

@@ -53,12 +53,12 @@ class tourney
       $sql_str = sprintf("select game_type_id, name, rules, tourney_type, status, team_size, timelimit from tourney where tourney_id=%d", $this->tourney_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->game_type_id  = $row[0] ;
       $this->name          = $row[1] ;
@@ -68,7 +68,7 @@ class tourney
       $this->team_size     = $row[5] ; 
       $this->timelimit     = $row[6] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -245,7 +245,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -256,12 +256,12 @@ class tourney
       $sql_str = sprintf("select t.tourney_id from tourney t where status='%s'", $status) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -270,12 +270,12 @@ class tourney
       $sql_str = sprintf("select ta.player_id from tourney_admins ta where ta.tourney_id=%d", $this->tourney_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -309,7 +309,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -345,7 +345,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -379,7 +379,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -413,7 +413,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -447,7 +447,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -481,7 +481,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -515,7 +515,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -550,7 +550,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -562,12 +562,12 @@ class tourney
 			 $this->tourney_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -601,7 +601,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -635,7 +635,7 @@ class tourney
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -696,7 +696,7 @@ class tourney
 	  $arr = array_slice($arr, 0, $l['limit']) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -705,14 +705,14 @@ class tourney
       $sql_str = sprintf("select count(*) from news n where n.news_type='Tournament' and n.id=%d", $this->tourney_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return $row[0] ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }
@@ -758,14 +758,14 @@ class tourney
       $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d", $this->tourney_id, $team_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }
@@ -818,14 +818,14 @@ class tourney
       $sql_str = sprintf("select 1 from tourney_maps where tourney_id=%d and map_id=%d", $this->tourney_id, $mid) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }
@@ -853,14 +853,14 @@ class tourney
       $sql_str = sprintf("select 1 from tourney_admins where tourney_id=%d and player_id=%d", $this->tourney_id, $id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }
@@ -872,14 +872,14 @@ class tourney
       $sql_str = sprintf("select 1 from player_info where tourney_id=%d and player_id=%d", $this->tourney_id, $pid) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }

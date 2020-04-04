@@ -41,16 +41,16 @@ class stats_team
       $sql_str = sprintf("select value from stats_team where team_id=%d and game_id=%d and stat_name='%s'", $this->team_id, $this->game_id, $this->stat_name) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->value  = $row[0] ; 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -140,9 +140,9 @@ class stats_team
       $sql_str = sprintf("select 1 from stats_team where team_id=%d and game_id=%d and stat_name='%s'", $tid, $gid, $sn) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ; 
 	}
 
@@ -323,7 +323,7 @@ class stats_team
       $cur_winning_streak = 0 ;
       $cur_losing_streak  = 0 ;
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  if ($row[0] != $old_team) 
 	    {
@@ -492,7 +492,7 @@ class stats_team
       $arr[$tmid][util::MAX_WINNING_STREAK] = $max_winning_streak ;
       $arr[$tmid][util::MAX_LOSING_STREAK]  = $max_losing_streak ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       if (!$career)
 	{
@@ -511,7 +511,7 @@ class stats_team
 	}
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  $tid = $row[0] ;
 
@@ -525,7 +525,7 @@ class stats_team
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       if (!$career)
 	{
@@ -544,7 +544,7 @@ class stats_team
 	}
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  $tid = $row[0] ;
 
@@ -587,7 +587,7 @@ class stats_team
 	}
 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 

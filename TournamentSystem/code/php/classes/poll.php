@@ -45,19 +45,19 @@ class poll
       $sql_str = sprintf("select topic, poll_type, id, isCurrent from poll where poll_id=%d", $this->poll_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->topic       = $row[0] ;
       $this->poll_tyoe   = $row[1] ;
       $this->id          = $row[2] ;
       $this->isCurrent   = $row[3] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -187,7 +187,7 @@ class poll
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
       $oid = 1 ;
-      if ($row=mysql_fetch_row($result))
+      if ($row=mysqli_fetch_row($result))
 	{
 	  if (!util::isNull($row[0]))
 	    {
@@ -206,7 +206,7 @@ class poll
       $sql_str = sprintf("select 1 from poll_votes pv where pv.poll_id=%d and vote_ip='%s'", $this->poll_id, $_SERVER['REMOTE_ADDR']) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (!($row==mysql_fetch_row($result)))
+      if (!($row==mysqli_fetch_row($result)))
 	{
 	  return ;
 	}
@@ -223,7 +223,7 @@ class poll
       $sql_str = sprintf("select sum(votes) from poll_options po where po.poll_id=%d", $this->poll_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row=mysql_fetch_row($result))
+      if ($row=mysqli_fetch_row($result))
 	{
 	  if (!util::isNull($row[0]))
 	    {
@@ -234,12 +234,12 @@ class poll
       $sql_str = sprintf("select option_id, poll_option, votes from poll p, poll_options po where p.poll_id=%d and p.poll_id=po.poll_id", $this->poll_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = array('option_id'=>$row[0], 'poll_option'=>$row[1], 'votes'=>$row[2], 'vote_pct'=>round(($row[2]/$total_votes)*100, 1)) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 

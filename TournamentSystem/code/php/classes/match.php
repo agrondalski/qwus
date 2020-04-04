@@ -43,12 +43,12 @@ class match
       $sql_str = sprintf("select schedule_id, team1_id, team2_id, winning_team_id, approved, match_date from match_table where match_id=%d", $this->match_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->schedule_id      = $row[0] ;
       $this->team1_id         = $row[1] ;
@@ -57,7 +57,7 @@ class match
       $this->approved         = $row[4] ; 
       $this->match_date       = $row[5] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -573,12 +573,12 @@ class match
       $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='MATCH' and c.id=%d order by comment_date, comment_time", $this->match_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new comment(array('comment_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -620,12 +620,12 @@ class match
       $sql_str = sprintf("select g.game_id from game g where g.match_id=%d", $this->match_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new game(array('game_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -636,12 +636,12 @@ class match
       $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[$row[1]] = new file(array('file_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -651,12 +651,12 @@ class match
                           where m.match_id=%d and m.schedule_id=ms.schedule_id and ms.division_id=d.division_id", $this->match_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row=mysql_fetch_row($result))
+      if ($row=mysqli_fetch_row($result))
 	{
 	  $arr = new tourney(array('tourney_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -666,12 +666,12 @@ class match
                           where m.match_id=%d and m.schedule_id=ms.schedule_id", $this->match_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($row=mysql_fetch_row($result))
+      if ($row=mysqli_fetch_row($result))
 	{
 	  $arr = new division(array('division_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 

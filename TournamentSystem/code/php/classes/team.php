@@ -44,12 +44,12 @@ class team
       $sql_str = sprintf("select name, name_abbr, email, irc_channel, location_id, password, approved from team where team_id=%d", $this->team_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str" . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->name         = $row[0] ;
       $this->name_abbr    = $row[1] ;
@@ -59,7 +59,7 @@ class team
       $this->password     = $row[5] ; 
       $this->approved     = $row[6] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -193,7 +193,7 @@ class team
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -227,7 +227,7 @@ class team
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -275,7 +275,7 @@ class team
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -288,7 +288,7 @@ class team
       $sql_str = sprintf("select 1 from player_info pi where pi.tourney_id=%d and pi.player_id=%d", $tid, $pid) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
       
-      if ($row=mysql_fetch_row($result))
+      if ($row=mysqli_fetch_row($result))
 	{
 	  util::throwException('this player is already on a team for the specified tourney') ;
 	}
@@ -319,14 +319,14 @@ class team
       $sql_str = sprintf("select 1 from player_info pi where pi.tourney_id=%d and pi.team_id=%d and pi.player_id=%d", $tid, $this->team_id, $pid) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }
@@ -338,14 +338,14 @@ class team
       $sql_str = sprintf("select pi.player_id from player_info pi where pi.tourney_id=%d and team_id=%d and isTeamLeader=true", $tid, $this->team_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if ($pid = mysql_fetch_row($result))
+      if ($pid = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return new player(array('player_id'=>$pid[0])) ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return null;
 	}
     }
@@ -364,12 +364,12 @@ class team
       $sql_str = sprintf("select t.tourney_id from tourney_info t where t.team_id=%d", $this->team_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -387,16 +387,16 @@ class team
                           where ti.team_id=%d and ti.tourney_id=%d", $this->team_id, $tid) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
 	  if (!util::isNull($row[0]))
 	  {
-	    mysql_free_result($result) ;
+	    mysqli_free_result($result) ;
 	    return new division(array('division_id'=>$row[0])) ;
 	  }
 	}
 	  
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return null ;
     }
 
@@ -409,12 +409,12 @@ class team
                           (m.team1_id=%d or m.team2_id=%d)", $tid, $this->team_id, $this->team_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new match(array('match_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 

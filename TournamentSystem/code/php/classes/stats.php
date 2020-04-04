@@ -39,12 +39,12 @@ class stats
       $sql_str = sprintf("select player_id, game_id, team_id, stat_name, value from stats where stat_id=%d", $this->stat_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->player_id  = $row[0] ; 
       $this->game_id    = $row[1] ; 
@@ -52,7 +52,7 @@ class stats
       $this->stat_name  = $row[3] ; 
       $this->value      = $row[4] ; 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -281,7 +281,7 @@ class stats
       $arr = array() ;
       $old_player = -1 ;
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  if ($row[0] != $old_player) 
 	    {
@@ -405,7 +405,7 @@ class stats
 	  $arr[$pid][util::GAMES_LOST]     = $games_lost ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       if (!$career)
 	{
@@ -427,7 +427,7 @@ class stats
 	}
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  $pid = $row[0] ;
 
@@ -480,7 +480,7 @@ class stats
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 

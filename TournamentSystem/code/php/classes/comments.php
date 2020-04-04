@@ -54,12 +54,12 @@ class comment
       $sql_str = sprintf("select name, comment_type, id, comment_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->name          = $row[0] ;
       $this->comment_type  = $row[1] ; 
@@ -69,7 +69,7 @@ class comment
       $this->comment_date  = $row[5] ; 
       $this->comment_time  = $row[6] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -226,14 +226,14 @@ class comment
       $sql_str = sprintf("select min(time_to_sec(timediff(concat(curdate(), ' ', curtime()), concat(comment_date, ' ', comment_time)))) from comments where comment_ip='%s'", $_SERVER['REMOTE_ADDR']) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::nvl($row[0], 1000000000) ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }
@@ -249,14 +249,14 @@ class comment
 			 $cid, $ctype, $_SERVER['REMOTE_ADDR']) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
       
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::nvl($row[0], 1000000000) ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }

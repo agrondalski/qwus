@@ -42,12 +42,12 @@ class log_entry
       $sql_str = sprintf("select type, str, logged_ip, log_date, log_time from log_table where log_id=%d", $this->log_id) ;
       $result  = mysqli_query($GLOBALS[link], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS[link]));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->type       = $row[0] ;
       $this->str        = $row[1] ;
@@ -55,7 +55,7 @@ class log_entry
       $this->log_date   = $row[3] ; 
       $this->log_time   = $row[4] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
