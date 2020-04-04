@@ -29,7 +29,7 @@ class game_type
                          "values('%s')",
 			 $this->name) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->game_type_id = mysql_insert_id() ;
     }
 

@@ -50,7 +50,7 @@ class player
                          "values('%s', %d, %d, '%s', %d)",
 			 $this->name, $this->superAdmin, $this->location_id, $this->password, $this->hasColumn) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->player_id = mysql_insert_id() ;
     }
 

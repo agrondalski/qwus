@@ -32,7 +32,7 @@ class game
                          "values(%d, %d, %d, %d)",
 			 $this->match_id, $this->map_id, $this->team1_score, $this->team2_score) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->game_id = mysql_insert_id() ;
     }
 

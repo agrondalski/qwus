@@ -34,7 +34,7 @@ class match
                          "values(%d, %d, %d, %s, %d, '%s')",
 			 $this->schedule_id, $this->team1_id, $this->team2_id, util::nvl($this->winning_team_id, 'null'), $this->approved, $this->match_date) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->match_id = mysql_insert_id() ;
     }
 

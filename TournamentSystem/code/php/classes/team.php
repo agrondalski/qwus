@@ -35,7 +35,7 @@ class team
                          "values('%s', '%s', '%s', '%s', %s, '%s', %d)",
 			 $this->name, $this->name_abbr, $this->email, $this->irc_channel, util::nvl($this->location_id, 'null'), $this->password, $this->approved) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link'])) ;
       $this->team_id = mysql_insert_id() ;
     }
 

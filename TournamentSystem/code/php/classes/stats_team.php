@@ -33,7 +33,7 @@ class stats_team
                          "values(%d, %d, '%s', %d)",
 			 $this->team_id, $this->game_id, $this->stat_name, $this->value) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
     }
 
   private function getStatsInfo()

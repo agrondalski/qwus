@@ -31,7 +31,7 @@ class match_schedule
                          "values(%d, '%s', '%s')",
                          $this->division_id, $this->name, $this->deadline) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->schedule_id = mysql_insert_id() ;
     }
 

@@ -45,7 +45,7 @@ class comment
                          "values('%s', '%s', '%s', %s, '%s', '%s', '%s')",
 			 $this->name, $this->comment_type, $this->comment_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->comment_id = mysql_insert_id() ;
     }
 

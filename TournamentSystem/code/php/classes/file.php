@@ -35,7 +35,7 @@ class file
                          "values('%s', %s, '%s', '%s')",
 			 $this->file_type, util::nvl($this->id, 'null'), $this->file_desc, $this->url) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->file_id = mysql_insert_id() ;
     }
 

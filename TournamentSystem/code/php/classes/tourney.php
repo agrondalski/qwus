@@ -44,7 +44,7 @@ class tourney
                          "values(%d, '%s', '%s', '%s', '%s', %d, %d)",
 			 $this->game_type_id, $this->name, $this->rules, $this->tourney_type, $this->status, $this->team_size, $this->timelimit) ;
 
-      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->tourney_id = mysql_insert_id() ;
     }
 
