@@ -150,7 +150,7 @@ class stats_team
     }
 
   private static function computeStreaks(&$match_maps_won, &$match_maps_lost, &$total_wins, &$total_losses, &$winning_streak, &$losing_streak,
-                                  &$cur_winning_streak, &$cur_losing_streak, &$max_winning_streak, &$max_losing_streak, $x)
+                                  &$cur_winning_streak, &$cur_losing_streak, &$max_winning_streak, &$max_losing_streak)
     {
 
       if ($match_maps_won==0 && $match_maps_lost==0)
