@@ -163,7 +163,7 @@ class team
 	}
     }
 
-  public static function getAllTeams($a)
+  public static function getAllTeams($a = NULL)
     {
       $sql_str = sprintf('select t.* from team t') ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));

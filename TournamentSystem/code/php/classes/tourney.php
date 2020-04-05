@@ -215,7 +215,7 @@ class tourney
       $p = new poll($a) ;
     }
 
-  public static function getAllTourneys($a)
+  public static function getAllTourneys($a = NULL)
     {
       $sql_str = sprintf('select t.tourney_id from tourney t') ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
