@@ -636,6 +636,7 @@ class match
       $sql_str = sprintf("select f.file_id, f.file_desc from file_table f where f.id=%d and f.file_type='%s'", $this->match_id, $ftype) ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
+      $arr = [] ;
       while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[$row[1]] = new file(array('file_id'=>$row[0])) ;
