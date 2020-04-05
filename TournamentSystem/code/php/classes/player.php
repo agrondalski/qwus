@@ -308,7 +308,7 @@ class player
       return new location(array('location_id'=>$this->location_id)) ;
     }
 
-  public function getNewsColumns($a, $l)
+  public function getNewsColumns($a, $l = NULL)
     {
       $sql_str = sprintf("select n.* from news n where n.writer_id=%d and n.news_type='Column'", $this->player_id) ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));

@@ -197,7 +197,7 @@ class news
 	}
     }
 
-  public static function getNews($a, $l)
+  public static function getNews($a, $l = NULL)
     {
       $sql_str = sprintf("select n.* from news n where news_type='News'") ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
@@ -289,6 +289,7 @@ class news
       $sql_str = sprintf("select c.comment_id from comments c where c.comment_type='NEWS' and c.id=%d order by comment_date, comment_time", $this->news_id) ;
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
+      $arr = [] ;
       while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new comment(array('comment_id'=>$row[0])) ;
@@ -357,3 +358,4 @@ class news
     }
 }
 ?>
+
