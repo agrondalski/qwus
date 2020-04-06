@@ -29,25 +29,25 @@ class game_type
                          "values('%s')",
 			 $this->name) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->game_type_id = mysql_insert_id() ;
     }
 
   private function getGameTypeInfo()
     {
       $sql_str = sprintf("select name from game_type where game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->name  = $row[0] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -105,11 +105,11 @@ class game_type
   public static function getAllGameTypes($a)
     {
       $sql_str = sprintf('select * from game_type gt') ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -132,35 +132,35 @@ class game_type
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
   public function getTournys()
     {
       $sql_str = sprintf("select t.tourney_id from tourney t where t.game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new tourney(array('tourney_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
   public function getMaps()
     {
       $sql_str = sprintf("select m.map_id from maps m where m.game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new map(array('map_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -183,14 +183,14 @@ class game_type
 	  $sql_str = sprintf("update game_type set %s='%s' where game_type_id=%d", $col, $this->$col, $this->game_type_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from game_type where game_type_id=%d", $this->game_type_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));      
     }
 }
 ?>

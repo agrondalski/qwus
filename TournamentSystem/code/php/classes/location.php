@@ -30,26 +30,26 @@ class location
                          "values('%s', '%s', '%s')",
 			 $this->country_name, $this->logo_url) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->location_id = mysql_insert_id() ;
     }
 
   private function getLocationInfo()
     {
       $sql_str = sprintf("select country_name, logo_url from location where location_id=%d", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->country_name  = $row[0] ;
       $this->logo_url      = $row[1] ; 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -118,11 +118,11 @@ class location
   public static function getAllLocations($a)
     {
       $sql_str = sprintf('select * from location l') ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -145,35 +145,35 @@ class location
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
   public function getTeams()
     {
       $sql_str = sprintf("select t.team_id from team t where t.location_id", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new team(array('team_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
   public function getPlayers()
     {
       $sql_str = sprintf("select p.player_id from player p where p.location_id", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -196,14 +196,14 @@ class location
 	  $sql_str = sprintf("update location set %s='%s' where location_id=%d", $col, $this->$col, $this->location_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from location where location_id=%d", $this->location_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));      
     }
 }
 ?>

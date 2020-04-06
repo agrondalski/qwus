@@ -33,21 +33,21 @@ class division
                          "values(%d, '%s', %d, %d, %d)",
 			 $this->tourney_id, $this->name, $this->num_games, $this->playoff_spots, $this->elim_losses) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->division_id = mysql_insert_id() ;
     }
 
   private function getDivisionInfo()
     {
       $sql_str = sprintf("select tourney_id, name, num_games, playoff_spots, elim_losses from division where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->tourney_id     = $row[0] ;
       $this->name           = $row[1] ;
@@ -55,7 +55,7 @@ class division
       $this->playoff_spots  = $row[3] ;
       $this->elim_losses    = $row[4] ; 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return util::FOUND ;
     }
 
@@ -162,14 +162,14 @@ class division
   public function getTeams()
     {
       $sql_str = sprintf("select ti.team_id from tourney_info ti where ti.division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new team(array('team_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -179,14 +179,14 @@ class division
                           from tourney_info ti, player_info pi
                           where ti.division_id=%d and ti.tourney_id=%d and ti.team_id = pi.team_id and pi.tourney_id=ti.tourney_id",
                          $this->division_id, $this->tourney_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new player(array('player_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -202,14 +202,14 @@ class division
 	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms
                               where ms.division_id=%d and ms.schedule_id=m.schedule_id and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new match(array('match_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -225,25 +225,25 @@ class division
 	  $sql_str = sprintf("select m.match_id from match_table m, match_schedule ms
                               where ms.division_id=%d and ms.schedule_id=m.schedule_id and m.approved=true and (team1_id=%d or team2_id=%d)", $this->division_id, $team_id, $team_id) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      while ($row=mysql_fetch_row($result))
+      while ($row=mysqli_fetch_row($result))
 	{
 	  $arr[] = new match(array('match_id'=>$row[0])) ;
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
   public function getMatchSchedule($a)
     {
       $sql_str = sprintf("select * from match_schedule ms where ms.division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
       $sort = (!util::isNull($a) && is_array($a)) ? true : false ;
 
-      while ($row=mysql_fetch_assoc($result))
+      while ($row=mysqli_fetch_assoc($result))
 	{
 	  if ($sort)
 	    {
@@ -266,7 +266,7 @@ class division
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -281,7 +281,7 @@ class division
       $tid = $this->getTourney()->getValue('tourney_id') ;
 
       $sql_str = sprintf("update tourney_info set division_id= values(%d, %d, %d)", $tid, $team_id, $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
     }
 
   public function removeTeam($id)
@@ -290,7 +290,7 @@ class division
       $tid = $this->getTourney()->getValue('tourney_id') ;
 
       $sql_str = sprintf("delete from tourney_info where tourney_id=%d and team_id=%d", $tid, $id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
     }
 
   public function hasTeam($team_id)
@@ -299,16 +299,16 @@ class division
       $tid = $this->getTourney()->getValue('tourney_id') ;
 
       $sql_str = sprintf("select 1 from tourney_info where tourney_id=%d and team_id=%d and division_id=%d", $tid, $team_id, $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)==1)
+      if (mysqli_num_rows($result)==1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return true ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ;
 	}
     }
@@ -438,10 +438,10 @@ class division
   public function removeSchedule()
     {
       $sql_str = sprintf("delete from match_table where schedule_id in (select schedule_id from match_schedule where division_id=%d)", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       $sql_str = sprintf("delete from match_schedule where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
     }
 
   public function getValue($col, $quote_style=ENT_QUOTES)
@@ -463,14 +463,14 @@ class division
 	  $sql_str = sprintf("update division set %s='%s' where division_id=%d", $col, $this->$col, $this->division_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from division where division_id=%d", $this->division_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
     }
 }
 ?>

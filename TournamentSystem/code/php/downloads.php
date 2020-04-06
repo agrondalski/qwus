@@ -23,8 +23,8 @@ function getFiles($ext)
 	else {$target = 2;}
 
 	$path = (empty($_GET["d"])) ? $root[$target].$basedir[$target] : $root[$target]."/".$_GET["d"];
-	$link = str_replace($root[$target]."/","",$path);
-	$path_parts = explode("/",$link);
+	$GLOBALS['link'] = str_replace($root[$target]."/","",$path);
+	$path_parts = explode("/",$GLOBALS['link']);
 	$pathlink = '<A href="?a=downloads">Home</A>&nbsp;/&nbsp;';
 
 	for ($i=0;$i<count($path_parts)-1;$i++)

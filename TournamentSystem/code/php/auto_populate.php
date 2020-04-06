@@ -321,7 +321,7 @@ function auto_populate($a)
 		      $sql_str = sprintf("update match_table
                                           set approved=true, winning_team_id=%d, match_date='%s'
                                           where match_id=%d", $winning_team, $v1, $m->getValue('match_id')) ;
-		      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+		      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli($GLOBALS['link'])) ;
 		      break ;
 		    }
 		}
@@ -344,7 +344,7 @@ function auto_populate($a)
     }
 
   $sql_str = sprintf("delete from team where team_id not in(select team_id from tourney_info)") ;
-  $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+  $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
 }
 
 ?>

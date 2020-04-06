@@ -91,8 +91,6 @@ class util
   const SCORE_PER_GAME  = 'Score_Per_Game';
   const FRAGS_PER_GAME  = 'Frags_Per_Game';
   const SCORE_DIFF      = 'Score_Diff' ;
-  const MINUTESPLAYED   = 'MinutesPlayed' ;
-  const MINUTESWITHLEAD = 'MinutesWithLead' ;
 
   const WINNING_STREAK     = 'Winning_Streak' ;
   const LOSING_STREAK      = 'Losing_Streak' ;
@@ -121,6 +119,12 @@ class util
   const PLAYER_SCORE_GRAPH      = 'PLAYER_SCORE_GRAPH' ;
   const PIECHART                = 'PIECHART' ;
 
+  public static function console_log( $data ) {
+    echo '<script>';
+    echo 'console.log('. json_encode( $data ) .')';
+    echo '</script>';
+  }
+
   public static function getLimit($a)
     {
       $l = trim($a['limit']) ;
@@ -144,7 +148,7 @@ class util
 	  return null ;
 	}
 
-      return mysql_real_escape_string($s) ;
+      return mysqli_real_escape_string($GLOBALS['link'], $s) ;
     }
 
   public static function nvl($v1, $v2)

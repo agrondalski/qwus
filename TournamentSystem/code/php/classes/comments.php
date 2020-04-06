@@ -45,21 +45,21 @@ class comment
                          "values('%s', '%s', '%s', %s, '%s', '%s', '%s')",
 			 $this->name, $this->comment_type, $this->comment_ip, util::nvl($this->id, 'null'), $this->comment_text, $this->comment_date, $this->comment_time) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
       $this->comment_id = mysql_insert_id() ;
     }
 
   private function getCommentInfo()
     {
       $sql_str = sprintf("select name, comment_type, id, comment_ip, comment_text, comment_date, comment_time from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->name          = $row[0] ;
       $this->comment_type  = $row[1] ; 
@@ -69,7 +69,7 @@ class comment
       $this->comment_date  = $row[5] ; 
       $this->comment_time  = $row[6] ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -224,16 +224,16 @@ class comment
   private function getLastCommentTime()
     {
       $sql_str = sprintf("select min(time_to_sec(timediff(concat(curdate(), ' ', curtime()), concat(comment_date, ' ', comment_time)))) from comments where comment_ip='%s'", $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::nvl($row[0], 1000000000) ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }
@@ -247,16 +247,16 @@ class comment
                           from comments
                           where id=%d and comment_type='%s' and comment_ip='%s'",
 			 $cid, $ctype, $_SERVER['REMOTE_ADDR']) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       
-      if ($row = mysql_fetch_row($result))
+      if ($row = mysqli_fetch_row($result))
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::nvl($row[0], 1000000000) ;
 	}
       else
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return 0 ;
 	}
     }
@@ -290,14 +290,14 @@ class comment
 	  $sql_str = sprintf("update comments set %s='%s' where comment_id=%d", $col, $this->$col, $this->comment_id) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from comments where comment_id=%d", $this->comment_id) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());      
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));      
     }
 }
 ?>

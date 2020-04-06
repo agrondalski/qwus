@@ -33,24 +33,24 @@ class stats_team
                          "values(%d, %d, '%s', %d)",
 			 $this->team_id, $this->game_id, $this->stat_name, $this->value) ;
 
-      $result = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . $mysql_error) ;
+      $result = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link'])) ;
     }
 
   private function getStatsInfo()
     {
       $sql_str = sprintf("select value from stats_team where team_id=%d and game_id=%d and stat_name='%s'", $this->team_id, $this->game_id, $this->stat_name) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return util::NOTFOUND ;
 	}
-      $row = mysql_fetch_row($result) ;
+      $row = mysqli_fetch_row($result) ;
 
       $this->value  = $row[0] ; 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       return util::FOUND ;
     }
@@ -138,11 +138,11 @@ class stats_team
       $sn  = self::validateColumn($sn, 'stat_name') ;
 
       $sql_str = sprintf("select 1 from stats_team where team_id=%d and game_id=%d and stat_name='%s'", $tid, $gid, $sn) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str " . mysqli_error($GLOBALS['link']));
 
-      if (mysql_num_rows($result)!=1)
+      if (mysqli_num_rows($result)!=1)
 	{
-	  mysql_free_result($result) ;
+	  mysqli_free_result($result) ;
 	  return false ; 
 	}
 
@@ -150,7 +150,7 @@ class stats_team
     }
 
   private static function computeStreaks(&$match_maps_won, &$match_maps_lost, &$total_wins, &$total_losses, &$winning_streak, &$losing_streak,
-                                  &$cur_winning_streak, &$cur_losing_streak, &$max_winning_streak, &$max_losing_streak, $x)
+                                  &$cur_winning_streak, &$cur_losing_streak, &$max_winning_streak, &$max_losing_streak)
     {
 
       if ($match_maps_won==0 && $match_maps_lost==0)
@@ -301,7 +301,7 @@ class stats_team
                               order by team_id, match_date desc, match_id desc",
 			     $map_query_g, $map_query_g, $team_query_tm) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
       $arr = array() ;
       $old_team = -1;
@@ -323,7 +323,7 @@ class stats_team
       $cur_winning_streak = 0 ;
       $cur_losing_streak  = 0 ;
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  if ($row[0] != $old_team) 
 	    {
@@ -492,7 +492,7 @@ class stats_team
       $arr[$tmid][util::MAX_WINNING_STREAK] = $max_winning_streak ;
       $arr[$tmid][util::MAX_LOSING_STREAK]  = $max_losing_streak ;
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       if (!$career)
 	{
@@ -509,9 +509,9 @@ class stats_team
                               where s.stat_name!='%sX' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true",
 			     util::SCORE, $team_query_s, $map_query_g) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  $tid = $row[0] ;
 
@@ -525,7 +525,7 @@ class stats_team
 	    }
 	}
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
 
       if (!$career)
 	{
@@ -542,9 +542,9 @@ class stats_team
                               where st.stat_name!='%sX' and st.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true %s",
 			     util::SCORE, $map_query_g, $team_query_st) ;
 	}
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
 
-      while ($row = mysql_fetch_row($result))
+      while ($row = mysqli_fetch_row($result))
 	{
 	  $tid = $row[0] ;
 
@@ -587,7 +587,7 @@ class stats_team
 	}
 
 
-      mysql_free_result($result) ;
+      mysqli_free_result($result) ;
       return $arr ;
     }
 
@@ -610,14 +610,14 @@ class stats_team
 	  $sql_str = sprintf("update stats_team set %s='%s' where team_id=%d and game_id=%d and stat_name='%s'", $col, $this->$col, $this->team_id, $this->game_id, $this->stat_name) ;
 	}
 
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
       $this->$col = $val ;
     }
 
   public function delete()
     {
       $sql_str = sprintf("delete from stats_team where team_id=%d and game_id=%d and stat_name='%s'", $this->team_id, $this->game_id, $this->stat_name) ;
-      $result  = mysql_query($sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysql_error());
+      $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
     }
 }
 ?>

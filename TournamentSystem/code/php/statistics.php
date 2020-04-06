@@ -291,7 +291,7 @@ try
     
   echo "</tr>";
   
-  if ($sort == "name" || $sort==team_name) 																		  													    	
+  if ($sort == "name" || $sort == "team_name") 																		  													    	
     {																											  													    
       $sortOrder = SORT_ASC;																					  
     }																											  													   
