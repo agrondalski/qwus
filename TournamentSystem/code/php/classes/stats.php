@@ -189,7 +189,6 @@ class stats
       $tourney_query_d    = null ;
 
       $career             = true ;
-
       if (is_array($a))
 	{
 	  if (!util::isNull($a['all_players']) && is_bool($a['all_players']))
@@ -246,12 +245,11 @@ class stats
 	      $tourney_query_d  = ' and d.tourney_id=' . $tid ;
 	    }
 	}
-
       if (!$career)
 	{
 	  $sql_str = sprintf("select p.player_id, p.name, tm.team_id, tm.name, d.division_id, d.name, s.value, s.match_id,
                                      s.winning_team_id, s.team1_id, s.team1_score, s.team2_score, s.team_players, p.location_id, s.game_id
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id, g.game_id,
+                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id,
                                            (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id) team_players
                                     from stats s, game g, match_table m, match_schedule ms, division d
@@ -268,7 +266,7 @@ class stats
 	  $sql_str = sprintf("select p.player_id, p.name, s.team_id, null, null, null,
                                      s.value, s.match_id, s.winning_team_id, s.team1_id, s.team1_score, s.team2_score,
                                      (select count(*) from stats s2 where s2.game_id=s.game_id and s2.stat_name='%s' and s2.team_id=s.team_id), p.location_id, s.game_id
-                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,, g.game_id,
+                              from (select s.player_id, s.value, m.match_id, m.winning_team_id, m.team1_id,
                                            g.team1_score, g.team2_score, g.game_id, s.team_id
                                     from stats s, game g, match_table m
                                     where s.stat_name='%s' %s and s.game_id=g.game_id %s and g.match_id=m.match_id and m.approved=true) s right outer join player p using (player_id)
@@ -277,7 +275,6 @@ class stats
 			     util::SCORE, util::SCORE, $player_query_s, $map_query_g, $player_query_p) ;
 	}
       $result  = mysqli_query($GLOBALS['link'], $sql_str) or util::throwSQLException("Unable to execute : $sql_str : " . mysqli_error($GLOBALS['link']));
-
       $arr = array() ;
       $old_player = -1 ;
 

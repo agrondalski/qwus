@@ -119,6 +119,12 @@ class util
   const PLAYER_SCORE_GRAPH      = 'PLAYER_SCORE_GRAPH' ;
   const PIECHART                = 'PIECHART' ;
 
+  public static function console_log( $data ) {
+    echo '<script>';
+    echo 'console.log('. json_encode( $data ) .')';
+    echo '</script>';
+  }
+
   public static function getLimit($a)
     {
       $l = trim($a['limit']) ;
